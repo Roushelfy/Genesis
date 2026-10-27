@@ -68,6 +68,7 @@ class StressLink:
     requested_step: int = -1
     automatic_radius: StressRadiusInfo | None = None
     planar: PlanarLoading | None = None
+    cooperative_anchor: bool = False
 
 
 class RigidStressRecovery:
@@ -394,7 +395,7 @@ class RigidStressRecovery:
                     solver._errno,
                 )
             else:
-                kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
+                kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor)
                 if entry.planar is not None:
                     entry.planar.scatter(
                         entry.state,

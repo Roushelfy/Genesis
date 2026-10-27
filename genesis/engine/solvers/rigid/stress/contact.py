@@ -7,6 +7,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
+from genesis.utils.simt import qd_block_min
 
 from .data import StressInfo, StressState, func_scatter_load
 from .grid import func_patch_cell, func_patch_grid
@@ -418,8 +419,21 @@ def func_contact_index(i_entry: int, surface_info: StressSurfaceInfo):
     return i_q
 
 
+def kernel_anchor(
+    source_epsilon: float,
+    contact_state: StressContactState,
+    surface_info: StressSurfaceInfo,
+    cooperative: bool = False,
+):
+    if cooperative and gs.backend == gs.cuda and contact_state.active_pairs.shape[0] > 0:
+        kernel_anchor_pack(source_epsilon, contact_state)
+        kernel_anchor_warp(contact_state, surface_info)
+    else:
+        kernel_anchor_serial(source_epsilon, contact_state, surface_info)
+
+
 @qd.kernel
-def kernel_anchor(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):
+def kernel_anchor_serial(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):
     func_anchor(source_epsilon, contact_state, surface_info)
 
 
@@ -447,99 +461,179 @@ def func_contact_force_admissible(
 
 
 @qd.func
+def func_anchor_source(i_c: int, i_b: int, source_epsilon: float, contact_state: StressContactState):
+    contact_state.status[i_c, i_b] = 0
+    contact_state.force_error[i_c, i_b] = 0.0
+    contact_state.moment_error[i_c, i_b] = 0.0
+    contact_state.candidate_count[i_c, i_b] = 0
+    contact_state.evaluations[i_c, i_b] = 0
+    contact_state.is_refined[i_c, i_b] = False
+    loaded = False
+    if contact_state.valid[i_c, i_b]:
+        force = contact_state.force[i_c, i_b]
+        magnitude = force.norm()
+        normal = contact_state.normal[i_c, i_b]
+        radius = contact_state.radius[i_c, i_b]
+        admitted = func_contact_force_admissible(
+            contact_state.position[i_c, i_b], force, normal, contact_state.friction[i_c, i_b], source_epsilon
+        )
+        admitted = admitted and radius > 0.0 and not qd.math.isinf(radius)
+        if not admitted:
+            contact_state.status[i_c, i_b] = 1
+        elif magnitude > 1e-30:
+            loaded = True
+    return loaded
+
+
+@qd.func
+def func_anchor_frame(force: qd.types.vector(3)):
+    magnitude = force.norm()
+    direction = -force / magnitude
+    line_first, line_second = func_force_frame(direction)
+    line_basis = qd.Matrix.rows([line_first, line_second])
+    inverse_direction = qd.Vector.zero(gs.qd_float, 3)
+    for a in qd.static(range(3)):
+        if qd.abs(direction[a]) > 0.0:
+            inverse_direction[a] = 1.0 / direction[a]
+    return direction, line_basis, inverse_direction
+
+
+@qd.func
+def func_anchor_face(
+    i_f: int,
+    point: qd.types.vector(3),
+    direction: qd.types.vector(3),
+    line_basis: qd.types.matrix(2, 3),
+    inverse_direction: qd.types.vector(3),
+    distance: float,
+    surface_info: StressSurfaceInfo,
+):
+    parameter = gs.qd_float(-1e30)
+    found = False
+    if surface_info.quad_vertices.shape[0] > 0:
+        # The convex hull of Q4 corners bounds the complete bilinear physical surface.
+        # Test the unchanged infinite force line before inverting a face; padding covers the
+        # existing natural-coordinate roundoff allowance, without moving the physical anchor.
+        low, high = surface_info.face_bounds_low[i_f], surface_info.face_bounds_high[i_f]
+        padding = 4e-12 * (high - low).norm()
+        near, far = gs.qd_float(-float("inf")), gs.qd_float(float("inf"))
+        intersects = True
+        for a in qd.static(range(3)):
+            if qd.abs(direction[a]) > 0.0:
+                first_hit = (low[a] - padding - point[a]) * inverse_direction[a]
+                last_hit = (high[a] + padding - point[a]) * inverse_direction[a]
+                near, far = (
+                    qd.max(near, qd.min(first_hit, last_hit)),
+                    qd.min(far, qd.max(first_hit, last_hit)),
+                )
+            else:
+                intersects = intersects and point[a] >= low[a] - padding and point[a] <= high[a] + padding
+        lower_distance = qd.max(near, 0.0) - qd.min(far, 0.0)
+        if intersects and near <= far and lower_distance <= distance + padding:
+            _shape, hit, outward, _ratio, regular = func_quad_inverse(
+                surface_info.quad_coefficients[i_f], point, line_basis, qd.Vector([0.0, 0.0])
+            )
+            parameter = (hit - point).dot(direction)
+            found = regular and outward.dot(direction) > 1e-12 and qd.abs(parameter) < distance
+    else:
+        denominator = surface_info.face_normal[i_f].dot(direction)
+        if denominator > 1e-12:
+            parameter = surface_info.face_normal[i_f].dot(surface_info.face_origin[i_f] - point) / denominator
+            bary = surface_info.face_dual[i_f] @ (point + parameter * direction - surface_info.face_origin[i_f])
+            # The application point identifies the nearest material sheet along the force line.
+            found = (
+                bary[0] >= -2e-12 and bary[1] >= -2e-12 and bary.sum() <= 1.0 + 2e-12 and qd.abs(parameter) < distance
+            )
+    return parameter, found
+
+
+@qd.func
+def func_anchor_result(
+    i_c: int,
+    i_b: int,
+    i_f: int,
+    point: qd.types.vector(3),
+    direction: qd.types.vector(3),
+    best: float,
+    contact_state: StressContactState,
+    surface_info: StressSurfaceInfo,
+):
+    if best > -1e30:
+        contact_state.anchor_face[i_c, i_b] = i_f
+        contact_state.center[i_c, i_b] = point + best * direction
+        edges = surface_info.face_edges[i_f]
+        diameter = qd.max(edges[0, :].norm(), edges[1, :].norm(), (edges[1, :] - edges[0, :]).norm())
+        # A solvable moment fit does not certify integration accuracy when the support is smaller
+        # than the face rule's spacing. Integrate these patches at their physical scale immediately.
+        contact_state.is_refined[i_c, i_b] = (
+            surface_info.quad_vertices.shape[0] > 0
+            or surface_info.angular_quadrature[None]
+            or contact_state.radius[i_c, i_b] * surface_info.gauss.shape[0] < diameter
+        )
+    else:
+        contact_state.status[i_c, i_b] = 2
+
+
+@qd.func
 def func_anchor(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        contact_state.status[i_c, i_b] = 0
-        contact_state.force_error[i_c, i_b] = 0.0
-        contact_state.moment_error[i_c, i_b] = 0.0
-        contact_state.candidate_count[i_c, i_b] = 0
-        contact_state.evaluations[i_c, i_b] = 0
-        contact_state.is_refined[i_c, i_b] = False
-        if contact_state.valid[i_c, i_b]:
-            force = contact_state.force[i_c, i_b]
-            magnitude = force.norm()
-            normal = contact_state.normal[i_c, i_b]
-            radius = contact_state.radius[i_c, i_b]
-            admitted = func_contact_force_admissible(
-                contact_state.position[i_c, i_b], force, normal, contact_state.friction[i_c, i_b], source_epsilon
-            )
-            admitted = admitted and radius > 0.0 and not qd.math.isinf(radius)
-            if not admitted:
-                contact_state.status[i_c, i_b] = 1
-            elif magnitude > 1e-30:
-                direction = -force / magnitude
-                point = contact_state.position[i_c, i_b]
-                best = gs.qd_float(-1e30)
-                distance = gs.qd_float(1e30)
-                line_first, line_second = func_force_frame(direction)
-                line_basis = qd.Matrix.rows([line_first, line_second])
-                inverse_direction = qd.Vector.zero(gs.qd_float, 3)
-                for a in qd.static(range(3)):
-                    if qd.abs(direction[a]) > 0.0:
-                        inverse_direction[a] = 1.0 / direction[a]
-                for i_f in range(surface_info.face_origin.shape[0]):
-                    if surface_info.quad_vertices.shape[0] > 0:
-                        # The convex hull of Q4 corners bounds the complete bilinear physical surface.
-                        # Test the unchanged infinite force line before inverting a face; padding covers the
-                        # existing natural-coordinate roundoff allowance, without moving the physical anchor.
-                        low, high = surface_info.face_bounds_low[i_f], surface_info.face_bounds_high[i_f]
-                        padding = 4e-12 * (high - low).norm()
-                        near, far = gs.qd_float(-float("inf")), gs.qd_float(float("inf"))
-                        intersects = True
-                        for a in qd.static(range(3)):
-                            if qd.abs(direction[a]) > 0.0:
-                                first_hit = (low[a] - padding - point[a]) * inverse_direction[a]
-                                last_hit = (high[a] + padding - point[a]) * inverse_direction[a]
-                                near, far = (
-                                    qd.max(near, qd.min(first_hit, last_hit)),
-                                    qd.min(far, qd.max(first_hit, last_hit)),
-                                )
-                            else:
-                                intersects = (
-                                    intersects and point[a] >= low[a] - padding and point[a] <= high[a] + padding
-                                )
-                        lower_distance = qd.max(near, 0.0) - qd.min(far, 0.0)
-                        if intersects and near <= far and lower_distance <= distance + padding:
-                            _shape, hit, outward, _ratio, regular = func_quad_inverse(
-                                surface_info.quad_coefficients[i_f], point, line_basis, qd.Vector([0.0, 0.0])
-                            )
-                            parameter = (hit - point).dot(direction)
-                            if regular and outward.dot(direction) > 1e-12 and qd.abs(parameter) < distance:
-                                contact_state.anchor_face[i_c, i_b] = i_f
-                                best, distance = parameter, qd.abs(parameter)
-                    else:
-                        denominator = surface_info.face_normal[i_f].dot(direction)
-                        if denominator > 1e-12:
-                            parameter = (
-                                surface_info.face_normal[i_f].dot(surface_info.face_origin[i_f] - point) / denominator
-                            )
-                            bary = surface_info.face_dual[i_f] @ (
-                                point + parameter * direction - surface_info.face_origin[i_f]
-                            )
-                            # The application point identifies the nearest material sheet along the force line
-                            if (
-                                bary[0] >= -2e-12
-                                and bary[1] >= -2e-12
-                                and bary.sum() <= 1.0 + 2e-12
-                                and qd.abs(parameter) < distance
-                            ):
-                                contact_state.anchor_face[i_c, i_b] = i_f
-                                best = parameter
-                                distance = qd.abs(parameter)
-                if best > -1e30:
-                    contact_state.center[i_c, i_b] = point + best * direction
-                    i_f = contact_state.anchor_face[i_c, i_b]
-                    edges = surface_info.face_edges[i_f]
-                    diameter = qd.max(edges[0, :].norm(), edges[1, :].norm(), (edges[1, :] - edges[0, :]).norm())
-                    # A solvable moment fit does not certify integration accuracy when the support is smaller
-                    # than the face rule's spacing. Integrate these patches at their physical scale immediately.
-                    contact_state.is_refined[i_c, i_b] = (
-                        surface_info.quad_vertices.shape[0] > 0
-                        or surface_info.angular_quadrature[None]
-                        or radius * surface_info.gauss.shape[0] < diameter
-                    )
-                else:
-                    contact_state.status[i_c, i_b] = 2
+        if func_anchor_source(i_c, i_b, source_epsilon, contact_state):
+            point = contact_state.position[i_c, i_b]
+            direction, line_basis, inverse_direction = func_anchor_frame(contact_state.force[i_c, i_b])
+            best, distance = gs.qd_float(-1e30), gs.qd_float(1e30)
+            best_face = surface_info.face_origin.shape[0]
+            for i_f in range(surface_info.face_origin.shape[0]):
+                parameter, found = func_anchor_face(
+                    i_f, point, direction, line_basis, inverse_direction, distance, surface_info
+                )
+                if found:
+                    best_face, best, distance = i_f, parameter, qd.abs(parameter)
+            func_anchor_result(i_c, i_b, best_face, point, direction, best, contact_state, surface_info)
+
+
+@qd.kernel(graph=True)
+def kernel_anchor_pack(source_epsilon: float, contact_state: StressContactState):
+    for _ in range(1):
+        contact_state.active_count[None] = 0
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        # Source validity is recomputed before packing; a previous fit failure must not suppress a new source.
+        if func_anchor_source(i_c, i_b, source_epsilon, contact_state):
+            slot = qd.atomic_add(contact_state.active_count[None], 1)
+            contact_state.active_pairs[slot] = qd.Vector([i_c, i_b])
+
+
+@qd.kernel
+def kernel_anchor_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+    qd.loop_config(block_dim=128)
+    for i_thread in range(contact_state.active_count[None] * 32):
+        lane, slot = i_thread % 32, i_thread // 32
+        pair = contact_state.active_pairs[slot]
+        i_c, i_b = pair[0], pair[1]
+        point = contact_state.position[i_c, i_b]
+        direction, line_basis, inverse_direction = func_anchor_frame(contact_state.force[i_c, i_b])
+        best, distance = gs.qd_float(-1e30), gs.qd_float(1e30)
+        n_faces = surface_info.face_origin.shape[0]
+        best_face = n_faces
+        for i_chunk in range((n_faces + 31) // 32):
+            i_f = i_chunk * 32 + lane
+            candidate, candidate_distance = gs.qd_float(-1e30), gs.qd_float(1e30)
+            found = False
+            if i_f < n_faces:
+                candidate, found = func_anchor_face(
+                    i_f, point, direction, line_basis, inverse_direction, distance, surface_info
+                )
+                if found:
+                    candidate_distance = qd.abs(candidate)
+            # All lanes share each chunk's best distance before applying the next chunk's slab pruning.
+            minimum = qd_block_min(candidate_distance)
+            candidate_face = qd.select(found and candidate_distance == minimum, i_f, n_faces)
+            winner = qd_block_min(candidate_face)
+            if winner < n_faces:
+                # Strict equal-distance ties retain the first face in the original ascending traversal.
+                best = qd.simt.subgroup.broadcast(candidate, qd.u32(winner % 32))
+                best_face, distance = winner, minimum
+        if lane == 0:
+            func_anchor_result(i_c, i_b, best_face, point, direction, best, contact_state, surface_info)
 
 
 @qd.func
