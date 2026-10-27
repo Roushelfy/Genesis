@@ -127,6 +127,86 @@ def _polling(memory):
     }
 
 
+def _native_inventory(benchmark):
+    """Classify the benchmark's exposed stress buffers and their declared aliases."""
+    pure_rigid = benchmark.get("scope") in ("rigid", "policy-rigid")
+    buffers = benchmark.get("native_buffers")
+    available = isinstance(buffers, list)
+    rows = buffers if available else []
+    groups, allocations, aliases = {}, {}, {}
+    for row in rows:
+        name, size = row["name"], row["bytes"]
+        if ".planar.geometry." in name:
+            group = "planar_geometry_shared"
+        elif ".planar.state." in name:
+            group = "planar_source_and_task_state_per_environment"
+        elif ".planar.material." in name:
+            group = "material_bitmap_and_diagnostics_per_environment"
+        elif ".scatter." in name:
+            group = "original_fallback_scatter_per_environment"
+        elif ".contacts." in name:
+            group = "original_contacts_per_environment"
+        elif ".surface." in name or name.startswith("stress.curvature."):
+            group = "original_surface_and_curvature_shared"
+        elif ".state." in name or name.endswith(".omega"):
+            group = "response_and_output_per_environment"
+        else:
+            group = "other_stress_geometry_and_operators"
+        summary = groups.setdefault(group, {"buffers": [], "logical_bytes": 0, "declared_unique_bytes": 0})
+        summary["buffers"].append(name)
+        summary["logical_bytes"] += size
+        if size and row.get("alias_of") is None:
+            allocations[name] = size
+            summary["declared_unique_bytes"] += size
+        elif size:
+            aliases[name] = row["alias_of"]
+    expected_planar = not pure_rigid and benchmark.get("shell_loading") == "planar"
+    required = (
+        "planar_geometry_shared",
+        "planar_source_and_task_state_per_environment",
+        "material_bitmap_and_diagnostics_per_environment",
+        "original_fallback_scatter_per_environment",
+        "original_contacts_per_environment",
+        "original_surface_and_curvature_shared",
+    )
+    count = benchmark.get("envs")
+    for name, group in groups.items():
+        if name.endswith("_per_environment") and isinstance(count, int) and count > 0:
+            group["declared_unique_bytes_per_environment"] = group["declared_unique_bytes"] / count
+    unique_bytes, logical_bytes = sum(allocations.values()), sum(row["bytes"] for row in rows)
+    checks = {
+        "inventory_present_or_pure_rigid": available or pure_rigid,
+        "declared_total_matches_buffers": pure_rigid
+        or (available and unique_bytes == benchmark.get("native_buffer_bytes")),
+        "logical_total_matches_buffers": pure_rigid
+        or (available and logical_bytes == benchmark.get("native_logical_buffer_bytes")),
+        "alias_targets_present": all(target in allocations for target in aliases.values()),
+        "planar_groups_complete": not expected_planar
+        or all(groups.get(name, {}).get("logical_bytes", 0) > 0 for name in required),
+        "material_mask_and_hits_present": not expected_planar
+        or all(
+            any(row["name"].endswith(".planar.material." + field) and row["bytes"] > 0 for row in rows)
+            for field in ("mask", "hits")
+        ),
+    }
+    return {
+        "schema": "genesis.native-stress-buffer-audit.v1",
+        "passed": all(checks.values()),
+        "checks": checks,
+        "pure_rigid": pure_rigid,
+        "planar_expected": expected_planar,
+        "reported_inventory_available": available,
+        "native_stress_bytes": 0 if pure_rigid else unique_bytes if available else None,
+        "logical_stress_bytes_before_alias_dedup": 0 if pure_rigid else logical_bytes if available else None,
+        "groups": groups,
+        "declared_aliases": aliases,
+        "scope": "Resident buffers exposed by stress_recovery.data. Whole rigid dynamics, collider, controller, reset snapshots, Python objects, JIT code, CUDA graphs, allocator pools and context residency belong to the separate process measurements.",
+        "deduplication": "The benchmark deduplicates equal tensor-view data pointers. This audit checks that declared alias accounting. Its JSON lacks storage base pointers, storage sizes and byte ranges, so it cannot certify distinct views into a shared backing allocation.",
+        "fallback_aliases": "fallback_contacts reuses original contact fields and planar.state.fallback. material_surface reuses original surface fields and planar.material.mask. These Python views allocate no separate QD buffers.",
+        "pure_rigid_inventory": "A pure rigid run has zero stress buffers. Its process memory still includes the complete rigid workflow.",
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", type=Path, required=True)
@@ -253,6 +333,9 @@ def main():
         and collector_ready.get("scientific_modules_loaded") == [],
         "task_input_unchanged": _file_id(task_path) == start["task"],
     }
+    native_inventory = _native_inventory(benchmark)
+    _write(output / "native-stress-buffer-audit.json", native_inventory)
+    checks["exposed_native_stress_inventory"] = native_inventory["passed"]
     worker_path = namespace.get("__file__") if namespace is not None else recovered_worker
     genesis_module = sys.modules.get("genesis")
     prep_keys = (
@@ -296,6 +379,13 @@ def main():
         "native_memory": {key: benchmark[key] for key in memory_keys if key in benchmark},
         "native_buffer_inventory_available": isinstance(benchmark.get("native_buffers"), list),
         "native_buffer_inventory": "benchmark.json: native_buffers and stress_configurations",
+        "native_stress_buffer_audit": native_inventory,
+        "preparation_scope": {
+            "process_sampling": "Before scientific imports through constructor/JIT, warmup and every requested rollout repeat.",
+            "setup_seconds": "Benchmark constructor wall time after Genesis initialization. Includes planar geometry/state/material allocation and construction kernels. Scientific imports and Genesis initialization precede this timer.",
+            "component_timers": "build_timings_including_JIT describes the elastic model and surface_quadrature_grid_seconds_including_JIT the original surface. Neither isolates PlanarLoading preparation. Runtime first-use compilation occurs during warmup and remains inside process memory sampling.",
+            "module_scope": "This wrapper accepts complete workflow scopes. Frozen-contact module profiles and their extra retained snapshots require separate memory receipts.",
+        },
         "repeat_receipts": repeats,
         "reported_invalid_environment_steps": invalid,
         "total_reported_invalid_environment_steps": sum(invalid)
