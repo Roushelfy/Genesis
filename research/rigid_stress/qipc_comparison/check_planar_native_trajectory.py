@@ -260,6 +260,7 @@ class SourceScatterWitness:
                 entry.options.loading_subdivisions,
                 geometry=planar.info,
                 tasks_per_env=planar.state.tasks.shape[0],
+                exact_radial=planar.exact_radial,
             )
             if planar is not None
             else None
@@ -656,6 +657,7 @@ def main():
     parser.add_argument("--steps", type=int, default=600)
     parser.add_argument("--level", type=int, choices=(1, 2), default=1)
     parser.add_argument("--subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
+    parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
     parser.add_argument("--quadrature", type=int, choices=(10, 16, 24, 48), default=16)
     parser.add_argument("--production-reference-quadrature", type=int, default=None)
     parser.add_argument("--reference-quadrature", type=int, default=48)
@@ -753,6 +755,11 @@ def main():
         raise ArithmeticError(
             "Production trajectory qualification requires the enabled planar route with its default both-side scope."
         )
+    # Read the declared production attribute before assigning, so an older
+    # engine fails instead of silently acquiring a new research-only property.
+    if not isinstance(entry.planar.exact_radial, bool):
+        raise TypeError("PlanarLoading.exact_radial must be declared as a production boolean.")
+    entry.planar.exact_radial = args.planar_integration == "radial"
     low = OriginalRoute(
         api, entry, production_reference_quadrature, recovery.source_epsilon, args.reference_tasks_per_env
     )
@@ -778,6 +785,9 @@ def main():
         condition_count=workload.condition_count,
         side_filter="production default zero: both physical shell surfaces",
         source_files=source_before,
+        planar_integration_requested=args.planar_integration,
+        planar_integration="radial" if entry.planar.exact_radial else "gauss",
+        sample_count_unit=entry.planar.sample_count_unit,
     )
     error_history, loaded_history, valid_history, route_history = [], [], [], []
     residual_history, wrench_history, input_history, errno_history = [], [], [], []
