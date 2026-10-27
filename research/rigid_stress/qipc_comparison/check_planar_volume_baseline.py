@@ -75,7 +75,7 @@ def _snapshot(api, workload):
             ("state_step_peak", state.step_peak),
             ("state_raw_force", state.force),
             ("state_rhs", state.rhs),
-            ("state_q", state.q),
+            ("state_q", state.displacement),
             ("body_omega", entry.omega),
             ("rigid_links_position", solver.dyn_state.links.pos),
             ("rigid_links_quaternion", solver.dyn_state.links.quat),
