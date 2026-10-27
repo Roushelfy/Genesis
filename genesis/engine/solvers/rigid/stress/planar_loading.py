@@ -47,6 +47,8 @@ from .planar_radial import (
 from .scatter import kernel_pressure_moments, kernel_scatter_faces
 from .surface import StressSurfaceInfo
 
+_PLANAR_NORMAL_ERROR_FRACTION = 0.005
+
 
 class PlanarFallback(IntEnum):
     NONE = 0
@@ -297,7 +299,7 @@ def kernel_planar_query(contacts: StressContactState, info: PlanarLoadingInfo, s
                         if state.eligible[i_c, i_b] and admitted_side and func_face_overlap(i_f, center, radius, info):
                             if (
                                 not info.face_valid[i_f]
-                                or info.normal_error[i_f] > 0.01 * radius
+                                or info.normal_error[i_f] > _PLANAR_NORMAL_ERROR_FRACTION * radius
                                 or not func_parent_ball_connected(i_f, radius, info)
                             ):
                                 state.eligible[i_c, i_b] = False
@@ -445,7 +447,7 @@ def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingIn
                             if admitted_side and func_face_overlap(i_face, center, radius, info):
                                 if (
                                     not info.face_valid[i_face]
-                                    or info.normal_error[i_face] > 0.01 * radius
+                                    or info.normal_error[i_face] > _PLANAR_NORMAL_ERROR_FRACTION * radius
                                     or not func_parent_ball_connected(i_face, radius, info)
                                 ):
                                     invalid = 1
