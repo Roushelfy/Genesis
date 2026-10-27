@@ -15,6 +15,20 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 ASSET_NAMES = ("egg_outer.obj", "egg_shell.urdf", "shell.npz", "elastic.npz")
+PHYSICAL_SOURCE_COLUMNS = (
+    "environment",
+    "point_x_m",
+    "point_y_m",
+    "point_z_m",
+    "force_x_N",
+    "force_y_N",
+    "force_z_N",
+    "normal_x",
+    "normal_y",
+    "normal_z",
+    "friction",
+    "radius_m",
+)
 COMMON_SOURCES = (
     "examples/rigid/egg_stress_controller.py",
     "examples/rigid/franka_egg_stress.py",
@@ -325,12 +339,24 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
         "effective_contact_wrench_reuse",
         "effective_packed_block_sizes",
         "effective_rigid_post_fusion",
+        "effective_fused_pipeline",
+        "cuda_graphs_enabled",
     )
     if specification.variant != "pureRigid":
         execution_fields += ("method_selected", "surface_inverse_selected", "shell_recovery_graph_selected")
     effective_execution = {name: result.get(name) for name in execution_fields}
     if any(value is None for value in effective_execution.values()):
         audit.issues.append("Actual native scheduling/response execution receipt is incomplete")
+    expected_fused = [] if specification.variant == "pureRigid" else [specification.variant == "volume"]
+    actual_fused = result.get("effective_fused_pipeline")
+    if (
+        not isinstance(actual_fused, list)
+        or any(type(value) is not bool for value in actual_fused)
+        or actual_fused != expected_fused
+    ):
+        audit.issues.append(f"Actual fused pipeline differs from the qualified {specification.variant} contract")
+    if type(result.get("cuda_graphs_enabled")) is not bool:
+        audit.issues.append("Actual process CUDA graph-mode receipt is missing or not a boolean")
     policy = result.get("policy", {})
     policy_signature = {name: policy.get(name) for name in POLICY_FIELDS}
     if any(value is None for value in policy_signature.values()):
@@ -391,8 +417,18 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
             if re.fullmatch("[0-9a-f]{64}", str(physical_source.get("sha256"))) is None:
                 audit.issues.append("Module snapshot lacks the explicit physical_source_identity SHA256")
             shape = physical_source.get("shape", [])
-            if len(shape) != 2 or shape[0] <= 0:
-                audit.issues.append("Module physical-source snapshot is empty or has no explicit shape")
+            if (
+                not isinstance(shape, list)
+                or len(shape) != 2
+                or type(shape[0]) is not int
+                or shape[0] <= 0
+                or shape[1] != len(PHYSICAL_SOURCE_COLUMNS)
+            ):
+                audit.issues.append("Module physical-source snapshot must be nonempty with exactly 12 scalar columns")
+            if physical_source.get("columns") != list(PHYSICAL_SOURCE_COLUMNS):
+                audit.issues.append("Module physical-source column names differ from the qualified 12-column schema")
+            if physical_source.get("dtype") != "float64":
+                audit.issues.append("Module physical-source snapshot dtype is not float64")
     audit.trajectory_metrics = result.get("trajectory_metrics")
     if specification.scope == "policy" and not isinstance(audit.trajectory_metrics, dict):
         audit.issues.append("Policy timing lacks trajectory outcome metrics")
@@ -453,6 +489,12 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
     for audit in audits:
         if audit.receipt.get("policy", {}).get("weights_sha256") != expected_policy_hash:
             audit.issues.append("Actual policy weight-byte SHA256 differs from the qualified plan network")
+    expected_graphs = plan.get("cuda_graphs_enabled")
+    if expected_graphs is not False:
+        issues.append("Primary plan must explicitly retain the qualified cuda_graphs_enabled=false contract")
+    for audit in audits:
+        if audit.receipt.get("effective_execution", {}).get("cuda_graphs_enabled") is not expected_graphs:
+            audit.issues.append("Actual CUDA graph mode differs from the explicitly qualified primary plan")
     if len(task_map) != sum(len(group) for group in tasks):
         issues.append("Captured campaign repeats a task identity")
     identities = [(specification.group, specification.name) for specification in specifications]
@@ -627,6 +669,7 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
         "captured_tasks": file_identity(campaign / "tasks.json"),
         "captured_source": file_identity(campaign / "source.json"),
         "qualified_policy_weights_sha256": expected_policy_hash,
+        "qualified_cuda_graphs_enabled": expected_graphs,
         "issues": issues,
         "tasks": [asdict(audit) for audit in audits],
         "blocks": blocks,
