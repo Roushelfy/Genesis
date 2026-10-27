@@ -2,6 +2,8 @@
 
 # Genesis World
 
+Branch development goal: [DFSPH with implicit viscosity, strong two-way rigid coupling and performance optimization](SPH_SOLVER_GOAL.md).
+
 [![PyPI - Version](https://img.shields.io/pypi/v/genesis-world)](https://pypi.org/project/genesis-world/)
 [![PyPI Downloads](https://static.pepy.tech/badge/genesis-world)](https://pepy.tech/projects/genesis-world)
 [![Documentation](https://app.readthedocs.org/projects/genesis-world/badge/?version=latest)](https://genesis-world.readthedocs.io/en/latest/)

@@ -1,0 +1,183 @@
+# DFSPH solver development goal
+
+Branch: `fluidbench/sph-solver`
+Repository: https://github.com/Roushelfy/Genesis
+Owner requirements confirmed: 2026-10-27
+Starting revision: `92c783279a9d6d8882bf06dce540c07fdf2a38a6`
+Status: specification recorded. Implementation and acceptance measurements remain pending.
+
+## Objective
+
+Deliver a complete, physically consistent, stable and efficient divergence-free smoothed particle hydrodynamics (DFSPH)
+solver with implicit liquid viscosity and strong two-way coupling to Genesis rigid links. Optimize single-environment
+latency and batched throughput while preserving the accepted physical model and numerical accuracy.
+
+Implicit viscosity is a required part of the final implementation. Pressure and viscous stresses both exchange linear and
+angular momentum with rigid links. A diagnostic implementation that applies fluid impulses after an otherwise independent
+rigid step is an intermediate milestone. Final acceptance requires the coupled fluid and rigid residuals to converge.
+
+## Required behavior
+
+### Implicit viscosity
+
+- Solve Newtonian viscosity implicitly in both the fluid interior and at coupled walls. Support spatially varying material
+  viscosity with a consistent interface treatment.
+- Define coefficient units explicitly. Use one canonical internal convention and convert between kinematic viscosity
+  `nu [m^2/s]` and dynamic viscosity `mu [Pa s]` through `mu = rho * nu`.
+- Derive the operator from a dissipative, symmetric stress discretization. Establish its symmetry, sign, null modes and
+  boundary conditions before selecting a conjugate-gradient solver. Use a solver appropriate to the actual operator.
+- Include stationary and moving no-slip walls. Additional slip behavior requires a defined physical boundary condition.
+- Apply equal-and-opposite wall forces and moments to the corresponding rigid link. Account for shear-driven spin-up,
+  drag, stirring torque and spin-down.
+- Remove the explicit viscosity time-step restriction from the final viscosity update. Advection, changing geometry,
+  free surfaces, capillarity, contact and solver convergence still define a documented usable time-step range.
+- Treat micropolar rotation as a separate optional model. Validate the Newtonian baseline with micropolar disabled, then
+  test its integration separately. Angular smoothing and artificial damping are separate from physical liquid viscosity.
+
+### Strong two-way rigid coupling
+
+- Support fixed links, prescribed kinematic links, free dynamic links and articulated links with joint/contact constraints.
+- Include link translational and angular response in the pressure and implicit-viscosity solve. Articulated response uses
+  the constrained generalized mass response rather than independent free-link inverse masses.
+- Advance pressure, viscosity and rigid response consistently at the same substep. Define the stage order and the state
+  each stage reads. Track any outer iteration with residual-based convergence.
+- Account for both DFSPH divergence and density corrections in the final exchanged impulse. Accumulate the net applied
+  correction once. Internal iteration updates must not create repeated physical impulse application.
+- Extend the current boundary-pressure-acceleration-zero assumption and its iteration coefficients for moving dynamic
+  boundaries. Recompute a preconditioner whenever its numerical assumptions require it.
+- Provide public batched force, torque and impulse readout. Define world/local frames, reference point, signs, units and
+  substep/control-step averaging. Distinguish fluid loads from gravity, actuators and rigid contact.
+- Maintain prescribed trajectories for kinematic links and report their actuator-equivalent fluid load. Dynamic links
+  respond to the exchanged load through their actual mass, inertia and constraints.
+- Document the pressure/free-surface model. Verify hydrostatic pressure, buoyancy and compression control without a
+  separate hand-tuned buoyancy force.
+
+### Coupled solve
+
+Write the discrete equations and their residuals before implementation. A monolithic formulation or a converged block
+iteration is acceptable. A single uncorrected viscosity-then-pressure or fluid-then-rigid pass does not establish the final
+strong-coupling requirement.
+
+A useful starting point is a joint velocity space containing particle velocities and rigid generalized velocities, a
+mass operator, an implicit viscous dissipation operator, and the DFSPH pressure and rigid constraint operators. A pressure
+Schur complement must use the velocity response of the selected mass-plus-viscosity system. If block iterations replace
+that response, demonstrate convergence of all coupled residuals and the force/torque balance.
+
+Use backward Euler as the initial temporal reference unless the derivation justifies another scheme. Measure temporal
+and spatial convergence. Stability alone does not establish accurate damping, spin-down or load prediction.
+
+### State and failure handling
+
+- Save, restore and selectively reset all persistent state, including pressure warm starts, angular velocity when
+  micropolar is enabled, iterative-solver warm starts, coupling impulses and cache validity.
+- Keep environments independent, including partial reset, active masks, heterogeneous material properties and loads.
+- Use the existing solver error mechanism for non-finite state and invalid solves. Record iteration-cap exhaustion and
+  residuals explicitly. An unconverged state cannot count as a successful accuracy or performance sample.
+- Follow `CLAUDE.md`, `CODING_GUIDELINES.md` and the repository contribution instructions. Backend-specific acceleration
+  implements the same physical model and numerical algorithm as the portable path.
+
+## Performance work
+
+Establish an instrumented profile and an uninstrumented timing baseline at the starting revision. Keep the original
+one-way explicit-viscosity results as historical evidence. Measure the cost of the new physical features separately, then
+compare optimizations against a functionally identical coupled implicit-viscosity baseline.
+
+Prioritize the following measured candidates:
+
+1. Cache boundary geometry per fluid-particle/link pair. Include gradient and moment aggregates needed for force/torque
+   exchange. Freeze geometry only over iterations where that approximation is part of the derived scheme. Update the
+   rigid velocity response during coupled iterations. Invalidate geometry through the existing change mechanisms.
+2. Replace contended slot allocation in spatial hashing with a measured parallel scan or occupied-slot method. Reduce
+   unnecessary full-slot clearing. Validate neighbor completeness for negative coordinates, hashing collisions and
+   multiple environments.
+3. Remove per-iteration host scalar readback from pressure, viscosity and outer coupling convergence where backend support
+   permits. Retain the required global dependency barriers between acceleration and residual evaluation.
+4. Separate static and moving boundary indexing. Reuse fixed-link geometry and rebuild the moving portion as needed.
+5. Evaluate cached neighbor indices and kernel gradients against recomputation. Report memory use, cache build time and
+   iteration cost. Reuse geometry across pressure and viscosity operators where their mathematical definitions allow it.
+6. Reduce scratch-field reorder/copy traffic. Preserve public particle ordering, persistent warm starts, rendering and
+   state restoration.
+7. Reuse preconditioner structure and allocations where valid. Report iteration counts and refresh costs. Allocate exact
+   known sizes and follow the repository's Quadrants memory-lifetime requirements.
+8. Use block reductions and link-grouped force accumulation where profiling shows contention. Verify signed linear and
+   angular impulse balance.
+9. Allow environments to stop work independently when their coupled residuals pass. Keep inactive/reset environments
+   isolated. Benchmark independent trajectories as well as identical replicated trajectories.
+10. Measure a prescribed-boundary execution path for scenes without dynamic rigid response. Use the full rigid solver
+    whenever joints, dynamics or contact require it. Report this scene specialization separately from general coupling.
+
+Choose launch and execution configurations from device and workload properties. Check generality across particle counts,
+boundary fractions, viscosity, link count and environment count. A single stirring scene cannot establish general speedup.
+
+## Validation and acceptance
+
+Freeze the case parameters, references, horizons and justified numerical tolerances before optimization comparisons.
+Existing FluidBench tolerances remain authoritative for its cases. For additional tests, derive tolerances from analytic
+solutions, reference convergence and numerical residuals. Preserve failure cases in the report.
+
+| Requirement | Evidence |
+| --- | --- |
+| Correct implicit viscosity | Couette and Poiseuille profiles, analytic viscous mode decay, and time/grid refinement across low and high viscosity |
+| Wall viscosity | Moving-wall shear, no-slip error, integrated wall force and torque, and viscous dissipation balance |
+| Momentum exchange | Closed isolated fluid/link cases with linear and angular momentum balance at the solver tolerance |
+| Rigid response | Hydrostatic floating draft, rising/settling links where a valid reference exists, and light-link/high-fluid-inertia cases |
+| Strong coupling | Pressure, viscosity, rigid and outer residual histories, plus temporal refinement for loads and trajectories |
+| Articulation | A constrained joint with fluid loading and a robot-driven stirring case with joint torque readout |
+| Boundary robustness | Thin-wall and coarse-resolution cup cases, geometry offsets/orientations, moving walls and leakage measurements |
+| FluidBench dynamics | S1 stirring and spin-down, S2 pouring, and applicable S3 mixing cases against the frozen references |
+| State correctness | Snapshot/restart, repeated reset and selected-environment reset including warm starts and micropolar state |
+| Performance generality | Several particle/link counts, viscosity values and boundary fractions, single environment and independent batched scenes |
+
+A fixed or kinematic wall exchanges momentum and work with an external support/actuator. Include those exchanges in its
+balance. For a closed stationary setup, viscosity dissipates kinetic energy. For driven cases, compare energy change with
+external work and viscous dissipation. A physical instability must be identified separately from numerical blow-up.
+
+Keep concise analytic and algebraic checks in the unit suite. Put long-horizon stability, convergence and performance
+sweeps in benchmark campaigns, following the repository's test-step budget.
+
+Report full S1 horizons, not only short build/run smoke tests. Preserve the declared water properties. Increasing
+viscosity to suppress noise, changing particle volume to hide drift, disabling divergence correction, loosening solver
+tolerances or reducing spatial resolution changes the experiment and requires a separate accuracy tradeoff report.
+
+## Performance measurements and targets
+
+Measure warmed solver-only time, output/readback time, build/compile time, peak memory, iterations and residuals. Report
+pressure, viscosity, outer coupling, neighbor/hash work, rigid work, reductions, synchronization and output separately.
+Use uninstrumented repeated timings for speed claims and include dispersion.
+
+Real-time factor (RTF) is simulated seconds divided by wall seconds. The initial single-environment target is RTF >= 0.5
+on the declared representative GPU and accuracy-qualified S1 configuration. RTF >= 1 is a stretch target. Record achieved
+speed if these targets remain unmet. Test resolution ladders rather than selecting an unstable coarse configuration.
+
+For batching, report environment-transitions/s, per-environment RTF and memory at feasible batch sizes. Compare
+optimizations at matched physical parameters, resolution, tolerances and feature set. Record representative hardware and
+all execution-path choices. Define numerical acceptance before low-precision experiments.
+
+The earlier FluidBench profile reports approximately 52% pressure solving and 28% rigid work. Its RTF around 0.069 is a
+historical planning reference, not the implicit-viscosity/two-way baseline. Performance targets require new measurements.
+
+## Milestones
+
+All items start pending. Each completed milestone needs a commit, runnable command, configuration and evidence path.
+
+- [ ] M0: Freeze equations, units, baseline cases, numerical acceptance criteria and performance measurement boundaries.
+- [ ] M1: Establish dissipative implicit interior/wall viscosity with analytic validation and force/torque accounting.
+- [ ] M2: Complete pressure/viscous reaction readout and the rigid stage integration. A split prototype is development
+      evidence only.
+- [ ] M3: Complete strong pressure-viscosity-rigid coupling, articulated response and residual-based convergence.
+- [ ] M4: Pass thin-wall, coarse-resolution, light-link, high-viscosity and reset/state robustness campaigns.
+- [ ] M5: Run optimization ablations at a matched full-feature baseline, including single and multiple environments.
+- [ ] M6: Re-run FluidBench, publish accuracy/performance evidence, document public APIs and record remaining limitations.
+
+Completion means all required physics, stability and optimization evidence is present. A stable animation, an explicit
+fallback, a pressure-only reaction force, a viscosity-only solve or a fast one-way configuration is insufficient.
+
+## Evidence locations
+
+Keep derivations, implementation status and compact campaign receipts alongside this goal or in the repository's
+established documentation layout. Keep tests and examples in their existing directories. Integrate benchmark records and
+analysis with [FluidBench](https://github.com/Roushelfy/fluidbench/tree/bench/auto-research), preserving source SHAs and
+physical parameters. Avoid duplicating large raw trajectories in this repository.
+
+Record an optimization as proposed, implemented, validated or measured, with its supporting artifact. Keep the current
+implementation status separate from this target specification.
