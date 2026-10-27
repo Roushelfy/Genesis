@@ -24,6 +24,12 @@ LIMIT = 10 * 1024 * 1024
 SMALL_BINARY = 256 * 1024
 JSON_LIMIT = 16 * 1024 * 1024
 PRIMARY_JSON_LIMIT = 128 * 1024 * 1024
+PLANAR_REQUIRED_METADATA = (
+    "primary-summary-*.json.gz",
+    "final-memory-summary-*.json.gz",
+    "final-profile-summary-*.json.gz",
+    "verify-planar-delivery-packet-v19.py",
+)
 PRIMARY_EXTERNAL_FIELDS = {
     "warmup_quality",
     "trajectory_metrics",
@@ -449,6 +455,26 @@ def _source_receipts(packet, campaign):
     return source, analysis, receipts
 
 
+def _top_metadata(packet, meta):
+    documents = {}
+    if meta.is_dir():
+        for path in sorted(meta.iterdir()):
+            if not path.is_file() or path.is_symlink():
+                continue
+            key = packet.artifact(path, category="run-metadata")
+            documents[path.name] = _read_json(path) if path.suffix == ".json" else None
+            required = packet.study == "planar" and any(path.match(pattern) for pattern in PLANAR_REQUIRED_METADATA)
+            if required or path.stat().st_size <= 4 * 1024 * 1024:
+                packet.exact_payload(
+                    path,
+                    key,
+                    "run-metadata",
+                    0 if required else 2,
+                    required=required or "preserv" in path.name or path.name == "start-state.json",
+                )
+    return documents
+
+
 def _input_receipts(packet, task_id, arguments):
     inputs = []
     for value in arguments:
@@ -704,18 +730,7 @@ def main():
         ["git", "-C", str(args.git_source), "rev-parse", f"{args.maintained_source}^{{commit}}"], text=True
     ).strip()
     packet, meta, tasks, campaigns = Packet(run_root, study=args.study), run_root / "meta", [], []
-    metadata_documents = {}
-    if meta.is_dir():
-        for path in sorted(meta.iterdir()):
-            if not path.is_file() or path.is_symlink():
-                continue
-            key = packet.artifact(path, category="run-metadata")
-            document = _read_json(path) if path.suffix == ".json" else None
-            metadata_documents[path.name] = document
-            if path.stat().st_size <= 4 * 1024 * 1024:
-                packet.exact_payload(
-                    path, key, "run-metadata", 2, required="preserv" in path.name or path.name == "start-state.json"
-                )
+    metadata_documents = _top_metadata(packet, meta)
     start = metadata_documents.get("start-state.json")
     if not isinstance(start, dict):
         raise TypeError("The original-file/frozen-source preservation start-state receipt is required.")
@@ -777,6 +792,9 @@ def main():
         "For planar primary-paired-* terminal benchmark tasks, mandatory gzip payloads preserve every original "
         "repeat field and vector plus unabridged identity/configuration metadata. Other large diagnostics remain "
         "externally hashed. These are original measurements with no new qualification assessment.\n\n"
+        "Existing top-level primary/memory/profile summary gzip files and the final offline verifier are "
+        "mandatory exact payloads, without the optional metadata 4MiB input cutoff. The 10MiB packet limit "
+        "still applies; missing summaries are not created or certified by packaging.\n\n"
         if args.study == "planar"
         else ""
     )
