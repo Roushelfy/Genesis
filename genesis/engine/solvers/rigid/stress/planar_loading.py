@@ -111,13 +111,9 @@ class PlanarLoading:
         geometry: PlanarLoadingInfo | None = None,
         *,
         tasks_per_env: int = 32,
-        work_warps: int = 2048,
     ):
         if tasks_per_env < 1:
             gs.raise_exception("Planar loading requires a positive per-environment task capacity.")
-        if work_warps not in (512, 2048, 4096):
-            gs.raise_exception("Planar loading uses 512, 2048 or 4096 CUDA work warps.")
-        self.work_warps = work_warps
         self.info = geometry if geometry is not None else build_planar_geometry(surface, load_info, subdivisions)
         n_contacts, n_envs = contacts.valid.shape
         contact_shape, task_shape = (n_contacts, n_envs), (tasks_per_env, n_envs)
@@ -179,9 +175,9 @@ class PlanarLoading:
     def scatter(self, stress_state, load_info, surface_info, options, scatter_workspace, reuse_contact_moments: bool):
         """Fit current proxy loads, recover unsupported contacts on the original route and add accepted contributions."""
         if options.cooperative_pressure and gs.backend == gs.cuda:
-            kernel_planar_query_warp(self.contacts, self.info, self.state, self.work_warps)
+            kernel_planar_query_warp(self.contacts, self.info, self.state)
             kernel_planar_prepare_moments(self.contacts, self.state)
-            kernel_planar_moments_warp(self.contacts, self.state, surface_info, self.work_warps)
+            kernel_planar_moments_warp(self.contacts, self.state, surface_info)
         else:
             kernel_planar_query(self.contacts, self.info, self.state)
             kernel_planar_moments(self.contacts, self.state, surface_info)
@@ -372,9 +368,7 @@ def func_planar_query_component(
 
 
 @qd.kernel
-def kernel_planar_query_warp(
-    contacts: StressContactState, info: PlanarLoadingInfo, state: PlanarLoadingState, work_warps: qd.template()
-):
+def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingInfo, state: PlanarLoadingState):
     for i_b in range(contacts.valid.shape[1]):
         state.task_count[i_b], state.parent_count[i_b], state.fallback_count[i_b], state.source_count[i_b] = 0, 0, 0, 0
         state.overflow[i_b] = False
@@ -391,111 +385,103 @@ def kernel_planar_query_warp(
             state.source_slots[i_source, i_b] = i_c
     # One warp owns each environment's pool, keeping every contact's task range contiguous.
     qd.loop_config(block_dim=32)
-    # A constant launch stripe bounds the grid without specializing on the environment count.
-    for i_thread in range(work_warps * 32):
-        lane = i_thread % 32
+    for i_thread in range(contacts.valid.shape[1] * 32):
+        lane, i_b = i_thread % 32, i_thread // 32
         sh_faces = qd.simt.block.SharedArray((32,), gs.qd_int)
         sh_count = qd.simt.block.SharedArray((1,), gs.qd_int)
-        for i_chunk in range((contacts.valid.shape[1] + work_warps - 1) // work_warps):
-            i_b = i_chunk * work_warps + i_thread // 32
-            if i_b < contacts.valid.shape[1]:
-                for i_source in range(state.source_count[i_b]):
-                    i_c = state.source_slots[i_source, i_b]
-                    if lane == 0:
-                        state.task_start[i_c, i_b] = state.task_count[i_b]
-                        state.parent_start[i_c, i_b] = state.parent_count[i_b]
-                        if contacts.status[i_c, i_b] != 0:
-                            state.reason[i_c, i_b] = PlanarFallback.ANCHOR
-                        elif not contacts.hertz_profile[None]:
-                            state.reason[i_c, i_b] = PlanarFallback.PROFILE
-                        elif not state.overflow[i_b]:
-                            state.eligible[i_c, i_b] = True
-                    qd.simt.block.sync()
-                    center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
-                    side = state.side_filter[i_c, i_b]
-                    if state.eligible[i_c, i_b]:
-                        for i_face_chunk in range((info.face_valid.shape[0] + 31) // 32):
-                            if state.eligible[i_c, i_b] and not state.overflow[i_b]:
-                                if lane == 0:
-                                    sh_count[0] = 0
-                                qd.simt.block.sync()
-                                i_face = i_face_chunk * 32 + lane
-                                invalid = 0
-                                if i_face < info.face_valid.shape[0]:
-                                    admitted_side = side == 0 or side == info.side[i_face]
-                                    if admitted_side and func_face_overlap(i_face, center, radius, info):
-                                        if not info.face_valid[i_face] or info.normal_error[i_face] > 0.01 * radius:
-                                            invalid = 1
-                                        else:
-                                            i_candidate = qd.atomic_add(sh_count[0], 1)
-                                            sh_faces[i_candidate] = i_face
-                                invalid = qd.simt.subgroup.reduce_all_add(invalid)
-                                if lane == 0 and invalid > 0:
-                                    state.eligible[i_c, i_b] = False
-                                    state.reason[i_c, i_b] = PlanarFallback.GEOMETRY
-                                qd.simt.block.sync()
-                                if state.eligible[i_c, i_b]:
-                                    for i_candidate in range(sh_count[0]):
-                                        if not state.overflow[i_b]:
-                                            i_face = sh_faces[i_candidate]
-                                            found, overflowed = 0, 0
-                                            for i_cell_chunk in range((info.cell_nodes.shape[0] + 31) // 32):
-                                                i_cell = i_cell_chunk * 32 + lane
-                                                if i_cell < info.cell_nodes.shape[0]:  # noqa: SIM102 - bound the geometry index first
-                                                    if func_cell_overlap(i_face, i_cell, center, radius, info):
-                                                        for i_half in range(2):
-                                                            i_triangle = 2 * i_cell + i_half
-                                                            vertices, dual, normal, parent_shapes = (
-                                                                func_triangle_geometry(i_face, i_triangle, info)
-                                                            )
-                                                            edges = qd.Matrix.rows(
-                                                                [
-                                                                    vertices[1, :] - vertices[0, :],
-                                                                    vertices[2, :] - vertices[0, :],
-                                                                ]
-                                                            )
-                                                            _section, _remaining, _contained, intersects = (
-                                                                func_planar_section(
-                                                                    vertices[0, :], edges, dual, normal, center, radius
-                                                                )
-                                                            )
-                                                            if intersects:
-                                                                i_t = qd.atomic_add(state.task_count[i_b], 1)
-                                                                if i_t < state.tasks.shape[0]:
-                                                                    state.tasks[i_t, i_b] = qd.Vector(
-                                                                        [i_face, i_triangle, i_c]
-                                                                    )
-                                                                    state.origin[i_t, i_b] = vertices[0, :]
-                                                                    state.edges[i_t, i_b] = edges
-                                                                    state.dual[i_t, i_b] = dual
-                                                                    state.normal[i_t, i_b] = normal
-                                                                    state.parent_shapes[i_t, i_b] = parent_shapes
-                                                                else:
-                                                                    overflowed = 1
-                                                                found += 1
-                                            found = qd.simt.subgroup.reduce_all_add(found)
-                                            overflowed = qd.simt.subgroup.reduce_all_add(overflowed)
-                                            if lane == 0:
-                                                if overflowed > 0:
-                                                    state.overflow[i_b] = True
-                                                    state.task_count[i_b] = state.tasks.shape[0]
-                                                if found > 0 and not state.overflow[i_b]:
-                                                    i_p = state.parent_count[i_b]
-                                                    if i_p < state.parent_faces.shape[0]:
-                                                        state.parent_faces[i_p, i_b] = info.parent_face[i_face]
-                                                        state.parent_count[i_b] += 1
-                                                    else:
-                                                        state.overflow[i_b] = True
-                                            qd.simt.block.sync()
-                                qd.simt.block.sync()
-                    qd.simt.block.sync()
-                    if lane == 0:
-                        if state.eligible[i_c, i_b] and state.task_count[i_b] == state.task_start[i_c, i_b]:
+        for i_source in range(state.source_count[i_b]):
+            i_c = state.source_slots[i_source, i_b]
+            if lane == 0:
+                state.task_start[i_c, i_b] = state.task_count[i_b]
+                state.parent_start[i_c, i_b] = state.parent_count[i_b]
+                if contacts.status[i_c, i_b] != 0:
+                    state.reason[i_c, i_b] = PlanarFallback.ANCHOR
+                elif not contacts.hertz_profile[None]:
+                    state.reason[i_c, i_b] = PlanarFallback.PROFILE
+                elif not state.overflow[i_b]:
+                    state.eligible[i_c, i_b] = True
+            qd.simt.block.sync()
+            center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
+            side = state.side_filter[i_c, i_b]
+            if state.eligible[i_c, i_b]:
+                for i_face_chunk in range((info.face_valid.shape[0] + 31) // 32):
+                    if state.eligible[i_c, i_b] and not state.overflow[i_b]:
+                        if lane == 0:
+                            sh_count[0] = 0
+                        qd.simt.block.sync()
+                        i_face = i_face_chunk * 32 + lane
+                        invalid = 0
+                        if i_face < info.face_valid.shape[0]:
+                            admitted_side = side == 0 or side == info.side[i_face]
+                            if admitted_side and func_face_overlap(i_face, center, radius, info):
+                                if not info.face_valid[i_face] or info.normal_error[i_face] > 0.01 * radius:
+                                    invalid = 1
+                                else:
+                                    i_candidate = qd.atomic_add(sh_count[0], 1)
+                                    sh_faces[i_candidate] = i_face
+                        invalid = qd.simt.subgroup.reduce_all_add(invalid)
+                        if lane == 0 and invalid > 0:
                             state.eligible[i_c, i_b] = False
-                            state.reason[i_c, i_b] = PlanarFallback.EMPTY
-                        state.task_end[i_c, i_b] = state.task_count[i_b]
-                        state.parent_end[i_c, i_b] = state.parent_count[i_b]
-                    qd.simt.block.sync()
+                            state.reason[i_c, i_b] = PlanarFallback.GEOMETRY
+                        qd.simt.block.sync()
+                        if state.eligible[i_c, i_b]:
+                            for i_candidate in range(sh_count[0]):
+                                if not state.overflow[i_b]:
+                                    i_face = sh_faces[i_candidate]
+                                    found, overflowed = 0, 0
+                                    for i_cell_chunk in range((info.cell_nodes.shape[0] + 31) // 32):
+                                        i_cell = i_cell_chunk * 32 + lane
+                                        if i_cell < info.cell_nodes.shape[0]:  # noqa: SIM102 - bound the geometry index first
+                                            if func_cell_overlap(i_face, i_cell, center, radius, info):
+                                                for i_half in range(2):
+                                                    i_triangle = 2 * i_cell + i_half
+                                                    vertices, dual, normal, parent_shapes = func_triangle_geometry(
+                                                        i_face, i_triangle, info
+                                                    )
+                                                    edges = qd.Matrix.rows(
+                                                        [
+                                                            vertices[1, :] - vertices[0, :],
+                                                            vertices[2, :] - vertices[0, :],
+                                                        ]
+                                                    )
+                                                    _section, _remaining, _contained, intersects = func_planar_section(
+                                                        vertices[0, :], edges, dual, normal, center, radius
+                                                    )
+                                                    if intersects:
+                                                        i_t = qd.atomic_add(state.task_count[i_b], 1)
+                                                        if i_t < state.tasks.shape[0]:
+                                                            state.tasks[i_t, i_b] = qd.Vector([i_face, i_triangle, i_c])
+                                                            state.origin[i_t, i_b] = vertices[0, :]
+                                                            state.edges[i_t, i_b] = edges
+                                                            state.dual[i_t, i_b] = dual
+                                                            state.normal[i_t, i_b] = normal
+                                                            state.parent_shapes[i_t, i_b] = parent_shapes
+                                                        else:
+                                                            overflowed = 1
+                                                        found += 1
+                                    found = qd.simt.subgroup.reduce_all_add(found)
+                                    overflowed = qd.simt.subgroup.reduce_all_add(overflowed)
+                                    if lane == 0:
+                                        if overflowed > 0:
+                                            state.overflow[i_b] = True
+                                            state.task_count[i_b] = state.tasks.shape[0]
+                                        if found > 0 and not state.overflow[i_b]:
+                                            i_p = state.parent_count[i_b]
+                                            if i_p < state.parent_faces.shape[0]:
+                                                state.parent_faces[i_p, i_b] = info.parent_face[i_face]
+                                                state.parent_count[i_b] += 1
+                                            else:
+                                                state.overflow[i_b] = True
+                                    qd.simt.block.sync()
+                        qd.simt.block.sync()
+            qd.simt.block.sync()
+            if lane == 0:
+                if state.eligible[i_c, i_b] and state.task_count[i_b] == state.task_start[i_c, i_b]:
+                    state.eligible[i_c, i_b] = False
+                    state.reason[i_c, i_b] = PlanarFallback.EMPTY
+                state.task_end[i_c, i_b] = state.task_count[i_b]
+                state.parent_end[i_c, i_b] = state.parent_count[i_b]
+            qd.simt.block.sync()
     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
         func_planar_query_component(i_c, i_b, contacts, info, state)
 
@@ -631,78 +617,70 @@ def kernel_planar_prepare_moments(contacts: StressContactState, state: PlanarLoa
 
 
 @qd.kernel
-def kernel_planar_moments_warp(
-    contacts: StressContactState, state: PlanarLoadingState, surface: StressSurfaceInfo, work_warps: qd.template()
-):
+def kernel_planar_moments_warp(contacts: StressContactState, state: PlanarLoadingState, surface: StressSurfaceInfo):
     qd.loop_config(block_dim=128)
-    # Runtime chunks cover the complete task rectangle within the fixed launch stripe.
-    for i_thread in range(work_warps * 32):
+    for i_thread in range(state.tasks.shape[0] * state.tasks.shape[1] * 32):
         lane = i_thread % 32
-        for i_chunk in range((state.tasks.shape[0] * state.tasks.shape[1] + work_warps - 1) // work_warps):
-            i_w = i_chunk * work_warps + i_thread // 32
-            if i_w < state.tasks.shape[0] * state.tasks.shape[1]:
-                i_t, i_b = i_w // state.tasks.shape[1], i_w % state.tasks.shape[1]
-                if i_t < state.task_count[i_b]:
-                    task = state.tasks[i_t, i_b]
-                    i_c = task[2]
-                    if state.eligible[i_c, i_b]:
-                        contained = state.contained[i_t, i_b]
-                        if not contained:
-                            # The preceding prepare kernel publishes the cache before any lane reads it.
-                            first, second = func_force_frame(contacts.force[i_c, i_b])
-                            origin, dual = state.origin[i_t, i_b], state.dual[i_t, i_b]
-                            parent_shapes = state.parent_shapes[i_t, i_b]
-                            section, plane, polygon = (
-                                state.section_center[i_t, i_b],
-                                state.plane[i_t, i_b],
-                                state.polygon[i_t, i_b],
+        i_t, i_b = (i_thread // 32) // state.tasks.shape[1], (i_thread // 32) % state.tasks.shape[1]
+        if i_t < state.task_count[i_b]:
+            task = state.tasks[i_t, i_b]
+            i_c = task[2]
+            if state.eligible[i_c, i_b]:
+                contained = state.contained[i_t, i_b]
+                if not contained:
+                    # The preceding prepare kernel publishes the cache before any lane reads it.
+                    first, second = func_force_frame(contacts.force[i_c, i_b])
+                    origin, dual = state.origin[i_t, i_b], state.dual[i_t, i_b]
+                    parent_shapes = state.parent_shapes[i_t, i_b]
+                    section, plane, polygon = (
+                        state.section_center[i_t, i_b],
+                        state.plane[i_t, i_b],
+                        state.polygon[i_t, i_b],
+                    )
+                    remaining, angles, count = (
+                        state.remaining[i_t, i_b],
+                        state.angles[i_t, i_b],
+                        state.angle_count[i_t, i_b],
+                    )
+                    radius = contacts.radius[i_c, i_b]
+                    gram, load = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Matrix.zero(gs.qd_float, 4, 3)
+                    samples = 0
+                    n_samples = func_planar_sample_count(count, surface.gauss.shape[0], surface.gauss.shape[0], False)
+                    for chunk in range((n_samples + 31) // 32):
+                        i_sample = chunk * 32 + lane
+                        if i_sample < n_samples:
+                            _position, shape, weight, coordinates = func_planar_hertz_sample(
+                                i_sample,
+                                origin,
+                                dual,
+                                parent_shapes,
+                                section,
+                                plane,
+                                polygon,
+                                remaining,
+                                angles,
+                                count,
+                                contacts.position[i_c, i_b],
+                                radius,
+                                first,
+                                second,
+                                surface.gauss,
+                                surface.gauss_weights,
+                                surface.gauss,
+                                surface.gauss_weights,
+                                contained,
                             )
-                            remaining, angles, count = (
-                                state.remaining[i_t, i_b],
-                                state.angles[i_t, i_b],
-                                state.angle_count[i_t, i_b],
-                            )
-                            radius = contacts.radius[i_c, i_b]
-                            gram, load = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Matrix.zero(gs.qd_float, 4, 3)
-                            samples = 0
-                            n_samples = func_planar_sample_count(
-                                count, surface.gauss.shape[0], surface.gauss.shape[0], False
-                            )
-                            for chunk in range((n_samples + 31) // 32):
-                                i_sample = chunk * 32 + lane
-                                if i_sample < n_samples:
-                                    _position, shape, weight, coordinates = func_planar_hertz_sample(
-                                        i_sample,
-                                        origin,
-                                        dual,
-                                        parent_shapes,
-                                        section,
-                                        plane,
-                                        polygon,
-                                        remaining,
-                                        angles,
-                                        count,
-                                        contacts.position[i_c, i_b],
-                                        radius,
-                                        first,
-                                        second,
-                                        surface.gauss,
-                                        surface.gauss_weights,
-                                        surface.gauss,
-                                        surface.gauss_weights,
-                                        contained,
-                                    )
-                                    gram += weight * coordinates.outer_product(coordinates)
-                                    load += shape.outer_product(weight * coordinates)
-                                    samples += gs.qd_int(weight > 0.0)
-                            for a, b in qd.static(qd.ndrange(3, 3)):
-                                gram[a, b] = qd.simt.subgroup.reduce_all_add(gram[a, b])
-                            for a, b in qd.static(qd.ndrange(4, 3)):
-                                load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
-                            samples = qd.simt.subgroup.reduce_all_add(samples)
-                            if lane == 0:
-                                state.gram[i_t, i_b], state.load_moments[i_t, i_b] = gram, load
-                                qd.atomic_add(state.sample_count[i_c, i_b], samples)
+                            gram += weight * coordinates.outer_product(coordinates)
+                            load += shape.outer_product(weight * coordinates)
+                            samples += gs.qd_int(weight > 0.0)
+                    for a, b in qd.static(qd.ndrange(3, 3)):
+                        gram[a, b] = qd.simt.subgroup.reduce_all_add(gram[a, b])
+                    for a, b in qd.static(qd.ndrange(4, 3)):
+                        load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
+                    samples = qd.simt.subgroup.reduce_all_add(samples)
+                    if lane == 0:
+                        state.gram[i_t, i_b], state.load_moments[i_t, i_b] = gram, load
+                        qd.atomic_add(state.sample_count[i_c, i_b], samples)
 
 
 @qd.func
