@@ -33,7 +33,8 @@ def test_native_shell_nonconvex_contact_and_release(tmp_path):
     "output_mode, update_mode", (("max", "every_step"), ("full", "every_step"), ("full", "manual"))
 )
 @pytest.mark.parametrize("method", ("direct", "inverse"))
-def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, method):
+@pytest.mark.parametrize("shell_loading", ("q4", "planar"))
+def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, method, shell_loading):
     vertices, quads = geometry.sphere_mesh(2)
     asset = tmp_path / "shell.npz"
     np.savez(asset, vertices=vertices, quads=quads)
@@ -45,6 +46,8 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, metho
         gs.options.RigidStressOptions.dpr(
             mesh=asset,
             backend="shell",
+            shell_loading=shell_loading,
+            pressure_profile="hertz" if shell_loading == "planar" else "dpr",
             method=method,
             output_mode=output_mode,
             update_mode=update_mode,
@@ -54,6 +57,8 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, metho
     )
     scene.build(n_envs=3)
     entry = scene.rigid_solver.stress_recovery.links[0]
+    assert entry.model.info.vertices.shape[0] == 2 * len(vertices)
+    assert (entry.planar is not None) == (shell_loading == "planar")
     if method == "inverse" and gs.backend == gs.cuda:
         assert entry.model.is_fused_recovery_enabled(entry.options)
     initial = np.array([[0.0, 0.0, 0.0195], [0.0, 0.0, 0.03], [0.0, 0.0, 0.0197]])
@@ -68,6 +73,11 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, metho
     assert np.isfinite(before_peak).all() and before_peak[0] > 0.0
     np.testing.assert_array_equal(before_peak[1], 0.0)
     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
+    before_routes = None
+    if entry.planar is not None:
+        before_routes = qd_to_numpy(entry.planar.state.attempted_loaded_contacts, transpose=True, copy=True)
+        assert before_routes[0] > 0
+        np.testing.assert_array_equal(before_routes[1], 0)
     if output_mode == "full":
         tensor, vm = map(tensor_to_array, link.get_stress_field())
         assert tensor.shape == (3, len(quads), 2, 4, 6)
@@ -87,6 +97,9 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, metho
             link.get_shell_resultants()
     checkpoint = scene.rigid_solver.__getstate__()
     assert checkpoint.configs["stress.0.options"].backend == "shell"
+    assert checkpoint.configs["stress.0.options"].shell_loading == shell_loading
+    if entry.planar is not None:
+        assert "stress.0.planar.state.attempted_loaded_contacts" in checkpoint.arrays
     assert any(item.name == "stress.0.shell.quads" for item in scene.rigid_solver.data)
     if output_mode == "full":
         assert "stress.0.state.membrane_resultant" in checkpoint.arrays
@@ -95,6 +108,10 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, metho
     np.testing.assert_array_equal(after_peak[1:], before_peak[1:])
     np.testing.assert_array_equal(after_peak[0], 0.0)
     np.testing.assert_array_equal(qd_to_numpy(entry.state.displacement, transpose=True)[1:], before_u[1:])
+    if entry.planar is not None:
+        after_routes = qd_to_numpy(entry.planar.state.attempted_loaded_contacts, transpose=True)
+        np.testing.assert_array_equal(after_routes[0], 0)
+        np.testing.assert_array_equal(after_routes[1:], before_routes[1:])
     if output_mode == "full":
         for actual, expected in zip(link.get_shell_resultants(), resultants):
             actual = tensor_to_array(actual)
