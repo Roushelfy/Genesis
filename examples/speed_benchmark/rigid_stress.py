@@ -169,6 +169,23 @@ def create_inference_policy() -> torch.nn.Module:
     )
 
 
+def summarize_warmup(row: dict) -> dict:
+    summary = {"tick": row["tick"]}
+    for name, values in row.items():
+        if name == "tick":
+            continue
+        array = np.array(values)
+        finite = np.isfinite(array)
+        summary[name] = {
+            "shape": list(array.shape),
+            "count": array.size,
+            "nonfinite_count": int((~finite).sum()),
+            "minimum": array[finite].min().item() if finite.any() else None,
+            "maximum": array[finite].max().item() if finite.any() else None,
+        }
+    return summary
+
+
 def anchor_execution_modes(workload: FrankaEgg, staged: bool = False) -> list[str]:
     if not workload.stress:
         return []
@@ -641,6 +658,11 @@ def main() -> None:
     parser.add_argument(
         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
     )
+    parser.add_argument(
+        "--summarize-warmup",
+        action="store_true",
+        help="Store warmup diagnostic ranges and nonfinite counts; timed per-environment counters remain complete.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.scope == "profile" and args.shell_loading == "planar":
@@ -808,7 +830,7 @@ def main() -> None:
                     friction = qd_to_numpy(entry.contacts.friction, transpose=True)[valid]
                     row["contact_radius_range_m"] = [radii.min(), radii.max()] if len(radii) else []
                     row["contact_friction_range"] = [friction.min(), friction.max()] if len(friction) else []
-                quality.append(row)
+                quality.append(summarize_warmup(row) if args.summarize_warmup else row)
         qd.sync()
         workload.scene.rigid_solver.check_errno()
         result = {
@@ -943,6 +965,7 @@ def main() -> None:
             "torch": torch.__version__,
             "setup_seconds": setup_seconds,
             "warmup_steps": args.warmup,
+            "warmup_diagnostics": "ranges_and_nonfinite_counts" if args.summarize_warmup else "full_arrays",
             "warmup_quality": quality,
             "trajectory_metrics": {"warmup": metrics.summary(), "repeats": []} if metrics is not None else None,
             "policy": {
