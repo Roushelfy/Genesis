@@ -61,9 +61,11 @@ def _finite_json(value):
     return value, count
 
 
-def _book(np):
+def _book(np, fixture):
+    tip_x, tip_z = (20.0, 0.4) if fixture == "closed" else (10.0 * math.sqrt(3.0), 10.0)
     vertices = (
-        np.array([[0, -5, 0], [0, 5, 0], [20, -5, 0], [20, 5, 0], [20, -5, 0.4], [20, 5, 0.4]], dtype=float) * 1e-3
+        np.array([[0, -5, 0], [0, 5, 0], [20, -5, 0], [20, 5, 0], [tip_x, -5, tip_z], [tip_x, 5, tip_z]], dtype=float)
+        * 1e-3
     )
     quads = np.array([[0, 2, 3, 1], [0, 1, 5, 4]])
     normal_a = np.array([0.0, 0.0, 1.0])
@@ -75,7 +77,7 @@ def _book(np):
     return vertices, quads, directors
 
 
-def _source(np, vertices, quads, directors, thickness, parent, side, x, friction):
+def _source(np, vertices, quads, directors, thickness, parent, side, x, friction, radius):
     xi, eta = (2 * x / 0.02 - 1, 0.0) if parent == 0 else (0.0, 2 * x / 0.02 - 1)
     signs = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]])
     shape = 0.25 * (1 + xi * signs[:, 0]) * (1 + eta * signs[:, 1])
@@ -90,7 +92,7 @@ def _source(np, vertices, quads, directors, thickness, parent, side, x, friction
         "point": (shape @ physical).tolist(),
         "force": (-0.05 * normal + (0.008 * tangent if friction else 0.0)).tolist(),
         "normal": normal.tolist(),
-        "radius": 0.001,
+        "radius": radius,
         "friction": 0.5,
         "curvatures": [50.0, 70.0],
         "side": side,
@@ -98,7 +100,8 @@ def _source(np, vertices, quads, directors, thickness, parent, side, x, friction
     }
 
 
-def _cases(np, vertices, quads, directors, thickness):
+def _cases(np, vertices, quads, directors, thickness, fixture):
+    radius = 0.001 if fixture == "closed" else 0.009
     cases = []
     for parent in (0, 1):
         for side in (-1, 1):
@@ -108,7 +111,9 @@ def _cases(np, vertices, quads, directors, thickness):
                         "name": f"tip-p{parent}-s{side}-{'friction' if friction else 'normal'}",
                         "category": "tip",
                         "expected_parents": [parent],
-                        "contacts": [_source(np, vertices, quads, directors, thickness, parent, side, 0.016, friction)],
+                        "contacts": [
+                            _source(np, vertices, quads, directors, thickness, parent, side, 0.016, friction, radius)
+                        ],
                     }
                 )
             cases.append(
@@ -116,7 +121,9 @@ def _cases(np, vertices, quads, directors, thickness):
                     "name": f"hinge-p{parent}-s{side}",
                     "category": "hinge",
                     "expected_parents": [0, 1],
-                    "contacts": [_source(np, vertices, quads, directors, thickness, parent, side, 0.00075, True)],
+                    "contacts": [
+                        _source(np, vertices, quads, directors, thickness, parent, side, 0.75 * radius, True, radius)
+                    ],
                 }
             )
     cases.append(
@@ -209,15 +216,77 @@ def _source_load(api, model, source, order, restrict):
     }
 
 
+def _proxy_source_load(api, model, source, proxy, order, selected):
+    """Integrate both frozen P1 proxy sides on independently selected authored components."""
+    np = api.np
+    point, radius = np.array(source["point"]), source["radius"]
+    samples = []
+    for side, surface in ((1, proxy.outer), (-1, proxy.inner)):
+        for triangle, vertices in enumerate(surface.vertices):
+            parent = int(surface.parent_faces[triangle])
+            separation = np.maximum(vertices.min(axis=0) - point, 0) + np.maximum(point - vertices.max(axis=0), 0)
+            if parent not in selected or separation @ separation >= radius**2:
+                continue
+            normal = surface.normals[triangle]
+            height = (point - vertices[0]) @ normal
+            remaining = radius**2 - height**2
+            if remaining <= 0:
+                continue
+            center, plane = point - height * normal, api._basis(normal)
+            polygon = (vertices - center) @ plane
+            points, weights = api.ShellDPRTransfer._face_polar_samples(polygon, np.sqrt(remaining), order)
+            if not len(weights):
+                continue
+            positions = center + points @ plane.T
+            local = (positions - vertices[0]) @ surface.dual[triangle].T
+            barycentric = np.column_stack((1 - local.sum(axis=1), local))
+            if barycentric.min() < -2e-8:
+                raise ArithmeticError("Independent P1 proxy quadrature leaves its material triangle.")
+            shapes = barycentric @ surface.parent_shapes[triangle]
+            weights = weights * (2 * np.pi * remaining**1.5 / (3 * radius))
+            samples.append((parent, side, positions, weights, shapes))
+    positions = np.vstack([row[2] for row in samples])
+    weights = np.concatenate([row[3] for row in samples])
+    patch = api.WrenchPatch(
+        point, np.array(source["force"]), radius, source["friction"], np.zeros(3), -np.array(source["normal"])
+    )
+    forces, diagnostics = api.PadPressureFit(positions, weights, patch).solve()
+    raw, offset = np.zeros((len(model.vertices), 6)), 0
+    for parent, side, _positions, local_weights, shapes in samples:
+        count = len(local_weights)
+        nodal = shapes.T @ forces[offset : offset + count]
+        nodes = model.quads[parent]
+        np.add.at(raw[:, :3], nodes, nodal)
+        np.add.at(raw[:, 3:], nodes, side * model.h * 0.5 * np.cross(model.directors[nodes], nodal))
+        offset += count
+    magnitude = np.linalg.norm(source["force"])
+    force_error = np.linalg.norm(raw[:, :3].sum(axis=0) - source["force"]) / magnitude
+    moment = np.cross(model.vertices - point, raw[:, :3]).sum(axis=0) + raw[:, 3:].sum(axis=0)
+    moment_error = np.linalg.norm(moment) / (magnitude * radius)
+    if max(force_error, moment_error) > 1e-8:
+        raise ArithmeticError("The independent P1 pressure fit violates the original source wrench.")
+    return raw.reshape(-1), {
+        "proxy_samples": len(weights),
+        "proxy_force_error": float(force_error),
+        "proxy_moment_error": float(moment_error),
+        "proxy_fit_evaluations": diagnostics.constrained_evaluations,
+    }
+
+
 def _cpu_worker(args):
     # Loading this helper as a standalone file leaves the research package unbound until the frozen import.
     support_path = Path(__file__).with_name("check_planar_material.py")
     support_identity = _identity(support_path)
     support = runpy.run_path(str(support_path))
     base = support["_cpu_api"](args.reference)
-    api = SimpleNamespace(**(vars(base) | {"q4_samples": support["_q4_samples"]}))
+    from research.rigid_stress.triangular_load_cpu.proxy import TriangularLoadTransfer
+
+    api = SimpleNamespace(
+        **(vars(base) | {"q4_samples": support["_q4_samples"], "TriangularLoadTransfer": TriangularLoadTransfer})
+    )
+    api.imports.append(_identity(sys.modules[TriangularLoadTransfer.__module__].__file__))
     np = api.np
-    vertices, quads, directors = _book(np)
+    vertices, quads, directors = _book(np, args.fixture)
     thickness, young, poisson, density, drilling = 5e-5, 1e10, 0.3, 2000.0, 1e-3
     model = api.ShellModel(
         vertices,
@@ -245,7 +314,7 @@ def _cpu_worker(args):
         density=density,
         drilling_factor=drilling,
     )
-    cases = _cases(np, vertices, quads, directors, thickness)
+    cases = _cases(np, vertices, quads, directors, thickness, args.fixture)
     _json(destination / "cases.json", cases)
     api.sparse.save_npz(oracle / "K.npz", model.K)
     np.savez_compressed(
@@ -257,8 +326,15 @@ def _cpu_worker(args):
         gauge_dofs=model.gauge_dofs,
     )
     methods = []
+    proxy = api.TriangularLoadTransfer(model, args.refinement)
     with api.threadpool_limits(limits=1):
-        for order, restrict, label in ((24, True, "q24"), (48, True, "q48"), (48, False, "unmasked-q48")):
+        for order, restrict, label in (
+            (24, True, "q24"),
+            (48, True, "q48"),
+            (48, False, "unmasked-q48"),
+            (24, True, "proxy-q24"),
+            (48, True, "proxy-q48"),
+        ):
             raw = np.zeros((model.ndof, len(cases)))
             source_raw = np.zeros((model.ndof, 2, len(cases)))
             hits = np.zeros((2, 2, len(cases)), dtype=bool)
@@ -267,6 +343,11 @@ def _cpu_worker(args):
             for i_b, case in enumerate(cases):
                 for i_c, source in enumerate(case["contacts"]):
                     load, record = _source_load(api, model, source, order, restrict)
+                    if label.startswith("proxy-") and case["category"] == "hinge":
+                        load, proxy_record = _proxy_source_load(
+                            api, model, source, proxy, order, set(record["selected_parents"])
+                        )
+                        record.update(proxy_record)
                     if (
                         restrict
                         and len(case["contacts"]) == 1
@@ -321,6 +402,7 @@ def _cpu_worker(args):
         args.output / "cpu-source.json",
         {
             "primary": PRIMARY,
+            "fixture": args.fixture,
             "imports": api.imports,
             "research_support": support_identity,
             "stiffness_sha256": before,
@@ -336,7 +418,7 @@ def _cpu_worker(args):
 
 def _native_api():
     from .check_planar_guards import _native_api as guard_api
-    from .check_planar_material import _check_run, _data_snapshot, _decode, _errors
+    from .check_planar_material import BUDGETS, _data_snapshot, _decode, _errors
 
     base = guard_api()
     import torch
@@ -351,7 +433,61 @@ def _native_api():
     )
 
 
-def _book_mode(api, args, writer, checks, native, expected24, expected48, numerics, oracle_k, mode, capacity):
+def _check_book_run(
+    api, writer, checks, label, actual, expected, numerical, numerics, free, oracle_k, loaded, quadrature
+):
+    np = api.np
+    balanced = actual["force"] - numerics["mass_modes"] @ np.linalg.solve(
+        numerics["mass_gram"], numerics["rigid_modes"].T @ actual["force"]
+    )
+    checks.close(f"{label}/common_global_relief", actual["rhs"], balanced, rtol=1e-10, atol=1e-13)
+    residual = (oracle_k @ actual["q"] - actual["rhs"])[free]
+    norm, rhs_norm = np.linalg.norm(residual, axis=0), np.linalg.norm(actual["rhs"][free], axis=0)
+    checks.condition(
+        f"{label}/original_global_K_residual",
+        (norm <= np.maximum(1e-11, 1e-8 * rhs_norm)).all(),
+        maximum_relative=float(np.max(norm / np.maximum(rhs_norm, 1e-30))),
+    )
+    checks.condition(f"{label}/native_admission", actual["valid"].all())
+    numeric_errors = api._errors(np, actual, numerical, numerics["gauss_weights"])
+    numeric_errors["load"] = np.linalg.norm(actual["force"] - numerical["raw"], axis=0) / np.maximum(
+        np.linalg.norm(numerical["raw"], axis=0), 1e-30
+    )
+    numeric_maxima = {key: float(value[loaded].max(initial=0)) for key, value in numeric_errors.items()}
+    if quadrature == 48:
+        checks.condition(
+            f"{label}/same_loading_space_numerical_consistency",
+            all(value <= TOLERANCE for value in numeric_maxima.values()),
+            maxima=numeric_maxima,
+            tolerance=TOLERANCE,
+            reference="Both-side independent original Q4 for fallback, both-side independent frozen P1 proxy for proxy contacts.",
+        )
+    spatial_errors = api._errors(np, actual, expected, numerics["gauss_weights"])
+    spatial_maxima = {key: float(value[loaded].max(initial=0)) for key, value in spatial_errors.items()}
+    mean = float(spatial_errors["field"][loaded].mean()) if loaded.any() else 0.0
+    checks.condition(
+        f"{label}/original_Q4_loading_approximation_budgets",
+        mean <= api.BUDGETS["mean_field"] and all(value <= api.BUDGETS[key] for key, value in spatial_maxima.items()),
+        mean_field=mean,
+        maxima=spatial_maxima,
+        budgets=api.BUDGETS,
+    )
+    writer.arrays(
+        f"{label}/outputs.npz",
+        **actual,
+        **{f"numeric_error_{key}": value for key, value in numeric_errors.items()},
+        **{f"spatial_error_{key}": value for key, value in spatial_errors.items()},
+    )
+    return {
+        "label": label,
+        "numerical_maxima": numeric_maxima,
+        "spatial_maxima": spatial_maxima,
+        "mean_field": mean,
+        "strict_numerical_gate_applicable": quadrature == 48,
+    }
+
+
+def _book_mode(api, args, writer, checks, native, expected24, expected48, proxy48, numerics, oracle_k, mode, capacity):
     np, model = api.np, native.model
     contacts, cases, valid, _sides = api.prepare_physical_contacts(
         api, args.output / "cpu", "book", model.options.young, model.options.poisson
@@ -408,16 +544,32 @@ def _book_mode(api, args, writer, checks, native, expected24, expected48, numeri
         actual = api.native_outputs(api, model, state)
         label = f"book/{mode}/cap{capacity}/{phase}"
         expected = {key: value[..., order].copy() for key, value in expected48.items()}
+        numerical = {key: value[..., order].copy() for key, value in (expected48 if capacity == 1 else proxy48).items()}
         loaded = current_valid.any(axis=0)
         if release:
             for value in expected.values():
                 value.fill(0)
+            for value in numerical.values():
+                value.fill(0)
         elif phase == "partial_reset":
             for value in expected.values():
                 value[..., 0] = 0
+            for value in numerical.values():
+                value[..., 0] = 0
         records.append(
-            api._check_run(
-                api, writer, checks, label, actual, expected, numerics, free, oracle_k, loaded, args.quadrature
+            _check_book_run(
+                api,
+                writer,
+                checks,
+                label,
+                actual,
+                expected,
+                numerical,
+                numerics,
+                free,
+                oracle_k,
+                loaded,
+                args.quadrature,
             )
         )
         queried = api.unbatched_array(api, loading.material_state.queried)
@@ -738,6 +890,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
     parser.add_argument("--stage", choices=("all", "book", "saddle"), default="all")
+    parser.add_argument("--fixture", choices=("closed", "open30"), default="closed")
     parser.add_argument("--refinement", type=int, choices=(8, 16, 32), default=16)
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=48)
     parser.add_argument("--modes", nargs="+", choices=MODES, default=MODES)
@@ -767,6 +920,7 @@ def main():
             ["git", "-C", str(args.git_source), "rev-parse", "HEAD"], text=True
         ).strip(),
         "stage": args.stage,
+        "fixture": args.fixture,
         "original_wrench_tolerance": 1e-8,
         "original_K_residual": {"relative": 1e-8, "absolute": 1e-11},
         "strict_Q4_reference_tolerance": TOLERANCE,
@@ -800,6 +954,10 @@ def main():
                     str(args.reference),
                     "--output",
                     str(cpu),
+                    "--fixture",
+                    args.fixture,
+                    "--refinement",
+                    str(args.refinement),
                 ],
                 cwd=args.reference / "reference-source",
                 env=environment,
@@ -832,6 +990,10 @@ def main():
             cpu = args.output / "cpu"
             native = api.build_native_mother(api, cpu, args.output, "book", quadrature=args.quadrature)
             expected24, expected48 = _load(api.np, cpu / "oracles/q24.npz"), _load(api.np, cpu / "oracles/q48.npz")
+            proxy24, proxy48 = (
+                _load(api.np, cpu / "oracles/proxy-q24.npz"),
+                _load(api.np, cpu / "oracles/proxy-q48.npz"),
+            )
             numerics = _load(api.np, cpu / "oracles/numerics.npz")
             oracle_k = api.sparse.load_npz(cpu / "oracles/K.npz")
             model = native.model
@@ -846,6 +1008,8 @@ def main():
             checks.close("book/original_global_K", actual_k, oracle_k, rtol=1e-10, atol=1e-8)
             api.sparse.save_npz(writer.path("book/native-K.npz"), actual_k)
             native_free = api.unbatched_array(api, model.info.is_free).reshape(-1).astype(bool)
+            native_free_k = oracle_k[native_free][:, native_free].toarray()
+            native_diagonal = api.np.sqrt(api.np.diag(native_free_k))
             writer.json(
                 "book/gauge-comparison.json",
                 {
@@ -857,6 +1021,10 @@ def main():
                     "drilling_factor": model.options.shell_drilling_factor,
                     "tolerance": model.options.tolerance,
                     "absolute_tolerance": model.options.absolute_tolerance,
+                    "native_gauge_free_K_condition_2": float(api.np.linalg.cond(native_free_k)),
+                    "native_gauge_scaled_free_K_condition_2": float(
+                        api.np.linalg.cond(native_free_k / native_diagonal[:, None] / native_diagonal[None, :])
+                    ),
                 },
             )
             checks.close(
@@ -868,6 +1036,15 @@ def main():
             )
             checks.exact("book/CPU_independent_hits", expected24["hits"], expected48["hits"])
             checks.exact("book/CPU_independent_components", expected24["selected"], expected48["selected"])
+            cpu_identity = json.loads((cpu / "cpu-source.json").read_text())
+            for method in cpu_identity["methods"]:
+                if method["method"] != "unmasked-q48":
+                    checks.condition(
+                        f"book/CPU/{method['method']}/original_K_gate",
+                        all(method["original_K_gate_passed"]),
+                        relative=method["original_K_residual_relative"],
+                        absolute=method["original_K_residual_absolute"],
+                    )
             loaded = expected48["peak"] > 0
             uncertainty = api._errors(api.np, expected24, expected48, numerics["gauss_weights"])
             uncertainty["load"] = api.np.linalg.norm(expected24["raw"] - expected48["raw"], axis=0) / api.np.maximum(
@@ -876,13 +1053,35 @@ def main():
             maxima = {key: float(value[loaded].max(initial=0)) for key, value in uncertainty.items()}
             resolved = all(value <= TOLERANCE for value in maxima.values())
             checks.condition("book/CPU_independently_resolved_q24_q48", resolved, maxima=maxima, tolerance=TOLERANCE)
+            proxy_uncertainty = api._errors(api.np, proxy24, proxy48, numerics["gauss_weights"])
+            proxy_uncertainty["load"] = api.np.linalg.norm(proxy24["raw"] - proxy48["raw"], axis=0) / api.np.maximum(
+                api.np.linalg.norm(proxy48["raw"], axis=0), 1e-30
+            )
+            proxy_maxima = {key: float(value[loaded].max(initial=0)) for key, value in proxy_uncertainty.items()}
+            checks.condition(
+                "book/CPU_independently_resolved_P1_proxy_q24_q48",
+                all(value <= TOLERANCE for value in proxy_maxima.values()),
+                maxima=proxy_maxima,
+                tolerance=TOLERANCE,
+            )
             if not resolved or not all(row["passed"] for row in checks.rows):
                 raise ArithmeticError(
                     "Resolve the independent book integration and operators before evaluating native loads."
                 )
             result["book_modes"] = [
                 _book_mode(
-                    api, args, writer, checks, native, expected24, expected48, numerics, oracle_k, mode, capacity
+                    api,
+                    args,
+                    writer,
+                    checks,
+                    native,
+                    expected24,
+                    expected48,
+                    proxy48,
+                    numerics,
+                    oracle_k,
+                    mode,
+                    capacity,
                 )
                 for mode in args.modes
                 for capacity in args.capacities
@@ -921,6 +1120,7 @@ def main():
                 atol=1e-8,
             )
             result["CPU_integration_uncertainty"] = maxima
+            result["CPU_proxy_integration_uncertainty"] = proxy_maxima
         if args.stage != "book":
             _geometry_primitives(api, writer, checks)
             _strong_saddle(api, writer, checks)
