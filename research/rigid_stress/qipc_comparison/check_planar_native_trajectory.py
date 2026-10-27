@@ -6,6 +6,8 @@ advances once per observation; all reference work is an intrusive accuracy audit
 """
 
 import argparse
+import copy
+import hashlib
 import json
 import math
 import os
@@ -34,10 +36,12 @@ def _json_number(value):
 def _api():
     import numpy as np
     import quadrants as qd
+    import torch
     from scipy import sparse
 
     import genesis as gs
     from examples.rigid.franka_egg_stress import FrankaEgg
+    from examples.speed_benchmark.rigid_stress import create_inference_policy
     from genesis.engine.solvers.rigid.stress.contact import (
         StressContactState,
         create_contacts,
@@ -54,7 +58,7 @@ def _api():
     )
     from genesis.engine.solvers.rigid.stress.surface import StressSurface
     from genesis.utils.array_class import V_VEC, V
-    from genesis.utils.misc import qd_to_numpy
+    from genesis.utils.misc import qd_to_numpy, tensor_to_array
 
     from .artifacts import file_id, runtime_identity, write_json
     from .check_planar_loading_gpu import native_outputs, unbatched_array
@@ -133,6 +137,7 @@ def _source_identity(api):
         root / "options/rigid_stress.py",
         root.parent / "examples/rigid/franka_egg_stress.py",
         root.parent / "examples/rigid/egg_stress_controller.py",
+        root.parent / "examples/speed_benchmark/rigid_stress.py",
         Path(__file__).resolve(),
     ]
     return {str(path): api.file_id(path) for path in paths}
@@ -591,7 +596,33 @@ def _keyframe(step, physical, candidate, low, high, runtime, routing):
     return arrays
 
 
-def _lifecycle(api, workload, entry):
+def _policy_step(api, workload, policy, reference=None):
+    """Advance the target with its own stress feedback and the benchmark's FP32 inference action."""
+    with api.torch.inference_mode():
+        observation = workload.observation()
+        action = policy(observation.to(dtype=api.torch.float32))
+        error = 0.0
+        if reference is not None:
+            expected = reference(observation)
+            error = 1e-4 * (action.to(dtype=api.torch.float64) - expected).abs().max().item()
+            if not error < 1e-9:
+                raise ArithmeticError("FP32 policy action exceeds the benchmark's 1e-9 rad control budget.")
+        workload.step(action)
+    return error, action, observation[:, -1]
+
+
+def _policy_state(api, policy):
+    values = {name: api.tensor_to_array(value).copy() for name, value in policy.state_dict().items()}
+    digest = hashlib.sha256()
+    for name, value in values.items():
+        digest.update(name.encode())
+        digest.update(value.dtype.str.encode())
+        digest.update(str(value.shape).encode())
+        digest.update(value.tobytes())
+    return values, digest.hexdigest()
+
+
+def _lifecycle(api, workload, entry, policy=None):
     """Check selected-environment scene reset and checkpoint invalidation after the primary rollout."""
     np = api.np
     checkpoint = workload.scene.get_state()
@@ -634,7 +665,10 @@ def _lifecycle(api, workload, entry):
                 "selected_derived_output_invalidated": bool(output_invalidated),
             }
         )
-    workload.step()
+    if policy is None:
+        workload.step()
+    else:
+        _policy_step(api, workload, policy)
     workload.scene.rigid_solver.check_errno()
     fresh = api.native_outputs(api, entry.model, entry.state)
     admitted = api.qd_to_numpy(entry.state.step_valid, transpose=True).all() and fresh["valid"].all()
@@ -659,6 +693,8 @@ def main():
     parser.add_argument("--subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
     parser.add_argument("--cooperative-anchor", action="store_true")
+    parser.add_argument("--policy-inference", action="store_true")
+    parser.add_argument("--policy-warmup", type=int, default=730)
     parser.add_argument("--quadrature", type=int, choices=(10, 16, 24, 48), default=16)
     parser.add_argument("--production-reference-quadrature", type=int, default=None)
     parser.add_argument("--reference-quadrature", type=int, default=48)
@@ -684,6 +720,8 @@ def main():
         )
     if args.lifecycle and args.envs < 2:
         parser.error("Partial-environment lifecycle controls require at least two environments.")
+    if args.policy_inference and args.policy_warmup < 1:
+        parser.error("Policy qualification requires a positive --policy-warmup.")
     args.output = args.output.expanduser().resolve()
     if not args.output.is_relative_to(Path("/mnt/data/zhaofeng")):
         parser.error("Use a fresh output under the project data directory /mnt/data/zhaofeng.")
@@ -693,7 +731,10 @@ def main():
     budgets = json.loads(args.budgets.read_text())
     if not budgets["frozen_before_native_tuning"]:
         raise ValueError("Use the error budgets frozen before native tuning.")
-    api.gs.init(backend=api.gs.cuda, precision="64", logging_level="warning")
+    if args.policy_inference:
+        api.gs.init(backend=api.gs.cuda, precision="64", seed=510000, logging_level="warning")
+    else:
+        api.gs.init(backend=api.gs.cuda, precision="64", logging_level="warning")
     source_before = _source_identity(api)
     identity = api.runtime_identity()
     checkout = subprocess.check_output(["git", "-C", str(args.git_source), "rev-parse", "HEAD"], text=True).strip()
@@ -729,6 +770,11 @@ def main():
         "wrench_witnesses": [],
     }
     api.write_json(args.output / "result.json", result)
+    if args.policy_inference:
+        result["scope"] = (
+            "Seeded random-MLP inference with target stress feedback, native scripted residual controller, rigid dynamics and production both-side planar DPR; independent saved-input original-Q4 references each observation. No training."
+        )
+        result["simulation"]["controller"] = "native scripted plus seeded FP32 MLP residual action"
     workload = api.FrankaEgg(
         args.envs,
         level=args.level,
@@ -805,6 +851,33 @@ def main():
         anchor_mode=anchor_mode,
         original_reference_anchor_mode="separate_serial",
     )
+    policy, policy_reference = None, None
+    policy_actions, policy_stress_features = [], []
+    if args.policy_inference:
+        policy = api.create_inference_policy()
+        policy_reference = copy.deepcopy(policy)
+        policy = policy.to(dtype=api.torch.float32)
+        policy_parameters, policy_hash = _policy_state(api, policy)
+        api.np.savez_compressed(args.output / "policy-weights.npz", **policy_parameters)
+        result["policy"] = {
+            "layers": [26, 128, 128, 7],
+            "seed": 99173,
+            "simulation_seed": 510000,
+            "construction_dtype": str(api.gs.tc_float),
+            "inference_dtype": "float32",
+            "residual_scale_rad": 1e-4,
+            "control_error_budget_rad": 1e-9,
+            "weights_sha256": policy_hash,
+            "helper_source": api.file_id(
+                Path(api.gs.__file__).resolve().parent.parent / "examples/speed_benchmark/rigid_stress.py"
+            ),
+            "warmup_steps": args.policy_warmup,
+            "warmup_completed_steps": 0,
+            "warmup_reference_max_error_rad": 0.0,
+            "warmup_passed": False,
+            "restart_before_audit": False,
+            "scope": "Same seeded inference network and FP64-to-FP32 construction as the benchmark. The target's get_max_stress/1e6 is the final observation feature; original-Q4 references supply no policy observation or action.",
+        }
     error_history, loaded_history, valid_history, route_history = [], [], [], []
     residual_history, wrench_history, input_history, errno_history = [], [], [], []
     source_point_history, origin_accounting_history, legacy_valid_history = [], [], []
@@ -836,6 +909,21 @@ def main():
     result["CPU_fidelity_target_inherited"] = args.subdivisions == 32
     result["CPU_fidelity_target_limits"] = target
     try:
+        if policy is not None:
+            for tick in range(args.policy_warmup):
+                error, _action, _feature = _policy_step(
+                    api, workload, policy, policy_reference if tick % 100 == 0 else None
+                )
+                solver.check_errno()
+                result["policy"]["warmup_completed_steps"] = tick + 1
+                result["policy"]["warmup_reference_max_error_rad"] = max(
+                    result["policy"]["warmup_reference_max_error_rad"], error
+                )
+            workload.restart()
+            api.qd.sync()
+            result["policy"]["warmup_passed"] = True
+            result["policy"]["restart_before_audit"] = workload.tick == 0
+            api.write_json(args.output / "result.json", result)
         for step in range(args.steps):
             counts_before = _route_counts(api, entry.planar.state)
             invalid_before = np.stack(
@@ -843,7 +931,12 @@ def main():
             )
             tick = workload.tick
             reset = (tick > workload.delays) & ((tick - workload.delays) % 600 == 0)
-            workload.step()
+            if policy is None:
+                workload.step()
+            else:
+                _error, action, stress_feature = _policy_step(api, workload, policy)
+                policy_actions.append(api.tensor_to_array(action).copy())
+                policy_stress_features.append(api.tensor_to_array(stress_feature).copy())
             solver.check_errno()
             physical = _physical_inputs(api, entry.contacts, entry.omega)
             candidate = api.native_outputs(api, entry.model, entry.state)
@@ -1256,7 +1349,7 @@ def main():
     )
     if args.lifecycle and step_error is None:
         try:
-            result["lifecycle"] = _lifecycle(api, workload, entry)
+            result["lifecycle"] = _lifecycle(api, workload, entry, policy=policy)
         except Exception as error:  # noqa: BLE001 - Preserve failed lifecycle evidence before the deferred re-raise
             step_error = error
             result["lifecycle"] = {
@@ -1302,6 +1395,24 @@ def main():
         and (not args.lifecycle or result["lifecycle"]["passed"])
     )
     result["full_trajectory_qualified"] = result["passed"] and args.steps >= 600
+    if policy is not None:
+        _parameters_after, policy_hash_after = _policy_state(api, policy)
+        result["policy"]["weights_sha256_after"] = policy_hash_after
+        result["policy"]["weights_unchanged"] = policy_hash_after == result["policy"]["weights_sha256"]
+        result["policy"]["audited_action_steps"] = len(policy_actions)
+        if policy_actions:
+            api.np.savez_compressed(
+                args.output / "policy-feedback.npz",
+                actions=np.stack(policy_actions),
+                target_stress_features=np.stack(policy_stress_features),
+            )
+        result["passed"] &= (
+            result["policy"]["warmup_passed"]
+            and result["policy"]["restart_before_audit"]
+            and result["policy"]["weights_unchanged"]
+            and len(policy_actions) == args.steps
+        )
+        result["full_trajectory_qualified"] = result["passed"] and args.steps >= 600
     api.write_json(args.output / "result.json", result)
     if step_error is not None:
         raise step_error
