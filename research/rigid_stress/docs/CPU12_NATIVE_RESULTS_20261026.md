@@ -1,6 +1,6 @@
 # CPU12 native adaptation：阶段结果，2026-10-26
 
-本文记录 [CPU12 目标](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md) 第二阶段中已核实的原生空间、轨迹、几何控制和 intrusive profile。**这不是整个目标的完成声明。** Volume 的指定 Franka 轨迹通过；shell 仍有结果量误差反例，非凸颈部远端热点仍未普遍合格。完整 workflow 的配对吞吐量、最终内存实验和最终后端决策留待后续补充。
+本文记录 [CPU12 目标](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md) 第二阶段中已核实的原生空间、轨迹、几何控制、intrusive profile、完整 workflow 和独立内存。**这不是整个目标的完成声明。** Volume 的指定 Franka 轨迹通过；shell 仍有结果量误差反例，非凸颈部远端热点仍未普遍合格。完整 workflow 中 Atlas 比优化 Mother 慢，大批量内存也更高，两后端最终默认推荐 Mother。本批有界数值／代价实验已终态，无需追加科学任务；证据封装、保存审计和整个目标的关闭由主任务处理。
 
 ## 来源、存储和适用范围
 
@@ -15,7 +15,7 @@
 | 成熟局部空间的起点 | `822ad285497f79d3a24f3ce2f0dd7a58ec6cd699` | 原 5+9 integrated DPR 实现，保留既有数值与生命周期约定 |
 | native-v0 | `a60f8ec39eae03737c852a96a939a6bb025ce88e` | `/mnt/home/zhaofeng/workspace/Genesis/.worktrees/cpu12-native-v0`；`R/native-v0` |
 | native-v1 / native-core-v1 | `6f2e646090c7dd995ca51fa3ca6cbac76f81482a` | `/mnt/home/zhaofeng/workspace/Genesis/.worktrees/cpu12-native-v1`；`R/native-v1`、`R/native-core-v1` |
-| native-v2 / native-final-qualification | `94ec782fd0754017074cf3b567b391b1444f7172` | `/mnt/home/zhaofeng/workspace/Genesis/.worktrees/cpu12-native-v2`；`R/native-v2`、`R/native-final-qualification` |
+| native-v2 / native-final-qualification / workflow-final / workflow-memory / native-final-profile | `94ec782fd0754017074cf3b567b391b1444f7172` | `/mnt/home/zhaofeng/workspace/Genesis/.worktrees/cpu12-native-v2`；`R` 下同名 campaign |
 
 各 campaign 的 `source.json`、`source.patch` 保存引擎身份；上述捕获时 patch 均为空。研究脚本另存于各自 `analysis-source/research/rigid_stress/qipc_comparison/`，文件身份见 `analysis-files.json`，不要假定引擎 revision 同时包含这批研究脚本。`tasks.json`、`job.sh`、`workload-*.sh`、`logs/` 保存实际命令及执行记录。数值执行使用 Slurm `rtx-mid` / image `1_26`；本文整理仅使用已存 JSON 和源码，无新科学执行或数据迁移。
 
@@ -117,6 +117,100 @@ FPS6 有4个 feature 已等于母空间，精度改善不能解释为同等缩�
 
 这是10次 trace 的累计 device-duration 除以10；CUDA task 时间可能重叠，不等于端到端延迟或加速比。两组输入复现、数值门、守恒通过；invalid、spin-invalid、coverage/numerical fallback 均为0。最大 residual/gate 分别 `8.31e-4`、`5.53e-5`。Shell profile 对应的空间配置未获精度资格，不能给出同精度速度结论。引擎均实际使用 packed；mother group 未打包，原数值门和失败 fallback 保留。
 
+补充最终候选的 `R/native-final-profile`，两组均 rc0、`complete=true, passed=true`，warmup130、max、10次 intrusive trace：
+
+| group／最终配置 | 主类别 device-duration / call | 次要类别 | 主 kernel |
+|---|---|---|---|
+| `group0/shell-final-module/result.json`：shell c1.8h1 module B64 | pressure/scatter **3.102 ms，41.03%** | solve/response1.980 ms，26.19%；acceptance1.125 ms，14.88% | packed solve1.506 ms；anchor1.059 ms |
+| `group1/volume-final-scene/result.json`：volume c1.6h1 scene B1024 | solve/response **22.014 ms，69.90%** | acceptance2.785 ms，8.84%；pressure/scatter2.290 ms，7.27% | packed solve **20.700 ms** |
+
+这些最终 profile 的 original runtime、力／矩门和输入复现通过，invalid、spin-invalid、coverage/numerical fallback 均为0；归一化力／矩误差均不超过 `4.2e-14`，最大 residual/gate 不超过 `.00130`。Volume 的主要新增成本在打包小空间求解；shell 仍有显著接触／压力成本。两组 scope 和 B 不同，不作跨后端速度比较，也不以 profile 代替下述完整 workflow。
+
+## workflow-final：完整推理 rollout 与 frozen recovery
+
+全部 **32 task** 已终态，逐 task 的 `.returncode.txt` 均为0。精确路径由 `R/meta/workflow-execution-map.json` 的32条 `rows` 映射：`actual_output` 为 **JSON 文件** `R/workflow-final/groupN/<taskname>.json`，不是目录。该 campaign 与 native-v2 使用同一引擎 pin；`source.json`、`analysis-files.json` 和逐任务 `source_sha256` 保留引擎／脚本身份。
+
+完整 policy workflow 包含 observation、policy inference、原生 controller、rigid step、接触／DPR 和所选 max/full stress output。Policy 是固定 seed99173 的随机 MLP `[26,128,128,7]`，FP32、`.eval()`、`torch.inference_mode()`，不是训练、反向传播或优化器更新；residual action 尺度 `1e-4 rad`，warmup 对 FP64 policy 的控制差保留 `<1e-9 rad` 门。Scene/state 为 FP64，dt=.01、substeps1、history0、edge/q16。
+
+每方法各3个重复；policy 每重复600步，warmup130。每个重复从 saved initial state restart，restart 和同步发生在计时开始之前，区间包含最终同步；计时内没有 reset。不同方法按任务块执行，按 repeat index 0/1/2 配对，**不是每个重复交错 A/B**；每组方法的 `gpu_uuid` 完全一致，GPU 为 NVIDIA RTX PRO 6000 Blackwell Server Edition。表中取每方法3个重复的 median：`ms=1000*seconds/steps`；速率为 `transitions_per_second=(B*steps-invalid_environment_steps)/seconds`，是原始数值有效 env-step/s。全部96个重复 invalid 与 scatter overflow 都为0。
+
+优化 Mother 实际导出 `method_selected=inverse`、`surface_inverse_selected=true`、`inverse_precision=64`。Atlas 使用12原生空间，volume c1.6h1、shell c1.8h1，narrow .12、transition .003 m、global none；实际有 `stress.0.features.packed.*` buffer，保留原 factor residual/fallback 门（rtol `1e-8`、atol `1e-11`）。Atlas 顶层 `method_selected=direct` 描述其母模型，feature solver 为 packed，不应据此前者误判没有打包。
+
+各表单元为 **median ms/step / 原始有效 env-step/s**；最后一列为 Atlas/Mother median 时间比，越大表示 Atlas 越慢。
+
+| policy group | pure rigid | optimized Mother | Atlas packed | Atlas/Mother |
+|---|---:|---:|---:|---:|
+| volume L1 B4 max | 2.709 / 1476.4 | 5.060 / 790.5 | 13.498 / 296.3 | 2.668× |
+| volume L1 B4 full | 2.797 / 1430.0 | 5.120 / 781.2 | 13.528 / 295.7 | 2.642× |
+| volume L1 B1024 max | 3.365 / 304315.9 | 9.118 / 112307.3 | 34.846 / 29386.7 | 3.822× |
+| volume L1 B1024 full | 3.469 / 295211.5 | 9.442 / 108447.0 | 35.618 / 28749.6 | 3.772× |
+| shell L1 B4 max | 2.780 / 1439.0 | 6.857 / 583.3 | 12.331 / 324.4 | 1.798× |
+| shell L1 B4 full | 2.673 / 1496.6 | 6.637 / 602.7 | 11.836 / 338.0 | 1.783× |
+| shell L1 B1024 max | 3.383 / 302679.4 | 13.363 / 76631.2 | 24.171 / 42364.2 | 1.809× |
+| shell L1 B1024 full | 3.374 / 303484.5 | 13.568 / 75472.2 | 24.387 / 41989.3 | 1.797× |
+
+依上述顺序对应 group0–7；文件 taskname 为 `policy-{backend}-L1-B{B}-{mode}-{pure_rigid|mother|atlas_packed}.json`。方法块顺序在不同 group 中轮换，精确顺序见 execution map / `tasks.json`，不把这种轮换称为交错重复。
+
+Frozen recovery 为 warmup 生成的真实接触 snapshot 和匹配 pre-integration frame，只计独立 stress-recovery 调用；准备／JIT 在计时外。每重复100次、3重复、B64，不含 policy、controller 或 rigid step，因此没有 pure-rigid recovery 数值。下列速率单位是重复 snapshot 的有效 env-recovery/s，不是动态轨迹速率。
+
+| recovery group | optimized Mother | Atlas packed | Atlas/Mother |
+|---|---:|---:|---:|
+| volume L1 B64 max | 1.098 / 58303.0 | 9.454 / 6769.9 | 8.612× |
+| volume L1 B64 full | 1.102 / 58061.6 | 9.170 / 6979.5 | 8.319× |
+| shell L1 B64 max | 3.900 / 16410.6 | 9.351 / 6844.4 | 2.398× |
+| shell L1 B64 full | 3.920 / 16328.5 | 9.411 / 6800.8 | 2.401× |
+
+依上述顺序对应 group8–11；文件 taskname 为 `recovery-{backend}-L1-B64-{mode}-{mother|atlas_packed}.json`。每组各方法均使用相同条件文件 SHA256 `ab451473db350152f812f095c64e8595a558a5ea07e4d884ba8b55d7680ff9a8`，与上面的四条件 native-v2 资格文件一致。
+
+**后端决策：本次集成在完整路径上为负结果，推荐优化 Mother。** Atlas 在完整 policy workflow 中 shell 慢1.78–1.81倍、volume 慢2.64–3.82倍；frozen recovery 中 shell 慢约2.40倍、volume慢8.32–8.61倍。单独列出的 native-v2 volume 四条件空间通过、以及 angle/q128 的异质64条件通过，仍保留各自限定资格；不能把后者资格挪给本表 edge/q16，也不能把数值有效速率称为空间合格吞吐量。Execution map 对32项均明确 `spatial_qualified=false`、`qualified_environment_steps_per_second=0`；timing 没有逐帧重跑空间 oracle。
+
+对未知／未合格几何，保守的100% Mother route 由**不启用 experimental atlas**（`atlas_regions=0`）实现；不是依赖当前 selector 自动察觉所有空间误差。已测 bank 的 coverage fallback=0 仅表示其 finite-footprint coverage 门未触发，不能证明一般几何的空间精度或 fallback 资格。保留 shell 结果量与 neck 远端热点反例，不推荐将原生 atlas 打开作为通用提速路径。
+
+## 独立内存、准备和 factor 存储
+
+`R/workflow-memory` 的18组全部 rc0，wrapper `result.json` 的 `complete`、`passed`、全部 `checks` 均通过：采样器在科学模块／GPU import 前就绪，按 worker 自身 PID（保留 namespace 映射）匹配 NVIDIA 进程，占用来自新进程完整构建、JIT、warmup和一次600步 policy rollout。不是32 task计时的重复测量，也不计作性能结果。各任务输出为 `groupN/<taskname>/{result.json,benchmark.json}`；`result.json` 保存 own-PID、task/source身份、原始日志引用及内存检查，`benchmark.json` 保存完整原生 buffer inventory。轮询请求间隔50ms，原始日志保留；采样峰值不保证捕获 allocator 的瞬时最高值。
+
+各内存方法使用独立 Slurm allocation，**不保证方法间 GPU UUID 相同**；wrapper 的 `same_gpu` 只核对本进程采样 GPU 与内部 benchmark GPU。这里是相同GPU型号的独立进程 footprint 对照，不是同GPU配对内存实验；只有上面的 workflow-final 计时在12组内核实了方法间同UUID。采样差值保留为这批进程观察到的 footprint 差异，不作普遍硬件峰值界限。
+
+下表每格为 **采样 NVIDIA GPU峰值 / 进程RSS峰值 / 去重原生 stress buffer，MiB**（MiB=`2^20 bytes`）。GPU/RSS覆盖完整进程，native只覆盖导出的原生 stress buffers；Torch峰值仅覆盖Torch，三者不可相加或互相替代。全部 wrapper 检查通过且 reported invalid environment-step 为0，但 memory wrapper 不建立空间资格。
+
+| backend / B / output | 独立 optimized Mother | 独立 Atlas packed |
+|---|---:|---:|
+| volume B4 max | 2328 / 3191.6 / 65.434 | 2392 / 3167.3 / 136.234 |
+| volume B4 full | 2328 / 3211.2 / 65.844 | 2392 / 3201.1 / 136.644 |
+| volume B1024 max | 3550 / 3307.4 / 289.064 | 4798 / 3299.6 / 1547.889 |
+| volume B1024 full | 3646 / 3306.7 / 394.064 | 4894 / 3294.0 / 1652.889 |
+| shell B4 max | 2328 / 3158.5 / 42.974 | 2296 / 3207.4 / 45.871 |
+| shell B4 full | 2328 / 3171.8 / 43.824 | 2296 / 3177.7 / 46.720 |
+| shell B1024 max | 3486 / 3275.1 / 237.414 | 4286 / 3304.8 / 1034.770 |
+| shell B1024 full | 3710 / 3275.9 / 454.914 | 4510 / 3309.8 / 1252.270 |
+
+路径按 `workflow-memory/tasks.json` 定位：volume B4 max Mother/Atlas 为 group1/2，B4 full 为3/4，B1024 max为7/5，full为8/9；shell B4 max为10/11，full为13/12，B1024 max为14/15，full为16/17。另有 volume max pure-rigid group0(B4)、group6(B1024)，采样GPU/RSS分别 **2214/2993.1 MiB**、**3116/3040.8 MiB**；不把其没有 stress inventory 的情况记作整个原生场景零内存。
+
+Atlas 在 B1024 的采样GPU峰值比 Mother 高：volume max/full均 **1248 MiB**，shell均 **800 MiB**。保留 B4 shell Atlas 采样GPU比 Mother 低32MiB的观察；它没有对应更少的去重 stress buffer，不能推广为一般内存优势。原 factor、packed额外常量与母 fallback 均如实保留，Atlas的 combined驻留没有被当成独立 Mother 峰值。
+
+为区分共享与每环境存储，对同 backend/output/method 的唯一 buffer 总量作两点差分：`per_env=(U1024-U4)/1020`，`shared=U4-4*per_env`。逐 inventory 的非 alias bytes 求和已核对等于 `native_buffer_bytes`；下表是这两个实测 B 的存储模型，**不是硬件峰值、allocator 上界或任意 B 的保证**。
+
+| backend / output | Mother shared MiB / per-env KiB | Atlas shared MiB / per-env KiB |
+|---|---:|---:|
+| volume max | 64.557 / 224.507 | 130.698 / 1417.191 |
+| volume full | 64.557 / 329.507 | 130.698 / 1522.191 |
+| shell max | 42.212 / 195.202 | 41.993 / 992.777 |
+| shell full | 42.212 / 412.702 | 41.993 / 1210.277 |
+
+新进程 `preparation.setup_seconds`（构建／JIT，warmup另列）在本次各 B/output 中的范围：volume Mother **141.838–145.643 s**、Atlas **224.791–230.015 s**；shell Mother **118.998–122.577 s**、Atlas **131.282–133.561 s**。它们是本次独立进程的准备成本，不能当作稳定每步时延或保证无任何编译缓存的普适 cold-start 时间。
+
+下面取 `native-final-qualification/group0/shell-heterogeneous64/result.json` 和 `group1/volume-heterogeneous64/result.json` 的 `atlas.groups`，报告实际 K/factor 存储。条目均是导出的 **3×3 block存储数**，不是标量 nnz。Feature 行的范围覆盖12个实际小算子，括号为其总和；母行是 Atlas 内保留的 mother/fallback factor，不能用它替代 optimized Mother inverse 的实际内存。
+
+| backend / 空间 | K block entries | factor block entries | `factor_entries/stiffness_entries` 范围 |
+|---|---:|---:|---:|
+| shell mother | 8648 | 12466 | 1.441 |
+| shell 12 features | 7736–9208（102288） | 7460–9292（100316） | .937–1.016 |
+| volume mother | 20274 | 66669 | 3.288 |
+| volume 12 features | 15085–18314（203924） | 36628–55834（556979） | 2.428–3.049 |
+
+这是显式 block 存储比；K和factor的对称／三角存储约定不同，不把它冒充 `nnz(L)/nnz(tril(K))`。Packed副本及其运行时 scratch另包含在完整 buffer inventory。小空间各自缩减不保证十二套 factor 总存储／求解优于单个母模型；实测大批量代价和内存均支持两后端保持默认 Mother。
+
 ## 证据字段与待补交付
 
 所有表格可从对应 `result.json` 复核：
@@ -125,5 +219,7 @@ FPS6 有4个 feature 已等于母空间，精度改善不能解释为同等缩�
 - 实际尺寸：`global_enrichment_actual.{feature_raw_scalar_dofs,mother_raw_scalar_dofs,reduced_feature_groups,full_size_feature_groups,global_coarse_equals_mother}`；全局 coarse 的整数来源与 `basis.npz` 身份见 `global_enrichment`。
 - 几何：`qualification_checks`、`partial_footprint_probe`、`mean_qualification_field_error`；`rows[*].{name,category,errors,numerical_passed,source_numerical_checks,maximum_relative_force_error,maximum_relative_moment_error,neck_witness}`。完整 field NPZ 按 `rows[*].frame` 定位。
 - Profile：`device_categories[*].{category,sum_duration_us}`、`device_kernels[*].{name,sum_duration_us}`、`warmup_checks`、`final_checks`。`native_buffers` 和进程采样的 scope 不等于独立方法的 allocator 峰值。
+- Workflow：`R/meta/workflow-execution-map.json:rows[*].{group_name,method,actual_output,pairing,spatial_qualified}`；输出文件的 `repeats[*].{steps,seconds,transitions_per_second,invalid_environment_steps,scatter_overflow_calls,resets}`、`gpu_uuid`、`policy`、`method_selected`、`surface_inverse_selected`、`stress_configurations`、`native_buffers`，以及相邻 `.returncode.txt`。
+- 独立内存：wrapper `result.json` 的 `checks`、`memory.{sampled_peak_device_bytes,raw_log,pid_mapping,matched_poll_count,requested_interval_seconds}`、`peak_process_rss_bytes`、`native_memory`、`preparation`；原始 `benchmark.json` 的 `native_buffer_bytes`、`native_buffers[*].{name,shape,dtype,bytes,alias_of}`（未出现 `alias_of` 代表该条不是 alias），以及 `stress_configurations`。最终 profile 使用 `R/native-final-profile` 同名 profile字段。
 
-后续由主任务补充：完整 Franka/hollow-egg workflow 的 max/full 配对吞吐量与纯 rigid/优化母模型对照；独立进程 mother/atlas/packed 内存及 buffer inventory；最终精度／代价决策和全目标资格审计。当前只确认指定 volume 轨迹的空间资格和已报告的负项，不关闭整个目标，也不将其推广为任意非凸几何或连续体锐边峰值资格。
+本批 workflow、独立内存和最终profile已终态；两后端均为有界 native 集成／调参后的完整路径负结果，默认推荐 Mother，无需继续科学扫参。后续仅由主任务完成证据封装、保存审计和全目标资格审计。指定 volume 轨迹的空间资格和既有反例均保留；本文不自行关闭整个目标，也不将已测通过推广为任意非凸几何或连续体锐边峰值资格。
