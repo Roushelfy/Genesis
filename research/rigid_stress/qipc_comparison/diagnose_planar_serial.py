@@ -27,7 +27,12 @@ def _api():
     from .check_planar_footprint import _native_api
 
     base = _native_api()
-    from genesis.engine.solvers.rigid.stress.contact import kernel_pressure, kernel_scatter
+    from genesis.engine.solvers.rigid.stress.contact import (
+        kernel_pressure_correct,
+        kernel_pressure_serial,
+        kernel_refine_contacts,
+        kernel_scatter,
+    )
     from genesis.engine.solvers.rigid.stress.planar_loading import (
         kernel_planar_fit,
         kernel_planar_moments,
@@ -49,6 +54,13 @@ def _stage(api, output, events, name, function, *args):
     function(*args)
     api.qd.sync()
     events[-1].update(finished=True, finished_unix=time.time(), diagnostic_wall_seconds=time.time() - start)
+    if name.startswith("pressure_"):
+        contacts = args[0]
+        events[-1].update(
+            contact_status=api.unbatched_array(api, contacts.status).tolist(),
+            evaluations=api.unbatched_array(api, contacts.evaluations).tolist(),
+            refined=api.unbatched_array(api, contacts.is_refined).tolist(),
+        )
     _json(output / "stages.json", events)
 
 
@@ -143,11 +155,40 @@ def main():
             api,
             output,
             events,
-            "original_pressure_serial",
-            api.kernel_pressure,
+            "pressure_initial_nonrefined",
+            api.kernel_pressure_serial,
             loading.fallback_contacts,
             loading.material_surface,
             False,
+        )
+        _stage(
+            api,
+            output,
+            events,
+            "pressure_correct_nonrefined",
+            api.kernel_pressure_correct,
+            loading.fallback_contacts,
+            loading.material_surface,
+        )
+        _stage(api, output, events, "pressure_refine", api.kernel_refine_contacts, loading.fallback_contacts)
+        _stage(
+            api,
+            output,
+            events,
+            "pressure_initial_refined",
+            api.kernel_pressure_serial,
+            loading.fallback_contacts,
+            loading.material_surface,
+            True,
+        )
+        _stage(
+            api,
+            output,
+            events,
+            "pressure_correct_refined",
+            api.kernel_pressure_correct,
+            loading.fallback_contacts,
+            loading.material_surface,
         )
         _stage(
             api,
