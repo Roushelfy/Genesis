@@ -1012,7 +1012,6 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                     break
                 gradient = qd.Vector([-1.0, 0.0, 0.0])
                 hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
-                objective = coefficient[0]
                 for i_cell in range(n_cells):
                     start, end = func_contact_cell(i_cell, i_c, i_b, low, dimensions, contact_state, surface_info)
                     for i_entry in range(start, end):
@@ -1023,7 +1022,6 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                         weight /= weight_sum
                         profile = qd.max(0.0, coordinates.dot(coefficient))
                         gradient += weight * profile * coordinates
-                        objective -= 0.5 * weight * profile * profile
                         if profile > 0.0:
                             hessian += weight * coordinates.outer_product(coordinates)
                 contact_state.evaluations[i_c, i_b] = previous_evaluations + iteration + 1
@@ -1036,7 +1034,8 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                         if line_accepted:
                             break
                         candidate = coefficient - fraction * step
-                        candidate_objective = candidate[0]
+                        difference = candidate - coefficient
+                        objective_change = difference[0]
                         for i_cell in range(n_cells):
                             start, end = func_contact_cell(
                                 i_cell, i_c, i_b, low, dimensions, contact_state, surface_info
@@ -1048,8 +1047,13 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                                 )
                                 weight /= weight_sum
                                 profile = qd.max(0.0, coordinates.dot(candidate))
-                                candidate_objective -= 0.5 * weight * profile * profile
-                        if candidate_objective >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-15:
+                                reference_profile = qd.max(0.0, coordinates.dot(coefficient))
+                                profile_change = profile - reference_profile
+                                if profile > 0.0 and reference_profile > 0.0:
+                                    profile_change = difference.dot(coordinates)
+                                # The energy change retains small ascent steps lost when comparing full objectives.
+                                objective_change -= 0.5 * weight * profile_change * (profile + reference_profile)
+                        if objective_change >= 1e-4 * fraction * gradient.dot(step) - 1e-15:
                             coefficient = candidate
                             line_accepted = True
                         else:
