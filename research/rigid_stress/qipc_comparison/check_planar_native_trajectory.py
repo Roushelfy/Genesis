@@ -893,6 +893,7 @@ def main():
             "scope": "Same seeded inference network and FP64-to-FP32 construction as the benchmark. The target's get_max_stress/1e6 is the final observation feature; original-Q4 references supply no policy observation or action.",
         }
     error_history, loaded_history, valid_history, route_history = [], [], [], []
+    task_count_history, task_overflow_history, task_count_steps = [], [], []
     residual_history, wrench_history, input_history, errno_history = [], [], [], []
     source_point_history, origin_accounting_history, legacy_valid_history = [], [], []
     scatter_witnesses = {}
@@ -1191,8 +1192,12 @@ def main():
                 "reason": api.qd_to_numpy(entry.planar.state.reason, transpose=True),
                 "eligible": api.qd_to_numpy(entry.planar.state.eligible, transpose=True),
                 "task_count": api.qd_to_numpy(entry.planar.state.task_count, transpose=True),
+                "task_overflow": api.qd_to_numpy(entry.planar.state.overflow, transpose=True),
                 "counter_delta": delta,
             }
+            task_count_history.append(routing["task_count"].copy())
+            task_overflow_history.append(routing["task_overflow"].copy())
+            task_count_steps.append(step)
             summaries = {}
             for index, name in enumerate(COMPARISONS):
                 maximum = errors[index][:, loaded].max(axis=1) if loaded.any() else np.zeros(len(METRICS))
@@ -1211,6 +1216,8 @@ def main():
                 "tick": tick,
                 "loaded_contacts": int(loaded_contacts.sum()),
                 "loaded_environments": int(loaded.sum()),
+                "maximum_recorded_tasks_per_environment": int(routing["task_count"].max(initial=0)),
+                "task_count_peak_is_censored": bool(routing["task_overflow"].any()),
                 "numerical_passed": bool(valid.all()),
                 "spatial_passed": spatial_passed,
                 "CPU_fidelity_target_passed": fidelity_passed,
@@ -1286,6 +1293,37 @@ def main():
             for label, errno in (("planar", solver._errno), ("Q4_production", low.errno), ("Q4_resolved", high.errno))
         }
         result["terminal_planar_route_counters"] = _route_counts(api, entry.planar.state).tolist()
+    if task_count_history:
+        task_counts = np.stack(task_count_history)
+        task_overflow = np.stack(task_overflow_history)
+        api.np.savez_compressed(
+            args.output / "planar-task-counts.npz",
+            steps=np.array(task_count_steps),
+            recorded_task_count=task_counts,
+            overflow=task_overflow,
+        )
+        peak_row, peak_env = np.unravel_index(task_counts.argmax(), task_counts.shape)
+        per_env_maximum = task_counts.max(axis=0)
+        per_env_censored = task_overflow.any(axis=0)
+        maximum = int(task_counts.max(initial=0))
+        censored = bool(task_overflow.any())
+        result["planar_task_usage"] = {
+            "audited_observations": len(task_count_steps),
+            "capacity_per_environment": entry.planar.state.tasks.shape[0],
+            "maximum_recorded_tasks_per_environment": maximum,
+            "actual_peak_tasks_per_environment": None if censored else maximum,
+            "actual_peak_status": "censored_lower_bound" if censored else "exact",
+            "actual_peak_lower_bound": maximum,
+            "recorded_peak_step": task_count_steps[peak_row],
+            "recorded_peak_environment": int(peak_env),
+            "maximum_recorded_tasks_by_environment": per_env_maximum.tolist(),
+            "actual_peak_by_environment": [
+                None if overflow else int(count) for count, overflow in zip(per_env_maximum, per_env_censored)
+            ],
+            "censored_environments": np.flatnonzero(per_env_censored).tolist(),
+            "overflow_environment_observations": int(task_overflow.sum()),
+            "scope": "Native integer task_count and overflow snapshots for audited observations after optional warmup/restart. Counts are capacity-clamped: any overflow makes the recorded maximum a lower bound; only observations/environments without overflow have an exact peak. This diagnostic changes no admission or error gate.",
+        }
     if error_history:
         error_array, loaded_array = np.stack(error_history), np.stack(loaded_history)
         api.np.savez_compressed(
