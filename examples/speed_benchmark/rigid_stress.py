@@ -577,6 +577,11 @@ def main() -> None:
     )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.scope == "profile" and args.shell_loading == "planar":
+        parser.error(
+            "Planar loading requires the integrated trace driver: "
+            "python -m research.rigid_stress.qipc_comparison.profile_planar_loading"
+        )
     if args.trace and args.trace_steps <= 0:
         parser.error("Trace steps must be positive.")
     if args.trajectory_metrics and args.scope in ("profile", "recovery"):
