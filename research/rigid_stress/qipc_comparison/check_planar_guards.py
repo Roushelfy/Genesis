@@ -197,7 +197,11 @@ def _native_api():
     api = _api()
     from genesis.engine.solvers.rigid.stress.data import allocate_stress_info, create_stress_state
     from genesis.engine.solvers.rigid.stress.planar_geometry import build_planar_geometry
-    from genesis.engine.solvers.rigid.stress.planar_loading import PlanarFallback, PlanarLoading
+    from genesis.engine.solvers.rigid.stress.planar_loading import (
+        _PLANAR_NORMAL_ERROR_FRACTION,
+        PlanarFallback,
+        PlanarLoading,
+    )
     from genesis.engine.solvers.rigid.stress.planar_material import (
         PlanarMaterialStatus,
         create_planar_material,
@@ -241,8 +245,9 @@ def _check_fields(api, checks, label, actual, expected, numerics, field_applicab
 def _warped(api, args, writer, checks):
     np = api.np
     cpu = args.output / "cpu"
-    native = api.build_native_mother(api, cpu, args.output, "guard", quadrature=48)
+    native = api.build_native_mother(api, cpu, args.output, "guard", quadrature=args.quadrature)
     model = native.model
+    checks.exact("warped/native_model_quadrature", model.options.quadrature, args.quadrature)
     expected24, expected48 = _load(np, cpu / "oracles/q24.npz"), _load(np, cpu / "oracles/q48.npz")
     numerics = _load(np, cpu / "oracles/numerics.npz")
     oracle_k = api.sparse.load_npz(cpu / "oracles/K.npz")
@@ -301,7 +306,10 @@ def _warped(api, args, writer, checks):
                 api, cpu, "guard", model.options.young, model.options.poisson
             )
             source = api._snapshot_contacts(api, contacts)
-            surface = api.StressSurface(48, model.load_info, angular=True)
+            surface = api.StressSurface(args.quadrature, model.load_info, angular=True)
+            checks.exact(
+                f"warped/k{subdivision}/{mode}/native_surface_quadrature", surface.info.gauss.shape[0], args.quadrature
+            )
             loading = api.PlanarLoading(surface.info, model.load_info, contacts, subdivision, tasks_per_env=64)
             state = model.create_state(len(cases), "full")
             omega = api.V_VEC(3, dtype=api.gs.qd_float, shape=(len(cases),))
@@ -313,7 +321,8 @@ def _warped(api, args, writer, checks):
             normal_error = api.unbatched_array(api, loading.info.normal_error)
             checks.condition(
                 f"warped/k{subdivision}/{mode}/normal_error_witness",
-                (normal_error > 0.01 * source["radius"][valid].max()).all(),
+                (normal_error > api._PLANAR_NORMAL_ERROR_FRACTION * source["radius"][valid].max()).all(),
+                fraction=api._PLANAR_NORMAL_ERROR_FRACTION,
             )
             baseline = None
             for phase in ("initial", "slot_reverse", "release_all", "reload"):
@@ -433,7 +442,7 @@ def _warped(api, args, writer, checks):
                     moment_error=moment_error,
                     center=api.unbatched_array(api, contacts.center),
                 )
-                records.append({"label": label, **record})
+                records.append({"label": label, "native_quadrature": surface.info.gauss.shape[0], **record})
     checks.close(
         "warped/K_preserved_after_loading",
         api.sparse.bsr_matrix(
@@ -451,7 +460,7 @@ def _warped(api, args, writer, checks):
     return records
 
 
-def _tie(api, writer, checks):
+def _tie(api, args, writer, checks):
     np = api.np
     thickness, radius = 0.0005, 0.0008
     patch = np.array([[-0.002, -0.002, 0.0], [0.002, -0.002, 0.0], [0.002, 0.002, 0.0], [-0.002, 0.002, 0.0]])
@@ -466,7 +475,8 @@ def _tie(api, writer, checks):
     load_info.surface_nodes.from_numpy(faces)
     load_info.load_nodes.fill(0)
     load_info.load_offsets.fill(0.0)
-    surface = api.StressSurface(48, load_info, angular=True)
+    surface = api.StressSurface(args.quadrature, load_info, angular=True)
+    checks.exact("tie/native_surface_quadrature", surface.info.gauss.shape[0], args.quadrature)
     geometry = api.build_planar_geometry(surface.info, load_info, 4)
     material = api.create_planar_material(2, 2, 1)
     contacts = api.create_contacts(2, 1, 1e-4, hertz_profile=True)
@@ -488,6 +498,7 @@ def _tie(api, writer, checks):
         "tie/independent-geometry-answer.json",
         {
             "parents": 2,
+            "native_quadrature": surface.info.gauss.shape[0],
             "authored_components": [[0], [1]],
             "equal_distance_m": [0.0, 0.0],
             "expected_first_outer_anchor_face": 0,
@@ -577,6 +588,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
     parser.add_argument("--stage", choices=("all", "warped", "tie"), default="all")
+    parser.add_argument("--quadrature", type=int, choices=(10, 16, 24, 48), default=48)
     parser.add_argument("--subdivisions", nargs="+", type=int, choices=(4, 8, 16, 32), default=(4, 8, 16))
     parser.add_argument("--_cpu-worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -604,6 +616,7 @@ def main():
         ).strip(),
         "CPU_worker_returncode": None,
         "stage": args.stage,
+        "native_quadrature": args.quadrature,
         "raw_and_applicable_field_tolerance": TOLERANCE,
         "source_wrench_tolerance": 1e-8,
         "original_K_residual": {"relative": 1e-8, "absolute": 1e-11},
@@ -682,13 +695,14 @@ def main():
         for name in ("check_planar_loading_gpu.py", "check_planar_material.py")
     ]
     result.update(identity=api.runtime_identity(), native_sources=source_before, research_helpers=research_before)
+    result["normal_error_fraction"] = api._PLANAR_NORMAL_ERROR_FRACTION
     writer.json("result.json", result)
     started = time.perf_counter()
     try:
         if args.stage != "tie":
             result["warped"] = _warped(api, args, writer, checks)
         if args.stage != "warped":
-            _tie(api, writer, checks)
+            _tie(api, args, writer, checks)
         checks.condition(
             "provenance/native_sources_unchanged", [_identity(row["path"]) for row in source_before] == source_before
         )
