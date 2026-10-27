@@ -944,6 +944,7 @@ def main() -> None:
             },
             "history": args.history,
             "host": platform.node(),
+            "pid": os.getpid(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
             "source_revision": args.source_revision,
             "arguments": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
