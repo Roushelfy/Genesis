@@ -205,6 +205,20 @@ def anchor_execution_modes(workload: FrankaEgg, staged: bool = False) -> list[st
     return modes
 
 
+def planar_query_execution_modes(workload: FrankaEgg) -> list[str]:
+    if not workload.stress:
+        return []
+    modes = []
+    for entry in workload.scene.rigid_solver.stress_recovery.links:
+        if entry.planar is None:
+            modes.append("not_used")
+        elif gs.backend != gs.cuda or not entry.options.cooperative_pressure:
+            modes.append("serial_cells")
+        else:
+            modes.append("blocks4" if entry.planar.hierarchical_query else "cells")
+    return modes
+
+
 def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | None = None) -> dict:
     """Check the independent recovery route before timing its frozen input."""
     solver = workload.scene.rigid_solver
@@ -641,6 +655,7 @@ def main() -> None:
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
+    parser.add_argument("--planar-query", choices=("cells", "blocks"), default="cells")
     parser.add_argument("--factor-scaling", action="store_true")
     parser.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
@@ -737,6 +752,7 @@ def main() -> None:
             entry.cooperative_anchor = args.cooperative_anchor
     if workload.stress and args.shell_loading == "planar":
         solver.stress_recovery.links[0].planar.exact_radial = args.planar_integration == "radial"
+        solver.stress_recovery.links[0].planar.hierarchical_query = args.planar_query == "blocks"
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -842,6 +858,8 @@ def main() -> None:
             "pressure_quadrature": args.pressure_quadrature,
             "shell_loading": args.shell_loading,
             "planar_integration": args.planar_integration if args.shell_loading == "planar" else None,
+            "planar_query_requested": args.planar_query if args.shell_loading == "planar" else None,
+            "effective_planar_query_modes": planar_query_execution_modes(workload),
             "loading_subdivisions": args.loading_subdivisions,
             "loading_integration_rule": "planar_sphere_sections_split_angle"
             if args.shell_loading == "planar"

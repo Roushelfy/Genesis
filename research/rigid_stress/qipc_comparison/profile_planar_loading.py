@@ -84,6 +84,7 @@ def _api():
     from examples.speed_benchmark.rigid_stress import (
         GeometryFrame,
         anchor_execution_modes,
+        planar_query_execution_modes,
         prepare_recovery_snapshot,
     )
     from genesis.utils.misc import qd_to_numpy
@@ -141,6 +142,7 @@ def main():
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="planar")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
+    parser.add_argument("--planar-query", choices=("cells", "blocks"), default="cells")
     parser.add_argument("--cooperative-anchor", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--quadrature", type=int, default=16)
@@ -174,6 +176,7 @@ def main():
     entry.cooperative_anchor = args.cooperative_anchor
     if entry.planar is not None:
         entry.planar.exact_radial = args.planar_integration == "radial"
+        entry.planar.hierarchical_query = args.planar_query == "blocks"
     setup_seconds = time.perf_counter() - started
     geometry = None
     for tick in range(args.warmup):
@@ -233,6 +236,8 @@ def main():
         "actual_method": entry.model.selected_method,
         "cooperative_anchor_requested": args.cooperative_anchor,
         "effective_anchor_modes": api.anchor_execution_modes(workload),
+        "planar_query_requested": args.planar_query if entry.planar is not None else None,
+        "effective_planar_query_modes": api.planar_query_execution_modes(workload),
         "surface_inverse_available": entry.model.surface_inverse is not None,
         "device_categories": [{"category": name, "sum_duration_us": value} for name, value in sorted(groups.items())],
         "device_kernels": [
