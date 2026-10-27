@@ -217,6 +217,7 @@ def _audit(api, writer, checks, original, label, surface, source, names, expecte
         "sources": int(values["valid"].sum()),
         "environments": n_envs,
         "pool": pool,
+        "anchor_mode": "separate_warp" if pool and api.gs.backend == api.gs.cuda else "separate_serial",
         "phases": rows,
     }
 
@@ -341,6 +342,30 @@ def _primitives(api, writer, checks, original):
                 [{"anchor_face": 32, "status": 0}],
             )
         )
+        label = "triangle-signed-tie" if triangles else "q4-signed-tie"
+        patches = [_patch(x=1.0 + i) for i in range(70)]
+        for index, x, z in ((31, 0.0, 2.0**-10), (32, 0.0, -(2.0**-10)), (0, 0.01, -(2.0**-10)), (63, 0.01, 2.0**-10)):
+            patches[index] = _patch(x=x, z=z)
+        if triangles:
+            patches = [[patch[0], patch[1], patch[3]] for patch in patches]
+        surface = _surface(api, writer, label, patches, triangles=triangles)
+        rows = [
+            {"name": "equal-plus-minus-keep-positive-first", "point": [-0.0005, -0.0005, 0.0]},
+            {"name": "equal-minus-plus-keep-negative-first", "point": [0.0095, -0.0005, 0.0]},
+        ]
+        fixtures.append(
+            _audit(
+                api,
+                writer,
+                checks,
+                original,
+                label,
+                surface,
+                _source(api, rows),
+                [row["name"] for row in rows],
+                [{"anchor_face": index, "status": 0} for index in (31, 0)],
+            )
+        )
     book = [_patch(), [[0.0, -0.002, 0.0], [0.0, 0.002, 0.0], [0.0, 0.002, 0.004], [0.0, -0.002, 0.004]]]
     rows = [
         {"name": "book-edge-tie", "point": [0.0, 0.0, 0.0], "force": [-0.02, 0.0, -0.02], "normal": [-1.0, 0.0, -1.0]},
@@ -432,6 +457,7 @@ def main():
             "bitwise_contract": True,
             "cooperative_anchor_requested": True,
             "anchor_mode": "separate_warp" if args.backend == "cuda" else "separate_serial",
+            "fixture_anchor_modes": sorted({row["anchor_mode"] for row in fixtures}),
             "original_revision": args.serial_source_revision,
             "checks": len(checks.rows),
             "failed_checks": [row["name"] for row in checks.rows if not row["passed"]],
