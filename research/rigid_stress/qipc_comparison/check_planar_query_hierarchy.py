@@ -25,6 +25,7 @@ class QueryCase:
     anchors: tuple = (0,)
     status: tuple = (0,)
     zero_force: bool = False
+    expect_unseeded_rejection: bool = False
 
 
 def _api():
@@ -60,9 +61,22 @@ def flat_cases(np):
         QueryCase("outer-only", ((-span / 4, 0.0, plane),), (radius,), sides=(1,)),
         QueryCase("inner-only", ((span / 4, 0.0, -plane),), (radius,), sides=(-1,), anchors=(3,)),
         QueryCase("empty", ((4 * span, 0.0, plane),), (radius,)),
-        QueryCase("plane-tangent", ((span / 4, 0.0, plane + radius),), (radius,)),
-        QueryCase("plane-tangent-inside", ((span / 4, 0.0, np.nextafter(plane + radius, plane)),), (radius,)),
-        QueryCase("plane-tangent-outside", ((span / 4, 0.0, np.nextafter(plane + radius, float("inf"))),), (radius,)),
+        QueryCase("plane-tangent", ((span / 4, 0.0, plane + radius),), (radius,), anchors=(1,)),
+        QueryCase(
+            "plane-tangent-inside", ((span / 4, 0.0, np.nextafter(plane + radius, plane)),), (radius,), anchors=(1,)
+        ),
+        QueryCase(
+            "plane-tangent-outside",
+            ((span / 4, 0.0, np.nextafter(plane + radius, float("inf"))),),
+            (radius,),
+            anchors=(1,),
+        ),
+        QueryCase(
+            "plane-inside-unseeded-parent",
+            ((span / 4, 0.0, np.nextafter(plane + radius, plane)),),
+            (radius,),
+            expect_unseeded_rejection=True,
+        ),
         QueryCase("edge-tangent", ((span + radius, 0.0, plane),), (radius,), anchors=(1,)),
         QueryCase("edge-tangent-inside", ((np.nextafter(span + radius, span), 0.0, plane),), (radius,), anchors=(1,)),
         QueryCase("all-faces", ((0.0, 0.0, plane),), (4 * span,)),
@@ -227,6 +241,7 @@ def query_fixture(context, args, writer, checks, name, physical, cases, subdivis
     valid = api.qd_to_numpy(contacts.valid, transpose=True)
     force = api.qd_to_numpy(contacts.force, transpose=True)
     status = api.qd_to_numpy(contacts.status, transpose=True)
+    anchors = api.qd_to_numpy(contacts.anchor_face, transpose=True)
     writer.arrays(
         f"{label}/contact-inputs.npz",
         position=api.qd_to_numpy(contacts.position, transpose=True),
@@ -237,7 +252,7 @@ def query_fixture(context, args, writer, checks, name, physical, cases, subdivis
         friction=api.qd_to_numpy(contacts.friction, transpose=True),
         valid=valid,
         status=status,
-        anchor_face=api.qd_to_numpy(contacts.anchor_face, transpose=True),
+        anchor_face=anchors,
         side_filter=sides.T,
     )
     loaded = valid & (np.linalg.norm(force, axis=-1) > 1e-30)
@@ -296,8 +311,19 @@ def query_fixture(context, args, writer, checks, name, physical, cases, subdivis
                     expected = expected_tasks[i_b, i_c]
                     checks.condition(
                         f"{label}/{mode}/{case.name}/slot{i_c}/independent_eligibility",
-                        snapshot["eligible"][i_b, i_c] == (len(expected) > 0),
+                        snapshot["eligible"][i_b, i_c] == (len(expected) > 0 and not case.expect_unseeded_rejection),
                     )
+                    if case.expect_unseeded_rejection and len(expected) > 0:
+                        anchor = anchors[i_b, i_c]
+                        checks.condition(
+                            f"{label}/{mode}/{case.name}/slot{i_c}/independent_seed_outside_positive_parents",
+                            not np.any(expected[:, 0] % len(physical["quads"]) == anchor % len(physical["quads"])),
+                        )
+                        checks.condition(
+                            f"{label}/{mode}/{case.name}/slot{i_c}/unseeded_component_rejected",
+                            snapshot["fallback"][i_b, i_c]
+                            and snapshot["reason"][i_b, i_c] == context.PlanarFallback.MATERIAL,
+                        )
                     actual = tasks[:, :2]
                     actual = actual[np.lexsort((actual[:, 1], actual[:, 0]))]
                     checks.exact(
