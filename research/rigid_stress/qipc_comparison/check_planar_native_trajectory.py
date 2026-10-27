@@ -1,0 +1,755 @@
+"""Audit evolving production planar DPR fields against original Q4 loading at two integration orders.
+
+Run in Slurm rtx-mid/image 1_26. Each reference consumes saved body-frame source
+inputs and angular velocity from the completed production recovery. The scene
+advances once per observation; all reference work is an intrusive accuracy audit.
+"""
+
+import argparse
+import json
+import os
+import subprocess
+import time
+import traceback
+from dataclasses import dataclass, field
+from pathlib import Path
+from types import SimpleNamespace
+
+COMPARISONS = ("planar_vs_resolved_Q4", "production_Q4_vs_resolved_Q4", "planar_vs_production_Q4")
+METRICS = ("field", "peak", "N", "M", "Q")
+ROUTE_COUNTERS = (
+    "attempted_loaded_contacts",
+    "proxy_contacts",
+    "fallback_contacts",
+    "analytic_sections",
+    "overflow_steps",
+)
+
+
+def _api():
+    import numpy as np
+    import quadrants as qd
+    from scipy import sparse
+
+    import genesis as gs
+    from examples.rigid.franka_egg_stress import FrankaEgg
+    from genesis.engine.solvers.rigid.stress.contact import (
+        StressContactState,
+        create_contacts,
+        kernel_anchor,
+        kernel_pressure,
+        kernel_scatter,
+    )
+    from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
+    from genesis.engine.solvers.rigid.stress.scatter import (
+        create_scatter_workspace,
+        kernel_pressure_moments,
+        kernel_scatter_faces,
+    )
+    from genesis.engine.solvers.rigid.stress.surface import StressSurface
+    from genesis.utils.array_class import V_VEC, V
+    from genesis.utils.misc import qd_to_numpy
+
+    from .artifacts import file_id, runtime_identity, write_json
+    from .check_planar_loading_gpu import native_outputs, unbatched_array
+
+    @qd.kernel
+    def kernel_copy_physical(
+        source: StressContactState, target: StressContactState, source_omega: qd.Tensor, target_omega: qd.Tensor
+    ):
+        for i_c, i_b in qd.ndrange(source.valid.shape[0], source.valid.shape[1]):
+            target.position[i_c, i_b] = source.position[i_c, i_b]
+            target.force[i_c, i_b] = source.force[i_c, i_b]
+            target.normal[i_c, i_b] = source.normal[i_c, i_b]
+            target.friction[i_c, i_b] = source.friction[i_c, i_b]
+            target.radius[i_c, i_b] = source.radius[i_c, i_b]
+            target.radius_status[i_c, i_b] = source.radius_status[i_c, i_b]
+            target.valid[i_c, i_b] = source.valid[i_c, i_b]
+        for i_b in range(source_omega.shape[0]):
+            target.frame_position[i_b] = source.frame_position[i_b]
+            target.frame_quaternion[i_b] = source.frame_quaternion[i_b]
+            target_omega[i_b] = source_omega[i_b]
+        for _ in range(1):
+            target.hertz_profile[None] = source.hertz_profile[None]
+
+    return SimpleNamespace(**locals())
+
+
+def _source_identity(api):
+    root = Path(api.gs.__file__).resolve().parent
+    paths = [
+        *sorted((root / "engine/solvers/rigid/stress").glob("*.py")),
+        root / "options/rigid_stress.py",
+        root.parent / "examples/rigid/franka_egg_stress.py",
+        root.parent / "examples/rigid/egg_stress_controller.py",
+        Path(__file__).resolve(),
+    ]
+    return {str(path): api.file_id(path) for path in paths}
+
+
+def _physical_inputs(api, contacts, omega):
+    return {
+        name: api.qd_to_numpy(field, transpose=True)
+        for name, field in (
+            ("point", contacts.position),
+            ("force", contacts.force),
+            ("normal", contacts.normal),
+            ("friction", contacts.friction),
+            ("radius", contacts.radius),
+            ("radius_status", contacts.radius_status),
+            ("valid", contacts.valid),
+            ("frame_position", contacts.frame_position),
+            ("frame_quaternion", contacts.frame_quaternion),
+            ("omega", omega),
+        )
+    }
+
+
+@dataclass
+class OriginalRoute:
+    api: object
+    entry: object
+    quadrature: int
+    source_epsilon: float
+    reference_tasks: int
+    options: object = field(init=False)
+    surface: object = field(init=False)
+    contacts: object = field(init=False)
+    state: object = field(init=False)
+    scatter: object = field(init=False)
+    omega: object = field(init=False)
+    errno: object = field(init=False)
+
+    def __post_init__(self):
+        api, entry = self.api, self.entry
+        n_contacts, n_envs = entry.contacts.valid.shape
+        self.options = entry.options.model_copy(
+            update={"shell_loading": "q4", "quadrature": self.quadrature, "history_size": 0}
+        )
+        self.surface = api.StressSurface(
+            self.quadrature, entry.model.load_info, angular=self.options.pressure_quadrature == "angle"
+        )
+        self.contacts = api.create_contacts(
+            n_contacts,
+            n_envs,
+            entry.options.contact_radius,
+            entry.options.cooperative_pressure,
+            entry.options.cooperative_scatter,
+            True,
+        )
+        self.state = entry.model.create_state(n_envs, "full")
+        self.scatter = api.create_scatter_workspace(n_envs, self.reference_tasks, entry.reuse_contact_moments)
+        self.omega = api.V_VEC(3, dtype=api.gs.qd_float, shape=(n_envs,))
+        self.errno = api.V(dtype=api.gs.qd_int, shape=(n_envs,))
+        self.errno.fill(0)
+        self.omega.fill(0.0)
+
+    def recover(self):
+        api, entry = self.api, self.entry
+        api.kernel_copy_physical(entry.contacts, self.contacts, entry.omega, self.omega)
+        self.errno.fill(0)
+        api.kernel_begin_step(self.state)
+        api.kernel_anchor(self.source_epsilon, self.contacts, self.surface.info)
+        if entry.reuse_contact_moments:
+            api.kernel_pressure_moments(
+                self.contacts,
+                self.state,
+                entry.model.load_info,
+                self.surface.info,
+                self.scatter,
+                self.options.cached_face_bounds,
+            )
+        else:
+            api.kernel_pressure(self.contacts, self.surface.info, self.options.cooperative_pressure)
+        if self.scatter.tasks.shape[0] and self.options.cooperative_scatter:
+            api.kernel_scatter_faces(
+                self.contacts,
+                self.state,
+                entry.model.load_info,
+                self.surface.info,
+                self.scatter,
+                self.options.cached_face_bounds,
+                entry.reuse_contact_moments,
+            )
+        else:
+            api.kernel_scatter(
+                self.contacts,
+                self.state,
+                entry.model.load_info,
+                self.surface.info,
+                self.options.cooperative_scatter,
+                self.options.cached_face_bounds,
+            )
+        entry.model.recover(self.omega, self.state, self.options, history=None, surface_load=True)
+        api.kernel_accept(self.state, self.contacts, self.errno)
+        return api.native_outputs(api, entry.model, self.state)
+
+
+def _errors(api, actual, expected, weights):
+    np, values = api.np, []
+    multiplicity = np.array([1.0, 1.0, 2.0])
+    for name in METRICS:
+        if name == "peak":
+            error = np.abs(actual[name] - expected[name]) / np.maximum(np.abs(expected[name]), 1e-30)
+        elif name == "field":
+            delta = actual["stress_full9"] - expected["stress_full9"]
+            squared = np.einsum("segcb,segcb,eg->b", delta, delta, weights)
+            norm = np.einsum("segcb,segcb,eg->b", expected["stress_full9"], expected["stress_full9"], weights)
+            error = np.sqrt(squared) / np.maximum(np.sqrt(norm), 1e-30)
+        else:
+            delta = actual[name] - expected[name]
+            if name in ("N", "M"):
+                squared = np.einsum("egcb,egcb,eg,c->b", delta, delta, weights, multiplicity)
+                norm = np.einsum("egcb,egcb,eg,c->b", expected[name], expected[name], weights, multiplicity)
+            else:
+                squared = np.einsum("egcb,egcb,eg->b", delta, delta, weights)
+                norm = np.einsum("egcb,egcb,eg->b", expected[name], expected[name], weights)
+            error = np.sqrt(squared) / np.maximum(np.sqrt(norm), 1e-30)
+        values.append(error)
+    return np.stack(values)
+
+
+def _runtime_checks(api, state, contacts, errno, output, matrix, free, options, physical, vertices):
+    np = api.np
+    residual = (matrix @ output["q"] - output["rhs"])[free]
+    residual_norm = np.linalg.norm(residual, axis=0)
+    rhs_norm = np.linalg.norm(output["rhs"][free], axis=0)
+    numerical = residual_norm <= np.maximum(options.absolute_tolerance, options.tolerance * rhs_norm)
+    status = api.qd_to_numpy(contacts.status, transpose=True)
+    source_valid = physical["valid"]
+    contact_valid = ((status == 0) | ~source_valid).all(axis=1)
+    finite = np.ones(len(output["valid"]), dtype=bool)
+    for key in ("force", "rhs", "q", "stress_full9", "peak", "N", "M", "Q"):
+        finite &= np.isfinite(output[key]).reshape((-1, len(finite))).all(axis=0)
+    step_valid = api.qd_to_numpy(state.step_valid, transpose=True)
+    error_codes = api.qd_to_numpy(errno, transpose=True)
+    loaded = source_valid & (np.linalg.norm(physical["force"], axis=-1) > 1e-30)
+    forces = np.where(loaded[..., None], physical["force"], 0.0)
+    points = np.where(loaded[..., None], physical["point"], 0.0)
+    scale = np.linalg.norm(forces, axis=-1).sum(axis=1)
+    radius = np.where(loaded, physical["radius"], 0.0)
+    moment_scale = (np.linalg.norm(forces, axis=-1) * radius).sum(axis=1)
+    nodal = output["force"].reshape((len(vertices), 6, len(scale)))
+    total_force = nodal[:, :3].sum(axis=0).T
+    total_moment = np.cross(vertices[:, :, None], nodal[:, :3], axisa=1, axisb=1, axisc=1).sum(axis=0).T
+    total_moment += nodal[:, 3:].sum(axis=0).T
+    force_error = np.linalg.norm(total_force - forces.sum(axis=1), axis=1) / np.maximum(scale, 1e-30)
+    moment_error = np.linalg.norm(total_moment - np.cross(points, forces).sum(axis=1), axis=1) / np.maximum(
+        moment_scale, 1e-30
+    )
+    loaded_env = loaded.any(axis=1)
+    wrench = (~loaded_env) | ((force_error <= 1e-8) & (moment_error <= 1e-8))
+    unloaded_zero = np.count_nonzero(nodal[:, :, ~loaded_env]) == 0
+    valid = output["valid"] & step_valid & contact_valid & numerical & finite & (error_codes == 0) & wrench
+    return {
+        "valid": valid,
+        "absolute_residual": residual_norm,
+        "relative_residual": residual_norm / np.maximum(rhs_norm, 1e-30),
+        "contact_status": status,
+        "errno": error_codes,
+        "force_error": force_error,
+        "moment_error": moment_error,
+        "unloaded_raw_force_exact_zero": bool(unloaded_zero),
+    }
+
+
+def _route_counts(api, state):
+    return api.np.stack(
+        (
+            api.qd_to_numpy(state.attempted_loaded_contacts, transpose=True),
+            api.qd_to_numpy(state.proxy_contacts, transpose=True),
+            api.qd_to_numpy(state.fallback_contacts, transpose=True),
+            api.qd_to_numpy(state.analytic_sections, transpose=True),
+            api.qd_to_numpy(state.overflow_steps, transpose=True),
+        )
+    )
+
+
+def _keyframe(step, physical, candidate, low, high, runtime, routing):
+    arrays = {f"input_{name}": value for name, value in physical.items()}
+    arrays.update(step=step)
+    for label, output in (("planar", candidate), ("Q4_production", low), ("Q4_resolved", high)):
+        arrays.update({f"{label}_{key}": value for key, value in output.items()})
+    for label, checks in runtime.items():
+        arrays.update({f"{label}_{key}": value for key, value in checks.items()})
+    arrays.update({f"routing_{name}": value for name, value in routing.items()})
+    return arrays
+
+
+def _lifecycle(api, workload, entry):
+    """Check selected-environment scene reset and checkpoint invalidation after the primary rollout."""
+    np = api.np
+    checkpoint = workload.scene.get_state()
+    fields = {
+        "displacement": entry.state.displacement,
+        "stress_tensor": entry.state.stress_tensor,
+        "peak": entry.state.peak,
+        "N": entry.state.membrane_resultant,
+        "M": entry.state.bending_resultant,
+        "Q": entry.state.transverse_resultant,
+        "attempted": entry.planar.state.attempted_loaded_contacts,
+        "proxy": entry.planar.state.proxy_contacts,
+        "fallback": entry.planar.state.fallback_contacts,
+        "analytic": entry.planar.state.analytic_sections,
+        "overflow": entry.planar.state.overflow_steps,
+    }
+    before = {name: api.qd_to_numpy(field, transpose=True) for name, field in fields.items()}
+    others = np.arange(workload.n_envs) != 1
+    rows = []
+    for name in ("partial_reset", "partial_checkpoint_restore"):
+        if name == "partial_reset":
+            workload.reset(np.array([1]))
+        else:
+            workload.scene.reset(state=checkpoint, envs_idx=[1])
+        after = {key: api.qd_to_numpy(field, transpose=True) for key, field in fields.items()}
+        unchanged = all(
+            np.array_equal(after[key][others], value[others], equal_nan=True) for key, value in before.items()
+        )
+        selected_clear = bool(np.count_nonzero(after["displacement"][1]) == 0 and after["peak"][1] == 0)
+        selected_clear &= all(after[key][1] == 0 for key in ("attempted", "proxy", "fallback", "analytic", "overflow"))
+        selected_clear &= not api.qd_to_numpy(entry.planar.state.eligible, transpose=True)[1].any()
+        selected_clear &= not api.qd_to_numpy(entry.planar.state.fallback, transpose=True)[1].any()
+        output_invalidated = all(np.isnan(after[key][1]).all() for key in ("stress_tensor", "N", "M", "Q"))
+        rows.append(
+            {
+                "name": name,
+                "passed": bool(unchanged and selected_clear and output_invalidated),
+                "other_environments_exact": bool(unchanged),
+                "selected_state_clear": bool(selected_clear),
+                "selected_derived_output_invalidated": bool(output_invalidated),
+            }
+        )
+    workload.step()
+    workload.scene.rigid_solver.check_errno()
+    fresh = api.native_outputs(api, entry.model, entry.state)
+    admitted = api.qd_to_numpy(entry.state.step_valid, transpose=True).all() and fresh["valid"].all()
+    finite = all(np.isfinite(fresh[key]).all() for key in ("stress_full9", "N", "M", "Q", "peak"))
+    rows.append({"name": "fresh_observation_after_restore", "passed": bool(admitted and finite)})
+    return {
+        "passed": all(row["passed"] for row in rows),
+        "rows": rows,
+        "scope": "Immediate scene-mutation isolation and fresh observation; primary 600-step error statistics end before these controls.",
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--conditions", type=Path, required=True)
+    parser.add_argument("--budgets", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--git-source", type=Path, default=Path.cwd())
+    parser.add_argument("--envs", type=int, default=4)
+    parser.add_argument("--steps", type=int, default=600)
+    parser.add_argument("--level", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--subdivisions", type=int, choices=(8, 16), default=8)
+    parser.add_argument("--quadrature", type=int, choices=(16, 24, 48), default=16)
+    parser.add_argument("--reference-quadrature", type=int, default=48)
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
+    parser.add_argument("--tasks-per-env", type=int, default=32)
+    parser.add_argument("--reference-tasks-per-env", type=int, default=32)
+    parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
+    parser.add_argument("--field-steps", type=int, nargs="*", default=[129, 221, 400, 599])
+    parser.add_argument("--lifecycle", action=argparse.BooleanOptionalAction, default=True)
+    args = parser.parse_args()
+    if not os.environ.get("SLURM_JOB_ID") or os.environ.get("SLURM_JOB_PARTITION", "rtx-mid") != "rtx-mid":
+        parser.error("Scientific execution requires Slurm rtx-mid/image 1_26.")
+    if (
+        min(args.envs, args.steps, args.tasks_per_env, args.reference_tasks_per_env) < 1
+        or args.reference_quadrature < args.quadrature
+    ):
+        parser.error(
+            "Use positive dimensions/capacities and a reference order at least as large as the production order."
+        )
+    if args.lifecycle and args.envs < 2:
+        parser.error("Partial-environment lifecycle controls require at least two environments.")
+    args.output = args.output.expanduser().resolve()
+    if not args.output.is_relative_to(Path("/mnt/data/zhaofeng")):
+        parser.error("Use a fresh output under the project data directory /mnt/data/zhaofeng.")
+    args.output.mkdir(parents=True, exist_ok=False)
+    api, started = _api(), time.perf_counter()
+    np = api.np
+    budgets = json.loads(args.budgets.read_text())
+    if not budgets["frozen_before_native_tuning"]:
+        raise ValueError("Use the error budgets frozen before native tuning.")
+    api.gs.init(backend=api.gs.cuda, precision="64", logging_level="warning")
+    source_before = _source_identity(api)
+    identity = api.runtime_identity()
+    checkout = subprocess.check_output(["git", "-C", str(args.git_source), "rev-parse", "HEAD"], text=True).strip()
+    result = {
+        "schema": "genesis.planar-native-trajectory.v1",
+        "identity": identity,
+        "checkout_commit": checkout,
+        "arguments": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
+        "conditions": api.file_id(args.conditions),
+        "budget_input": api.file_id(args.budgets),
+        "budgets": budgets,
+        "complete": False,
+        "passed": False,
+        "primary_timing": False,
+        "rows": [],
+        "scope": "Scripted Franka controller, rigid dynamics and production both-side planar DPR; independent saved-input original-Q4 references each observation.",
+        "frame_contract": "Copy solved body-frame physical contacts and angular velocity after the target step. Reference calls advance neither the rigid scene nor contact association.",
+        "quadrature_scope": "Original-Q4 production order versus original-Q4 resolved order measures trajectory integration sensitivity separately from the planar loading difference.",
+        "requested_horizon_is_full_cycle": args.steps >= 600,
+        "simulation": {"dt_seconds": 0.01, "substeps": 1, "precision": "64", "controller": "native scripted"},
+        "counter_total_scope": "Completed audited observations; terminal counters preserve an interrupted attempt.",
+    }
+    api.write_json(args.output / "result.json", result)
+    workload = api.FrankaEgg(
+        args.envs,
+        level=args.level,
+        conditions=args.conditions,
+        output_mode="full",
+        egg_geometry="mesh64",
+        radius_model="hertz",
+        pressure_profile="hertz",
+        box_edge_policy="planar",
+        stress_backend="shell",
+        shell_loading="planar",
+        loading_subdivisions=args.subdivisions,
+        quadrature=args.quadrature,
+        pressure_quadrature=args.pressure_quadrature,
+        scatter_tasks_per_env=args.tasks_per_env,
+        method=args.method,
+        inverse_precision="64",
+        history_size=0,
+        timestep=0.01,
+        substeps=1,
+    )
+    solver = workload.scene.rigid_solver
+    recovery, entry = solver.stress_recovery, solver.stress_recovery.links[0]
+    if entry.planar is None or api.qd_to_numpy(entry.planar.state.side_filter, transpose=True).any():
+        raise ArithmeticError(
+            "Production trajectory qualification requires the enabled planar route with its default both-side scope."
+        )
+    low = OriginalRoute(api, entry, args.quadrature, recovery.source_epsilon, args.reference_tasks_per_env)
+    high = OriginalRoute(api, entry, args.reference_quadrature, recovery.source_epsilon, args.reference_tasks_per_env)
+    matrix = api.sparse.bsr_matrix(
+        (
+            api.unbatched_array(api, entry.model.info.stiffness) * entry.options.young,
+            api.unbatched_array(api, entry.model.info.columns),
+            api.unbatched_array(api, entry.model.info.row_start),
+        )
+    ).tocsr()
+    free = api.unbatched_array(api, entry.model.info.is_free).reshape(-1).astype(bool)
+    weights = api.unbatched_array(api, entry.model.shell.weights)
+    with np.load(entry.options.mesh, allow_pickle=False) as mesh:
+        vertices = mesh["vertices"]
+    result.update(
+        options=entry.options.model_dump(mode="json"),
+        mesh=api.file_id(Path(entry.options.mesh)),
+        selected_method=entry.model.selected_method,
+        surface_inverse=entry.model.surface_inverse is not None,
+        reuse_contact_moments=entry.reuse_contact_moments,
+        condition_count=workload.condition_count,
+        side_filter="production default zero: both physical shell surfaces",
+        source_files=source_before,
+    )
+    error_history, loaded_history, valid_history, route_history = [], [], [], []
+    residual_history, wrench_history, input_history, errno_history = [], [], [], []
+    witnesses, first_loaded_saved = {}, False
+    counters_total = np.zeros((len(ROUTE_COUNTERS), args.envs), dtype=np.int64)
+    invalid_total = np.zeros((3, args.envs), dtype=np.int64)
+    all_numeric, input_unchanged, route_accounted, rigid_unchanged, step_error = True, True, True, True, None
+    original_limits = budgets["original_budgets"]
+    limits = np.array(
+        [
+            original_limits["worst_weighted_tensor_field"],
+            original_limits["worst_sampled_peak"],
+            original_limits["N"],
+            original_limits["M"],
+            original_limits["Q"],
+        ]
+    )
+    target = budgets["CPU_demonstrated_fidelity_targets"][f"k{args.subdivisions}"]
+    fidelity_limits = np.array([target["worst_field"], target["worst_peak"], target["N"], target["M"], target["Q"]])
+    try:
+        for step in range(args.steps):
+            counts_before = _route_counts(api, entry.planar.state)
+            invalid_before = np.stack(
+                [api.qd_to_numpy(state.invalid_steps, transpose=True) for state in (entry.state, low.state, high.state)]
+            )
+            tick = workload.tick
+            reset = (tick > workload.delays) & ((tick - workload.delays) % 600 == 0)
+            workload.step()
+            solver.check_errno()
+            physical = _physical_inputs(api, entry.contacts, entry.omega)
+            candidate = api.native_outputs(api, entry.model, entry.state)
+            reference_tick = workload.tick
+            poses_before = [
+                api.qd_to_numpy(value, transpose=True)
+                for value in (solver.dyn_state.links.pos, solver.dyn_state.links.quat)
+            ]
+            original_low, original_high = low.recover(), high.recover()
+            poses_after = [
+                api.qd_to_numpy(value, transpose=True)
+                for value in (solver.dyn_state.links.pos, solver.dyn_state.links.quat)
+            ]
+            same_rigid = workload.tick == reference_tick and all(
+                np.array_equal(first, second, equal_nan=True) for first, second in zip(poses_before, poses_after)
+            )
+            rigid_unchanged &= same_rigid
+            copied = [_physical_inputs(api, route.contacts, route.omega) for route in (low, high)]
+            same_inputs = all(
+                np.array_equal(values[name], value, equal_nan=True)
+                for values in copied
+                for name, value in physical.items()
+            )
+            input_unchanged &= same_inputs
+            runtime = {
+                label: _runtime_checks(
+                    api, state, contacts, errno, output, matrix, free, entry.options, physical, vertices
+                )
+                for label, state, contacts, errno, output in (
+                    ("planar", entry.state, entry.contacts, solver._errno, candidate),
+                    ("Q4_production", low.state, low.contacts, low.errno, original_low),
+                    ("Q4_resolved", high.state, high.contacts, high.errno, original_high),
+                )
+            }
+            valid = np.stack([runtime[label]["valid"] for label in ("planar", "Q4_production", "Q4_resolved")])
+            all_numeric &= bool(
+                valid.all() and all(value["unloaded_raw_force_exact_zero"] for value in runtime.values())
+            )
+            loaded_contacts = physical["valid"] & (np.linalg.norm(physical["force"], axis=-1) > 1e-30)
+            loaded = loaded_contacts.any(axis=1)
+            errors = np.stack(
+                (
+                    _errors(api, candidate, original_high, weights),
+                    _errors(api, original_low, original_high, weights),
+                    _errors(api, candidate, original_low, weights),
+                )
+            )
+            after = _route_counts(api, entry.planar.state)
+            delta = np.where(reset[None, :], after, after - counts_before)
+            accounting = bool(
+                (delta >= 0).all()
+                and np.array_equal(delta[0], loaded_contacts.sum(axis=1))
+                and np.array_equal(delta[0], delta[1] + delta[2])
+            )
+            route_accounted &= accounting
+            counters_total += delta
+            invalid_after = np.stack(
+                [api.qd_to_numpy(state.invalid_steps, transpose=True) for state in (entry.state, low.state, high.state)]
+            )
+            invalid_delta = invalid_after - invalid_before
+            invalid_total += invalid_delta
+            error_history.append(errors)
+            loaded_history.append(loaded)
+            valid_history.append(valid)
+            route_history.append(delta)
+            residual_history.append(
+                np.stack([runtime[label]["relative_residual"] for label in ("planar", "Q4_production", "Q4_resolved")])
+            )
+            wrench_history.append(
+                np.stack(
+                    [
+                        [runtime[label][key] for key in ("force_error", "moment_error")]
+                        for label in ("planar", "Q4_production", "Q4_resolved")
+                    ]
+                )
+            )
+            input_history.append(same_inputs)
+            errno_history.append(
+                np.stack([runtime[label]["errno"] for label in ("planar", "Q4_production", "Q4_resolved")])
+            )
+            routing = {
+                "fallback": api.qd_to_numpy(entry.planar.state.fallback, transpose=True),
+                "reason": api.qd_to_numpy(entry.planar.state.reason, transpose=True),
+                "eligible": api.qd_to_numpy(entry.planar.state.eligible, transpose=True),
+                "task_count": api.qd_to_numpy(entry.planar.state.task_count, transpose=True),
+                "counter_delta": delta,
+            }
+            summaries = {}
+            for index, name in enumerate(COMPARISONS):
+                maximum = errors[index][:, loaded].max(axis=1) if loaded.any() else np.zeros(len(METRICS))
+                summaries[name] = {
+                    metric: float(value) if np.isfinite(value) else None for metric, value in zip(METRICS, maximum)
+                }
+            current_errors = errors[0][:, loaded]
+            spatial_passed = bool(np.isfinite(current_errors).all() and (current_errors <= limits[:, None]).all())
+            fidelity_passed = bool(
+                np.isfinite(current_errors).all() and (current_errors <= fidelity_limits[:, None]).all()
+            )
+            row = {
+                "step": step,
+                "tick": tick,
+                "loaded_contacts": int(loaded_contacts.sum()),
+                "loaded_environments": int(loaded.sum()),
+                "numerical_passed": bool(valid.all()),
+                "spatial_passed": spatial_passed,
+                "CPU_fidelity_target_passed": fidelity_passed,
+                "physical_inputs_exact": bool(same_inputs),
+                "route_counters_accounted": accounting,
+                "counter_delta_totals": dict(zip(ROUTE_COUNTERS, delta.sum(axis=1).tolist())),
+                "rigid_scene_exact_during_references": bool(same_rigid),
+                "invalid_environment_step_deltas": invalid_delta.sum(axis=1).tolist(),
+                "invalid_environments": {
+                    label: np.flatnonzero(~value["valid"]).tolist() for label, value in runtime.items()
+                },
+                "errors": summaries,
+                "controller_reset_environments": np.flatnonzero(reset).tolist(),
+            }
+            result["rows"].append(row)
+            if step in args.field_steps or (loaded.any() and not first_loaded_saved):
+                api.np.savez_compressed(
+                    args.output / f"field-{step:04d}.npz",
+                    **_keyframe(step, physical, candidate, original_low, original_high, runtime, routing),
+                )
+                first_loaded_saved |= bool(loaded.any())
+            if loaded.any():
+                for index, label in ((0, "field"), (1, "peak")):
+                    value = float(np.max(errors[0, index, loaded]))
+                    if np.isfinite(value) and (label not in witnesses or value > witnesses[label]["value"]):
+                        witnesses[label] = {
+                            "step": step,
+                            "value": value,
+                            "arrays": _keyframe(
+                                step, physical, candidate, original_low, original_high, runtime, routing
+                            ),
+                        }
+            if step % 25 == 0 or step + 1 == args.steps:
+                api.write_json(args.output / "result.json", result)
+                print(
+                    json.dumps(
+                        {
+                            "step": step,
+                            "loaded": int(loaded.sum()),
+                            "numeric": bool(valid.all()),
+                            "worst_field": summaries[COMPARISONS[0]]["field"],
+                            "fallback_contacts": int(delta[2].sum()),
+                        }
+                    ),
+                    flush=True,
+                )
+    except Exception as error:  # noqa: BLE001 - Preserve failed observations before the deferred re-raise
+        step_error = error
+        result["error"] = {
+            "type": type(error).__name__,
+            "message": str(error),
+            "traceback": traceback.format_exc(),
+            "completed_observations": len(result["rows"]),
+        }
+        (args.output / "failure-traceback.txt").write_text(traceback.format_exc())
+        result["terminal_invalid_counters"] = {
+            label: api.qd_to_numpy(state.invalid_steps, transpose=True).tolist()
+            for label, state in (("planar", entry.state), ("Q4_production", low.state), ("Q4_resolved", high.state))
+        }
+        result["terminal_errno"] = {
+            label: api.qd_to_numpy(errno, transpose=True).tolist()
+            for label, errno in (("planar", solver._errno), ("Q4_production", low.errno), ("Q4_resolved", high.errno))
+        }
+        result["terminal_planar_route_counters"] = _route_counts(api, entry.planar.state).tolist()
+    if error_history:
+        error_array, loaded_array = np.stack(error_history), np.stack(loaded_history)
+        api.np.savez_compressed(
+            args.output / "environment-metrics.npz",
+            errors=error_array,
+            loaded=loaded_array,
+            valid=np.stack(valid_history),
+            route_counter_deltas=np.stack(route_history),
+            relative_unscaled_residual=np.stack(residual_history),
+            original_wrench_errors=np.stack(wrench_history),
+            physical_inputs_exact=np.array(input_history),
+            errno=np.stack(errno_history),
+        )
+        selected = error_array[:, 0, 0, :][loaded_array]
+        mean_field = float(selected.mean()) if len(selected) and np.isfinite(selected).all() else None
+        result["mean_loaded_field_error"] = mean_field
+        result["loaded_environment_observations"] = int(loaded_array.sum())
+        comparison_summaries = {}
+        for index, name in enumerate(COMPARISONS):
+            maximum, nonfinite = {}, {}
+            for metric, key in enumerate(METRICS):
+                values = error_array[:, index, metric, :][loaded_array]
+                finite = np.isfinite(values)
+                nonfinite[key] = int((~finite).sum())
+                maximum[key] = float(values.max()) if len(values) and finite.all() else None
+            fields = error_array[:, index, 0, :][loaded_array]
+            comparison_summaries[name] = {
+                "maximum_loaded_errors": maximum,
+                "nonfinite_loaded_errors": nonfinite,
+                "mean_loaded_field_error": float(fields.mean()) if len(fields) and np.isfinite(fields).all() else None,
+            }
+        result["comparison_summaries"] = comparison_summaries
+        result["metrics_layout"] = {
+            "errors": "(step,comparison,metric,environment)",
+            "comparisons": COMPARISONS,
+            "metrics": METRICS,
+            "valid": "(step,route=(planar,Q4-production,Q4-resolved),environment)",
+            "route_counters": ROUTE_COUNTERS,
+        }
+        result["per_casewise_spatial_budgets_passed"] = all(row["spatial_passed"] for row in result["rows"])
+        result["per_casewise_CPU_fidelity_targets_passed"] = all(
+            row["CPU_fidelity_target_passed"] for row in result["rows"]
+        )
+        result["mean_field_budget_passed"] = (
+            mean_field is not None and mean_field <= original_limits["mean_weighted_tensor_field"]
+        )
+    for label, witness in witnesses.items():
+        api.np.savez_compressed(args.output / f"worst-{label}-field.npz", **witness["arrays"])
+    result["worst_witnesses"] = {
+        label: {"step": witness["step"], "relative_error": witness["value"]} for label, witness in witnesses.items()
+    }
+    result["route_counter_totals"] = dict(zip(ROUTE_COUNTERS, counters_total.sum(axis=1).tolist()))
+    result["invalid_environment_steps_by_route"] = dict(
+        zip(("planar", "Q4_production", "Q4_resolved"), invalid_total.sum(axis=1).tolist())
+    )
+    if args.lifecycle and step_error is None:
+        try:
+            result["lifecycle"] = _lifecycle(api, workload, entry)
+        except Exception as error:  # noqa: BLE001 - Preserve failed lifecycle evidence before the deferred re-raise
+            step_error = error
+            result["lifecycle"] = {
+                "performed": True,
+                "passed": False,
+                "error": str(error),
+                "traceback": traceback.format_exc(),
+            }
+    else:
+        result["lifecycle"] = {
+            "performed": False,
+            "passed": False,
+            "reason": "disabled" if not args.lifecycle else "primary trajectory raised",
+        }
+    source_after = _source_identity(api)
+    inputs_unchanged = (
+        api.file_id(args.conditions) == result["conditions"]
+        and api.file_id(args.budgets) == result["budget_input"]
+        and api.file_id(Path(entry.options.mesh)) == result["mesh"]
+    )
+    result.update(
+        source_files_after=source_after,
+        source_unchanged=source_before == source_after,
+        complete=step_error is None and len(result["rows"]) == args.steps,
+        numerical_passed=bool(all_numeric and len(result["rows"]) == args.steps),
+        physical_inputs_exact=bool(input_unchanged),
+        route_counters_accounted=bool(route_accounted),
+        rigid_scene_exact_during_references=bool(rigid_unchanged),
+        input_files_unchanged=bool(inputs_unchanged),
+        seconds_including_intrusive_audit=time.perf_counter() - started,
+    )
+    result["passed"] = bool(
+        result["complete"]
+        and result["numerical_passed"]
+        and result["physical_inputs_exact"]
+        and result["route_counters_accounted"]
+        and result["source_unchanged"]
+        and result["rigid_scene_exact_during_references"]
+        and result["input_files_unchanged"]
+        and result.get("mean_field_budget_passed", False)
+        and result.get("per_casewise_spatial_budgets_passed", False)
+        and result.get("per_casewise_CPU_fidelity_targets_passed", False)
+        and (not args.lifecycle or result["lifecycle"]["passed"])
+    )
+    result["full_trajectory_qualified"] = result["passed"] and args.steps >= 600
+    api.write_json(args.output / "result.json", result)
+    if step_error is not None:
+        raise step_error
+    if not result["passed"]:
+        raise ArithmeticError(
+            "Production planar DPR trajectory exceeded its original numerical/spatial or frozen CPU-fidelity contracts."
+        )
+
+
+if __name__ == "__main__":
+    main()
