@@ -277,6 +277,8 @@ def _cpu_worker(args):
 
 
 def _native_api():
+    from scipy import sparse
+
     from .check_planar_primitives import _field, _native_api as primitive_api, _surface
 
     api = primitive_api()
