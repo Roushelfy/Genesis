@@ -24,6 +24,11 @@ run directory recorded in `DATA_LOCATION.md`. Its `meta/error-budgets.json` and
 | Exact radial runtime | `0d34bfad9`, `radial-runtime-v1` | Egg75/torus8, radial and retained 2D-Gauss controls, all four k8/k16 groups pass their original 170 checks |
 | Loading-only k32 | `fb084a3ca`, `oracle-k32` / `k32-validation-v1` | Independent CPU export and four native egg/torus q24/q48 groups pass. The old geometry guard fails the warped control; see below. k32 inherits the existing k16 fidelity budgets |
 | Public configuration | `4032d7366`, `public-planar-v1` | Twelve Q4/planar shell tests pass: direct/inverse, max/full, every-step/manual, release, partial reset and checkpoint; no elastic DOF growth |
+| D1 after material guards | `0ec2e4a7a`, `d1-banks-v11` / `k32-trajectory-v11` | 1,092 bank checks and complete B4/711 plus B64/1192 scripted trajectories pass; k32/q10 inherits k16 budgets, no fallback/overflow/invalid |
+| Cooperative anchors | `175226fa1` / `67acd86cf`, `anchor-contract-v2` / `anchor-completion-v13` | Frozen old serial, refactored serial and warp outputs compare byte-for-byte, including signed ties, absent pools, failed-status recovery and slot changes; downstream banks and complete scripted trajectories pass |
+| Actual inference feedback | `1836734e7`, `policy-trajectory-v15` | B4/711 and B64/1192 pass after730-step policy warmup and restart; independent original Q4 low24/16 and resolved48 references, actual FP32 weights/actions and original gates retained |
+| Conservative cell blocks | `c82ec833a`, `hierarchical-query-coverage-v3` | 8,300 independent geometry/query checks pass for k4/8/16/32, serial/cells/blocks, positive triangle sets, material rejection, overflow and input bytes; full bank and performance decision still pending |
+| Selected workspace | `c82ec833a`, `policy-blocks-cap128-v17` | Blocks/cooperative/radial k32/q10/cap128 passes complete actual-policy B4/711 and B64/1192; true native task peaks50 and63, no truncation/fallback/overflow/invalid |
 
 The CPU bank explicitly selects one physical side to match the CPU oracle.
 Production uses both sides. Those are distinct qualification scopes. The Q4
@@ -56,15 +61,20 @@ delayed environment completes its initial600-step cycle. All218,321 loaded
 contacts use the proxy without fallback. Original residual, application-point
 load, spatial and lifecycle gates pass. The tighter frozen k16 targets still
 reject sampled peak0.323185% (limit0.3%) and M0.783200% (limit0.75%). This is
-a measured approximation negative. A bounded k32 loading-only candidate is
-being assessed; the elastic DOF and all existing budgets remain unchanged.
+a measured approximation negative. The bounded k32 loading-only candidate now
+passes complete scripted and actual-policy qualification; the elastic DOF and
+all existing budgets remain unchanged. On the64-condition policy trajectory,
+worst field/peak/N/M/Q errors against Q4 q48 are0.0828%/0.0736%/0.0290%/
+0.1622%/0.0804%. These compare the same discrete elastic model, not a resolved
+physical continuum/contact peak.
 
 The k32 warped control exposed an admission defect in the previous `.01R`
 normal-error guard: raw load error0.0281% passed, but full-field error0.3900%
 and sampled-peak error0.3668% exceeded the frozen fallback-equivalence0.1%
 limit. The old failed campaign remains intact. The geometry admission threshold
-is now `.005R`; the error budgets are unchanged. New q48 and lower-order guard
-checks are running against a frozen source before this change is qualified.
+is now `.005R`; the error budgets are unchanged. The new guard campaign passes
+892 q48 checks across k4/8/16/32 and213 each for k32 q10/q16. The changed
+material path also passes all1,060 original U-shell checks at k32/q48.
 
 Two additional material counterexamples were found during the contact audit.
 Folded faces can share an authored hinge outside the contact ball while their
@@ -74,8 +84,17 @@ error alone do not establish material identity. The new candidate checks that
 the shared physical edge enters the ball and requires a sufficient Q4
 connectedness certificate. Uncertified geometry fails closed with the existing
 invalid-load mechanism. Independent folded-face, saddle, extreme-scale and
-near-tangent controls are running; the older U-shell result does not qualify
-these new cases or the changed material query by itself.
+near-tangent controls supplement the U-shell. An independent readback measures
+old parent-only graph leakage of4.44–8.37% of the source force on a folded-face
+control, while the new selected component has exactly zero remote exclusive-node
+load. The original nearly180-degree fold has an ill-conditioned elastic mother
+whose CPU and native solves fail the unchanged residual gate. A separately
+identified30-degree opening keeps the disconnected contact-ball geometry and
+improves conditioning. Its full qualification remains pending: the existing
+serial constrained-pressure path rejects two cases that the maintained
+cooperative/moment paths admit. This is retained as a real negative; a stable
+but mathematically equivalent Armijo energy-difference calculation is under
+independent review. No residual, force/moment or spatial gate is relaxed.
 
 The volume edge/q16 policy control rejects tick606 during a730-step warmup in
 both the untouched goal baseline and the later native source: env2, slot0,
@@ -131,14 +150,27 @@ rates. The original anchor alone takes about1.17/1.13ms, now18–41% of the
 radial path. This changed bottleneck motivates a bounded cooperative anchor
 experiment; strict old-serial/new-serial/warp byte comparisons run before
 the whole-path screening decision. The option remains private and off by
-default during qualification.
+default during qualification. Its strict byte tests and complete policy
+qualification now pass. In bounded screening it reduces B4 Q4/q16 module
+time3.938→2.868ms and B1024 time9.064→8.264ms; these within-process screening
+repeats are not the final fresh-process paired headline. Q4 q24 is faster than
+q16 on the small frozen module, so the final comparison must use the tuned Q4
+configuration rather than attribute shared improvements only to the proxy.
+
+The post-anchor k32 profile identifies full-cell traversal as the next bottleneck:
+query1.469ms versus moments0.064ms at B4, and1.671/1.390ms at B1024. The bounded
+four-by-four cell-block candidate stores exact QD min/max bounds of the original
+cells, then retains the original cell/triangle tests. Independent coverage passes;
+complete-path A/B and CPU banks remain required before keeping the optimization.
+Its earlier unsupported-kernel-default import failure and incorrectly authored
+test seed are retained as harness/interface failures, not numerical passes.
 
 | Required family | Current status / remaining evidence |
 | --- | --- |
 | Fixed geometry and compact J maps | Native QD preparation; compact refined grid plus integer topology and original-parent CSR; shared geometry supported. Preparation/memory measurements pending. |
 | Material-aware queries and witness reuse | Warp query and original-parent fallback mask implemented; new physical-edge and single-Q4 connectivity guards require fresh qualification. Temporal witness reuse remains to be assessed against actual profile and invalidation cost. |
 | Contained moments, clipping and fitting reuse | Exact analytic moments, positivity checks, once-per-task geometry publication, shared G/H and exact radial integration validated in their stated banks. Whole-path gains pending. |
-| Packing, grouping, layout and cooperative work | Loaded sources packed, bounded per-environment tasks and whole-environment overflow fallback validated; k4/capacity/quadrature/batch tuning and plateau pending. |
+| Packing, grouping, layout and cooperative work | Loaded sources packed; original-anchor warp and bounded per-environment tasks qualified. Cap128 passes the complete measured policy banks with true peaks50/63. Final batch/plateau and paired timing pending. |
 | Response, max/full and fusion | Original optimized Q4 response and acceptance retained. Actual profile captures fused recovery; paired max/full wall timing and bounded scheduling/fusion controls pending. |
 | Graphs, device scheduling and copies | Native task scheduling uses device fields; no oracle export inside primary timing. Graph and host scheduling increments require matched complete-path measurement. |
 | Fallback buffers and cost | Independent material-mask controls pass; record all routes in production timing. Capacity32 is not assumed optimal. |
