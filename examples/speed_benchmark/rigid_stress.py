@@ -154,6 +154,21 @@ class GeometryFrame(NamedTuple):
     quaternion: np.ndarray
 
 
+def create_inference_policy() -> torch.nn.Module:
+    torch.manual_seed(99173)
+    return (
+        torch.nn.Sequential(
+            torch.nn.Linear(26, 128),
+            torch.nn.Tanh(),
+            torch.nn.Linear(128, 128),
+            torch.nn.Tanh(),
+            torch.nn.Linear(128, 7),
+        )
+        .to(device=gs.device, dtype=gs.tc_float)
+        .eval()
+    )
+
+
 def anchor_execution_modes(workload: FrankaEgg, staged: bool = False) -> list[str]:
     if not workload.stress:
         return []
@@ -703,20 +718,10 @@ def main() -> None:
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
+    qd.sync()
     setup_seconds = time.perf_counter() - start
     finger_links = np.array([workload.robot.get_link(name).idx for name in ("left_finger", "right_finger")])
-    torch.manual_seed(99173)
-    policy = (
-        torch.nn.Sequential(
-            torch.nn.Linear(26, 128),
-            torch.nn.Tanh(),
-            torch.nn.Linear(128, 128),
-            torch.nn.Tanh(),
-            torch.nn.Linear(128, 7),
-        )
-        .to(device=gs.device, dtype=gs.tc_float)
-        .eval()
-    )
+    policy = create_inference_policy()
     policy_dtype = torch.float32 if args.policy_precision == "32" else torch.float64
     policy_reference = copy.deepcopy(policy) if args.policy_precision == "32" else None
     policy = policy.to(dtype=policy_dtype)
