@@ -36,7 +36,7 @@ can still select the older paths, and their actual execution modes are recorded.
 | D1 after material guards | `0ec2e4a7a`, `d1-banks-v11` / `k32-trajectory-v11` | 1,092 bank checks and complete B4/711 plus B64/1192 scripted trajectories pass; k32/q10 inherits k16 budgets, no fallback/overflow/invalid |
 | Cooperative anchors | `175226fa1` / `67acd86cf`, `anchor-contract-v2` / `anchor-completion-v13` | Frozen old serial, refactored serial and warp outputs compare byte-for-byte, including signed ties, absent pools, failed-status recovery and slot changes; downstream banks and complete scripted trajectories pass |
 | Actual inference feedback | `1836734e7`, `policy-trajectory-v15` | B4/711 and B64/1192 pass after730-step policy warmup and restart; independent original Q4 low24/16 and resolved48 references, actual FP32 weights/actions and original gates retained |
-| Conservative cell blocks | `c82ec833a`, `hierarchical-query-coverage-v3` | 8,300 independent geometry/query checks pass for k4/8/16/32, serial/cells/blocks, positive triangle sets, material rejection, overflow and input bytes; full bank and performance decision still pending |
+| Conservative cell blocks | `c82ec833a`, `hierarchical-query-coverage-v3` | 8,300 independent geometry/query checks and 1,092 final bank checks pass; bounded whole-path screening supports retaining blocks for k16/k32 |
 | Selected workspace | `c82ec833a`, `policy-blocks-cap128-v17` | Blocks/cooperative/radial k32/q10/cap128 passes complete actual-policy B4/711 and B64/1192; true native task peaks50 and63, no truncation/fallback/overflow/invalid |
 
 The CPU bank explicitly selects one physical side to match the CPU oracle.
@@ -106,7 +106,7 @@ difference fixes the two sources under all original gates: 22 matched native
 checks and71 independent400-digit Decimal cases pass. The corrected opening
 then passes all2,737 checks across56 phases/four paths/two capacities, including
 original K, full fields and exactly zero remote exclusive-node load. A focused
-post-fix serial U-shell replay remains pending. No residual, force/moment or
+post-fix serial U-shell replay now passes273 checks over seven phases. No residual, force/moment or
 spatial gate is relaxed.
 
 The volume edge/q16 policy control rejects tick606 during a730-step warmup in
@@ -190,27 +190,30 @@ the external Quadrants library or shared cluster configuration.
 | Required family | Current status / remaining evidence |
 | --- | --- |
 | Fixed geometry and compact J maps | Native QD preparation; compact refined grid plus integer topology and original-parent CSR; shared geometry supported. Preparation/memory measurements pending. |
-| Material-aware queries and witness reuse | Warp query and original-parent fallback mask implemented; new physical-edge and single-Q4 connectivity guards require fresh qualification. Temporal witness reuse remains to be assessed against actual profile and invalidation cost. |
+| Material-aware queries and witness reuse | Physical-edge/single-Q4 connectivity guards and open30/U full-field controls pass. Keep step-local G/H reuse; a new cross-step support cache lacks useful invariant evidence and is not selected. |
 | Contained moments, clipping and fitting reuse | Exact analytic moments, positivity checks, once-per-task geometry publication, shared G/H and exact radial integration validated in their stated banks. Whole-path gains pending. |
 | Packing, grouping, layout and cooperative work | Loaded sources packed; original-anchor warp and bounded per-environment tasks qualified. Cap128 passes the complete measured policy banks with true peaks50/63. Final batch/plateau and paired timing pending. |
-| Response, max/full and fusion | Original optimized Q4 response and acceptance retained. Actual profile captures fused recovery; paired max/full wall timing and bounded scheduling/fusion controls pending. |
-| Graphs, device scheduling and copies | Native task scheduling uses device fields; no oracle export inside primary timing. Graph and host scheduling increments require matched complete-path measurement. |
+| Response, max/full and fusion | Original optimized Q4 response and acceptance retained. Volume q128 fused/separate scheduling and same-frozen-input full-field controls pass; retain fused baseline. Final paired max/full wall timing is pending. |
+| Graphs, device scheduling and copies | Bounded actual on/off measurements favor process-local GraphOff for this workload; final all-variant paired workers use that mode. No oracle export inside primary timing. |
 | Fallback buffers and cost | Independent material-mask controls pass; record all routes in production timing. Capacity32 is not assumed optimal. |
 | Prior Atlas/H/FP32/screen/history evidence | Preserved with its previous scope; no unchanged expensive sweep reopened. |
 
 ## Remaining completion work
 
-Qualify warped/missed and tie guards, actual production defaults and selected
-k/capacity/quadrature settings on full small/heterogeneous histories, including
-all original gates and independently resolved integration. Complete tuning,
+Numerical/contact/lifecycle qualification is complete in the stated scopes,
+including full small/heterogeneous histories, original gates, independently
+resolved integration and26 final focused regressions. Complete the formal
 paired frozen-module and full Franka inference workflows against optimized Q4,
-volume DPR and pure rigid, small/useful-large/plateau max/full measurements,
-preparation/native/shared/per-environment/process/device memory, final focused
-regressions, preservation audit, compact runnable evidence and recommendations.
+volume DPR and pure rigid, useful-large/plateau max/full measurements,
+preparation/native/shared/per-environment/process/device memory, final profile
+reduction, preservation audit, compact runnable evidence and recommendations.
 The inference workflow uses a seeded random MLP with the scripted controller;
 it does not measure policy training. Source `6dedc7957` binds actual MLP weights,
 process IDs, physical assets and canonical frozen-source hashes. The final
 campaign has168 fresh processes in16 groups, three paired blocks at each
 scope/batch/output, with B4/1024/8192/32768. It is running alongside separate
-intrusive memory and final trace campaigns. A complete fresh-process result,
-final memory/requirements packet and recommendation remain required for closure.
+intrusive memory campaigns; all14 final trace workers have finished. The
+[result review](PLANAR_LOADING_RESULTS_20261027.md) retains its incomplete label
+until all formal measurements and final packet checks pass. A complete
+fresh-process result, final memory/requirements packet and recommendation remain
+required for closure.
