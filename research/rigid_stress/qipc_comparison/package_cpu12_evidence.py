@@ -1,4 +1,4 @@
-"""Build a <=10 MiB CPU12 evidence packet using only the Python standard library.
+"""Build a <=10 MiB rigid-stress evidence packet using only the Python standard library.
 
 Only task outputs with a task-specific returncode receipt are eligible. Pending
 or cancelled tasks without that receipt retain submission/cancellation metadata,
@@ -398,7 +398,7 @@ def _input_receipts(packet, task_id, arguments):
     return sorted(set(inputs))
 
 
-def _preservation(start):
+def _preservation(start, expected_frozen_count=23):
     """Record observed original-file hashes and frozen source pins without editing either."""
     original, frozen = [], []
     for row in start.get("original_files", []):
@@ -438,13 +438,13 @@ def _preservation(start):
         "original_files": original,
         "frozen_sources": frozen,
         "expected_original_count": 12,
-        "expected_frozen_count": 23,
-        "start_receipt_counts_match_scope": len(original) == 12 and len(frozen) == 23,
+        "expected_frozen_count": expected_frozen_count,
+        "start_receipt_counts_match_scope": len(original) == 12 and len(frozen) == expected_frozen_count,
         "goal_completion_assessed": False,
     }
 
 
-def _task(packet, campaign, group_index, task, source, analysis, cancellations):
+def _task(packet, campaign, group_index, task, source, analysis, cancellations, repro_prefix="CPU12"):
     name = task["name"]
     if not isinstance(name, str) or Path(name).name != name or name in (".", ".."):
         raise ValueError(f"Invalid task name in frozen task receipt: {name!r}")
@@ -532,7 +532,7 @@ def _task(packet, campaign, group_index, task, source, analysis, cancellations):
         raise RuntimeError(f"Task returncode changed during packaging: {marker}")
     record["reproduction_command"] = (
         f"PYTHONPATH={shlex.quote(str(campaign / 'analysis-source'))}:{shlex.quote(str(source.get('source', '<frozen-source>')))} "
-        f'python -m {shlex.quote(module or "<worker>")} {shlex.join(arguments)} --output "${{CPU12_REPRO_OUTPUT:?set a fresh data output}}"'
+        f'python -m {shlex.quote(module or "<worker>")} {shlex.join(arguments)} --output "${{{repro_prefix}_REPRO_OUTPUT:?set a fresh data output}}"'
     )
     return record
 
@@ -618,7 +618,13 @@ def main():
     parser.add_argument("--maintained-source", required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
     parser.add_argument("--requirements-ledger", type=Path)
+    parser.add_argument("--study", choices=("cpu12", "planar"), default="cpu12")
     args = parser.parse_args()
+    if args.study == "planar" and args.requirements_ledger is None:
+        parser.error("Planar loading requires its explicit requirements ledger; CPU12 targets do not apply.")
+    title = "Planar loading DPR" if args.study == "planar" else "CPU12"
+    repro_prefix = "PLANAR" if args.study == "planar" else "CPU12"
+    expected_frozen_count = 33 if args.study == "planar" else 23
     run_root, output = args.run_root.expanduser().resolve(), args.output.expanduser().resolve()
     if not run_root.is_dir() or output.is_relative_to(run_root):
         parser.error("Use an existing run root and a separate fresh evidence destination.")
@@ -642,7 +648,7 @@ def main():
                 )
     start = metadata_documents.get("start-state.json")
     if not isinstance(start, dict):
-        raise TypeError("The original12-file/23-source preservation start-state receipt is required.")
+        raise TypeError("The original-file/frozen-source preservation start-state receipt is required.")
     for campaign in sorted(path for path in run_root.iterdir() if path.is_dir() and (path / "tasks.json").is_file()):
         source, analysis, receipts = _source_receipts(packet, campaign)
         definitions = _read_json(campaign / "tasks.json")
@@ -655,7 +661,9 @@ def main():
         ]
         for group_index, group in enumerate(definitions):
             for definition in group:
-                tasks.append(_task(packet, campaign, group_index, definition, source, analysis, cancellations))
+                tasks.append(
+                    _task(packet, campaign, group_index, definition, source, analysis, cancellations, repro_prefix)
+                )
             group_marker = campaign / f"group{group_index}/returncode.txt"
             if group_marker.is_file() and all(
                 _returncode(campaign / f"group{group_index}", task["name"])[1] is not None for task in group
@@ -669,7 +677,7 @@ def main():
                 "task_count": sum(len(group) for group in definitions),
             }
         )
-    preservation = _preservation(start)
+    preservation = _preservation(start, expected_frozen_count)
     ledger = (
         json.loads(_stable_bytes(args.requirements_ledger))
         if args.requirements_ledger
@@ -695,7 +703,7 @@ def main():
     )
     counts = dict(Counter(task["execution_status"] for task in tasks))
     created = datetime.now(timezone.utc).isoformat()
-    readme = f"""# CPU12 compact evidence packet
+    readme = f"""# {title} compact evidence packet
 
 Generated {created}. Run root: `{run_root}`. Maintained source: `{maintained}`.
 
@@ -723,12 +731,13 @@ files may be retained individually; full engine code is reproduced by Git pin.
 ```sh
 sha256sum -c SHA256SUMS
 gzip -dc external-artifacts.jsonl.gz
-: "${{CPU12_REPRO_SOURCE:?choose a fresh source checkout}}"
-: "${{CPU12_PACKET_OUTPUT:?choose a fresh packet directory}}"
-git worktree add --detach "$CPU12_REPRO_SOURCE" {maintained}
+: "${{{repro_prefix}_REPRO_SOURCE:?choose a fresh source checkout}}"
+: "${{{repro_prefix}_PACKET_OUTPUT:?choose a fresh packet directory}}"
+git worktree add --detach "${repro_prefix}_REPRO_SOURCE" {maintained}
 python -m research.rigid_stress.qipc_comparison.package_cpu12_evidence \\
-  --run-root {shlex.quote(str(run_root))} --output "$CPU12_PACKET_OUTPUT" \\
-  --maintained-source {maintained} --git-source "$CPU12_REPRO_SOURCE"
+  --run-root {shlex.quote(str(run_root))} --output "${repro_prefix}_PACKET_OUTPUT" \\
+  --maintained-source {maintained} --git-source "${repro_prefix}_REPRO_SOURCE" \\
+  --study {args.study}{' --requirements-ledger "${PLANAR_REQUIREMENTS_LEDGER:?choose the reviewed ledger}"' if args.study == "planar" else ""}
 ```
 
 Each terminal task has its original module/arguments and reproduction command in
@@ -739,7 +748,7 @@ Do not execute scientific modules on a login node or overwrite any original run.
 Packet creation itself uses only the standard library and changes no run files.
 
 `preservation.json` reports current read-only observations of the original12
-files and23 frozen sources from the preserved start receipt. Unknown/missing
+files and{expected_frozen_count} frozen sources from the preserved start receipt. Unknown/missing
 paths stay explicit. Device-memory point/sampled measurements, intrusive profile
 results, approximate-space residuals and exact-mother residuals retain their
 source declarations; packaging does not reinterpret them as new validation.
@@ -749,7 +758,7 @@ with `--requirements-ledger <COPY>` into a fresh directory. This preserves all
 payload hashes and never promotes a pending task or historical result to a pass.
 """
     index_base = {
-        "schema": "genesis.cpu12-compact-evidence.v1",
+        "schema": f"genesis.{args.study}-compact-evidence.v1",
         "created_utc": created,
         "run_root": str(run_root),
         "maintained_source": maintained,
