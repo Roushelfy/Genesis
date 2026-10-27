@@ -29,6 +29,11 @@ PLANAR_REQUIRED_METADATA = (
     "final-memory-summary-*.json.gz",
     "final-profile-summary-*.json.gz",
     "verify-planar-delivery-packet-v19.py",
+    "reproduction-inputs-v19.json",
+    "source-conditions-*.npz",
+    "ledger-copy-*",
+    "retained-ledger-receipts-v19.json",
+    "verify-ledger-retention-v19.py",
 )
 PRIMARY_EXTERNAL_FIELDS = {
     "warmup_quality",
@@ -633,7 +638,7 @@ def _task(packet, campaign, group_index, task, source, analysis, cancellations, 
     return record
 
 
-def _plan(packet, tasks, index_base, preservation, ledger, readme):
+def _plan_legacy(packet, tasks, index_base, preservation, ledger, readme):
     selected = set(packet.candidates)
     omitted = []
     while True:
@@ -705,6 +710,117 @@ def _plan(packet, tasks, index_base, preservation, ledger, readme):
                 "reason": "10MiB hard limit; original remains externally hashed",
             }
         )
+
+
+def _render_planar(packet, tasks, index_base, preservation, ledger, readme, selected, omitted):
+    payloads, payload_manifest = {}, {}
+    for digest in sorted(selected):
+        candidate = packet.candidates[digest]
+        path = f"payloads/{candidate.category}/{digest}{candidate.extension}"
+        payloads[path] = candidate.data
+        payload_manifest[path] = {"bytes": len(candidate.data), "sha256": digest, "category": candidate.category}
+    artifacts = []
+    for key, value in sorted(packet.artifacts.items()):
+        entry = dict(value)
+        entry["retained_payloads"] = [
+            f"payloads/{packet.candidates[digest].category}/{digest}{packet.candidates[digest].extension}"
+            for digest in sorted(set(packet.associations.get(key, [])))
+            if digest in selected
+        ]
+        artifacts.append(entry)
+    compressed_artifacts = gzip.compress(
+        b"".join(json.dumps(row, sort_keys=True, allow_nan=False).encode() + b"\n" for row in artifacts),
+        compresslevel=9,
+        mtime=0,
+    )
+    fixed = {
+        "external-artifacts.jsonl.gz": compressed_artifacts,
+        "preservation.json": _json_bytes(preservation),
+        "requirements-ledger.json": _json_bytes(ledger),
+        "README.md": readme.encode(),
+    }
+    for path, content in fixed.items():
+        payloads[path] = content
+        payload_manifest[path] = {
+            "bytes": len(content),
+            "sha256": hashlib.sha256(content).hexdigest(),
+            "category": "packet-metadata",
+        }
+    index = {
+        **index_base,
+        "tasks": tasks,
+        "artifacts": len(artifacts),
+        "payloads": payload_manifest,
+        "omitted_optional_payloads": omitted,
+        "packet_limit_bytes": LIMIT,
+        "artifact_inventory": "external-artifacts.jsonl.gz",
+        "payload_hash_scope": "Every payload including generated metadata; index.json and index.json.gz are hashed in SHA256SUMS.",
+    }
+    index_content = _json_bytes(index)
+    compressed_index = gzip.compress(index_content, compresslevel=9, mtime=0)
+    payloads["index.json.gz"] = compressed_index
+    payloads["index.json"] = _json_bytes(
+        {
+            "schema": "genesis.planar-evidence-index-reference.v1",
+            "encoding": "gzip",
+            "path": "index.json.gz",
+            "decompressed_bytes": len(index_content),
+            "decompressed_sha256": hashlib.sha256(index_content).hexdigest(),
+            "compressed_bytes": len(compressed_index),
+            "compressed_sha256": hashlib.sha256(compressed_index).hexdigest(),
+            "packet_limit_bytes": LIMIT,
+        }
+    )
+    checksum = "".join(
+        f"{hashlib.sha256(content).hexdigest()}  {path}\n" for path, content in sorted(payloads.items())
+    ).encode()
+    payloads["SHA256SUMS"] = checksum
+    total = sum(len(content) for content in payloads.values())
+    return payloads, total
+
+
+def _plan(packet, tasks, index_base, preservation, ledger, readme):
+    if packet.study != "planar":
+        return _plan_legacy(packet, tasks, index_base, preservation, ledger, readme)
+    selected = set(packet.candidates)
+    optional = sorted(
+        (digest for digest in selected if not packet.candidates[digest].required),
+        key=lambda digest: (packet.candidates[digest].priority, len(packet.candidates[digest].data), digest),
+        reverse=True,
+    )
+
+    def render(dropped):
+        omitted = [
+            {
+                "payload_sha256": digest,
+                "category": packet.candidates[digest].category,
+                "reason": "10MiB hard limit; original remains externally hashed",
+            }
+            for digest in optional[:dropped]
+        ]
+        return _render_planar(
+            packet, tasks, index_base, preservation, ledger, readme, selected.difference(optional[:dropped]), omitted
+        )
+
+    payloads, total = render(0)
+    if total <= LIMIT:
+        return payloads, total
+    if not optional:
+        raise RuntimeError(f"Mandatory planar payloads and full index exceed the10MiB limit ({total} bytes).")
+    best_payloads, best_total = render(len(optional))
+    if best_total > LIMIT:
+        raise RuntimeError(f"Mandatory planar payloads and full index exceed the10MiB limit ({best_total} bytes).")
+    # Keep an actually rendered fitting upper endpoint. Gzip/index changes need not be monotone;
+    # binary search is a bounded deterministic selection, not a maximal-payload guarantee.
+    lower, upper = 0, len(optional)
+    while upper - lower > 1:
+        middle = (lower + upper) // 2
+        payloads, total = render(middle)
+        if total <= LIMIT:
+            upper, best_payloads, best_total = middle, payloads, total
+        else:
+            lower = middle
+    return best_payloads, best_total
 
 
 def main():
@@ -795,6 +911,10 @@ def main():
         "Existing top-level primary/memory/profile summary gzip files and the final offline verifier are "
         "mandatory exact payloads, without the optional metadata 4MiB input cutoff. The 10MiB packet limit "
         "still applies; missing summaries are not created or certified by packaging.\n\n"
+        "Planar index.json is a small gzip reference: index.json.gz contains the complete original indented "
+        "index with every task, field and artifact. The reference binds compressed and decompressed bytes/SHA256; "
+        "both files are covered by SHA256SUMS. Optional payload selection uses bounded deterministic planning "
+        "and never removes mandatory summaries, raw rows or reproduction/ledger inputs.\n\n"
         if args.study == "planar"
         else ""
     )
@@ -804,6 +924,8 @@ def main():
         if args.study == "planar"
         else "Missing receipts remain pending, including stopped jobs with a\nseparate cancellation journal."
     )
+    index_label = "The decoded full index" if args.study == "planar" else "`index.json`"
+    index_inspection = "gzip -dc index.json.gz\n" if args.study == "planar" else ""
     readme = f"""# {title} compact evidence packet
 
 Generated {created}. Run root: `{run_root}`. Maintained source: `{maintained}`.
@@ -812,7 +934,7 @@ This packet records terminal execution receipts and declared numerical/spatial
 semantics separately. It does not mark the user goal complete. Review
 `requirements-ledger.json` before making any completion claim.
 
-`index.json` maps campaign/group/task, actual worker hash, source pin, exact CLI
+{index_label} maps campaign/group/task, actual worker hash, source pin, exact CLI
 and available result summaries. `external-artifacts.jsonl.gz` records SHA256 and
 bytes for every collected task artifact, including arrays, complete fields and
 logs left on data. Retained payloads are content-addressed and deduplicated.
@@ -831,7 +953,7 @@ files may be retained individually; full engine code is reproduced by Git pin.
 
 ```sh
 sha256sum -c SHA256SUMS
-gzip -dc external-artifacts.jsonl.gz
+{index_inspection}gzip -dc external-artifacts.jsonl.gz
 : "${{{repro_prefix}_REPRO_SOURCE:?choose a fresh source checkout}}"
 : "${{{repro_prefix}_PACKET_OUTPUT:?choose a fresh packet directory}}"
 git worktree add --detach "${repro_prefix}_REPRO_SOURCE" {maintained}
