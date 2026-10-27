@@ -171,7 +171,10 @@ class PlanarLoading:
     def scatter(self, stress_state, load_info, surface_info, options, scatter_workspace, reuse_contact_moments: bool):
         """Fit current proxy loads, recover unsupported contacts on the original route and add accepted contributions."""
         kernel_planar_query(self.contacts, self.info, self.state)
-        kernel_planar_moments(self.contacts, self.state, surface_info)
+        if options.cooperative_pressure and gs.backend == gs.cuda:
+            kernel_planar_moments_warp(self.contacts, self.state, surface_info)
+        else:
+            kernel_planar_moments(self.contacts, self.state, surface_info)
         kernel_planar_fit(self.contacts, self.state, surface_info)
         kernel_planar_validate(self.contacts, self.state, load_info, surface_info)
         kernel_planar_material(
@@ -436,6 +439,94 @@ def kernel_planar_moments(contacts: StressContactState, state: PlanarLoadingStat
                         samples += gs.qd_int(weight > 0.0)
                 state.gram[i_t, i_b], state.load_moments[i_t, i_b] = gram, load
                 qd.atomic_add(state.sample_count[i_c, i_b], samples)
+
+
+@qd.kernel
+def kernel_planar_moments_warp(contacts: StressContactState, state: PlanarLoadingState, surface: StressSurfaceInfo):
+    qd.loop_config(block_dim=128)
+    for i_thread in range(state.tasks.shape[0] * state.tasks.shape[1] * 32):
+        lane = i_thread % 32
+        i_t, i_b = (i_thread // 32) // state.tasks.shape[1], (i_thread // 32) % state.tasks.shape[1]
+        if i_t < state.task_count[i_b]:
+            task = state.tasks[i_t, i_b]
+            i_c = task[2]
+            if state.eligible[i_c, i_b]:
+                first, second = func_force_frame(contacts.force[i_c, i_b])
+                origin, edges = state.origin[i_t, i_b], state.edges[i_t, i_b]
+                dual, normal, parent_shapes = (
+                    state.dual[i_t, i_b],
+                    state.normal[i_t, i_b],
+                    state.parent_shapes[i_t, i_b],
+                )
+                center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
+                section, plane, polygon, remaining, angles, count, contained = func_planar_clip_geometry(
+                    origin, edges, normal, center, radius
+                )
+                gram, load = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Matrix.zero(gs.qd_float, 4, 3)
+                samples = 0
+                if contained:
+                    if lane == 0:
+                        gram, load, _mass, _contained = func_planar_hertz_moments(
+                            origin,
+                            edges,
+                            dual,
+                            normal,
+                            parent_shapes,
+                            center,
+                            contacts.position[i_c, i_b],
+                            radius,
+                            first,
+                            second,
+                        )
+                        qd.atomic_add(state.analytic_count[i_c, i_b], 1)
+                else:
+                    n_samples = func_planar_sample_count(count, surface.gauss.shape[0], surface.gauss.shape[0], False)
+                    for chunk in range((n_samples + 31) // 32):
+                        i_sample = chunk * 32 + lane
+                        if i_sample < n_samples:
+                            _position, shape, weight, coordinates = func_planar_hertz_sample(
+                                i_sample,
+                                origin,
+                                dual,
+                                parent_shapes,
+                                section,
+                                plane,
+                                polygon,
+                                remaining,
+                                angles,
+                                count,
+                                contacts.position[i_c, i_b],
+                                radius,
+                                first,
+                                second,
+                                surface.gauss,
+                                surface.gauss_weights,
+                                surface.gauss,
+                                surface.gauss_weights,
+                                contained,
+                            )
+                            gram += weight * coordinates.outer_product(coordinates)
+                            load += shape.outer_product(weight * coordinates)
+                            samples += gs.qd_int(weight > 0.0)
+                for a, b in qd.static(qd.ndrange(3, 3)):
+                    gram[a, b] = qd.simt.subgroup.reduce_all_add(gram[a, b])
+                for a, b in qd.static(qd.ndrange(4, 3)):
+                    load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
+                samples = qd.simt.subgroup.reduce_all_add(samples)
+                if lane == 0:
+                    state.section_center[i_t, i_b], state.plane[i_t, i_b], state.polygon[i_t, i_b] = (
+                        section,
+                        plane,
+                        polygon,
+                    )
+                    state.remaining[i_t, i_b], state.angles[i_t, i_b], state.angle_count[i_t, i_b] = (
+                        remaining,
+                        angles,
+                        count,
+                    )
+                    state.contained[i_t, i_b] = contained
+                    state.gram[i_t, i_b], state.load_moments[i_t, i_b] = gram, load
+                    qd.atomic_add(state.sample_count[i_c, i_b], samples)
 
 
 @qd.func
