@@ -20,6 +20,10 @@ run directory recorded in `DATA_LOCATION.md`. Its `meta/error-budgets.json` and
 | Production trajectory | `ac7eff794`, `parity-v3` | B4 k8 q16 full600: original spatial budgets pass, but strict aggregate result is negative; see below |
 | Application-point contract | `8d8b48955` + research `8165112a5`, `trajectory-contract-v2` | Exact fitted-state single-source scatter validates the point/origin distinction; q16 control and k16/q10 with Q4 q16/q48 references pass |
 | Complete delayed cycles | `trajectory-contract-v2` | B4 k16/q10 passes711 observations. B64 completes1192 with zero numerical/lifecycle invalids and original spatial budgets passing, but misses two tighter fidelity targets |
+| Exact radial mathematics | `fb084a3ca`, `radial-math-v4` | 267 checks pass, including independent high-precision primitives, clipped/active-pressure integrals and the original q24 port; earlier failed controls remain retained |
+| Exact radial runtime | `0d34bfad9`, `radial-runtime-v1` | Egg75/torus8, radial and retained 2D-Gauss controls, all four k8/k16 groups pass their original 170 checks |
+| Loading-only k32 | `fb084a3ca`, `oracle-k32` / `k32-validation-v1` | Independent CPU export and four native egg/torus q24/q48 groups pass. The old geometry guard fails the warped control; see below. k32 inherits the existing k16 fidelity budgets |
+| Public configuration | `4032d7366`, `public-planar-v1` | Twelve Q4/planar shell tests pass: direct/inverse, max/full, every-step/manual, release, partial reset and checkpoint; no elastic DOF growth |
 
 The CPU bank explicitly selects one physical side to match the CPU oracle.
 Production uses both sides. Those are distinct qualification scopes. The Q4
@@ -55,6 +59,32 @@ reject sampled peak0.323185% (limit0.3%) and M0.783200% (limit0.75%). This is
 a measured approximation negative. A bounded k32 loading-only candidate is
 being assessed; the elastic DOF and all existing budgets remain unchanged.
 
+The k32 warped control exposed an admission defect in the previous `.01R`
+normal-error guard: raw load error0.0281% passed, but full-field error0.3900%
+and sampled-peak error0.3668% exceeded the frozen fallback-equivalence0.1%
+limit. The old failed campaign remains intact. The geometry admission threshold
+is now `.005R`; the error budgets are unchanged. New q48 and lower-order guard
+checks are running against a frozen source before this change is qualified.
+
+Two additional material counterexamples were found during the contact audit.
+Folded faces can share an authored hinge outside the contact ball while their
+footprints inside it are disconnected; a sufficiently warped single Q4 can
+also have two separated ball intersections. Parent adjacency and proxy normal
+error alone do not establish material identity. The new candidate checks that
+the shared physical edge enters the ball and requires a sufficient Q4
+connectedness certificate. Uncertified geometry fails closed with the existing
+invalid-load mechanism. Independent folded-face, saddle, extreme-scale and
+near-tangent controls are running; the older U-shell result does not qualify
+these new cases or the changed material query by itself.
+
+The volume edge/q16 policy control rejects tick606 during a730-step warmup in
+both the untouched goal baseline and the later native source: env2, slot0,
+pressure status3 and errno128, while the elastic solve remains valid. The
+same q16 scripted workflow passes730; angle/q128 policy also passes730.
+This is a retained late-cycle pressure-fit negative, not evidence of a planar
+regression. Complete volume comparisons will use the qualified angle/q128
+configuration and state its independent elastic/stress scope.
+
 ## Optimization ledger in progress
 
 All component times below are intrusive device-duration sums over ten actual
@@ -89,14 +119,25 @@ At B1024, k8/q16 takes26.611/16.085/13.796ms versus11.386ms with the original
 loops; B4 shows no gain. The production loops and research interfaces were
 restored to `8d8b48955`; `a26cc3e93` remains an immutable restoration pin.
 A smaller launch grid therefore did not establish an optimization.
-An exact radial Hertz-moment candidate is
-under independent primitive/integration study; it is not yet a runtime winner.
+
+The exact radial candidate now has independent mathematical and native-bank
+qualification. It integrates the sphere-ball Hertz radial coordinate exactly,
+retains angular quadrature and splits active-pressure boundaries without changing
+the law or source geometry. In `radial-profile-v1`, B4 k8/q16 total recovery
+device time falls from3.469ms (2D Gauss) to2.842ms (radial); B1024 falls from
+11.502ms to5.011ms. Radial k32/q10 totals3.677/6.348ms at B4/B1024. These are
+intrusive device-duration sums, not primary wall speedups or complete policy
+rates. The original anchor alone takes about1.17/1.13ms, now18–41% of the
+radial path. This changed bottleneck motivates a bounded cooperative anchor
+experiment; strict old-serial/new-serial/warp byte comparisons run before
+the whole-path screening decision. The option remains private and off by
+default during qualification.
 
 | Required family | Current status / remaining evidence |
 | --- | --- |
 | Fixed geometry and compact J maps | Native QD preparation; compact refined grid plus integer topology and original-parent CSR; shared geometry supported. Preparation/memory measurements pending. |
-| Material-aware queries and witness reuse | Warp query, guarded original-parent footprint mask, warped miss and ambiguity controls validated. Temporal witness reuse remains to be assessed against actual profile and invalidation cost. |
-| Contained moments, clipping and fitting reuse | Exact analytic moments and positivity checks validated; clipped G/H shared across fit/scatter. Geometry publication increment pending. |
+| Material-aware queries and witness reuse | Warp query and original-parent fallback mask implemented; new physical-edge and single-Q4 connectivity guards require fresh qualification. Temporal witness reuse remains to be assessed against actual profile and invalidation cost. |
+| Contained moments, clipping and fitting reuse | Exact analytic moments, positivity checks, once-per-task geometry publication, shared G/H and exact radial integration validated in their stated banks. Whole-path gains pending. |
 | Packing, grouping, layout and cooperative work | Loaded sources packed, bounded per-environment tasks and whole-environment overflow fallback validated; k4/capacity/quadrature/batch tuning and plateau pending. |
 | Response, max/full and fusion | Original optimized Q4 response and acceptance retained. Actual profile captures fused recovery; paired max/full wall timing and bounded scheduling/fusion controls pending. |
 | Graphs, device scheduling and copies | Native task scheduling uses device fields; no oracle export inside primary timing. Graph and host scheduling increments require matched complete-path measurement. |
