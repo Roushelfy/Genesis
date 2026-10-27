@@ -336,7 +336,20 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
         "complete_residual_max_N": float(residual.max()),
         "physical_source_identity": {
             "scope": "Untimed current physical sources, sorted within each environment independently of contact slots. Anchors are recorded separately because the volume elastic surface is independent.",
-            "columns": ["environment", "point_xyz_m", "force_xyz_N", "normal_xyz", "friction", "radius_m"],
+            "columns": [
+                "environment",
+                "point_x_m",
+                "point_y_m",
+                "point_z_m",
+                "force_x_N",
+                "force_y_N",
+                "force_z_N",
+                "normal_x",
+                "normal_y",
+                "normal_z",
+                "friction",
+                "radius_m",
+            ],
             "shape": list(source_values.shape),
             "dtype": str(source_values.dtype),
             "sha256": hashlib.sha256(source_values.tobytes(order="C")).hexdigest(),
@@ -934,6 +947,10 @@ def main() -> None:
             "surface_inverse": not args.full_inverse,
             "packed_surface_loads": not args.dense_surface_loads,
             "fused_pipeline": not args.unfused_pipeline,
+            "effective_fused_pipeline": [entry.fused_pipeline for entry in solver.stress_recovery.links]
+            if solver.stress_recovery is not None
+            else [],
+            "cuda_graphs_enabled": os.environ.get("QD_GRAPH", "1") == "1",
             "output_mode": args.output_mode,
             "reset_mode": "individual_setters" if args.legacy_reset else "saved_initial_state",
             "native_controller": workload.controller_inputs is not None,
