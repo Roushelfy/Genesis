@@ -21,6 +21,11 @@ shell planar k32、radial q10、cell blocks、每环境128个任务、FP64、his
 科学执行均使用 Slurm `rtx-mid` / image `1_26`。源码与文档留在 workspace；
 没有将新运行数据回写用户主目录，也没有迁移活动环境或改动共享集群缓存设置。
 
+31份本阶段冻结源码中，30份可从交付任务分支恢复。独立serial Armijo因果对照
+`af7abc497e30df4704684997a434496cc2293046`另有远端tag
+`rigid-stress-planar-20261027/planar-loading-pressure-delta-v1`，不依赖本地悬空Git对象。
+精确远端可达性记录为 `R/meta/frozen-source-archive-verified-v19.json`。
+
 公开默认 `shell_loading="q4"` 保持原加载路径。仅选择 `"planar"` 时，初始
 k8/cap32 默认值**不是**本文完整异质策略轨迹的推荐配置。推荐显式设置：
 
@@ -101,7 +106,7 @@ FP64 权重副本 warmup 对照的动作差≤1.0873e-11 rad。这里没有训�
 | 保守层次查询 | 8300检查通过 | k4/8/16/32真实三角集合、serial/cells/blocks、overflow、输入字节、book/saddle |
 | 原作用点与 anchor | serial／cooperative 字节一致，含 signed ties、ULP、NaN、无pool、slots与reload | 原 source 属性与下游应力门分别检查 |
 | 非凸 U／warped | 原U1060检查；post-fix serial U273检查；guard892+213+213检查通过 | 双侧、摩擦、远端材料、四种fallback、reset/checkpoint |
-| open30 folded book | 2737检查、56 phases通过；376次错误远端raw load严格为0 | cap1/4096、四种fallback、七类生命周期；原K残差最大9.802e-9 |
+| open30 folded book | 2737检查、56 phases通过；376次错误远端raw load严格为0 | cap1/4096、四种fallback、七类生命周期；native完整K相对残差最大9.802e-9 |
 | 稳定 Armijo | native22与独立400位Decimal71检查通过 | 只修 serial 压力目标差的浮点消减，不改迭代数／容差／物理律 |
 | 最终公共与后端回归 | shell15 + volume11 = 26项通过 | F18与F19的genesis/tests逐字节一致 |
 | Volume fused／separate | B4/B1024同一冻结输入的raw/full tensor/peak与原门通过 | 独立volume模型；不能继承shell空间准确性 |
@@ -125,6 +130,9 @@ module每block使用Q4/planar/volume三种顺序；policy另含pure rigid，采�
 
 全部设置 job-local GraphOff。原 Q4 已调优为 B4 q24、其余q16；planar为上述
 k32/q10配置；volume使用已通过该策略 warmup 的angle/q128 fused路径。
+正式benchmark的`cuda_graphs_enabled`记录进程环境；GraphOff由captured helper在导入前
+设置0及固定Quadrants的导入语义共同证明，该字段没有直接读回库内部常量。
+有界graph wrapper对照另有导入后常量的直接读回，两个证据来源分别保留。
 计时保留实际原运行时检查，研究 oracle 导出、内存采样与 profiler均另跑。
 表中速度比来自同block的墙钟时间，报告三个配对比的中位数和范围，不把它当作置信区间。
 
@@ -158,7 +166,42 @@ setup计时包括整个构造、分配及部分JIT，另存弹性构造和原sur
 ## 剖析与逐族优化决策
 
 <!-- PROFILE_RESULTS_START -->
-最终14个profile worker已终态，实际trace汇总正在核验。
+最终14个worker均自然终态、原运行时门通过。以下为planar32冻结模块的实际kernel duration，单位µs/次恢复；每列10次。
+
+| 实际kernel类别 | B4 max | B1024 max | B8192 max | B8192 full |
+| --- | ---: | ---: | ---: | ---: |
+| Anchor | 88.99 | 285.34 | 1624.54 | 1635.18 |
+| 原曲率／半径关联 | 260.86 | 221.85 | 534.68 | 537.01 |
+| 材料证书 | 9.60 | 14.24 | 58.31 | 57.64 |
+| 候选查询 | 634.78 | 713.81 | 2492.27 | 2497.85 |
+| 一次性task几何准备 | 32.79 | 52.08 | 330.42 | 335.34 |
+| 加载矩积分 | 62.98 | 1280.46 | 10713.42 | 10740.60 |
+| 非负压力拟合 | 46.38 | 50.70 | 143.16 | 144.52 |
+| Jᵀ载荷传递 | 9.74 | 13.94 | 70.42 | 71.13 |
+| 代理验证 | 51.34 | 60.55 | 370.89 | 369.34 |
+| 原加载kernels／空fallback准备 | 162.58 | 170.28 | 272.13 | 271.37 |
+| 联合balance／response／stress-output | 485.42 | 1581.16 | 9387.64 | 10811.74 |
+| 独立acceptance／state | 29.06 | 28.86 | 38.93 | 89.02 |
+
+原加载kernel在proxy成功时仍含初始化与空任务开销；该时间不代表发生fallback。
+同列Q4/planar所有kernel duration和分别为：
+B4 max 1.728/1.875 ms。
+B1024 max 7.891/4.473 ms。
+B8192 max 52.216/26.037 ms。
+B8192 full 53.786/27.561 ms。
+
+完整策略另有6份10步trace。下表同为intrusive事件时长/nominal step，非计时器墙钟；单位ms。
+
+| B | 路径 | 联合shell恢复或volume后处理 | rigid约束求解 | 其余GPU kernels（含独立加载） | GPU copies | host CUDA API事件和 | kernels/step |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 | Q4 | 0.475 | 1.349 | 2.181 | 0.021 | 0.950 | 324.2 |
+| 4 | planar32 | 0.476 | 1.394 | 2.245 | 0.028 | 0.945 | 350.8 |
+| 4 | volume | 7.483 | 1.331 | 0.595 | 0.012 | 0.819 | 317.6 |
+| 1024 | Q4 | 1.438 | 1.887 | 6.223 | 0.021 | 0.905 | 327.1 |
+| 1024 | planar32 | 1.483 | 1.946 | 3.685 | 0.027 | 0.944 | 353.7 |
+| 1024 | volume | 61.713 | 1.853 | 0.777 | 0.012 | 0.877 | 320.5 |
+
+rigid约束求解按实际rigid kernel名识别，未混入stress response。Shell列的联合恢复不含其独立加载阶段；volume联合post含rigid后处理／加载／恢复，二列范围不同。host API事件与GPU事件可能重叠，不相加解释latency；完整kernel名和分类规则保存在lossless `final-profile-summary-v19.json.gz`。
 <!-- PROFILE_RESULTS_END -->
 
 Device duration之和可能重叠，不能相加当成scene latency。shell `kernel_recover` 将
