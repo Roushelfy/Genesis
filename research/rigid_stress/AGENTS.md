@@ -1,6 +1,25 @@
 # Working on native rigid stress recovery
 
-**Latest delivery, 2026-10-27:** the matched CPU12 GPU follow-up is complete.
+**Active user goal, 2026-10-27:** implement and fully optimize
+[planar loading DPR](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md) under
+[GOAL.md](GOAL.md). Use the CPU `triangular_load_cpu` reference at `79720355`.
+Keep the existing Q4 elastic model and precomputed response. The change is a
+planar loading proxy, with native floating preparation/runtime in Quadrants.
+
+Preserve cheap automatic Hertz sizing from the original geometry, DPR pressure
+semantics, source anchors, friction/offset moments, material identity,
+max/full output and lifecycle. Qualify loading approximation separately from
+exact numerical residuals. Guard warped/missed footprints with a validated
+path and include fallback in timing. Complete profiling, applicable native
+optimization and full Franka throughput/accuracy/memory decisions.
+
+The new goal takes priority over the completed-phase descriptions below.
+Previous pressure/fallback/angular winners and scoped Atlas/H/FP32/screen/history
+findings remain preserved. Reopen an old optimization only for a changed
+workload or a concrete profile reason. Keep low-model consistency and
+throughput ahead of expensive physical-convergence campaigns.
+
+**Previous delivery, 2026-10-27:** the matched CPU12 GPU follow-up is complete.
 Read [GOAL.md](GOAL.md), [the specification](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md),
 [the matched GPU report](docs/CPU12_GPU_RESULTS_20261026.md),
 [the native backend report](docs/CPU12_NATIVE_RESULTS_20261026.md) and

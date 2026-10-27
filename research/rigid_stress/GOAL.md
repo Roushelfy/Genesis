@@ -1,4 +1,23 @@
-# Native rigid stress recovery: matched CPU Atlas GPU delivery
+# Native rigid stress recovery: planar loading DPR optimization
+
+**Active goal, 2026-10-27:** implement planar triangular loading surfaces in
+the existing rigid stress feature, entirely in Quadrants. Preserve mature
+automatic Hertz radius/DPR and the existing Q4 elastic model and response.
+Follow [the new integration and optimization goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md).
+
+Start from the [CPU reference and measured results](triangular_load_cpu/README.md)
+at `79720355`. Qualify the actual proxy error and finite-footprint robustness,
+then complete detailed profiling and all applicable throughput optimization.
+Deliver max/full module and complete Franka measurements, accuracy, memory and
+recommended configurations. Keep arbitrary moving/asymmetric convex/nonconvex
+contacts, friction, original acceptance and lifecycle behavior.
+
+This changes the loading surface, with offline refinement independent of
+elastic DOF. Keep physical curvature/radius estimation on the original geometry.
+Low-model consistency and complete-path performance are the priority.
+Prior CPU12/Atlas and other scoped negative evidence remain historical.
+
+## Previous delivery: matched CPU12 GPU comparison
 
 **Completed, 2026-10-27:** the [matched CPU12 specification](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md)
 has an explicit decision for the CPU milestone and each native backend. Read

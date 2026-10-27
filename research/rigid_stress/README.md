@@ -9,6 +9,16 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: planar loading DPR integration and optimization (2026-10-27)
+
+Follow [the new goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)
+and [GOAL.md](GOAL.md). Integrate planar triangular loading surfaces in
+Quadrants while retaining automatic-radius DPR and the existing Q4 elasticity.
+Use the [CPU reference](triangular_load_cpu/README.md) and
+[measured report](triangular_load_cpu/REPORT_ZH.md), then qualify contact/error
+and optimize the full native path. Deliver complete Franka max/full throughput,
+accuracy and memory comparisons. The CPU study is not a native speedup claim.
+
 ## Delivered: matched CPU12 GPU comparison (2026-10-27)
 
 The actual CPU mother, twelve P/B spaces, operators, prescribed loads and
