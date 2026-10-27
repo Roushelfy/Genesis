@@ -20,6 +20,7 @@ class PlanarLoadingInfo:
     kind: ClassVar[DataKind] = DataKind.CONSTANT
 
     subdivisions: qd.Tensor
+    epsilon: qd.Tensor
     grid_positions: qd.Tensor
     grid_shapes: qd.Tensor
     triangle_nodes: qd.Tensor
@@ -33,6 +34,8 @@ class PlanarLoadingInfo:
     side_index: qd.Tensor
     parent_neighbor_start: qd.Tensor
     parent_neighbor_faces: qd.Tensor
+    parent_neighbor_edges: qd.Tensor
+    graph_curvature_bound: qd.Tensor
     geometry_error: qd.Tensor
     normal_error: qd.Tensor
     face_valid: qd.Tensor
@@ -55,14 +58,16 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
     for i_f, quad in enumerate(quads):
         for i in range(4):
             edge = tuple(sorted((quad[i], quad[(i + 1) % 4])))
-            edge_faces.setdefault(edge, []).append(i_f)
-    adjacent = [set() for _ in range(n_parents)]
+            edge_faces.setdefault(edge, []).append((i_f, i, (i + 1) % 4))
+    adjacent = [[] for _ in range(n_parents)]
     for faces in edge_faces.values():
-        for i_f in faces:
-            adjacent[i_f].update(i_other for i_other in faces if i_other != i_f)
-    starts, neighbors = [0], []
+        for i_f, i_first, i_second in faces:
+            adjacent[i_f].extend((i_other, i_first, i_second) for i_other, _first, _second in faces if i_other != i_f)
+    starts, neighbors, shared_edges = [0], [], []
     for faces in adjacent:
-        neighbors.extend(sorted(faces))
+        for i_other, i_first, i_second in sorted(faces):
+            neighbors.append(i_other)
+            shared_edges.append((i_first, i_second))
         starts.append(len(neighbors))
 
     cells, triangles = [], []
@@ -78,6 +83,7 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
     n_grid = (subdivisions + 1) ** 2
     info = PlanarLoadingInfo(
         subdivisions=V(dtype=gs.qd_int, shape=()),
+        epsilon=V(dtype=gs.qd_float, shape=()),
         grid_positions=V_VEC(3, dtype=gs.qd_float, shape=(n_faces, n_grid)),
         grid_shapes=V_VEC(4, dtype=gs.qd_float, shape=(2, n_grid)),
         triangle_nodes=V_VEC(3, dtype=gs.qd_int, shape=triangles.shape[:2]),
@@ -91,16 +97,20 @@ def build_planar_geometry(surface: StressSurfaceInfo, load_info: StressInfo, sub
         side_index=V(dtype=gs.qd_int, shape=(n_faces,)),
         parent_neighbor_start=V(dtype=gs.qd_int, shape=(len(starts),)),
         parent_neighbor_faces=V_VEC(1, dtype=gs.qd_int, shape=(len(neighbors),)),
+        parent_neighbor_edges=V_VEC(2, dtype=gs.qd_int, shape=(len(shared_edges),)),
+        graph_curvature_bound=V(dtype=gs.qd_float, shape=(n_faces,)),
         geometry_error=V(dtype=gs.qd_float, shape=(n_faces,)),
         normal_error=V(dtype=gs.qd_float, shape=(n_faces,)),
         face_valid=V(dtype=gs.qd_bool, shape=(n_faces,)),
     )
     info.subdivisions.fill(subdivisions)
+    info.epsilon.fill(float(np.finfo(gs.np_float).eps))
     info.triangle_nodes.from_numpy(triangles)
     info.cell_nodes.from_numpy(np.array(cells, dtype=gs.np_int))
     info.parent_neighbor_start.from_numpy(np.array(starts, dtype=gs.np_int))
     if neighbors:
         info.parent_neighbor_faces.from_numpy(np.array(neighbors, dtype=gs.np_int)[:, None])
+        info.parent_neighbor_edges.from_numpy(np.array(shared_edges, dtype=gs.np_int))
     kernel_planar_geometry(surface, info)
     return info
 
@@ -121,6 +131,13 @@ def kernel_planar_geometry(surface: StressSurfaceInfo, info: PlanarLoadingInfo):
         info.side[i_f] = qd.select(i_side == 0, 1, -1)
         info.face_valid[i_f] = True
         info.normal_error[i_f] = 0.0
+        coefficients = surface.quad_coefficients[i_f]
+        info.graph_curvature_bound[i_f] = func_quad_graph_curvature(
+            coefficients[1, :],
+            coefficients[2, :],
+            coefficients[3, :],
+            info.epsilon[None],
+        )
         info.geometry_error[i_f] = surface.quad_coefficients[i_f][3, :].norm() / (
             info.subdivisions[None] * info.subdivisions[None]
         )
@@ -194,3 +211,132 @@ def func_parent_adjacent(i_first_parent: int, i_second_parent: int, info: Planar
     for i_n in range(info.parent_neighbor_start[i_first_parent], info.parent_neighbor_start[i_first_parent + 1]):
         adjacent = adjacent or info.parent_neighbor_faces[i_n][0] == i_second_parent
     return adjacent
+
+
+@qd.func
+def func_quad_graph_curvature(
+    first: qd.types.vector(3), second: qd.types.vector(3), mixed: qd.types.vector(3), epsilon: float
+):
+    """Bound graph-height Hessians on a globally invertible convex Q4 projection.
+
+    An infinite result leaves connectivity uncertified. The projected Jacobian
+    has an affine determinant on the parameter square. Its positive lower
+    bound and singular-value bounds control the inverse chart and height Hessian.
+    """
+    curvature = gs.qd_float(float("inf"))
+    first_norm, second_norm, mixed_norm = first.norm(), second.norm(), mixed.norm()
+    cross = first.cross(second)
+    area = cross.norm()
+    if (
+        area > 0.0
+        and first_norm > 0.0
+        and second_norm > 0.0
+        and area < float("inf")
+        and first_norm < float("inf")
+        and second_norm < float("inf")
+        and mixed_norm < float("inf")
+    ):
+        # The extra chart-conditioning factor covers normalization of the cross product.
+        margin = 128.0 * epsilon * (1.0 + first_norm * second_norm / area)
+        normal = cross / area
+        height = normal.dot(mixed)
+        height_upper = qd.abs(height) + margin * mixed_norm
+        tangent_upper = (mixed - height * normal).norm() + margin * mixed_norm
+        determinant_lower = area - qd.abs(normal.dot(first.cross(mixed)))
+        determinant_lower -= qd.abs(normal.dot(mixed.cross(second)))
+        determinant_lower -= margin * (first_norm * second_norm + first_norm * mixed_norm + mixed_norm * second_norm)
+        area_lower = area - margin * first_norm * second_norm
+        trace = first.norm_sqr() + second.norm_sqr()
+        discriminant = (first.norm_sqr() - second.norm_sqr()) ** 2 + 4.0 * first.dot(second) ** 2
+        largest_upper = qd.sqrt(0.5 * (trace + qd.sqrt(qd.max(0.0, discriminant))))
+        largest_upper += margin * (first_norm + second_norm)
+        if margin < 0.25 and determinant_lower > 0.0 and area_lower > 0.0 and largest_upper > 0.0:
+            origin_sigma_lower = area_lower / largest_upper
+            weyl_lower = qd.max(0.0, origin_sigma_lower - qd.sqrt(2.0) * tangent_upper)
+            frobenius_upper = qd.sqrt(
+                (first_norm * (1.0 + margin) + tangent_upper) ** 2 + (second_norm * (1.0 + margin) + tangent_upper) ** 2
+            )
+            frobenius_upper *= 1.0 + margin
+            sigma_lower = qd.max(weyl_lower, determinant_lower / frobenius_upper)
+            sigma_lower *= 1.0 - margin
+            if sigma_lower > 0.0:
+                curvature = height_upper * (1.0 + qd.sqrt(2.0) * tangent_upper / sigma_lower)
+                curvature *= (1.0 + margin) / (sigma_lower * sigma_lower)
+    return curvature
+
+
+@qd.func
+def func_parent_ball_connected(i_face: int, radius: float, info: PlanarLoadingInfo):
+    """Certify that a positive ball footprint on one physical Q4 is connected."""
+    bound = info.graph_curvature_bound[i_face]
+    return radius > 0.0 and radius < float("inf") and bound >= 0.0 and radius * bound < 1.0 - 128.0 * info.epsilon[None]
+
+
+@qd.func
+def func_segment_ball(
+    first: qd.types.vector(3), second: qd.types.vector(3), center: qd.types.vector(3), radius: float, epsilon: float
+):
+    """Return an open-ball intersection witness and whether its classification is resolved."""
+    inside, certain = False, False
+    if radius > 0.0 and radius < float("inf"):
+        relative = (first - center) / radius
+        edge = (second - first) / radius
+        length_squared = edge.norm_sqr()
+        scale = 1.0 + (first.norm() + second.norm() + 2.0 * center.norm()) / radius
+        margin = 128.0 * epsilon * scale
+        if length_squared > margin * margin and length_squared < float("inf") and margin < 0.25:
+            fraction = qd.min(1.0, qd.max(0.0, -relative.dot(edge) / length_squared))
+            distance = (relative + fraction * edge).norm()
+            inside = distance < 1.0 - margin
+            certain = inside or distance > 1.0 + margin
+    return inside, certain
+
+
+@qd.func
+def func_parent_edge_ball(
+    i_parent: int,
+    i_neighbor: int,
+    side_filter: int,
+    center: qd.types.vector(3),
+    radius: float,
+    info: PlanarLoadingInfo,
+):
+    """Test the actual shared material edge on the admitted physical sides."""
+    inside, uncertain = False, side_filter != 0 and side_filter != 1 and side_filter != -1
+    corners = info.parent_neighbor_edges[i_neighbor]
+    k = info.subdivisions[None]
+    grid_corners = qd.Vector([0, k, k * (k + 2), k * (k + 1)])
+    i_first_corner, i_second_corner = corners[0], corners[1]
+    i_first, i_second = grid_corners[i_first_corner], grid_corners[i_second_corner]
+    for i_side in range(2):
+        if side_filter == 0 or side_filter == qd.select(i_side == 0, 1, -1):
+            i_face = i_parent + i_side * (info.parent_neighbor_start.shape[0] - 1)
+            side_inside, side_certain = func_segment_ball(
+                info.grid_positions[i_face, i_first],
+                info.grid_positions[i_face, i_second],
+                center,
+                radius,
+                info.epsilon[None],
+            )
+            inside = inside or side_inside
+            uncertain = uncertain or not side_certain
+    return inside, inside or not uncertain
+
+
+@qd.func
+def func_parents_ball_connected(
+    i_first_parent: int,
+    i_second_parent: int,
+    side_filter: int,
+    center: qd.types.vector(3),
+    radius: float,
+    info: PlanarLoadingInfo,
+):
+    """Resolve parent adjacency through physical shared edges inside the support ball."""
+    connected, uncertain = i_first_parent == i_second_parent, False
+    for i_n in range(info.parent_neighbor_start[i_first_parent], info.parent_neighbor_start[i_first_parent + 1]):
+        if info.parent_neighbor_faces[i_n][0] == i_second_parent:
+            inside, certain = func_parent_edge_ball(i_first_parent, i_n, side_filter, center, radius, info)
+            connected = connected or inside
+            uncertain = uncertain or not certain
+    return connected, connected or not uncertain
