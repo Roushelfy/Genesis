@@ -10,8 +10,8 @@ from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
 
 from .data import StressInfo, StressState, func_scatter_load
 from .grid import func_patch_cell, func_patch_grid
-from .surface import StressSurfaceInfo, func_closest_triangle
 from .quadrilateral import func_quad_inverse, func_quad_inverse_prepared, func_quad_section
+from .surface import StressSurfaceInfo, func_closest_triangle, func_surface_face_admitted
 
 # The normalized dual gradient bounds relative resultant force and moment/radius.
 # Stop at 10% of the independently checked 1e-8 contact wrench budget; the final
@@ -32,7 +32,7 @@ class StressContactState:
     friction: qd.Tensor
     radius: qd.Tensor = of_kind(DataKind.INFO)  # noqa: RUF009 - typed array metadata
     radius_status: qd.Tensor
-    hertz_profile: qd.Tensor = of_kind(DataKind.CONSTANT)
+    hertz_profile: qd.Tensor = of_kind(DataKind.CONSTANT)  # noqa: RUF009 - typed array metadata
     valid: qd.Tensor
     coefficient: qd.Tensor
     weight_sum: qd.Tensor
@@ -373,6 +373,8 @@ def func_contact_sample_prepared(
         weight = 0.0
     if not geometry_valid:
         weight = float("nan")  # A failed physical inverse must reject pressure fitting, never silently lose area.
+    if not func_surface_face_admitted(i_face, i_c, i_b, surface_info):
+        weight = 0.0
     coordinates = qd.Vector([1.0, relative.dot(first), relative.dot(second)])
     return coordinates, weight, position, shape, i_face
 
@@ -392,7 +394,7 @@ def func_contact_cell(
         center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
         low_face, high_face = surface_info.face_bounds_low[i_cell], surface_info.face_bounds_high[i_cell]
         distance = qd.max(low_face - center, 0.0) + qd.max(center - high_face, 0.0)
-        if distance.norm_sqr() < radius * radius:
+        if distance.norm_sqr() < radius * radius and func_surface_face_admitted(i_cell, i_c, i_b, surface_info):
             _closest, remaining, contained = func_contact_section(i_cell, center, radius, surface_info)
             if remaining > 0.0:
                 count = surface_info.shape.shape[0]
@@ -657,7 +659,7 @@ def func_pressure_warp(
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]
         processed = False
-        if qd.static(reuse_refined):
+        if qd.static(reuse_refined):  # noqa: SIM102 - specialize before testing the runtime index
             if slot < processed_refined.shape[0]:
                 processed = processed_refined[slot]
         if refinement == contact_state.is_refined[i_c, i_b] and not processed:
@@ -724,7 +726,9 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                     if i_f < n_faces:
                         distance = qd.max(surface_info.face_bounds_low[i_f] - center, 0.0)
                         distance += qd.max(center - surface_info.face_bounds_high[i_f], 0.0)
-                        if distance.norm_sqr() < radius * radius:
+                        if distance.norm_sqr() < radius * radius and func_surface_face_admitted(
+                            i_f, i_c, i_b, surface_info
+                        ):
                             i_cached = qd.atomic_add(sh_count[0], 1)
                             if i_cached < 128:
                                 sh_faces[i_cached] = i_f
@@ -1067,7 +1071,7 @@ def func_scatter_warp(
                     if surface_info.quad_vertices.shape[0] > 0:
                         low, high = surface_info.face_bounds_low[i_f], surface_info.face_bounds_high[i_f]
                 distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
-                if distance.dot(distance) < radius * radius:
+                if distance.dot(distance) < radius * radius and func_surface_face_admitted(i_f, i_c, i_b, surface_info):
                     n_q = surface_info.shape.shape[0]
                     start, count = i_f * n_q, n_q
                     if contact_state.is_refined[i_c, i_b]:

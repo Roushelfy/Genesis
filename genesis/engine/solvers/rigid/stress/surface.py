@@ -7,7 +7,7 @@ from typing import ClassVar
 import quadrants as qd
 
 import genesis as gs
-from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
+from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V, of_kind
 from genesis.utils.misc import qd_to_numpy
 
 from .data import StressInfo
@@ -19,6 +19,7 @@ from .quadrilateral import func_quad_shape
 class StressSurfaceInfo:
     kind: ClassVar[DataKind] = DataKind.CONSTANT
 
+    face_mask: qd.Tensor = of_kind(DataKind.SCRATCH)  # noqa: RUF009 - typed array metadata
     angular_quadrature: qd.Tensor
     gauss: qd.Tensor
     gauss_weights: qd.Tensor
@@ -45,6 +46,7 @@ class StressSurface:
         n_faces = stress_info.surface_nodes.shape[0]
         n_quadrature = quadrature * quadrature
         self.info = StressSurfaceInfo(
+            face_mask=V_VEC(1, dtype=gs.qd_int, shape=(0, 0, 0)),
             angular_quadrature=V(dtype=gs.qd_bool, shape=()),
             gauss=V(dtype=gs.qd_float, shape=(quadrature,)),
             gauss_weights=V(dtype=gs.qd_float, shape=(quadrature,)),
@@ -81,6 +83,18 @@ class StressSurface:
         build_grid(self.info.positions, self.info.grid)
         qd.sync()
         self.build_seconds = time.perf_counter() - started
+
+
+@qd.func
+def func_surface_face_admitted(i_face: int, i_contact: int, i_env: int, surface: StressSurfaceInfo):
+    """Test an optional source-specific material parent mask for physical quadrilateral sides."""
+    admitted = True
+    if surface.face_mask.shape[0] > 0:
+        parent = i_face % qd.max(1, surface.quad_vertices.shape[0] // 2)
+        word, bit = parent // 32, parent % 32
+        packed = surface.face_mask[word, i_contact, i_env]
+        admitted = (packed[0] & (1 << bit)) != 0
+    return admitted
 
 
 @qd.kernel

@@ -4,6 +4,7 @@ from dataclasses import dataclass, replace
 from enum import IntEnum
 from typing import ClassVar
 
+import numpy as np
 import quadrants as qd
 
 import genesis as gs
@@ -26,6 +27,7 @@ from .planar_geometry import (
     func_parent_adjacent,
     func_triangle_geometry,
 )
+from .planar_material import create_planar_material, kernel_planar_material, kernel_planar_material_reset
 from .planar_moments import (
     func_planar_affine_minimum,
     func_planar_clip_geometry,
@@ -161,6 +163,9 @@ class PlanarLoading:
         self.state.analytic_sections.fill(0)
         self.state.overflow_steps.fill(0)
         self.fallback_contacts = replace(contacts, valid=self.state.fallback)
+        self.material_state = create_planar_material(self.info.parent_neighbor_start.shape[0] - 1, n_contacts, n_envs)
+        self.material_surface = replace(surface, face_mask=self.material_state.mask)
+        self.source_epsilon = float(np.finfo(gs.np_float).eps)
         self.contacts = contacts
 
     def scatter(self, stress_state, load_info, surface_info, options, scatter_workspace, reuse_contact_moments: bool):
@@ -169,23 +174,26 @@ class PlanarLoading:
         kernel_planar_moments(self.contacts, self.state, surface_info)
         kernel_planar_fit(self.contacts, self.state, surface_info)
         kernel_planar_validate(self.contacts, self.state, load_info, surface_info)
+        kernel_planar_material(
+            self.source_epsilon, self.contacts, self.state.fallback, surface_info, self.info, self.material_state
+        )
         if reuse_contact_moments:
             kernel_pressure_moments(
                 self.fallback_contacts,
                 stress_state,
                 load_info,
-                surface_info,
+                self.material_surface,
                 scatter_workspace,
                 options.cached_face_bounds,
             )
         else:
-            kernel_pressure(self.fallback_contacts, surface_info, options.cooperative_pressure)
+            kernel_pressure(self.fallback_contacts, self.material_surface, options.cooperative_pressure)
         if scatter_workspace.tasks.shape[0] and options.cooperative_scatter:
             kernel_scatter_faces(
                 self.fallback_contacts,
                 stress_state,
                 load_info,
-                surface_info,
+                self.material_surface,
                 scatter_workspace,
                 options.cached_face_bounds,
                 reuse_contact_moments,
@@ -195,7 +203,7 @@ class PlanarLoading:
                 self.fallback_contacts,
                 stress_state,
                 load_info,
-                surface_info,
+                self.material_surface,
                 options.cooperative_scatter,
                 options.cached_face_bounds,
             )
@@ -205,10 +213,12 @@ class PlanarLoading:
         if geometry:
             yield from iter_data(self.info, f"{prefix}.geometry")
         yield from iter_data(self.state, f"{prefix}.state")
+        yield from iter_data(self.material_state, f"{prefix}.material")
 
     def reset(self, envs_idx):
         """Clear the selected environments' loading state and cumulative route counts."""
         kernel_planar_reset(envs_idx, self.state)
+        kernel_planar_material_reset(envs_idx, self.material_state)
 
 
 @qd.kernel

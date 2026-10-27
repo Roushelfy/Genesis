@@ -23,7 +23,7 @@ from .contact import (
     func_scatter_warp,
 )
 from .data import StressInfo, StressState, func_scatter_load
-from .surface import StressSurfaceInfo
+from .surface import StressSurfaceInfo, func_surface_face_admitted
 
 
 @dataclass(frozen=True)
@@ -94,6 +94,7 @@ def func_prepare_scatter(
             center = contacts.center[i_c, i_b]
             distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
             intersects = distance.dot(distance) < contacts.radius[i_c, i_b] ** 2
+            intersects = intersects and func_surface_face_admitted(i_f, i_c, i_b, surface)
             if intersects and contacts.is_refined[i_c, i_b]:
                 _closest, remaining, _contained = func_contact_section(i_f, center, contacts.radius[i_c, i_b], surface)
                 intersects = remaining > 0.0
