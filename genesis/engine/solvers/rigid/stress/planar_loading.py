@@ -77,6 +77,8 @@ class PlanarLoadingState:
     overflow: qd.Tensor
     task_count: qd.Tensor
     parent_count: qd.Tensor
+    source_count: qd.Tensor
+    source_slots: qd.Tensor
     tasks: qd.Tensor
     parent_faces: qd.Tensor
     parent_connected: qd.Tensor
@@ -137,6 +139,8 @@ class PlanarLoading:
             overflow=V(dtype=gs.qd_bool, shape=(n_envs,)),
             task_count=V(dtype=gs.qd_int, shape=(n_envs,)),
             parent_count=V(dtype=gs.qd_int, shape=(n_envs,)),
+            source_count=V(dtype=gs.qd_int, shape=(n_envs,)),
+            source_slots=V(dtype=gs.qd_int, shape=contact_shape),
             tasks=V_VEC(3, dtype=gs.qd_int, shape=task_shape),
             parent_faces=V(dtype=gs.qd_int, shape=task_shape),
             parent_connected=V(dtype=gs.qd_bool, shape=task_shape),
@@ -170,10 +174,11 @@ class PlanarLoading:
 
     def scatter(self, stress_state, load_info, surface_info, options, scatter_workspace, reuse_contact_moments: bool):
         """Fit current proxy loads, recover unsupported contacts on the original route and add accepted contributions."""
-        kernel_planar_query(self.contacts, self.info, self.state)
         if options.cooperative_pressure and gs.backend == gs.cuda:
+            kernel_planar_query_warp(self.contacts, self.info, self.state)
             kernel_planar_moments_warp(self.contacts, self.state, surface_info)
         else:
+            kernel_planar_query(self.contacts, self.info, self.state)
             kernel_planar_moments(self.contacts, self.state, surface_info)
         kernel_planar_fit(self.contacts, self.state, surface_info)
         kernel_planar_validate(self.contacts, self.state, load_info, surface_info)
@@ -230,7 +235,7 @@ def kernel_planar_reset(envs_idx: qd.types.ndarray(), state: PlanarLoadingState)
         i_b = envs_idx[i_selected]
         state.attempted_loaded_contacts[i_b], state.proxy_contacts[i_b], state.fallback_contacts[i_b] = 0, 0, 0
         state.analytic_sections[i_b], state.overflow_steps[i_b] = 0, 0
-        state.fallback_count[i_b], state.task_count[i_b], state.parent_count[i_b] = 0, 0, 0
+        state.fallback_count[i_b], state.task_count[i_b], state.parent_count[i_b], state.source_count[i_b] = 0, 0, 0, 0
         state.overflow[i_b] = False
     for i_c, i_selected in qd.ndrange(state.eligible.shape[0], envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
@@ -252,12 +257,15 @@ def kernel_planar_query(contacts: StressContactState, info: PlanarLoadingInfo, s
         state.parent_start[i_c, i_b], state.parent_end[i_c, i_b] = 0, 0
         state.sample_count[i_c, i_b], state.analytic_count[i_c, i_b], state.fit_evaluations[i_c, i_b] = 0, 0, 0
     for i_b in range(contacts.valid.shape[1]):
-        state.task_count[i_b], state.parent_count[i_b], state.fallback_count[i_b] = 0, 0, 0
+        state.task_count[i_b], state.parent_count[i_b], state.fallback_count[i_b], state.source_count[i_b] = 0, 0, 0, 0
         state.overflow[i_b] = False
         for i_c in range(contacts.valid.shape[0]):
             state.task_start[i_c, i_b] = state.task_count[i_b]
             state.parent_start[i_c, i_b] = state.parent_count[i_b]
             if state.fallback[i_c, i_b]:
+                i_source = state.source_count[i_b]
+                state.source_slots[i_source, i_b] = i_c
+                state.source_count[i_b] += 1
                 if contacts.status[i_c, i_b] != 0:
                     state.reason[i_c, i_b] = PlanarFallback.ANCHOR
                 elif not contacts.hertz_profile[None]:
@@ -318,36 +326,163 @@ def kernel_planar_query(contacts: StressContactState, info: PlanarLoadingInfo, s
             state.task_end[i_c, i_b] = state.task_count[i_b]
             state.parent_end[i_c, i_b] = state.parent_count[i_b]
         for i_c in range(contacts.valid.shape[0]):
-            if state.overflow[i_b] and state.fallback[i_c, i_b]:
-                state.eligible[i_c, i_b] = False
-                state.reason[i_c, i_b] = PlanarFallback.CAPACITY
+            func_planar_query_component(i_c, i_b, contacts, info, state)
+
+
+@qd.func
+def func_planar_query_component(
+    i_c: int, i_b: int, contacts: StressContactState, info: PlanarLoadingInfo, state: PlanarLoadingState
+):
+    """Apply material connectivity and complete-environment overflow admission to one source."""
+    if state.overflow[i_b] and state.fallback[i_c, i_b]:
+        state.eligible[i_c, i_b] = False
+        state.reason[i_c, i_b] = PlanarFallback.CAPACITY
+    if state.eligible[i_c, i_b]:
+        i_anchor = contacts.anchor_face[i_c, i_b]
+        connected = i_anchor >= 0 and i_anchor < info.parent_face.shape[0]
+        seed = -1
+        if connected:
+            seed = info.parent_face[i_anchor]
+        for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
+            state.parent_connected[i_p, i_b] = state.parent_faces[i_p, i_b] == seed
+        active = True
+        for _ in range(state.parent_end[i_c, i_b] - state.parent_start[i_c, i_b]):
+            if active:
+                changed = False
+                for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
+                    if not state.parent_connected[i_p, i_b]:
+                        parent = state.parent_faces[i_p, i_b]
+                        for i_other in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
+                            if state.parent_connected[i_other, i_b]:
+                                other = state.parent_faces[i_other, i_b]
+                                if func_parent_adjacent(parent, other, info):
+                                    state.parent_connected[i_p, i_b], changed = True, True
+                active = changed
+        for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
+            connected = connected and state.parent_connected[i_p, i_b]
+        if not connected:
+            state.eligible[i_c, i_b] = False
+            state.reason[i_c, i_b] = PlanarFallback.MATERIAL
+        state.fallback[i_c, i_b] = not state.eligible[i_c, i_b]
+
+
+@qd.kernel
+def kernel_planar_query_warp(contacts: StressContactState, info: PlanarLoadingInfo, state: PlanarLoadingState):
+    for i_b in range(contacts.valid.shape[1]):
+        state.task_count[i_b], state.parent_count[i_b], state.fallback_count[i_b], state.source_count[i_b] = 0, 0, 0, 0
+        state.overflow[i_b] = False
+    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
+        state.eligible[i_c, i_b] = False
+        state.fallback[i_c, i_b] = contacts.valid[i_c, i_b] and contacts.force[i_c, i_b].norm() > 1e-30
+        state.reason[i_c, i_b] = PlanarFallback.NONE
+        state.affine[i_c, i_b] = False
+        state.task_start[i_c, i_b], state.task_end[i_c, i_b] = 0, 0
+        state.parent_start[i_c, i_b], state.parent_end[i_c, i_b] = 0, 0
+        state.sample_count[i_c, i_b], state.analytic_count[i_c, i_b], state.fit_evaluations[i_c, i_b] = 0, 0, 0
+        if state.fallback[i_c, i_b]:
+            i_source = qd.atomic_add(state.source_count[i_b], 1)
+            state.source_slots[i_source, i_b] = i_c
+    # One warp owns each environment's pool, keeping every contact's task range contiguous.
+    qd.loop_config(block_dim=32)
+    for i_thread in range(contacts.valid.shape[1] * 32):
+        lane, i_b = i_thread % 32, i_thread // 32
+        sh_faces = qd.simt.block.SharedArray((32,), gs.qd_int)
+        sh_count = qd.simt.block.SharedArray((1,), gs.qd_int)
+        for i_source in range(state.source_count[i_b]):
+            i_c = state.source_slots[i_source, i_b]
+            if lane == 0:
+                state.task_start[i_c, i_b] = state.task_count[i_b]
+                state.parent_start[i_c, i_b] = state.parent_count[i_b]
+                if contacts.status[i_c, i_b] != 0:
+                    state.reason[i_c, i_b] = PlanarFallback.ANCHOR
+                elif not contacts.hertz_profile[None]:
+                    state.reason[i_c, i_b] = PlanarFallback.PROFILE
+                elif not state.overflow[i_b]:
+                    state.eligible[i_c, i_b] = True
+            qd.simt.block.sync()
+            center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
+            side = state.side_filter[i_c, i_b]
             if state.eligible[i_c, i_b]:
-                i_anchor = contacts.anchor_face[i_c, i_b]
-                connected = i_anchor >= 0 and i_anchor < info.parent_face.shape[0]
-                seed = -1
-                if connected:
-                    seed = info.parent_face[i_anchor]
-                for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
-                    state.parent_connected[i_p, i_b] = state.parent_faces[i_p, i_b] == seed
-                active = True
-                for _ in range(state.parent_end[i_c, i_b] - state.parent_start[i_c, i_b]):
-                    if active:
-                        changed = False
-                        for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
-                            if not state.parent_connected[i_p, i_b]:
-                                parent = state.parent_faces[i_p, i_b]
-                                for i_other in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
-                                    if state.parent_connected[i_other, i_b]:
-                                        other = state.parent_faces[i_other, i_b]
-                                        if func_parent_adjacent(parent, other, info):
-                                            state.parent_connected[i_p, i_b], changed = True, True
-                        active = changed
-                for i_p in range(state.parent_start[i_c, i_b], state.parent_end[i_c, i_b]):
-                    connected = connected and state.parent_connected[i_p, i_b]
-                if not connected:
+                for i_face_chunk in range((info.face_valid.shape[0] + 31) // 32):
+                    if state.eligible[i_c, i_b] and not state.overflow[i_b]:
+                        if lane == 0:
+                            sh_count[0] = 0
+                        qd.simt.block.sync()
+                        i_face = i_face_chunk * 32 + lane
+                        invalid = 0
+                        if i_face < info.face_valid.shape[0]:
+                            admitted_side = side == 0 or side == info.side[i_face]
+                            if admitted_side and func_face_overlap(i_face, center, radius, info):
+                                if not info.face_valid[i_face] or info.normal_error[i_face] > 0.01 * radius:
+                                    invalid = 1
+                                else:
+                                    i_candidate = qd.atomic_add(sh_count[0], 1)
+                                    sh_faces[i_candidate] = i_face
+                        invalid = qd.simt.subgroup.reduce_all_add(invalid)
+                        if lane == 0 and invalid > 0:
+                            state.eligible[i_c, i_b] = False
+                            state.reason[i_c, i_b] = PlanarFallback.GEOMETRY
+                        qd.simt.block.sync()
+                        if state.eligible[i_c, i_b]:
+                            for i_candidate in range(sh_count[0]):
+                                if not state.overflow[i_b]:
+                                    i_face = sh_faces[i_candidate]
+                                    found, overflowed = 0, 0
+                                    for i_cell_chunk in range((info.cell_nodes.shape[0] + 31) // 32):
+                                        i_cell = i_cell_chunk * 32 + lane
+                                        if i_cell < info.cell_nodes.shape[0]:  # noqa: SIM102 - bound the geometry index first
+                                            if func_cell_overlap(i_face, i_cell, center, radius, info):
+                                                for i_half in range(2):
+                                                    i_triangle = 2 * i_cell + i_half
+                                                    vertices, dual, normal, parent_shapes = func_triangle_geometry(
+                                                        i_face, i_triangle, info
+                                                    )
+                                                    edges = qd.Matrix.rows(
+                                                        [
+                                                            vertices[1, :] - vertices[0, :],
+                                                            vertices[2, :] - vertices[0, :],
+                                                        ]
+                                                    )
+                                                    _section, _remaining, _contained, intersects = func_planar_section(
+                                                        vertices[0, :], edges, dual, normal, center, radius
+                                                    )
+                                                    if intersects:
+                                                        i_t = qd.atomic_add(state.task_count[i_b], 1)
+                                                        if i_t < state.tasks.shape[0]:
+                                                            state.tasks[i_t, i_b] = qd.Vector([i_face, i_triangle, i_c])
+                                                            state.origin[i_t, i_b] = vertices[0, :]
+                                                            state.edges[i_t, i_b] = edges
+                                                            state.dual[i_t, i_b] = dual
+                                                            state.normal[i_t, i_b] = normal
+                                                            state.parent_shapes[i_t, i_b] = parent_shapes
+                                                        else:
+                                                            overflowed = 1
+                                                        found += 1
+                                    found = qd.simt.subgroup.reduce_all_add(found)
+                                    overflowed = qd.simt.subgroup.reduce_all_add(overflowed)
+                                    if lane == 0:
+                                        if overflowed > 0:
+                                            state.overflow[i_b] = True
+                                            state.task_count[i_b] = state.tasks.shape[0]
+                                        if found > 0 and not state.overflow[i_b]:
+                                            i_p = state.parent_count[i_b]
+                                            if i_p < state.parent_faces.shape[0]:
+                                                state.parent_faces[i_p, i_b] = info.parent_face[i_face]
+                                                state.parent_count[i_b] += 1
+                                            else:
+                                                state.overflow[i_b] = True
+                                    qd.simt.block.sync()
+                        qd.simt.block.sync()
+            qd.simt.block.sync()
+            if lane == 0:
+                if state.eligible[i_c, i_b] and state.task_count[i_b] == state.task_start[i_c, i_b]:
                     state.eligible[i_c, i_b] = False
-                    state.reason[i_c, i_b] = PlanarFallback.MATERIAL
-                state.fallback[i_c, i_b] = not state.eligible[i_c, i_b]
+                    state.reason[i_c, i_b] = PlanarFallback.EMPTY
+                state.task_end[i_c, i_b] = state.task_count[i_b]
+                state.parent_end[i_c, i_b] = state.parent_count[i_b]
+            qd.simt.block.sync()
+    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
+        func_planar_query_component(i_c, i_b, contacts, info, state)
 
 
 @qd.func
@@ -459,6 +594,7 @@ def kernel_planar_moments_warp(contacts: StressContactState, state: PlanarLoadin
                     state.parent_shapes[i_t, i_b],
                 )
                 center, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
+                # Every lane samples local geometry before lane zero publishes the next kernel's cache.
                 section, plane, polygon, remaining, angles, count, contained = func_planar_clip_geometry(
                     origin, edges, normal, center, radius
                 )
