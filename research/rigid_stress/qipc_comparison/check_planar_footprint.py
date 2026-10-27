@@ -295,6 +295,7 @@ def _native_api():
     base = guard_api()
     import torch
 
+    from genesis.engine.solvers.rigid.stress.planar_geometry import func_quad_graph_curvature, func_segment_ball
     from genesis.engine.solvers.rigid.stress.planar_loading import kernel_planar_query, kernel_planar_query_warp
     from genesis.utils.array_class import CHECKPOINT_KINDS
     from genesis.utils.misc import qd_to_torch
@@ -467,6 +468,91 @@ def _book_mode(api, args, writer, checks, native, expected24, expected48, numeri
             api.qd_to_numpy(workspace.overflow_calls, transpose=True).item() > 0,
         )
     return {"mode": mode, "proxy_capacity": capacity, "phases": records}
+
+
+def _geometry_primitives(api, writer, checks):
+    """Check scale invariance and explicit uncertainty without assembling elasticity."""
+    np, qd = api.np, api.qd
+    chart_rows, radii, expected, labels = [], [], [], []
+    for scale in (1e-80, 1.0, 1e80):
+        for label, lengths, radius, connected in (
+            ("flat", (0.01, 0.01, 0.0), 0.001, True),
+            ("weak", (0.01, 0.01, 0.002), 0.0002, True),
+            ("strong", (0.001, 0.001, 0.006), 0.003, False),
+        ):
+            chart_rows.append(scale * np.diag(lengths))
+            radii.append(scale * radius)
+            expected.append(connected)
+            labels.append(f"{label}/{scale:g}")
+    chart_rows.extend(
+        (
+            [[1, 0, 0], [1, 0, 0], [0, 0, 0]],
+            [[1e-160, 0, 0], [0, 1, 0], [0, 0, 0]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1e-200]],
+        )
+    )
+    radii.extend((0.1, 0.1, 0.1))
+    expected.extend((False, False, False))
+    labels.extend(("rank-deficient", "subnormal-aspect-ratio", "nonzero-mixed-underflow"))
+    coefficients = api.V_VEC(3, dtype=api.gs.qd_float, shape=(len(chart_rows), 3))
+    coefficients.from_numpy(np.array(chart_rows, dtype=api.gs.np_float))
+    bounds = api.V(dtype=api.gs.qd_float, shape=(len(chart_rows),))
+    graph_bound = api.func_quad_graph_curvature
+
+    @qd.kernel
+    def kernel_bounds(values: qd.Tensor, output: qd.Tensor, epsilon: float, minimum_normal: float):
+        for i in range(output.shape[0]):
+            output[i] = graph_bound(values[i, 0], values[i, 1], values[i, 2], epsilon, minimum_normal)
+
+    epsilon, minimum_normal = float(np.finfo(api.gs.np_float).eps), float(np.finfo(api.gs.np_float).tiny)
+    kernel_bounds(coefficients, bounds, epsilon, minimum_normal)
+    actual_bounds = api.qd_to_numpy(bounds, transpose=True)
+    certified = np.array(radii) * actual_bounds < 1 - 128 * epsilon
+    checks.exact("geometry/scale_invariant_connected_chart_certificates", certified, np.array(expected))
+    checks.condition("geometry/extreme_aspect_and_mixed_underflow_fail_closed", np.isinf(actual_bounds[-3:]).all())
+    segment_rows, segment_radii, segment_expected = [], [], []
+    for scale in (1e-80, 1.0, 1e80):
+        for height, answer in ((0.0, (True, True)), (2.0, (False, True)), (1.0, (False, False))):
+            segment_rows.append(scale * np.array([[-2, height, 0], [2, height, 0], [0, 0, 0]]))
+            segment_radii.append(scale)
+            segment_expected.append(answer)
+    segment_rows.extend((np.zeros((3, 3)), np.array([[float("nan"), 0, 0], [1, 0, 0], [0, 0, 0]])))
+    segment_radii.extend((1.0, 1.0))
+    segment_expected.extend(((False, False), (False, False)))
+    segments = api.V_VEC(3, dtype=api.gs.qd_float, shape=(len(segment_rows), 3))
+    segments.from_numpy(np.array(segment_rows, dtype=api.gs.np_float))
+    radius_field = api.V(dtype=api.gs.qd_float, shape=(len(segment_rows),))
+    radius_field.from_numpy(np.array(segment_radii, dtype=api.gs.np_float))
+    answers = api.V_VEC(2, dtype=api.gs.qd_int, shape=(len(segment_rows),))
+    edge_witness = api.func_segment_ball
+
+    @qd.kernel
+    def kernel_segments(values: qd.Tensor, radius: qd.Tensor, output: qd.Tensor, epsilon: float, minimum_normal: float):
+        for i in range(output.shape[0]):
+            inside, certain = edge_witness(values[i, 0], values[i, 1], values[i, 2], radius[i], epsilon, minimum_normal)
+            output[i] = qd.Vector([inside, certain])
+
+    kernel_segments(segments, radius_field, answers, epsilon, minimum_normal)
+    segment_actual = api.qd_to_numpy(answers, transpose=True).astype(bool)
+    checks.exact("geometry/strict_open_ball_edge_witnesses_and_uncertainty", segment_actual, np.array(segment_expected))
+    writer.arrays(
+        "geometry/primitive-readback.npz",
+        coefficients=np.array(chart_rows),
+        radius=np.array(radii),
+        curvature_bound=actual_bounds,
+        certified=certified,
+        segments=np.array(segment_rows),
+        segment_radius=np.array(segment_radii),
+        segment_answer=segment_actual,
+    )
+    writer.json(
+        "geometry/primitive-labels.json",
+        {
+            "charts": labels,
+            "segment_order": ["inside", "outside", "tangent"] * 3 + ["degenerate", "nonfinite"],
+            "scope": "Analytical chart and segment guards; no pressure fit, scatter or elastic solve.",
+        },
+    )
 
 
 def _strong_saddle(api, writer, checks):
@@ -735,6 +821,17 @@ def main():
             ]
             unmasked = _load(api.np, cpu / "oracles/unmasked-q48.npz")
             diagnostics = api._errors(api.np, unmasked, expected48, numerics["gauss_weights"])
+            cases = json.loads((cpu / "inputs/book/cases.json").read_text())
+            masked_nodes = expected48["raw"].reshape((6, 6, len(cases)))
+            unmasked_nodes = unmasked["raw"].reshape((6, 6, len(cases)))
+            for i_b, case in enumerate(cases):
+                if case["category"] == "tip":
+                    far = [4, 5] if case["expected_parents"] == [0] else [2, 3]
+                    checks.condition(
+                        f"book/CPU/old_coarse_graph_wrong_far_load/{case['name']}",
+                        not api.np.count_nonzero(masked_nodes[far, :, i_b])
+                        and api.np.linalg.norm(unmasked_nodes[far, :, i_b]) > 0,
+                    )
             writer.arrays(
                 "book/unmasked-diagnostic.npz",
                 **{f"error_{key}": value for key, value in diagnostics.items()},
@@ -757,6 +854,7 @@ def main():
             )
             result["CPU_integration_uncertainty"] = maxima
         if args.stage != "book":
+            _geometry_primitives(api, writer, checks)
             _strong_saddle(api, writer, checks)
         checks.condition(
             "provenance/native_source_unchanged", [_identity(row["path"]) for row in native_sources] == native_sources
