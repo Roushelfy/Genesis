@@ -558,7 +558,6 @@ def main() -> None:
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16), default=8)
-    parser.add_argument("--planar-work-warps", type=int, choices=(512, 2048, 4096), default=2048)
     parser.add_argument("--factor-scaling", action="store_true")
     parser.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
@@ -645,8 +644,6 @@ def main() -> None:
         public_defaults=args.public_default_stress,
     )
     solver = workload.scene.rigid_solver
-    if workload.stress and args.shell_loading == "planar":
-        solver.stress_recovery.links[0].planar.work_warps = args.planar_work_warps
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -761,7 +758,6 @@ def main() -> None:
             "quadrature": args.quadrature,
             "pressure_quadrature": args.pressure_quadrature,
             "shell_loading": args.shell_loading,
-            "planar_work_warps": args.planar_work_warps if args.shell_loading == "planar" else None,
             "loading_subdivisions": args.loading_subdivisions,
             "loading_integration_rule": "planar_sphere_sections_split_angle"
             if args.shell_loading == "planar"
