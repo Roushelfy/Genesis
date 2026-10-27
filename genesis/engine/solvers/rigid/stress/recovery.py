@@ -68,7 +68,7 @@ class StressLink:
     requested_step: int = -1
     automatic_radius: StressRadiusInfo | None = None
     planar: PlanarLoading | None = None
-    cooperative_anchor: bool = False
+    cooperative_anchor: bool = True
 
 
 class RigidStressRecovery:
@@ -224,6 +224,7 @@ class RigidStressRecovery:
                     entry.options.loading_subdivisions,
                     geometry,
                     tasks_per_env=entry.options.scatter_tasks_per_env,
+                    hierarchical_query=entry.options.loading_subdivisions >= 16,
                 )
             if entry.options.radius_model == "hertz":
                 if self.curvature is None:
