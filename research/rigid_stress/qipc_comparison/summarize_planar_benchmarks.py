@@ -333,14 +333,17 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
                     "loading_subdivisions"
                 ) != actual_arguments.get("loading_subdivisions"):
                     audit.issues.append("Actual planar subdivision differs from arguments")
-        if specification.variant == "Q4" and actual_arguments.get("shell_loading") != "q4":
-            audit.issues.append("Q4 variant does not request original Q4 loading")
+        if specification.variant == "Q4" and (
+            actual_arguments.get("stress_backend") != "shell" or actual_arguments.get("shell_loading") != "q4"
+        ):
+            audit.issues.append("Q4 variant does not request original Q4 shell loading")
         if specification.variant == "volume" and actual_arguments.get("stress_backend") != "volume":
             audit.issues.append("Volume variant does not request volume elasticity")
         if specification.variant.startswith("planar"):
             subdivision = specification.variant.removeprefix("planar")
             if (
-                actual_arguments.get("shell_loading") != "planar"
+                actual_arguments.get("stress_backend") != "shell"
+                or actual_arguments.get("shell_loading") != "planar"
                 or str(actual_arguments.get("loading_subdivisions")) != subdivision
             ):
                 audit.issues.append("Planar variant differs from actual loading/subdivision options")
