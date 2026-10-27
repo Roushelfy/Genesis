@@ -10,6 +10,7 @@ with image 1_26.
 import argparse
 import hashlib
 import json
+import math
 import os
 import runpy
 import subprocess
@@ -37,6 +38,27 @@ def _json(path, value):
 def _load(np, path):
     with np.load(path, allow_pickle=False) as saved:
         return {key: saved[key] for key in saved.files}
+
+
+def _finite_json(value):
+    """Retain nonfinite diagnostics as explicit nulls and count them without changing acceptance."""
+    count = 0
+    if isinstance(value, float) and not math.isfinite(value):
+        value, count = None, 1
+    elif isinstance(value, dict):
+        result = {}
+        for key, item in value.items():
+            result[key], nonfinite = _finite_json(item)
+            count += nonfinite
+        value = result
+    elif isinstance(value, (tuple, list)):
+        result = []
+        for item in value:
+            clean, nonfinite = _finite_json(item)
+            result.append(clean)
+            count += nonfinite
+        value = result
+    return value, count
 
 
 def _book(np):
@@ -461,6 +483,13 @@ def _book_mode(api, args, writer, checks, native, expected24, expected48, numeri
             force_error=force_error,
             moment_error=moment_error,
             center=centers,
+            contact_status=api.unbatched_array(api, contacts.status),
+            radius_status=api.unbatched_array(api, contacts.radius_status),
+            state_valid=api.qd_to_numpy(state.valid, transpose=True),
+            step_valid=api.qd_to_numpy(state.step_valid, transpose=True),
+            invalid_steps=api.qd_to_numpy(state.invalid_steps, transpose=True),
+            rhs_norm_squared=api.qd_to_numpy(state.rhs_norm_squared, transpose=True),
+            residual_norm_squared=api.qd_to_numpy(state.residual_norm_squared, transpose=True),
         )
     if mode == "face-overflow":
         checks.condition(
@@ -870,10 +899,19 @@ def main():
             seconds=time.perf_counter() - started,
         )
     finally:
-        checks.flush(writer)
         if sys.exc_info()[0] is not None:
             (args.output / "failure.txt").write_text(traceback.format_exc())
-        writer.json("result.json", result)
+        safe_checks = []
+        for row in checks.rows:
+            clean, nonfinite = _finite_json(row)
+            if nonfinite:
+                clean.update(passed=False, nonfinite_diagnostic_count=nonfinite)
+            safe_checks.append(clean)
+        writer.json("checks.json", safe_checks)
+        safe_result, nonfinite = _finite_json(result)
+        if nonfinite:
+            safe_result.update(passed=False, nonfinite_diagnostic_count=nonfinite)
+        writer.json("result.json", safe_result)
     if not result["passed"]:
         raise ArithmeticError("Physical-footprint controls failed. Preserve every rejection and uncertainty.")
     print(json.dumps({"passed": True, "checks": result["checks"], "output": str(args.output)}), flush=True)
