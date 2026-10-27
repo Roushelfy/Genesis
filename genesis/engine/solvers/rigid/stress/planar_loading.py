@@ -401,12 +401,22 @@ def func_planar_query_component(
         state.fallback[i_c, i_b] = not state.eligible[i_c, i_b]
 
 
-@qd.kernel
 def kernel_planar_query_warp(
     contacts: StressContactState,
     info: PlanarLoadingInfo,
     state: PlanarLoadingState,
-    hierarchical_query: qd.template() = False,
+    hierarchical_query: bool = False,
+):
+    """Dispatch the warp query with the original cell route as its Python default."""
+    kernel_planar_query_warp_impl(contacts, info, state, hierarchical_query)
+
+
+@qd.kernel
+def kernel_planar_query_warp_impl(
+    contacts: StressContactState,
+    info: PlanarLoadingInfo,
+    state: PlanarLoadingState,
+    hierarchical_query: qd.template(),
 ):
     for i_b in range(contacts.valid.shape[1]):
         state.task_count[i_b], state.parent_count[i_b], state.fallback_count[i_b], state.source_count[i_b] = 0, 0, 0, 0
