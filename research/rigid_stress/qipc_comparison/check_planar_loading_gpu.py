@@ -302,7 +302,7 @@ def check_operators(api, writer, checks, reference, native):
     )
 
 
-def check_loading(api, writer, checks, reference, native, refinement, quadrature, capacity, budgets):
+def check_loading(api, writer, checks, reference, native, refinement, quadrature, capacity, budgets, work_warps):
     """Check primary single-side CPU equivalence, whole-object error and current-load lifecycle."""
     from genesis.engine.solvers.rigid.stress.planar_loading import PlanarLoading
 
@@ -311,7 +311,9 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
     contacts, cases, original_valid, sides = prepare_physical_contacts(
         api, reference, native.bank, model.options.young, model.options.poisson
     )
-    loading = PlanarLoading(surface.info, model.load_info, contacts, refinement, tasks_per_env=capacity)
+    loading = PlanarLoading(
+        surface.info, model.load_info, contacts, refinement, tasks_per_env=capacity, work_warps=work_warps
+    )
     loading.state.side_filter.from_numpy(sides.astype(api.gs.np_int))
     state = model.create_state(len(cases), "full")
     workspace = api.create_scatter_workspace(len(cases), model.options.scatter_tasks_per_env, False)
@@ -530,6 +532,7 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
             )
     return {
         "method": label,
+        "work_warps": work_warps,
         "original_spatial_budgets_passed": bool(original_passed),
         "CPU_fidelity_targets_passed": target_passed,
         "CPU_fidelity_targets_status": target_status,
@@ -552,6 +555,7 @@ def main():
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=24)
     parser.add_argument("--subdivisions", type=int, nargs="+", choices=(4, 8, 16), default=[8, 16])
     parser.add_argument("--tasks-per-env", type=int, default=2000)
+    parser.add_argument("--work-warps", type=int, choices=(512, 2048, 4096), default=2048)
     parser.add_argument("--budgets", type=Path)
     args = parser.parse_args()
     if not os.environ.get("SLURM_JOB_ID") or os.environ.get("SLURM_JOB_PARTITION", "rtx-mid") != "rtx-mid":
@@ -595,7 +599,16 @@ def main():
         writer.json("budgets.json", {"input_sha256": _hash(args.budgets), "budgets": budgets})
         summaries = [
             check_loading(
-                api, writer, checks, args.reference, native, count, args.quadrature, args.tasks_per_env, budgets
+                api,
+                writer,
+                checks,
+                args.reference,
+                native,
+                count,
+                args.quadrature,
+                args.tasks_per_env,
+                budgets,
+                args.work_warps,
             )
             for count in args.subdivisions
         ]
