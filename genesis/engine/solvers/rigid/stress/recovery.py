@@ -463,6 +463,8 @@ class RigidStressRecovery:
             3: "nonnegative sampled pad fit unresolved after local integration; physical infeasibility is not established",
             4: "integrated contact force or moment exceeds its preservation budget",
             5: "constrained pressure fit unresolved",
+            9: "force-line anchor is ambiguous between disconnected material footprint components",
+            10: "original Q4 material footprint could not be resolved without losing its source identity",
             11: "invalid contact source input",
             12: "ambiguous material-boundary provenance",
             13: "collision witness is outside the declared reference-boundary projection limit",

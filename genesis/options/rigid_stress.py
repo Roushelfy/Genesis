@@ -215,7 +215,8 @@ class RigidStressOptions(Options):
     ``loading_subdivisions`` selects four, eight or sixteen divisions per original edge; eight is the initial
     accuracy candidate. The path requires shell DPR with the Hertz profile. Original geometry still determines
     anchors and automatic contact radii. Unsupported geometry, pressure fits or bounded-workspace overflow use
-    the original Q4 loading path. The default ``"q4"`` retains the original loading surface.
+    the original Q4 loading path. Planar sections use split-angle integration; ``pressure_quadrature`` continues
+    to select the original Q4 fallback rule. The default ``"q4"`` retains the original loading surface.
 
     """
 

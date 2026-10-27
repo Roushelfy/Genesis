@@ -56,6 +56,55 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
 
 
+class PlanarRouteCounts(NamedTuple):
+    attempted_loaded_contacts: np.ndarray
+    proxy_contacts: np.ndarray
+    fallback_contacts: np.ndarray
+    analytic_sections: np.ndarray
+    overflow_steps: np.ndarray
+    material_queries: np.ndarray
+    material_rejections: np.ndarray
+
+
+def planar_route_counts(workload: FrankaEgg) -> PlanarRouteCounts | None:
+    if not workload.stress:
+        return None
+    entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    if entry.planar is None:
+        return None
+    return PlanarRouteCounts(
+        qd_to_numpy(entry.planar.state.attempted_loaded_contacts, transpose=True, copy=True),
+        qd_to_numpy(entry.planar.state.proxy_contacts, transpose=True, copy=True),
+        qd_to_numpy(entry.planar.state.fallback_contacts, transpose=True, copy=True),
+        qd_to_numpy(entry.planar.state.analytic_sections, transpose=True, copy=True),
+        qd_to_numpy(entry.planar.state.overflow_steps, transpose=True, copy=True),
+        qd_to_numpy(entry.planar.material_state.query_contacts, transpose=True, copy=True),
+        qd_to_numpy(entry.planar.material_state.rejected_contacts, transpose=True, copy=True),
+    )
+
+
+def planar_route_interval(
+    before: PlanarRouteCounts | None, after: PlanarRouteCounts | None, resets: int
+) -> dict | None:
+    if before is None:
+        return None
+    assert after is not None
+    # Native diagnostic state follows checkpoint/reset semantics. A timer spanning
+    # a reset cannot recover its earlier counts from endpoint snapshots alone.
+    complete = resets == 0 and all((new >= old).all() for old, new in zip(before, after))
+    return {
+        "full_interval_counts_available": complete,
+        "environment_resets_inside_timer": resets,
+        "per_environment_delta": {
+            name: (new - old).tolist() for name, old, new in zip(PlanarRouteCounts._fields, before, after)
+        }
+        if complete
+        else None,
+        "terminal_counters_since_last_reset": {name: value.tolist() for name, value in after._asdict().items()},
+        "scope": "Untimed endpoint reads of native per-environment route counters. Complete deltas require no reset inside the timed window; a single600-step episode with minimum-seconds0 supplies that control.",
+    }
+
+
 @qd.kernel
 def kernel_restore_frame(
     i_l: int,
@@ -705,6 +754,9 @@ def main() -> None:
             "pressure_quadrature": args.pressure_quadrature,
             "shell_loading": args.shell_loading,
             "loading_subdivisions": args.loading_subdivisions,
+            "loading_integration_rule": "planar_sphere_sections_split_angle"
+            if args.shell_loading == "planar"
+            else "original_" + args.pressure_quadrature,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,
@@ -840,6 +892,8 @@ def main() -> None:
                 if metrics is not None:
                     metrics.reset()
                 failure_before = None
+                planar_before = planar_route_counts(workload)
+                resets_before = workload.reset_count
                 scatter_overflow_before = 0
                 if workload.stress:
                     scatter_overflow_before = int(
@@ -895,6 +949,9 @@ def main() -> None:
                         else None,
                         "batch_steps_per_second": steps / elapsed,
                         "resets": workload.reset_count,
+                        "planar_routes": planar_route_interval(
+                            planar_before, planar_route_counts(workload), workload.reset_count - resets_before
+                        ),
                     }
                 )
             result["repeats"] = rows
