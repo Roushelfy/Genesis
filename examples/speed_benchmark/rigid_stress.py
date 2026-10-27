@@ -261,6 +261,23 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
     residual = np.sqrt(qd_to_numpy(entry.state.residual_norm_squared))
     rhs_norm = np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared))
     assert (residual <= np.maximum(entry.options.absolute_tolerance, entry.options.tolerance * rhs_norm)).all()
+    normal = qd_to_numpy(entry.contacts.normal, transpose=True)
+    friction = qd_to_numpy(entry.contacts.friction, transpose=True)
+    physical_loaded = valid & (np.linalg.norm(wrench_force, axis=2) > 0)
+    source_indices = np.argwhere(physical_loaded)
+    source_values = np.column_stack(
+        (
+            source_indices[:, 0],
+            point[physical_loaded],
+            wrench_force[physical_loaded],
+            normal[physical_loaded],
+            friction[physical_loaded],
+            original_radius[physical_loaded],
+        )
+    )
+    source_order = np.lexsort(tuple(source_values[:, index] for index in reversed(range(source_values.shape[1]))))
+    source_values = source_values[source_order]
+    centers = qd_to_numpy(entry.contacts.center, transpose=True)[physical_loaded][source_order]
     return {
         "wrench_conservation": conservation,
         "body_source_scales": body_scales,
@@ -271,6 +288,15 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
         "normalized_force_error_max": float(force_error.max(initial=0)),
         "normalized_moment_error_max": float(moment_error.max(initial=0)),
         "complete_residual_max_N": float(residual.max()),
+        "physical_source_identity": {
+            "scope": "Untimed current physical sources, sorted within each environment independently of contact slots. Anchors are recorded separately because the volume elastic surface is independent.",
+            "columns": ["environment", "point_xyz_m", "force_xyz_N", "normal_xyz", "friction", "radius_m"],
+            "shape": list(source_values.shape),
+            "dtype": str(source_values.dtype),
+            "sha256": hashlib.sha256(source_values.tobytes(order="C")).hexdigest(),
+            "loaded_slot_mask_sha256": hashlib.sha256(physical_loaded.tobytes(order="C")).hexdigest(),
+            "ordered_original_anchor_sha256": hashlib.sha256(centers.tobytes(order="C")).hexdigest(),
+        },
     }
 
 
@@ -890,6 +916,19 @@ def main() -> None:
                         Path("examples/rigid/egg_stress_controller.py"),
                         Path(__file__),
                     ]
+                )
+            },
+            "physical_assets": {
+                str(path): {
+                    "bytes": path.stat().st_size,
+                    "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                }
+                for path in (
+                    *(
+                        Path(f"examples/rigid/assets/hollow_egg/level{args.level}") / name
+                        for name in ("egg_outer.obj", "egg_shell.urdf", "shell.npz", "elastic.npz")
+                    ),
+                    *((args.stress_mesh,) if args.stress_mesh is not None else ()),
                 )
             },
             "gpu": torch.cuda.get_device_name(),
