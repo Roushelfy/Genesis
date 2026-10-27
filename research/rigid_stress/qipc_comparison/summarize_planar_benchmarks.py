@@ -214,6 +214,18 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
         audit.issues.append(f"Invalid captured task arguments: {error}")
         return audit
     actual_arguments = result.get("arguments", {})
+    declared_output = actual_arguments.get("output")
+    if not isinstance(declared_output, str) or Path(declared_output).resolve() != path.resolve():
+        audit.issues.append("Result arguments.output differs from its unique planned process output")
+    command = result.get("command", [])
+    try:
+        i_options = next(i for i, value in enumerate(command) if value.startswith("--"))
+        command_options = explicit_arguments(command[i_options:])
+        command_output = command_options.get("output")
+        if not isinstance(command_output, str) or Path(command_output).resolve() != path.resolve():
+            audit.issues.append("Result command output differs from its unique planned process output")
+    except (StopIteration, TypeError, ValueError) as error:
+        audit.issues.append(f"Missing or invalid command/output receipt: {error}")
     for name, value in arguments.items():
         if name not in actual_arguments or not is_same_argument(value, actual_arguments[name]):
             audit.issues.append(f"Explicit task argument differs from result: {name}")
@@ -376,6 +388,7 @@ def audit_task(specification: TaskSpec, task: dict | None, campaign: Path, sourc
         "source_revision": result.get("source_revision"),
         "task_source": task.get("source", source.get("source")),
         "explicit_task_arguments": arguments,
+        "arguments_signature": {name: value for name, value in actual_arguments.items() if name != "output"},
         "common": common,
         "common_source_sha256": source_hashes,
         "physical_assets": assets,
@@ -425,7 +438,24 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
     blocks = []
     cohorts = []
     for group in sorted({specification.group for specification in specifications}):
-        group_audits = [audit for audit in audits if audit.specification.group == group]
+        allocation_audits = [audit for audit in audits if audit.specification.group == group]
+        for name in ("host", "gpu_uuid", "common_source_sha256", "physical_assets", "policy"):
+            values = [audit.receipt.get(name) for audit in allocation_audits]
+            if any(value is None for value in values) or any(value != values[0] for value in values):
+                issues.append(f"Allocation group {group} differs or lacks receipt: {name}")
+    cohort_keys = sorted({(s.group, s.scope, s.batch, s.output_mode) for s in specifications})
+    for group, scope, batch, output_mode in cohort_keys:
+        group_audits = [
+            audit
+            for audit in audits
+            if (
+                audit.specification.group,
+                audit.specification.scope,
+                audit.specification.batch,
+                audit.specification.output_mode,
+            )
+            == (group, scope, batch, output_mode)
+        ]
         group_blocks = []
         for block in sorted({audit.specification.block for audit in group_audits}):
             members = [audit for audit in group_audits if audit.specification.block == block]
@@ -481,11 +511,11 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
                 "raw_order": [audit.specification.name for audit in members],
                 "issues": block_issues,
                 "metadata_checks_passed": not block_issues,
-                "primary_qualified": not is_diagnostic and not block_issues,
+                "primary_qualified": not is_diagnostic and not block_issues and not issues,
                 "raw_elapsed_seconds_median_of_internal_repeats": times,
                 "raw_elapsed_ratios_numerator_over_denominator": ratios,
                 "qualified_elapsed_ratios_numerator_over_denominator": ratios
-                if not is_diagnostic and not block_issues
+                if not is_diagnostic and not block_issues and not issues
                 else None,
             }
             blocks.append(block_record)
@@ -502,7 +532,7 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
                 cohort_issues.append(f"Group receipts differ across blocks: {name}")
         for variant in {audit.specification.variant for audit in group_audits}:
             variant_audits = [audit for audit in group_audits if audit.specification.variant == variant]
-            for name in ("source_revision", "task_source", "actual_stress_arguments", "material"):
+            for name in ("source_revision", "task_source", "arguments_signature", "material"):
                 values = [audit.receipt.get(name) for audit in variant_audits]
                 if any(value is None for value in values) or any(value != values[0] for value in values):
                     cohort_issues.append(f"Variant {variant} differs across blocks: {name}")
@@ -521,7 +551,10 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
             ]
             is_complete = len(samples) == 3 and all(sample["value"] is not None for sample in samples)
             is_qualified = (
-                is_complete and not cohort_issues and all(block["primary_qualified"] for block in group_blocks)
+                is_complete
+                and not issues
+                and not cohort_issues
+                and all(block["primary_qualified"] for block in group_blocks)
             )
             values = [sample["value"] for sample in samples] if is_complete else []
             statistics_rows.append(
@@ -535,7 +568,16 @@ def summarize(plan_path: Path, campaign: Path, is_diagnostic: bool) -> dict:
                     "diagnostic_observed_range": [min(values), max(values)] if is_complete else None,
                 }
             )
-        cohorts.append({"group": group, "issues": cohort_issues, "ratios": statistics_rows})
+        cohorts.append(
+            {
+                "group": group,
+                "scope": scope,
+                "batch": batch,
+                "output_mode": output_mode,
+                "issues": cohort_issues,
+                "ratios": statistics_rows,
+            }
+        )
     is_metadata_valid = (
         bool(blocks)
         and not issues
