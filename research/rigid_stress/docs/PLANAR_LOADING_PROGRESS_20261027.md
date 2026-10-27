@@ -6,6 +6,15 @@ reference. Runtime artifacts live under the data-side `20261027-planar-loading-d
 run directory recorded in `DATA_LOCATION.md`. Its `meta/error-budgets.json` and
 `meta/guard-budgets.json` were frozen before tuning.
 
+The current measured configuration is k32, radial integration q10, cell blocks
+and capacity128, with FP64 recovery and history off. Complete four/64-condition
+policy trajectories qualify this configuration with process-local `QD_GRAPH=0`.
+The public loading default remains Q4. The opt-in k8/capacity32 defaults are a
+separate lower-fidelity regime and are not the recommendation for the complete
+heterogeneous workflow. Cooperative anchor packing is now enabled internally;
+planar k16/k32 uses conservative cell blocks. Public benchmark research switches
+can still select the older paths, and their actual execution modes are recorded.
+
 ## Correctness evidence
 
 | Control | Captured source / campaign | Result and scope |
@@ -90,11 +99,15 @@ control, while the new selected component has exactly zero remote exclusive-node
 load. The original nearly180-degree fold has an ill-conditioned elastic mother
 whose CPU and native solves fail the unchanged residual gate. A separately
 identified30-degree opening keeps the disconnected contact-ball geometry and
-improves conditioning. Its full qualification remains pending: the existing
-serial constrained-pressure path rejects two cases that the maintained
-cooperative/moment paths admit. This is retained as a real negative; a stable
-but mathematically equivalent Armijo energy-difference calculation is under
-independent review. No residual, force/moment or spatial gate is relaxed.
+improves conditioning. The existing serial constrained-pressure path rejects
+two cases that the maintained cooperative/moment paths admit. This real
+negative is retained. A mathematically equivalent, stable Armijo energy
+difference fixes the two sources under all original gates: 22 matched native
+checks and71 independent400-digit Decimal cases pass. The corrected opening
+then passes all2,737 checks across56 phases/four paths/two capacities, including
+original K, full fields and exactly zero remote exclusive-node load. A focused
+post-fix serial U-shell replay remains pending. No residual, force/moment or
+spatial gate is relaxed.
 
 The volume edge/q16 policy control rejects tick606 during a730-step warmup in
 both the untouched goal baseline and the later native source: env2, slot0,
@@ -149,9 +162,9 @@ intrusive device-duration sums, not primary wall speedups or complete policy
 rates. The original anchor alone takes about1.17/1.13ms, now18–41% of the
 radial path. This changed bottleneck motivates a bounded cooperative anchor
 experiment; strict old-serial/new-serial/warp byte comparisons run before
-the whole-path screening decision. The option remains private and off by
-default during qualification. Its strict byte tests and complete policy
-qualification now pass. In bounded screening it reduces B4 Q4/q16 module
+the whole-path screening decision. Its strict byte tests and complete policy
+qualification pass, and the internal CUDA selection is now enabled. In bounded
+screening it reduces B4 Q4/q16 module
 time3.938→2.868ms and B1024 time9.064→8.264ms; these within-process screening
 repeats are not the final fresh-process paired headline. Q4 q24 is faster than
 q16 on the small frozen module, so the final comparison must use the tuned Q4
@@ -160,10 +173,19 @@ configuration rather than attribute shared improvements only to the proxy.
 The post-anchor k32 profile identifies full-cell traversal as the next bottleneck:
 query1.469ms versus moments0.064ms at B4, and1.671/1.390ms at B1024. The bounded
 four-by-four cell-block candidate stores exact QD min/max bounds of the original
-cells, then retains the original cell/triangle tests. Independent coverage passes;
-complete-path A/B and CPU banks remain required before keeping the optimization.
+cells, then retains the original cell/triangle tests. Independent coverage and
+all1,092 CPU-bank checks pass. Within-process screening reduces k32 module time
+2.991→2.164ms at B4 and5.752→4.758ms at B1024; complete policy times also fall.
+The optimization is retained for k16/k32; k8 has no meaningful measured gain.
 Its earlier unsupported-kernel-default import failure and incorrectly authored
 test seed are retained as harness/interface failures, not numerical passes.
+
+Process-local graph-off screening improves both the tuned Q4 denominator and
+planar workflow on this GPU/image. The final paired campaign uses graph-off
+for every variant. The retained volume reference is angle/q128 with its fused
+pipeline; a matched unfused/cooperative-anchor control has no useful complete
+workflow advantage. These are measured scheduling selections, not changes to
+the external Quadrants library or shared cluster configuration.
 
 | Required family | Current status / remaining evidence |
 | --- | --- |
@@ -186,4 +208,9 @@ volume DPR and pure rigid, small/useful-large/plateau max/full measurements,
 preparation/native/shared/per-environment/process/device memory, final focused
 regressions, preservation audit, compact runnable evidence and recommendations.
 The inference workflow uses a seeded random MLP with the scripted controller;
-it does not measure policy training.
+it does not measure policy training. Source `6dedc7957` binds actual MLP weights,
+process IDs, physical assets and canonical frozen-source hashes. The final
+campaign has168 fresh processes in16 groups, three paired blocks at each
+scope/batch/output, with B4/1024/8192/32768. It is running alongside separate
+intrusive memory and final trace campaigns. A complete fresh-process result,
+final memory/requirements packet and recommendation remain required for closure.
