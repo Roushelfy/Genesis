@@ -942,6 +942,7 @@ def main():
     parser.add_argument("--stage", choices=("all", "book", "saddle"), default="all")
     parser.add_argument("--fixture", choices=("closed", "open30"), default="closed")
     parser.add_argument("--cpu-refinements", choices=(0, 3), type=int, default=0)
+    parser.add_argument("--method", choices=("direct", "inverse"), default="direct")
     parser.add_argument("--refinement", type=int, choices=(8, 16, 32), default=16)
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=48)
     parser.add_argument("--modes", nargs="+", choices=MODES, default=MODES)
@@ -973,6 +974,7 @@ def main():
         "stage": args.stage,
         "fixture": args.fixture,
         "cpu_refinements": args.cpu_refinements,
+        "method": args.method,
         "original_wrench_tolerance": 1e-8,
         "original_K_residual": {"relative": 1e-8, "absolute": 1e-11},
         "strict_Q4_reference_tolerance": TOLERANCE,
@@ -1042,7 +1044,7 @@ def main():
     try:
         if args.stage != "saddle":
             cpu = args.output / "cpu"
-            native = api.build_native_mother(api, cpu, args.output, "book", quadrature=args.quadrature)
+            native = api.build_native_mother(api, cpu, args.output, "book", method=args.method, quadrature=args.quadrature)
             expected24, expected48 = _load(api.np, cpu / "oracles/q24.npz"), _load(api.np, cpu / "oracles/q48.npz")
             proxy24, proxy48 = (
                 _load(api.np, cpu / "oracles/proxy-q24.npz"),
@@ -1075,6 +1077,9 @@ def main():
                     "drilling_factor": model.options.shell_drilling_factor,
                     "tolerance": model.options.tolerance,
                     "absolute_tolerance": model.options.absolute_tolerance,
+                    "method": model.selected_method,
+                    "inverse_precision": model.options.inverse_precision,
+                    "inverse_corrections": model.options.inverse_corrections,
                     "native_gauge_free_K_condition_2": float(api.np.linalg.cond(native_free_k)),
                     "native_gauge_scaled_free_K_condition_2": float(
                         api.np.linalg.cond(native_free_k / native_diagonal[:, None] / native_diagonal[None, :])
