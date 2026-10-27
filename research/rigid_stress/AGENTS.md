@@ -1,19 +1,30 @@
 # Working on native rigid stress recovery
 
-**Active user goal, 2026-10-26:** execute
-[the matched CPU 12-feature GPU goal](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md)
-and [GOAL.md](GOAL.md). First establish Quadrants parity with cpu_repro at
-`a10c5abe`, matching the mother, coarse/local spaces, twelve features,
-loads and output. Then adapt and tune native shell and volume separately.
-Judge by spatial accuracy, complete Franka throughput and memory.
+**Latest delivery, 2026-10-27:** the matched CPU12 GPU follow-up is complete.
+Read [GOAL.md](GOAL.md), [the specification](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md),
+[the matched GPU report](docs/CPU12_GPU_RESULTS_20261026.md),
+[the native backend report](docs/CPU12_NATIVE_RESULTS_20261026.md) and
+[the thirteen-cell packet](evidence/20261026-cpu12-gpu-parity-v1/README.md).
 
-This new user direction opens a matched construction that the previous
-3/6-feature native campaign did not evaluate. Preserve that campaign's scoped
-negative evidence and internal grouping/single-recovery gains. Keep prior
-production improvements, H/FP32/screen/history findings and standing policies.
-Low-model numerical consistency and profiling take priority over new physical
-convergence campaigns. The earlier completed-phase language below describes
-historical scope and does not close this new goal.
+CPU/GPU equivalence is positive for the actual mother/P/B/operators/loads and
+all banks/selectors, with original reduced residual and lifecycle contracts.
+The CPU construction and bounded finer-coarse controls fail existing spatial
+M/Q budgets. Cooperative/packed solves are validated internal improvements;
+the matched complete module is slower than the existing optimized inverse
+mother. Native twelve-center shell/volume have independent numerical/spatial,
+bounded tuning, complete workflow, profile and memory decisions. Shell Q and
+nonconvex remote hotspots retain spatial negatives. Volume passes the specified
+four/64-condition trajectories but its complete workflow remains slower.
+
+Keep the optimized mother default and the mature DPR pressure/fallback/angular
+paths. Native experimental code is pinned at `94ec782fd`; restore it explicitly
+from the report for replay. Retain reusable matched-QD numerical code and the
+validated cooperative factor limit. Twenty focused regressions pass. The
+measured workflow is policy inference with a seeded random MLP and scripted
+residual controller, not policy training. Preserve original twelve unfinished
+files, old twenty-three engines, this campaign's frozen sources and all prior
+scoped evidence. The specification permits tuned negatives; do not reopen the
+same comparison without new user scope. Standing policies below still apply.
 
 **Previous delivery, 2026-10-26:** the real local-refinement follow-up is complete.
 Read [GOAL.md](GOAL.md), [the measured report](docs/LOCAL_REFINEMENT_RESULTS_20261026.md)

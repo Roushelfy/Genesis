@@ -9,14 +9,17 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: matched CPU 12-feature Atlas GPU follow-up (2026-10-26)
+## Delivered: matched CPU12 GPU comparison (2026-10-27)
 
-Follow [the new goal](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md).
-First match the published CPU shell construction in Quadrants, including its
-mother mesh, coarse/local spaces, twelve features, loads and outputs.
-Then evaluate native shell and volume adaptations by spatial accuracy,
-complete Franka throughput and memory. The earlier 3/6-feature negatives
-remain scoped to their measured constructions. See [GOAL.md](GOAL.md).
+The actual CPU mother, twelve P/B spaces, operators, prescribed loads and
+selectors match in Quadrants. CPU M/Q spatial negatives are reproduced;
+cooperative/packed internal gains do not beat the optimized mother on the
+complete matched module. Native shell/volume have independent bounded tuning,
+full workflow and memory decisions: keep the optimized mother default.
+Read [the matched GPU report](docs/CPU12_GPU_RESULTS_20261026.md),
+[the native decisions](docs/CPU12_NATIVE_RESULTS_20261026.md),
+[the thirteen-cell packet](evidence/20261026-cpu12-gpu-parity-v1/README.md) and
+[GOAL.md](GOAL.md). Native experimental source is archived at `94ec782fd`.
 
 ## Delivered: true local-refinement atlas (2026-10-26)
 

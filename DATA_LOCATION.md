@@ -1391,3 +1391,11 @@ initial receipt verifies the original twelve unfinished files and twenty-three
 prior frozen experimental engines. Scientific execution uses Slurm `rtx-mid`,
 image `1_26`, the existing data-side environment and private node caches. No
 existing data, environment or compatibility link is migrated.
+
+The completed CPU12 packet is `research/rigid_stress/evidence/20261026-cpu12-gpu-parity-v1/`
+(10,476,640 bytes, under the 10 MiB publication limit). It retains compact
+terminal/source receipts, raw paired timing rows and external array SHA256s for
+24 campaigns; full fields, own-process memory traces, oracle matrices and logs
+remain at the data run above. Final preservation checks verify the original
+12 files, 23 old engines and 11 campaign source inventories. There were no
+runtime-data, environment or compatibility-link migrations.

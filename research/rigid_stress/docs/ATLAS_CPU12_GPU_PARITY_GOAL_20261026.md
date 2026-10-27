@@ -1,6 +1,6 @@
 # CPU 12-feature Atlas: matched Quadrants GPU validation
 
-**Active user goal, 2026-10-26.** Establish a faithful GPU comparison of the
+**Delivered specification, 2026-10-27.** See [the matched GPU report](CPU12_GPU_RESULTS_20261026.md), [the native backend decisions](CPU12_NATIVE_RESULTS_20261026.md) and [the requirement packet](../evidence/20261026-cpu12-gpu-parity-v1/README.md). The original scope below is preserved. Establish a faithful GPU comparison of the
 published CPU 12-feature construction, then carry promising constructions
 through the existing native rigid stress feature. Deliver an accuracy,
 complete-scene throughput and memory decision for shell and volume separately.

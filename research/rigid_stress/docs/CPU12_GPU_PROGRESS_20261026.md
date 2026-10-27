@@ -1,57 +1,42 @@
-# Matched twelve-feature GPU validation: work ledger
+# Matched CPU12 GPU validation: completed ledger
 
-Active goal: [the remote specification](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md)
-at `0e2e819ca`. The independent CPU primary is `a10c5abe3`.
-The preceding three/six-feature native measurements remain scoped history.
-This ledger records work in progress, not a completion or accuracy claim.
+The specification at `0e2e819ca` is delivered with separate numerical,
+spatial and full-path decisions. Read [the CPU/GPU report](CPU12_GPU_RESULTS_20261026.md),
+[the native report](CPU12_NATIVE_RESULTS_20261026.md) and
+[the thirteen-cell requirement ledger](../evidence/20261026-cpu12-gpu-parity-v1/requirements-ledger.json).
+A scoped negative closes an evaluated construction; it is not a spatial pass.
 
-All runtime payloads, snapshots and logs use
-`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-cpu12-gpu-parity`.
-Scientific work runs in Slurm `rtx-mid`, image `1_26`. Existing environments
-and compatibility links remain in place. The initial receipt verifies twelve
-original unfinished files and twenty-three frozen experimental engine trees.
-
-| Requirement | Implementation / pending evidence |
+| Required outcome | Result / terminal campaign |
 | --- | --- |
-| Frozen CPU inputs and independent numerical oracles | Validated export: job 751986, 242 hashed artifacts, primary sanity results reproduced |
-| Same 5196/5190 mother and 3522/3516 spaces | Same actual P/T/K, gauge/mass/relief and 12 spaces verified; four-bank numerical audit passed 1205 checks |
-| Same prescribed cap and all positive selector contributors | Native q8/16/24 rule/load/selector and two-side controls passed, including forward/reverse repeated construction |
-| Common relief, grouped solves, one stress recovery | Generic PreparedAtlas; original reduced residuals, merged fields and same-state unload/reload/isolation passed (2317 checks) |
-| Published43, boundary18, static16/64 | All four frozen banks and all three selectors match CPU fields/peaks/resultants; independent spatial audit records M/Q budget failures in CPU construction itself |
-| Matched GPU path and memory/profile measurements | Default serial-factor complete-path timings measured for small/large static banks, max/full and three selectors; bounded cooperative/packed scheduling and memory work underway |
-| Native shell and volume adaptations, bounded tuning | Native twelve-direction graph/DPR adaptation frozen at a60f8ec39 and first qualification submitted; finer global shell coarse spaces tested separately |
-| Frozen modules and full policy Franka workflows | Pending each native backend; pure rigid and optimized mother, max/full, small/large batches required |
+| Independent primary CPU oracle | `a10c5abe`; `oracle-v2`, 242 hashed artifacts |
+| Same mother, twelve P/B spaces, K/S/gauge/mass/relief | `parity-v5` all-banks 2332 checks; S audit 172 checks |
+| Prescribed cap / selectors / four banks / lifecycle | q8/16/24 in both construction orders; same-state clear/reload and partial isolation pass |
+| Original unscaled residual / cooperative / packed | Actual-size checks, 2048-block boundary 87 checks and packed 1410 checks pass |
+| Separate spatial errors / bounded coarse controls | Original CPU M/Q fails; fixed-support P6 embeds P3 exactly but best narrow Q still 11.2104% |
+| Complete matched module / strong mother | `parity-v6`: B16/B64 max/full, seven pairs; packed 4.43–4.67x slower than FP64 inverse/surface mother |
+| Native shell and volume / bounded tuning | Core/halo/density/coarse/selector trials; native numerical/lifecycle positive, shell Q and neck hotspot negatives; volume specified four/64-condition trajectories pass |
+| Full workflow / small and useful large B | `workflow-final`: 32 processes, 96 repeats, B4/B1024 max/full; pure rigid and optimized mother; Atlas slower, zero runtime invalid/overflow counters |
+| Full-path profile / memory / preparation | `native-final-profile` 2/2; `memory-v6` 8/8 and `workflow-memory` 18/18 independent-process measurements pass |
+| Preservation / replay / focused regressions | 12 original files, 23 old engines and 11 campaign inventories preserved; 20 focused tests pass; native replay pin `94ec782fd` |
 
-Floating equivalence and spatial errors have separate acceptance decisions.
-The initial parity protocol targets FP64 relative `1e-10` for geometry,
-interpolation and assembled operators, and `1e-8` for solved fields, with
-quantity-specific absolute floors recorded by the driver. Native solve
-acceptance remains original unscaled relative `1e-8`, absolute `1e-11`.
-A full mother residual of a lifted approximation is only a spatial diagnostic.
-No unconditional mother correction is part of the matched construction.
+All runtime payloads, arrays and logs remain under
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261026-cpu12-gpu-parity`.
+Scientific work used Slurm `rtx-mid`, image `1_26`; only stdlib packaging,
+inventory and documentation ran on the login node. There were no data,
+environment or compatibility-link migrations.
 
-## Observed qualification boundary
+The packet has 24 campaigns and 149 tasks: 106 exit zero, 42 retained nonzero
+(spatial negatives and superseded harness failures), and one explicitly
+cancelled `parity-v0` task without a terminal task receipt. That cancellation
+is retained as such; it is not ongoing required work or a pass. The packet
+retains raw paired rows, identities, source pins and external array SHA256s.
+Its captured maintained implementation is `09bc9fa4a`; final branch delivery
+adds documentation and native archive ancestry without changing that engine.
 
-Four-bank CPU/GPU equivalence is positive. The largest recorded full-tensor
-relative difference is about 2.7e-13; native exact/reduced residuals remain
-well inside the original contracts. Same-environment release/reload and
-partial grouped-load clearing are tested; this is separate from the pending
-complete-scene checkpoint/reset qualification of the native adaptation.
-
-The prescribed CPU construction itself has a spatial negative for applicable
-shell resultants. Published43 continuous weighting has worst full field 7.5895%,
-peak 0.9738%, N 5.2862%, M 10.3244% and Q 19.9683%; GPU reproduces them.
-Nearest has M 12.5722% and Q 19.9685%. The full 10% N/M/Q budget is therefore
-not met, even though field and sampled peak budgets are met. No tolerance is
-relaxed and no full-mother correction is applied to hide this approximation.
-
-Default B64 nearest max timing is approximately 128.6 ms for the native mother
-and 646.6 ms for the native Atlas. These are numerically admitted module
-measurements; they do not establish a spatially qualified rate or a complete
-Franka gain. Profiling places about 643 ms in projection/solves/lift/recovery,
-while cap/selection/coverage cost about 2.2/0.27/0.89 ms. Actual-size cooperative
-factor tests pass 183 checks and motivate a bounded scheduling follow-up.
-Standalone factor latency is not treated as whole-path performance.
-
-All failures and superseded harness attempts remain at the data run root.
-The current machine-readable campaign ledger is `meta/progress.json` there.
+Policy measurements cover inference/observation/controller/rigid/contact/stress
+and required conversions/checks; there is no training-throughput claim.
+NVIDIA memory samples are observed lower bounds and the memory methods use
+separate processes/allocations. General Atlas spatial-qualified rates remain
+zero; scoped volume trajectory success is stated separately. Same-discretization
+agreement does not qualify continuum sharp-edge peaks or arbitrary nonconvex
+surrogates. The optimized mother remains the maintained recommendation.

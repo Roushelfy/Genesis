@@ -1,6 +1,6 @@
-# CPU12 native adaptation：阶段结果，2026-10-26
+# CPU12 native adaptation：交付结果，2026-10-27
 
-本文记录 [CPU12 目标](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md) 第二阶段中已核实的原生空间、轨迹、几何控制、intrusive profile、完整 workflow 和独立内存。**这不是整个目标的完成声明。** Volume 的指定 Franka 轨迹通过；shell 仍有结果量误差反例，非凸颈部远端热点仍未普遍合格。完整 workflow 中 Atlas 比优化 Mother 慢，大批量内存也更高，两后端最终默认推荐 Mother。本批有界数值／代价实验已终态，无需追加科学任务；证据封装、保存审计和整个目标的关闭由主任务处理。
+本文记录 [CPU12 目标](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md) 第二阶段中已核实的原生空间、轨迹、几何控制、intrusive profile、完整 workflow 和独立内存。完整目标交付见 [GOAL.md](../GOAL.md) 和 [十三项证据审计](../evidence/20261026-cpu12-gpu-parity-v1/requirements-ledger.json)。 Volume 的指定 Franka 轨迹通过；shell 仍有结果量误差反例，非凸颈部远端热点仍未普遍合格。完整 workflow 中 Atlas 比优化 Mother 慢，大批量内存也更高，两后端最终默认推荐 Mother。本批有界数值／代价实验已终态，无需追加科学任务；证据封装、保存审计和整个目标的关闭由主任务处理。
 
 ## 来源、存储和适用范围
 
@@ -211,7 +211,7 @@ Atlas 在 B1024 的采样GPU峰值比 Mother 高：volume max/full均 **1248 MiB
 
 这是显式 block 存储比；K和factor的对称／三角存储约定不同，不把它冒充 `nnz(L)/nnz(tril(K))`。Packed副本及其运行时 scratch另包含在完整 buffer inventory。小空间各自缩减不保证十二套 factor 总存储／求解优于单个母模型；实测大批量代价和内存均支持两后端保持默认 Mother。
 
-## 证据字段与待补交付
+## 证据字段与交付范围
 
 所有表格可从对应 `result.json` 复核：
 
@@ -222,4 +222,4 @@ Atlas 在 B1024 的采样GPU峰值比 Mother 高：volume max/full均 **1248 MiB
 - Workflow：`R/meta/workflow-execution-map.json:rows[*].{group_name,method,actual_output,pairing,spatial_qualified}`；输出文件的 `repeats[*].{steps,seconds,transitions_per_second,invalid_environment_steps,scatter_overflow_calls,resets}`、`gpu_uuid`、`policy`、`method_selected`、`surface_inverse_selected`、`stress_configurations`、`native_buffers`，以及相邻 `.returncode.txt`。
 - 独立内存：wrapper `result.json` 的 `checks`、`memory.{sampled_peak_device_bytes,raw_log,pid_mapping,matched_poll_count,requested_interval_seconds}`、`peak_process_rss_bytes`、`native_memory`、`preparation`；原始 `benchmark.json` 的 `native_buffer_bytes`、`native_buffers[*].{name,shape,dtype,bytes,alias_of}`（未出现 `alias_of` 代表该条不是 alias），以及 `stress_configurations`。最终 profile 使用 `R/native-final-profile` 同名 profile字段。
 
-本批 workflow、独立内存和最终profile已终态；两后端均为有界 native 集成／调参后的完整路径负结果，默认推荐 Mother，无需继续科学扫参。后续仅由主任务完成证据封装、保存审计和全目标资格审计。指定 volume 轨迹的空间资格和既有反例均保留；本文不自行关闭整个目标，也不将已测通过推广为任意非凸几何或连续体锐边峰值资格。
+本批 workflow、独立内存和最终profile已终态；两后端均为有界 native 集成／调参后的完整路径负结果，默认推荐 Mother，无需继续科学扫参。完整证据封装和保存审计见上述证据包；原有十二个文件、二十三个旧引擎和本轮十一份冻结源码均保留。指定 volume 轨迹的空间资格和既有反例均保留；最终交付关闭的是本轮离散比较和候选决策，不将已测通过推广为任意非凸几何或连续体锐边峰值资格。

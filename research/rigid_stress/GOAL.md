@@ -1,18 +1,40 @@
-# Native rigid stress recovery: matched CPU Atlas GPU follow-up
+# Native rigid stress recovery: matched CPU Atlas GPU delivery
 
-**Active goal, 2026-10-26:** first validate the published CPU 12-feature shell
-construction in Quadrants with matching mother mesh, coarse space, enrichment,
-loads and outputs. Then adapt and tune promising constructions in both native
-shell and volume FEM, and decide by accuracy, complete Franka throughput and
-memory. Follow [the new goal](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md).
-The primary source is [cpu_repro at a10c5abe](atlas_study/cpu_repro/README.md).
+**Completed, 2026-10-27:** the [matched CPU12 specification](docs/ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md)
+has an explicit decision for the CPU milestone and each native backend. Read
+[the matched GPU report](docs/CPU12_GPU_RESULTS_20261026.md),
+[the native shell/volume report](docs/CPU12_NATIVE_RESULTS_20261026.md) and
+[the compact evidence packet](evidence/20261026-cpu12-gpu-parity-v1/README.md).
+Its thirteen-cell requirement ledger distinguishes positive numerical checks
+from scoped spatial/performance negatives.
 
-The previous native 3/6-feature campaign remains a scoped negative result.
-Its different spaces and workloads do not close this new matched comparison.
-Preserve useful internal grouping/single-recovery results and earlier native
-positive/negative evidence. Low-model consistency and profiling come first.
-A tuned negative result is acceptable, with the matched milestone and each
-backend decision stated separately.
+The exact CPU mother, P/B and twelve spaces match in Quadrants, including S,
+loads, all selectors/banks, common relief, original reduced residuals and
+lifecycle. CPU/GPU tensor differences are below 2.7e-13. The published CPU
+construction itself fails M/Q budgets. Fixed-support finer-coarse controls
+retain this spatial negative. Packed scheduling improves an internal component,
+but the complete matched module is 4.43–4.67 times slower than the optimized
+FP64 inverse/surface mother in paired B16/B64 max/full measurements.
+
+The native twelve-center shell and volume adaptations have actual smaller
+operators, bounded tuning, geometric/trajectory/lifecycle controls, full-path
+profiles, B4/B1024 max/full policy inference workflows and independent memory
+measurements. Shell still fails Q; volume passes the declared four/64-condition
+trajectories but fails nonconvex remote-hotspot controls. Both are slower than
+the optimized mother in the measured complete workflows. Keep the mother as
+the maintained default. Archive the native experiment at `94ec782fd` with
+restoration commands; retain reusable matched-QD validation and the tested
+cooperative/packed implementation. Twenty focused regressions pass.
+
+This closes the requested discrete comparison and tuned backend decisions,
+not arbitrary-surrogate or continuum sharp-edge accuracy. The workflow measures
+observation, seeded MLP inference, controller and rigid/contact/stress work;
+it makes no trained-policy or optimizer/training-throughput claim. The captured
+maintained implementation pin is `09bc9fa4a` (engine identical to `323438018`);
+the final documentation/archive delivery has a later branch HEAD. Original
+unfinished files, prior frozen sources and earlier pressure/fallback/angular
+winners and H/FP32/screen/history evidence remain preserved. Avoid unchanged
+reruns unless a new user goal reopens the scope.
 
 ## Previous delivery: native local-refinement atlas
 

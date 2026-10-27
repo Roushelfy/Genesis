@@ -7,6 +7,44 @@ Historical instructions are records and do not override [AGENTS.md](../AGENTS.md
 
 The [sharp-edge scene integration packet](../evidence/20261019-qualified-ranking/hard-native-hard-scene-v1/README.md) retains exact executed sources, the admitted first sharp-contact frame, failed moving-frame quadrature, and all diagnostic failures. These are historical results; [GOAL.md](../GOAL.md) records the current task. Failed frames are excluded from useful throughput.
 
+## Matched CPU12 and native twelve-center experiments
+
+The [matched GPU report](../docs/CPU12_GPU_RESULTS_20261026.md),
+[native backend decisions](../docs/CPU12_NATIVE_RESULTS_20261026.md) and
+[packet](../evidence/20261026-cpu12-gpu-parity-v1/README.md) close the new
+comparison separately from the earlier 3/6-feature trial. The maintained
+matched implementation is captured at `09bc9fa4a` (engine `323438018`).
+Native experimental source is retained at
+`94ec782fd0754017074cf3b567b391b1444f7172`; the archive merge keeps its ancestry
+without adding its experimental Atlas public configuration to the maintained
+engine. Neither backend has a recommended complete-path Atlas regime in this
+campaign. Generic matched-QD code and validated cooperative/packed routines
+remain available; the maintained DPR mother path remains the default.
+
+Restore native code into a separate source checkout, for example:
+
+```sh
+: "${CPU12_REPLAY_SOURCE:?set a fresh source worktree path}"
+git worktree add --detach "$CPU12_REPLAY_SOURCE" \
+  94ec782fd0754017074cf3b567b391b1444f7172
+```
+
+Then use that pin's `check_local_atlas.py` / `check_local_geometry.py` and
+`examples.speed_benchmark.rigid_stress` with the exact arguments in the packet
+index or original campaign `tasks.json`. The packet records the matching
+captured analysis worker hashes. Run scientific modules in Slurm `rtx-mid`,
+image `1_26`, with a fresh explicit data-side output and private caches, as in
+the preserved `workload-*.sh`; never execute them on the login node or overwrite
+a recorded result. Source-only restoration is insufficient without the recorded
+condition/basis/mesh hashes. The native report distinguishes edge/q16 and
+angle/q128 qualifications and gives the actual baseline paths.
+
+The final delivery commit adds this replay index, reports and evidence to the
+captured implementation; its branch HEAD is distinct from the captured pin.
+The one cancelled parity-v0 task is retained as a cancellation, while all
+required final scientific tasks are terminal. Original unfinished files and
+old/new frozen sources remain unchanged.
+
 ## Native candidate integration experiments
 
 The [real local-refinement packet](../evidence/20261026-local-refinement-v1/README.md)

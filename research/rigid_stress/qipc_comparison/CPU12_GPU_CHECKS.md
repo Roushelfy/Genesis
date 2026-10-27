@@ -67,15 +67,32 @@ projecting local3/N/M/Q through the native Gauss axes. The weighted field norm
 counts shear components twice; the sampled von Mises maximum is evaluated after
 all source contributions have been summed.
 
-## Initial driver scope
+## Completed audit extensions
 
-The first runnable version checks complete solved stress maps through the native
-MITC4 constituents and full recovery; it does not export a separately assembled
-native sparse S. It preserves exact sample IDs as diagnostics; a legitimate
-neighboring-cell alias at a fine-grid seam still needs an explicit equivalence
-audit if the first GPU run reveals one. Finite-footprint coverage counts and
-boundary-jump summary aggregation remain follow-up audit additions. The first
-version saves the latest mother output under each bank; per-selector raw loads
-and Atlas/spatial outputs remain separate. A subsequent revision should retain
-all three paired mother output files. These scope notes do not qualify any
-complete-scene throughput, memory benefit or native DPR adaptation.
+The stress-operator audit now exports the native sparse S and S@T constituents
+and checks them against independent CPU maps; random native displacements also
+check the actual peak-stress recovery against S q (172 checks). Sample IDs and
+seam aliases, finite-footprint loaded-node coverage, active groups and boundary
+jump summaries are retained by the four-bank and separate spatial audits.
+Every selector retains its matching mother output separately.
+
+The current engine source also has cooperative and packed independent-factor
+scheduling. `check_cpu12_cooperative.py` checks actual mother/feature dimensions
+and a 2048-block shared-memory boundary. `check_packed_cpu12.py` compares
+sequential and packed solves, original reduced residuals, lifted full fields,
+peaks and N/M/Q, then zero/reload controls. A packed factor preserves each
+feature's own operator; it does not create a joint larger approximation space.
+
+`benchmark_cpu12_gpu.py --packed-solve` measures the complete cap-to-output
+module separately from oracle auditing. `--mother-method auto
+--mother-surface-load` selects the existing optimized FP64 inverse/surface-load
+baseline with its original gates and corrections; the direct cooperative
+baseline remains explicit. Static16/64 are frozen column banks, not independent
+motion trajectories. Intrusive profiles and fresh-process memory measurements
+are separate from primary paired timings. CPU/GPU agreement does not qualify
+the spatial approximation: the published construction still exceeds the
+existing 10% M/Q budgets relative to its matching mother.
+
+See [the work ledger](../docs/CPU12_GPU_PROGRESS_20261026.md) for source-bound
+campaigns and [the native adaptation results](../docs/CPU12_NATIVE_RESULTS_20261026.md)
+for the independently qualified DPR shell/volume experiments.

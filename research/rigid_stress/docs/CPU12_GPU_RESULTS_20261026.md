@@ -1,8 +1,8 @@
-# CPU12 同空间 GPU 对照：阶段结果，2026-10-26
+# CPU12 同空间 GPU 对照：交付结果，2026-10-27
 
 原 CPU 十二空间已在原生 Quadrants FP64 路径复现，同空间 CPU/GPU 数值对照通过。原空间本身仍有 shell M/Q 空间误差反例；保持局部支持的 P6 coarse 提升也未消除 Q 失败。Cooperative 和 packed 调度显著降低 factor 成本，但在更强的 auto FP64 surface-inverse 母模型对照下，packed Atlas 的完整模块耗时仍为母模型的 **4.4–4.7 倍**。
 
-本文覆盖 [CPU12 目标](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md) 的同离散模块、空间控制和独立进程内存证据。原生 shell/volume 几何、DPR、Franka 和完整 policy workflow 见 [native 阶段报告](CPU12_NATIVE_RESULTS_20261026.md)。**本文不标记整个目标完成。** 原十二个未完成文件和二十三个 frozen source pin 的最终保留核验，由最终 evidence packet 单独报告。
+本文覆盖 [CPU12 目标](ATLAS_CPU12_GPU_PARITY_GOAL_20261026.md) 的同离散模块、空间控制和独立进程内存证据。原生 shell/volume 几何、DPR、Franka 和完整 policy workflow 见 [native 阶段报告](CPU12_NATIVE_RESULTS_20261026.md)。完整目标的交付与适用范围见 [GOAL.md](../GOAL.md)；[证据包](../evidence/20261026-cpu12-gpu-parity-v1/README.md) 保存十三项审计及原十二个未完成文件、二十三个旧 frozen source 的保留核验。另有本轮十一份冻结源码 inventory 逐文件核验通过。
 
 ## 来源和可复现范围
 
