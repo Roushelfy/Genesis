@@ -6,6 +6,7 @@ Rates belong to intrusive memory measurements; spatial accuracy has separate rec
 
 import argparse
 import csv
+import gzip
 import hashlib
 import json
 import math
@@ -661,6 +662,11 @@ def main():
     payload["csv"] = file_identity(csv_path)
     payload["summarizer"] = file_identity(Path(__file__).resolve())
     args.output.write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
+    original = args.output.read_bytes()
+    archive = args.output.with_suffix(args.output.suffix + ".gz")
+    archive.write_bytes(gzip.compress(original, mtime=0))
+    if gzip.decompress(archive.read_bytes()) != original:
+        raise RuntimeError("Memory summary gzip differs from the original JSON bytes.")
     print(
         json.dumps(
             {
@@ -668,6 +674,7 @@ def main():
                 "expected_workers": payload["expected_workers"],
                 "qualified_workers": payload["qualified_workers"],
                 "output": str(args.output),
+                "lossless_gzip": file_identity(archive),
             }
         )
     )
