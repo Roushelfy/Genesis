@@ -36,6 +36,13 @@ from .planar_moments import (
     func_planar_sample_count,
     func_planar_section,
 )
+from .planar_radial import (
+    func_planar_active_radial_interval,
+    func_planar_hertz_ray,
+    func_planar_pressure_breakpoints,
+    func_planar_ray_count,
+    func_planar_ray_moments,
+)
 from .scatter import kernel_pressure_moments, kernel_scatter_faces
 from .surface import StressSurfaceInfo
 
@@ -70,6 +77,7 @@ class PlanarLoadingState:
     task_end: qd.Tensor
     parent_start: qd.Tensor
     parent_end: qd.Tensor
+    # Counts positive angular rays or positive 2D nodes, selected by exact_radial.
     sample_count: qd.Tensor
     analytic_count: qd.Tensor
     fit_evaluations: qd.Tensor
@@ -111,6 +119,7 @@ class PlanarLoading:
         geometry: PlanarLoadingInfo | None = None,
         *,
         tasks_per_env: int = 32,
+        exact_radial: bool = True,
     ):
         if tasks_per_env < 1:
             gs.raise_exception("Planar loading requires a positive per-environment task capacity.")
@@ -171,18 +180,25 @@ class PlanarLoading:
         self.material_surface = replace(surface, face_mask=self.material_state.mask)
         self.source_epsilon = float(np.finfo(gs.np_float).eps)
         self.contacts = contacts
+        self.exact_radial: bool = exact_radial
+
+    @property
+    def sample_count_unit(self) -> str:
+        """Identify the positive integration entries counted by sample_count."""
+        return "angular_rays" if self.exact_radial else "two_dimensional_gauss_nodes"
 
     def scatter(self, stress_state, load_info, surface_info, options, scatter_workspace, reuse_contact_moments: bool):
         """Fit current proxy loads, recover unsupported contacts on the original route and add accepted contributions."""
+        exact_radial = self.exact_radial
         if options.cooperative_pressure and gs.backend == gs.cuda:
             kernel_planar_query_warp(self.contacts, self.info, self.state)
             kernel_planar_prepare_moments(self.contacts, self.state)
-            kernel_planar_moments_warp(self.contacts, self.state, surface_info)
+            kernel_planar_moments_warp(self.contacts, self.state, surface_info, exact_radial)
         else:
             kernel_planar_query(self.contacts, self.info, self.state)
-            kernel_planar_moments(self.contacts, self.state, surface_info)
-        kernel_planar_fit(self.contacts, self.state, surface_info)
-        kernel_planar_validate(self.contacts, self.state, load_info, surface_info)
+            kernel_planar_moments(self.contacts, self.state, surface_info, exact_radial)
+        kernel_planar_fit(self.contacts, self.state, surface_info, exact_radial)
+        kernel_planar_validate(self.contacts, self.state, load_info, surface_info, exact_radial)
         kernel_planar_material(
             self.source_epsilon, self.contacts, self.state.fallback, surface_info, self.info, self.material_state
         )
@@ -522,8 +538,88 @@ def func_planar_task_sample(
     )
 
 
+@qd.func
+def func_planar_task_radial_moments(
+    i_t: int,
+    i_b: int,
+    lane: int,
+    stride: int,
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    coefficient: qd.types.vector(3),
+    contacts: StressContactState,
+    state: PlanarLoadingState,
+    surface: StressSurfaceInfo,
+    positive: qd.template(),
+):
+    """Integrate cached task geometry over angular rays assigned to one lane."""
+    task = state.tasks[i_t, i_b]
+    i_c = task[2]
+    origin, dual, parent_shapes = state.origin[i_t, i_b], state.dual[i_t, i_b], state.parent_shapes[i_t, i_b]
+    section, plane, polygon = state.section_center[i_t, i_b], state.plane[i_t, i_b], state.polygon[i_t, i_b]
+    remaining, radius = state.remaining[i_t, i_b], contacts.radius[i_c, i_b]
+    count, contained = state.angle_count[i_t, i_b], state.contained[i_t, i_b]
+    angles = qd.Vector.zero(gs.qd_float, 15)
+    if qd.static(positive):
+        for i in qd.static(range(11)):
+            angles[i] = state.angles[i_t, i_b][i]
+    else:
+        offset = (section - contacts.position[i_c, i_b]) / radius
+        mean = qd.Vector([1.0, offset.dot(first), offset.dot(second)])
+        angles, count, contained = func_planar_pressure_breakpoints(
+            count,
+            qd.sqrt(remaining),
+            radius,
+            state.angles[i_t, i_b],
+            polygon,
+            plane,
+            mean,
+            first,
+            second,
+            coefficient,
+            contained,
+        )
+    gram, load = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Matrix.zero(gs.qd_float, 4, 3)
+    samples = 0
+    n_rays = func_planar_ray_count(count, surface.gauss.shape[0], contained)
+    for chunk in range((n_rays + stride - 1) // stride):
+        i_ray = chunk * stride + lane
+        if i_ray < n_rays:
+            low, high, scale, mean, slope, parent_mean, parent_slope = func_planar_hertz_ray(
+                i_ray,
+                origin,
+                dual,
+                parent_shapes,
+                section,
+                plane,
+                polygon,
+                remaining,
+                angles,
+                count,
+                contacts.position[i_c, i_b],
+                radius,
+                first,
+                second,
+                surface.gauss,
+                surface.gauss_weights,
+                contained,
+            )
+            if qd.static(not positive):
+                low, high = func_planar_active_radial_interval(low, high, mean, slope, coefficient)
+            ray_gram, ray_load = func_planar_ray_moments(low, high, scale, mean, slope, parent_mean, parent_slope)
+            gram += ray_gram
+            load += ray_load
+            samples += gs.qd_int(scale > 0.0 and high > low)
+    return gram, load, samples
+
+
 @qd.kernel
-def kernel_planar_moments(contacts: StressContactState, state: PlanarLoadingState, surface: StressSurfaceInfo):
+def kernel_planar_moments(
+    contacts: StressContactState,
+    state: PlanarLoadingState,
+    surface: StressSurfaceInfo,
+    exact_radial: qd.template(),
+):
     for i_t, i_b in qd.ndrange(state.tasks.shape[0], state.tasks.shape[1]):
         if i_t < state.task_count[i_b]:
             task = state.tasks[i_t, i_b]
@@ -564,15 +660,30 @@ def kernel_planar_moments(contacts: StressContactState, state: PlanarLoadingStat
                     )
                     qd.atomic_add(state.analytic_count[i_c, i_b], 1)
                 else:
-                    for i_sample in range(
-                        func_planar_sample_count(count, surface.gauss.shape[0], surface.gauss.shape[0], False)
-                    ):
-                        _position, shape, weight, coordinates = func_planar_task_sample(
-                            i_t, i_b, i_sample, first, second, contacts, state, surface
+                    if qd.static(exact_radial):
+                        gram, load, samples = func_planar_task_radial_moments(
+                            i_t=i_t,
+                            i_b=i_b,
+                            lane=0,
+                            stride=1,
+                            first=first,
+                            second=second,
+                            coefficient=qd.Vector([1.0, 0.0, 0.0]),
+                            contacts=contacts,
+                            state=state,
+                            surface=surface,
+                            positive=True,
                         )
-                        gram += weight * coordinates.outer_product(coordinates)
-                        load += shape.outer_product(weight * coordinates)
-                        samples += gs.qd_int(weight > 0.0)
+                    else:
+                        for i_sample in range(
+                            func_planar_sample_count(count, surface.gauss.shape[0], surface.gauss.shape[0], False)
+                        ):
+                            _position, shape, weight, coordinates = func_planar_task_sample(
+                                i_t, i_b, i_sample, first, second, contacts, state, surface
+                            )
+                            gram += weight * coordinates.outer_product(coordinates)
+                            load += shape.outer_product(weight * coordinates)
+                            samples += gs.qd_int(weight > 0.0)
                 state.gram[i_t, i_b], state.load_moments[i_t, i_b] = gram, load
                 qd.atomic_add(state.sample_count[i_c, i_b], samples)
 
@@ -617,7 +728,12 @@ def kernel_planar_prepare_moments(contacts: StressContactState, state: PlanarLoa
 
 
 @qd.kernel
-def kernel_planar_moments_warp(contacts: StressContactState, state: PlanarLoadingState, surface: StressSurfaceInfo):
+def kernel_planar_moments_warp(
+    contacts: StressContactState,
+    state: PlanarLoadingState,
+    surface: StressSurfaceInfo,
+    exact_radial: qd.template(),
+):
     qd.loop_config(block_dim=128)
     for i_thread in range(state.tasks.shape[0] * state.tasks.shape[1] * 32):
         lane = i_thread % 32
@@ -630,49 +746,66 @@ def kernel_planar_moments_warp(contacts: StressContactState, state: PlanarLoadin
                 if not contained:
                     # The preceding prepare kernel publishes the cache before any lane reads it.
                     first, second = func_force_frame(contacts.force[i_c, i_b])
-                    origin, dual = state.origin[i_t, i_b], state.dual[i_t, i_b]
-                    parent_shapes = state.parent_shapes[i_t, i_b]
-                    section, plane, polygon = (
-                        state.section_center[i_t, i_b],
-                        state.plane[i_t, i_b],
-                        state.polygon[i_t, i_b],
-                    )
-                    remaining, angles, count = (
-                        state.remaining[i_t, i_b],
-                        state.angles[i_t, i_b],
-                        state.angle_count[i_t, i_b],
-                    )
-                    radius = contacts.radius[i_c, i_b]
                     gram, load = qd.Matrix.zero(gs.qd_float, 3, 3), qd.Matrix.zero(gs.qd_float, 4, 3)
                     samples = 0
-                    n_samples = func_planar_sample_count(count, surface.gauss.shape[0], surface.gauss.shape[0], False)
-                    for chunk in range((n_samples + 31) // 32):
-                        i_sample = chunk * 32 + lane
-                        if i_sample < n_samples:
-                            _position, shape, weight, coordinates = func_planar_hertz_sample(
-                                i_sample,
-                                origin,
-                                dual,
-                                parent_shapes,
-                                section,
-                                plane,
-                                polygon,
-                                remaining,
-                                angles,
-                                count,
-                                contacts.position[i_c, i_b],
-                                radius,
-                                first,
-                                second,
-                                surface.gauss,
-                                surface.gauss_weights,
-                                surface.gauss,
-                                surface.gauss_weights,
-                                contained,
-                            )
-                            gram += weight * coordinates.outer_product(coordinates)
-                            load += shape.outer_product(weight * coordinates)
-                            samples += gs.qd_int(weight > 0.0)
+                    if qd.static(exact_radial):
+                        gram, load, samples = func_planar_task_radial_moments(
+                            i_t=i_t,
+                            i_b=i_b,
+                            lane=lane,
+                            stride=32,
+                            first=first,
+                            second=second,
+                            coefficient=qd.Vector([1.0, 0.0, 0.0]),
+                            contacts=contacts,
+                            state=state,
+                            surface=surface,
+                            positive=True,
+                        )
+                    else:
+                        origin, dual = state.origin[i_t, i_b], state.dual[i_t, i_b]
+                        parent_shapes = state.parent_shapes[i_t, i_b]
+                        section, plane, polygon = (
+                            state.section_center[i_t, i_b],
+                            state.plane[i_t, i_b],
+                            state.polygon[i_t, i_b],
+                        )
+                        remaining, angles, count = (
+                            state.remaining[i_t, i_b],
+                            state.angles[i_t, i_b],
+                            state.angle_count[i_t, i_b],
+                        )
+                        radius = contacts.radius[i_c, i_b]
+                        n_samples = func_planar_sample_count(
+                            count, surface.gauss.shape[0], surface.gauss.shape[0], False
+                        )
+                        for chunk in range((n_samples + 31) // 32):
+                            i_sample = chunk * 32 + lane
+                            if i_sample < n_samples:
+                                _position, shape, weight, coordinates = func_planar_hertz_sample(
+                                    i_sample,
+                                    origin,
+                                    dual,
+                                    parent_shapes,
+                                    section,
+                                    plane,
+                                    polygon,
+                                    remaining,
+                                    angles,
+                                    count,
+                                    contacts.position[i_c, i_b],
+                                    radius,
+                                    first,
+                                    second,
+                                    surface.gauss,
+                                    surface.gauss_weights,
+                                    surface.gauss,
+                                    surface.gauss_weights,
+                                    contained,
+                                )
+                                gram += weight * coordinates.outer_product(coordinates)
+                                load += shape.outer_product(weight * coordinates)
+                                samples += gs.qd_int(weight > 0.0)
                     for a, b in qd.static(qd.ndrange(3, 3)):
                         gram[a, b] = qd.simt.subgroup.reduce_all_add(gram[a, b])
                     for a, b in qd.static(qd.ndrange(4, 3)):
@@ -693,31 +826,58 @@ def func_planar_pressure_evaluate(
     contacts: StressContactState,
     state: PlanarLoadingState,
     surface: StressSurfaceInfo,
+    exact_radial: qd.template(),
 ):
     first, second = func_force_frame(contacts.force[i_c, i_b])
     objective = coefficient[0]
     gradient = qd.Vector([-1.0, 0.0, 0.0])
     hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
     for i_t in range(state.task_start[i_c, i_b], state.task_end[i_c, i_b]):
-        count = func_planar_sample_count(
-            state.angle_count[i_t, i_b], surface.gauss.shape[0], surface.gauss.shape[0], state.contained[i_t, i_b]
-        )
-        for i_sample in range(count):
-            _position, _shape, weight, coordinates = func_planar_task_sample(
-                i_t, i_b, i_sample, first, second, contacts, state, surface
+        if qd.static(exact_radial):
+            gram, _load, _samples = func_planar_task_radial_moments(
+                i_t=i_t,
+                i_b=i_b,
+                lane=0,
+                stride=1,
+                first=first,
+                second=second,
+                coefficient=coefficient,
+                contacts=contacts,
+                state=state,
+                surface=surface,
+                positive=False,
             )
-            weight /= normalizer
-            pressure = qd.max(0.0, coordinates.dot(coefficient))
-            objective -= 0.5 * weight * pressure * pressure
+            normalized = gram / normalizer
+            integrated = normalized @ coefficient
+            objective -= 0.5 * coefficient.dot(integrated)
             if derivatives:
-                gradient += weight * pressure * coordinates
-                if pressure > 0.0:
-                    hessian += weight * coordinates.outer_product(coordinates)
+                gradient += integrated
+                hessian += normalized
+        else:
+            count = func_planar_sample_count(
+                state.angle_count[i_t, i_b], surface.gauss.shape[0], surface.gauss.shape[0], state.contained[i_t, i_b]
+            )
+            for i_sample in range(count):
+                _position, _shape, weight, coordinates = func_planar_task_sample(
+                    i_t, i_b, i_sample, first, second, contacts, state, surface
+                )
+                weight /= normalizer
+                pressure = qd.max(0.0, coordinates.dot(coefficient))
+                objective -= 0.5 * weight * pressure * pressure
+                if derivatives:
+                    gradient += weight * pressure * coordinates
+                    if pressure > 0.0:
+                        hessian += weight * coordinates.outer_product(coordinates)
     return objective, gradient, hessian
 
 
 @qd.kernel
-def kernel_planar_fit(contacts: StressContactState, state: PlanarLoadingState, surface: StressSurfaceInfo):
+def kernel_planar_fit(
+    contacts: StressContactState,
+    state: PlanarLoadingState,
+    surface: StressSurfaceInfo,
+    exact_radial: qd.template(),
+):
     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
         if state.eligible[i_c, i_b]:
             gram = qd.Matrix.zero(gs.qd_float, 3, 3)
@@ -757,7 +917,7 @@ def kernel_planar_fit(contacts: StressContactState, state: PlanarLoadingState, s
                         if line:
                             current = candidate - fraction * step
                         objective, gradient, hessian = func_planar_pressure_evaluate(
-                            i_c, i_b, current, weight_sum, not line, contacts, state, surface
+                            i_c, i_b, current, weight_sum, not line, contacts, state, surface, exact_radial
                         )
                         if not line:
                             iterations += 1
@@ -788,7 +948,11 @@ def kernel_planar_fit(contacts: StressContactState, state: PlanarLoadingState, s
 
 @qd.kernel
 def kernel_planar_validate(
-    contacts: StressContactState, state: PlanarLoadingState, load_info: StressInfo, surface: StressSurfaceInfo
+    contacts: StressContactState,
+    state: PlanarLoadingState,
+    load_info: StressInfo,
+    surface: StressSurfaceInfo,
+    exact_radial: qd.template(),
 ):
     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
         if state.eligible[i_c, i_b]:
@@ -801,17 +965,33 @@ def kernel_planar_validate(
                 if state.affine[i_c, i_b]:
                     weights = state.load_moments[i_t, i_b] @ coefficient
                 else:
-                    count = func_planar_sample_count(
-                        state.angle_count[i_t, i_b],
-                        surface.gauss.shape[0],
-                        surface.gauss.shape[0],
-                        state.contained[i_t, i_b],
-                    )
-                    for i_sample in range(count):
-                        _position, shape, weight, coordinates = func_planar_task_sample(
-                            i_t, i_b, i_sample, first, second, contacts, state, surface
+                    if qd.static(exact_radial):
+                        _gram, load, _samples = func_planar_task_radial_moments(
+                            i_t=i_t,
+                            i_b=i_b,
+                            lane=0,
+                            stride=1,
+                            first=first,
+                            second=second,
+                            coefficient=coefficient,
+                            contacts=contacts,
+                            state=state,
+                            surface=surface,
+                            positive=False,
                         )
-                        weights += shape * (weight * qd.max(0.0, coordinates.dot(coefficient)))
+                        weights = load @ coefficient
+                    else:
+                        count = func_planar_sample_count(
+                            state.angle_count[i_t, i_b],
+                            surface.gauss.shape[0],
+                            surface.gauss.shape[0],
+                            state.contained[i_t, i_b],
+                        )
+                        for i_sample in range(count):
+                            _position, shape, weight, coordinates = func_planar_task_sample(
+                                i_t, i_b, i_sample, first, second, contacts, state, surface
+                            )
+                            weights += shape * (weight * qd.max(0.0, coordinates.dot(coefficient)))
                 state.node_weights[i_t, i_b] = weights
                 task = state.tasks[i_t, i_b]
                 i_face = task[0]
