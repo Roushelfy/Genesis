@@ -17,7 +17,7 @@ CATEGORIES = (
     ("proxy_query", ("kernel_planar_query",)),
     ("material_guard", ("kernel_planar_material", "kernel_material_")),
     ("proxy_geometry_preparation", ("kernel_planar_prepare_moments",)),
-    ("proxy_moments", ("kernel_planar_moments",)),
+    ("proxy_moments", ("kernel_planar_moments", "kernel_planar_radial_moments")),
     ("proxy_fit", ("kernel_planar_fit",)),
     ("proxy_validation", ("kernel_planar_validate",)),
     ("proxy_scatter", ("kernel_planar_scatter",)),
@@ -117,7 +117,7 @@ def _task_work(api, workload):
     eligible = api.qd_to_numpy(state.eligible, transpose=True)
     reasons = api.qd_to_numpy(state.reason, transpose=True)
     return {
-        "scope": "Untimed terminal workload diagnostics; task capacity is allocated per environment, samples count positive clipped samples in the last call.",
+        "scope": "Untimed terminal workload diagnostics; task capacity is allocated per environment. Positive integration nodes count angular rays for exact radial integration and point samples for 2D Gauss integration.",
         "task_capacity_per_environment": state.tasks.shape[0],
         "tasks_per_environment": tasks.tolist(),
         "maximum_tasks_per_environment": int(tasks.max(initial=0)),
@@ -136,6 +136,7 @@ def main():
     parser.add_argument("--scope", choices=("module", "scene"), default="module")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="planar")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
+    parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
@@ -164,6 +165,9 @@ def main():
         pressure_quadrature=args.pressure_quadrature,
         scatter_tasks_per_env=args.tasks_per_env,
     )
+    entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    if entry.planar is not None:
+        entry.planar.exact_radial = args.planar_integration == "radial"
     setup_seconds = time.perf_counter() - started
     geometry = None
     for tick in range(args.warmup):
