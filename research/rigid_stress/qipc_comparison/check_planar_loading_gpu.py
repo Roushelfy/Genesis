@@ -411,18 +411,25 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
         and maxima["peak"] <= original_budget["worst_sampled_peak"]
         and all(maxima[key] <= original_budget[key] for key in ("N", "M", "Q"))
     )
-    target = budgets["CPU_demonstrated_fidelity_targets"].get(f"k{refinement}")
+    target_applicable = refinement in (8, 16)
+    target = budgets["CPU_demonstrated_fidelity_targets"].get(f"k{refinement}") if target_applicable else None
     target_passed = (
-        target is not None
-        and maxima["field"] <= target["worst_field"]
-        and maxima["peak"] <= target["worst_peak"]
-        and all(maxima[key] <= target[key] for key in ("N", "M", "Q"))
+        bool(
+            target is not None
+            and maxima["field"] <= target["worst_field"]
+            and maxima["peak"] <= target["worst_peak"]
+            and all(maxima[key] <= target[key] for key in ("N", "M", "Q"))
+        )
+        if target_applicable
+        else None
     )
+    target_status = ("passed" if target_passed else "failed") if target_applicable else "not_applicable"
     writer.json(
         f"{label}/spatial.json",
         {
             "original_budget_passed": bool(original_passed),
-            "CPU_fidelity_target_passed": bool(target_passed),
+            "CPU_fidelity_target_passed": target_passed,
+            "CPU_fidelity_target_status": target_status,
             "mean_loaded_field_error": mean_field,
             "maximum_loaded_errors": maxima,
             "rows": [
@@ -440,7 +447,20 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
     checks.condition(
         f"{label}/original_spatial_budgets", original_passed, maxima=maxima, mean_loaded_field_error=mean_field
     )
-    checks.condition(f"{label}/CPU_fidelity_targets", target_passed, target=target, maxima=maxima)
+    if target_applicable:
+        checks.condition(f"{label}/CPU_fidelity_targets", target_passed, target=target, maxima=maxima)
+    else:
+        checks.rows.append(
+            {
+                "name": f"{label}/CPU_fidelity_targets",
+                "passed": None,
+                "status": "not_applicable",
+                "gating": False,
+                "reason": "Frozen CPU-demonstrated fidelity targets apply only to k8/k16; k4 retains the original spatial budgets.",
+                "target": None,
+                "maxima": maxima,
+            }
+        )
     qd, contact_type = api.qd, api.StressContactState
 
     @qd.kernel
@@ -511,7 +531,8 @@ def check_loading(api, writer, checks, reference, native, refinement, quadrature
     return {
         "method": label,
         "original_spatial_budgets_passed": bool(original_passed),
-        "CPU_fidelity_targets_passed": bool(target_passed),
+        "CPU_fidelity_targets_passed": target_passed,
+        "CPU_fidelity_targets_status": target_status,
         "mean_loaded_field_error": mean_field,
         "maximum_loaded_errors": maxima,
         "fallback_contacts": int(routing["fallback"].sum()),
@@ -529,7 +550,7 @@ def main():
     parser.add_argument("--method", choices=("direct", "inverse", "auto"), default="direct")
     parser.add_argument("--stage", choices=("operators", "loads", "all"), default="operators")
     parser.add_argument("--quadrature", type=int, choices=(24, 48), default=24)
-    parser.add_argument("--subdivisions", type=int, nargs="+", choices=(8, 16), default=[8, 16])
+    parser.add_argument("--subdivisions", type=int, nargs="+", choices=(4, 8, 16), default=[8, 16])
     parser.add_argument("--tasks-per-env", type=int, default=2000)
     parser.add_argument("--budgets", type=Path)
     args = parser.parse_args()
@@ -579,7 +600,8 @@ def main():
             for count in args.subdivisions
         ]
     checks.flush(writer)
-    passed = all(row["passed"] for row in checks.rows)
+    gating_checks = [row for row in checks.rows if row.get("gating", True)]
+    passed = all(row["passed"] for row in gating_checks)
     writer.json(
         "result.json",
         {
@@ -588,8 +610,9 @@ def main():
             "stage": args.stage,
             "bank": args.bank,
             "checks": len(checks.rows),
+            "gating_checks": len(gating_checks),
             "loading_summaries": summaries,
-            "failed_checks": [row["name"] for row in checks.rows if not row["passed"]],
+            "failed_checks": [row["name"] for row in gating_checks if not row["passed"]],
             "seconds_including_native_preparation": time.perf_counter() - started,
             "scope": "Original Q4 elasticity and numerical gates; explicitly selected CPU side for primary planar-loading parity. Production both-side/actual collision qualification is separate.",
         },

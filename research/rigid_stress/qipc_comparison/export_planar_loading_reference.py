@@ -296,7 +296,7 @@ def _export_bank(writer, bank, model, cases, refinements):
     return rows
 
 
-def _export_load_controls(writer):
+def _export_load_controls(writer, refinements):
     api, np = writer.api, writer.api.np
     controls = []
     affine = api._affine_model()
@@ -347,7 +347,8 @@ def _export_load_controls(writer):
         original, info = api.Q4LoadTransfer(model).transfer(contact, order=48)
         writer.arrays(f"oracles/controls/{name}/Q4-q48.npz", raw=original)
         result = {"expected_proxy_k1_miss": expected_miss, "original": info, "variants": []}
-        for refinement in (1, 8, 16):
+        # Keep the required coarse warped-miss witness, plus only the requested candidates.
+        for refinement in dict.fromkeys((1, *refinements)):
             transfer = api.TriangularLoadTransfer(model, refinement)
             try:
                 raw, diagnostics = transfer.transfer(contact, order=48, analytic=True, anchor_mode="fixed")
@@ -419,7 +420,7 @@ def _worker(args):
         independent = api.run_checks(model, args.output / "oracles/independent")
         if not independent["passed"]:
             raise ArithmeticError("The pinned independent CPU controls failed.")
-        _export_load_controls(writer)
+        _export_load_controls(writer, args.refinements)
         torus = api.torus_model()
         definitions = (
             ("inner-outside-normal", 65, (0.23, -0.17), 1, 0.0, 0.0005),
@@ -541,7 +542,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, default=Path.cwd())
-    parser.add_argument("--refinements", type=int, nargs="+", choices=(1, 2, 4, 8, 16), default=[8, 16])
+    parser.add_argument(
+        "--refinements",
+        type=int,
+        nargs="+",
+        choices=(1, 2, 4, 8, 16),
+        default=[8, 16],
+        help="Proxy subdivisions to export; e.g. --refinements 4 exports a separate k4 candidate bank.",
+    )
     parser.add_argument("--_worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--reference-root", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
