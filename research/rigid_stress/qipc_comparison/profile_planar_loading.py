@@ -81,7 +81,11 @@ def _api():
 
     import genesis as gs
     from examples.rigid.franka_egg_stress import FrankaEgg
-    from examples.speed_benchmark.rigid_stress import GeometryFrame, prepare_recovery_snapshot
+    from examples.speed_benchmark.rigid_stress import (
+        GeometryFrame,
+        anchor_execution_modes,
+        prepare_recovery_snapshot,
+    )
     from genesis.utils.misc import qd_to_numpy
 
     from .artifacts import runtime_identity
@@ -137,6 +141,7 @@ def main():
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="planar")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
     parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
+    parser.add_argument("--cooperative-anchor", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--quadrature", type=int, default=16)
     parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
@@ -166,6 +171,7 @@ def main():
         scatter_tasks_per_env=args.tasks_per_env,
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
+    entry.cooperative_anchor = args.cooperative_anchor
     if entry.planar is not None:
         entry.planar.exact_radial = args.planar_integration == "radial"
     setup_seconds = time.perf_counter() - started
@@ -225,6 +231,8 @@ def main():
         "routes_after": routes_after,
         "terminal_task_work": _task_work(api, workload),
         "actual_method": entry.model.selected_method,
+        "cooperative_anchor_requested": args.cooperative_anchor,
+        "effective_anchor_modes": api.anchor_execution_modes(workload),
         "surface_inverse_available": entry.model.surface_inverse is not None,
         "device_categories": [{"category": name, "sum_duration_us": value} for name, value in sorted(groups.items())],
         "device_kernels": [

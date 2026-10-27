@@ -154,6 +154,25 @@ class GeometryFrame(NamedTuple):
     quaternion: np.ndarray
 
 
+def anchor_execution_modes(workload: FrankaEgg, staged: bool = False) -> list[str]:
+    if not workload.stress:
+        return []
+    modes = []
+    for entry in workload.scene.rigid_solver.stress_recovery.links:
+        if entry.resolved is not None:
+            mode = "not_used_resolved"
+        elif entry.intrinsic is not None:
+            mode = "not_used_intrinsic"
+        elif entry.fused_pipeline and not staged:
+            mode = "serial_fused_pipeline"
+        elif entry.cooperative_anchor and gs.backend == gs.cuda and entry.contacts.active_pairs.shape[0] > 0:
+            mode = "cooperative_cuda_packed"
+        else:
+            mode = "serial"
+        modes.append(mode)
+    return modes
+
+
 def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | None = None) -> dict:
     """Check the independent recovery route before timing its frozen input."""
     solver = workload.scene.rigid_solver
@@ -283,7 +302,9 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             solver._errno,
             entry.automatic_radius,
         ),
-        "anchor_search": lambda: kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info),
+        "anchor_search": lambda: kernel_anchor(
+            recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor
+        ),
         "candidate_weights_constraints": lambda: kernel_pressure(
             entry.contacts, entry.surface.info, options.cooperative_pressure
         ),
@@ -345,7 +366,9 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
                 (
                     "anchor_search_candidate_weights_constraints_nodal_scatter",
                     lambda: (
-                        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info),
+                        kernel_anchor(
+                            recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor
+                        ),
                         kernel_fit_scatter_moments(
                             entry.contacts,
                             entry.state,
@@ -398,7 +421,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         device_times[name] = (qd.profiler.get_kernel_profiler_total_time() - device_before) * 1e3 / repetitions
     qd.profiler.print_kernel_profiler_info()
     if entry.intrinsic is None:
-        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
+        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor)
         kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
     solver.check_errno()
     contacts = qd_to_numpy(entry.contacts.valid, transpose=True)
@@ -441,12 +464,12 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
             ),
         }
         # Keep each scatter paired with fresh pressure scratch. Repeating scatter alone accumulates its atomic outputs.
-        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
+        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor)
         for stage in moment_stages.values():
             stage()
         qd.sync()
         for _ in range(repetitions):
-            kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
+            kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor)
             qd.sync()
             for name, stage in moment_stages.items():
                 qd.profiler.clear_kernel_profiler_info()
@@ -523,6 +546,7 @@ def main() -> None:
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
+    parser.add_argument("--cooperative-anchor", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-tractions", action="store_true")
     parser.add_argument("--cold-tractions", action="store_true", help="Start every intrinsic traction fit from zero.")
@@ -645,6 +669,9 @@ def main() -> None:
         public_defaults=args.public_default_stress,
     )
     solver = workload.scene.rigid_solver
+    if workload.stress:
+        for entry in solver.stress_recovery.links:
+            entry.cooperative_anchor = args.cooperative_anchor
     if workload.stress and args.shell_loading == "planar":
         solver.stress_recovery.links[0].planar.exact_radial = args.planar_integration == "radial"
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
@@ -796,6 +823,8 @@ def main() -> None:
             if args.conditions is not None
             else None,
             "cooperative_solve": not args.serial_solve,
+            "cooperative_anchor_requested": args.cooperative_anchor,
+            "effective_anchor_modes": anchor_execution_modes(workload, staged=args.scope == "profile"),
             "cooperative_pressure": not args.serial_pressure,
             "cooperative_scatter": not args.serial_scatter,
             "cooperative_balance": not args.serial_balance,
