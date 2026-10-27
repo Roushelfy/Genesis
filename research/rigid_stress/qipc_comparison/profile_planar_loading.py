@@ -16,6 +16,7 @@ CATEGORIES = (
     ("fused_shell_recovery", ("kernel_recover_",)),
     ("proxy_query", ("kernel_planar_query",)),
     ("material_guard", ("kernel_planar_material", "kernel_material_")),
+    ("proxy_geometry_preparation", ("kernel_planar_prepare_moments",)),
     ("proxy_moments", ("kernel_planar_moments",)),
     ("proxy_fit", ("kernel_planar_fit",)),
     ("proxy_validation", ("kernel_planar_validate",)),
@@ -100,6 +101,8 @@ def _routes(api, workload):
             ("fallback_contacts", entry.planar.state.fallback_contacts),
             ("analytic_sections", entry.planar.state.analytic_sections),
             ("overflow_steps", entry.planar.state.overflow_steps),
+            ("material_queries", entry.planar.material_state.query_contacts),
+            ("material_rejections", entry.planar.material_state.rejected_contacts),
         )
     }
 

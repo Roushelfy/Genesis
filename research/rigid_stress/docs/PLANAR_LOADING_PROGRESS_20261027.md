@@ -27,9 +27,12 @@ surface-ball pressure law remain unchanged.
 The complete B4 k8 q16 trajectory retains two failures. At frame504/env2,
 sampled-peak error against original Q4 q48 is 1.085974%, exceeding the frozen
 1% CPU-fidelity target; all original spatial budgets pass. At frame438/env0,
-the original Q4 q16 reference has aggregate original-point moment error
-6.01134e-8, exceeding 1e-8, while planar and Q4 q48 pass. Native acceptance
-and K residual alone do not hide that extra conservation failure. The run
+the original Q4 q16 reference has aggregate body-origin moment error normalized
+by summed force-times-radius of 6.01134e-8, exceeding the research diagnostic's
+1e-8 gate, while planar and Q4 q48 pass. This diagnostic can amplify a small
+force residual by the source-distance/radius ratio; it is not the production
+per-source application-point moment gate. Its definition and per-contact
+witnesses are being independently audited; the original failed result is retained. The run
 contains 420 fallback contacts among 9,223 loaded contacts and 66 overflow
 environment-steps. Neither failure is silently removed or assigned a looser gate.
 
