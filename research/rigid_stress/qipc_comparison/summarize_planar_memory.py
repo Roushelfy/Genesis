@@ -441,16 +441,23 @@ def audit_task(campaign, group, task, manifest, analysis, revision, weights):
     prep = result.get("preparation", {})
     audit.require(prep.get("warmup_steps") == benchmark.get("warmup_steps") == 730, "Warmup receipt mismatch")
     warmup = benchmark.get("warmup_quality", [])
+    counts = (
+        [
+            value.get("nonfinite_count")
+            for record in warmup
+            if isinstance(record, dict)
+            for value in record.values()
+            if isinstance(value, dict)
+        ]
+        if isinstance(warmup, list)
+        else []
+    )
+    nonfinite = sum(counts) if counts and all(isinstance(value, int) and value >= 0 for value in counts) else None
     audit.require(
         benchmark.get("warmup_diagnostics") == "ranges_and_nonfinite_counts"
         and isinstance(warmup, list)
         and bool(warmup)
-        and all(
-            value.get("nonfinite_count") == 0
-            for record in warmup
-            for value in record.values()
-            if isinstance(value, dict)
-        ),
+        and nonfinite == 0,
         "Warmup diagnostic samples are missing or contain nonfinite values",
     )
     audit.require(finite_nonnegative(prep.get("setup_seconds")), "Setup timer missing or nonfinite")
@@ -485,7 +492,7 @@ def audit_task(campaign, group, task, manifest, analysis, revision, weights):
         preparation={key: value for key, value in prep.items() if key != "warmup_quality"},
         preparation_scope=result.get("preparation_scope"),
         intrusive_repetition_diagnostics=repeats,
-        warmup_sampled_nonfinite_count=0 if warmup else None,
+        warmup_sampled_nonfinite_count=nonfinite,
         warmup_counter_scope="Warmup diagnostics are sampled every10steps. Zero-invalid claims use complete reported600step repeat counters; actual-policy accuracy qualification separately checks every warmup/audit step.",
         primary_timing=False,
         spatial_qualification_established=False,
