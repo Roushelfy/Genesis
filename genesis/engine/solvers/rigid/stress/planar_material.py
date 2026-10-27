@@ -85,28 +85,31 @@ def kernel_planar_material(
                     # A parent bit represents one connected footprint, including on the original fallback route.
                     if not func_parent_ball_connected(i_face, radius, geometry):
                         state.status[i_c, i_b] = PlanarMaterialStatus.UNRESOLVED_FOOTPRINT
-                    _closest, remaining, contained = func_contact_section(i_face, center, radius, surface)
-                    if remaining > 0.0:
-                        positive = False
-                        for i_sample in range(qd.select(contained, n_q, 4 * n_q)):
-                            if not positive:
-                                i_q = surface.positions.shape[0] + i_face * 4 * n_q + i_sample
-                                _coordinates, weight, _position, _shape, _face = func_contact_sample(
-                                    i_q, i_c, i_b, first, second, contacts, surface
-                                )
-                                if not (weight >= 0.0 and weight < float("inf")):
-                                    state.status[i_c, i_b] = PlanarMaterialStatus.NONFINITE_FOOTPRINT
-                                positive = weight > 0.0 and weight < float("inf")
-                        if positive:
-                            parent = geometry.parent_face[i_face]
-                            i_word, bit = parent // 32, parent % 32
-                            packed = state.hits[i_word, i_c, i_b]
-                            packed[0] = packed[0] | (1 << bit)
-                            state.hits[i_word, i_c, i_b] = packed
+                    else:
+                        _closest, remaining, contained = func_contact_section(i_face, center, radius, surface)
+                        if remaining > 0.0:
+                            positive = False
+                            for i_sample in range(qd.select(contained, n_q, 4 * n_q)):
+                                if not positive:
+                                    i_q = surface.positions.shape[0] + i_face * 4 * n_q + i_sample
+                                    _coordinates, weight, _position, _shape, _face = func_contact_sample(
+                                        i_q, i_c, i_b, first, second, contacts, surface
+                                    )
+                                    if not (weight >= 0.0 and weight < float("inf")):
+                                        state.status[i_c, i_b] = PlanarMaterialStatus.NONFINITE_FOOTPRINT
+                                    positive = weight > 0.0 and weight < float("inf")
+                            if positive:
+                                parent = geometry.parent_face[i_face]
+                                i_word, bit = parent // 32, parent % 32
+                                packed = state.hits[i_word, i_c, i_b]
+                                packed[0] = packed[0] | (1 << bit)
+                                state.hits[i_word, i_c, i_b] = packed
             i_anchor = contacts.anchor_face[i_c, i_b]
-            if i_anchor < 0 or i_anchor >= geometry.parent_face.shape[0]:
+            if state.status[i_c, i_b] == PlanarMaterialStatus.SUCCESS and (
+                i_anchor < 0 or i_anchor >= geometry.parent_face.shape[0]
+            ):
                 state.status[i_c, i_b] = PlanarMaterialStatus.INVALID_ANCHOR
-            else:
+            elif state.status[i_c, i_b] == PlanarMaterialStatus.SUCCESS:
                 seed = geometry.parent_face[i_anchor]
                 i_word, bit = seed // 32, seed % 32
                 seed_hits = state.hits[i_word, i_c, i_b]
