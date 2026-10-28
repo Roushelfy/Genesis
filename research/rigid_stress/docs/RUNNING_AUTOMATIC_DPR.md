@@ -1,6 +1,6 @@
 # 自动半径＋DPR 使用范例
 
-这些范例使用现有原生 API。**截至 `73af7b0d1`，代码默认仍是 manual 半径和旧 DPR 压力轮廓，所以下面显式选择 Hertz。** [下一阶段目标](AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md)要求实际修改默认值、恢复便宜且准确的路径，并运行验证这些范例；本页不是该工作的完成声明。
+普通 Options 和 `.dpr()` 现在默认选择 pressure/patch/Hertz 半径/Hertz 压力轮廓，迁移已通过40项 CPU/CUDA 检查。下面显式写出的 Hertz 与该默认一致。积分与回退策略仍在[快路径研究](AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md)中验证；本页的保守配置与新短范例尚不构成整项目标的完成声明。
 
 在仓库根目录使用已安装 Genesis／Quadrants 的环境。集群上遵循 [运行位置说明](RUNNING.md)，在计算节点执行；下面不涉及 Slurm 或缓存配置。所有 stress 配置在 `scene.build()` 之前完成。
 

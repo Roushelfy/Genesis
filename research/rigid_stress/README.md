@@ -15,10 +15,13 @@ Follow [the new goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md): d
 integration/fit tolerances and selective repair against actual stress error,
 then implement automatic-radius DPR as the consistent API and example default.
 Retain explicit legacy/strict choices and the qualified planar shell path.
-This follow-up is open; the current API still defaults to manual radius.
-[3D and shell usage examples](docs/RUNNING_AUTOMATIC_DPR.md) explicitly configure
-Hertz until the migration is implemented and tested. The previous measured
-deliveries below retain their original scope.
+This follow-up is open. Ordinary Options and `.dpr()` now default to
+pressure/patch/Hertz radius/Hertz profile;40 focused CPU/CUDA checks pass for
+that migration. Integration defaults remain provisional while admission,
+complete histories and measured cost are qualified. See the
+[execution progress](docs/AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md) and
+[3D and shell usage examples](docs/RUNNING_AUTOMATIC_DPR.md).
+The previous measured deliveries below retain their original scope.
 
 ## Delivered: planar loading DPR integration and optimization (2026-10-27)
 

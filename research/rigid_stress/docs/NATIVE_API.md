@@ -38,9 +38,13 @@ the same discrete Q4 elastic model; it does not establish continuum contact peak
 For small finite-pressure footprints near a face edge, the optional
 `pressure_quadrature="angle"` uses angular fan integration while preserving
 the physical radius, pressure profile and original acceptance checks.
-`quadrature=128` passes the retained 64-condition heterogeneous volume bank;
-lower degrees do not satisfy that bank's independent load-error budget.
-The default `"edge"` mode remains unchanged. See the
+`quadrature=128` passes the retained 64-condition heterogeneous volume bank's
+original independent load-error budget. Lower-degree failures of that strict
+intermediate comparison remain preserved. The active
+[fast-path study](AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md) separately evaluates
+complete tensor/global/loaded/remote stress budgets and selective admission.
+Its explicit `"adaptive"` prototype is pending numerical/runtime qualification;
+the ordinary integration default remains provisional `"edge"`. See the
 [native candidate report](NATIVE_CANDIDATE_RESULTS_20261025.md) for accuracy,
 cost and the preserved failed configurations. This is a quadrature repair,
 not a change to the declared pressure model or its physical qualifications.
@@ -66,13 +70,15 @@ options and return ordinary `RigidStressOptions` with all effective fields.
 
 | Constructor | Exact serialized load configuration |
 | --- | --- |
-| `.dpr(mesh=...)` | `contact_model="pressure"` |
-| `.dpr(mesh=..., load_transfer="resolved")` | Pressure-mode samples transferred conservatively to their witnessed boundary |
-| `.scr(mesh=...)` | `contact_model="intrinsic", intrinsic_load_partition="body_source_prior"` |
+| `.dpr(mesh=...)` | Pressure/patch loading, automatic Hertz radius and Hertz pressure profile |
+| `.dpr(mesh=..., load_transfer="resolved")` | Pressure-mode samples transferred conservatively to their witnessed boundary; omitted radius/profile resolve to manual/dpr |
+| `.scr(mesh=...)` | Intrinsic/body-source-prior loading, manual radius and dpr pressure profile |
 
 The preset constructors fix those identifying fields. Use the main
 `RigidStressOptions(...)` constructor for other explicit load-law variants.
-The presets retain the existing solver and defaults. Historical identifiers in
+The main constructor shares the pressure/patch/Hertz/Hertz defaults. Explicit
+manual radius and the dpr pressure profile remain available for reproducibility.
+The presets retain the existing elastic solver. Historical identifiers in
 receipts remain unchanged, and the names do not express an accuracy ranking.
 
 Use `load_transfer="resolved"` only when the producer has already integrated
@@ -86,8 +92,8 @@ point sample cannot represent is rejected.
 
 This option does not determine support or pressure from sparse collider points.
 It has no reconstruction radius; `set_stress_contact_radius()` rejects changes
-for this route. The default `load_transfer="patch"` retains the manual finite
-footprint. Resolved transfer uses the ordinary max/full observation, update,
+for this route. The default `load_transfer="patch"` uses a finite pressure
+footprint with the selected automatic or manual radius. Resolved transfer uses the ordinary max/full observation, update,
 checkpoint and reset lifecycle; physical automatic pressure prediction and its
 material/pad inputs remain a separate integration requirement.
 
