@@ -1158,6 +1158,9 @@ def main() -> None:
                 },
             )
             if args.module_snapshot is not None:
+                args.output.with_name(args.output.name + ".snapshot-bindings.json").write_text(
+                    json.dumps(bindings, indent=2, allow_nan=False) + "\n"
+                )
                 module_snapshot = restore_module_snapshot(workload, snapshot_directory, bindings)
                 # Establish this route's fitted baseline from raw rigid inputs,
                 # including its own capture, association, Hertz sizing and K.
