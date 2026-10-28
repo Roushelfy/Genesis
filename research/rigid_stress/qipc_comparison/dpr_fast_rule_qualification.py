@@ -10,6 +10,7 @@ import json
 import os
 import subprocess
 import time
+from itertools import permutations
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,7 @@ if IS_SLURM:
         func_contact_section,
         func_force_frame,
         func_hertz_disk_moments,
+        kernel_anchor,
     )
     from genesis.engine.solvers.rigid.stress.model import StressModel
     from genesis.engine.solvers.rigid.stress.scatter import (
@@ -169,6 +171,71 @@ class FrozenFrame:
     frame_position: Any
     frame_quaternion: Any
     is_complete_mechanical_input: bool
+
+
+def voxel_mesh(shape, cells, scale, path):
+    """Write an affine tetrahedral volume from the established six-tetrahedra voxel construction."""
+    steps = np.eye(3, dtype=gs.np_int)[np.array(list(permutations(range(3))))]
+    offsets = np.concatenate((np.zeros((6, 1, 3), dtype=gs.np_int), steps.cumsum(axis=1)), axis=1)
+    coordinates = np.array(cells)[:, None, None, :] + offsets
+    grid_shape = tuple(size + 1 for size in shape)
+    tetrahedra = np.ravel_multi_index(np.moveaxis(coordinates, -1, 0), grid_shape).reshape((-1, 4))
+    used, inverse = np.unique(tetrahedra, return_inverse=True)
+    vertices = np.indices(grid_shape).reshape((3, -1)).T[used] * scale
+    tetrahedra = inverse.reshape((-1, 4))
+    local_faces = np.array([[1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2]])
+    unique, counts = np.unique(np.sort(tetrahedra[:, local_faces].reshape((-1, 3)), axis=1), axis=0, return_counts=True)
+    surface = unique[counts == 1]
+    surface[::2] = surface[::2, ::-1]
+    np.savez_compressed(path, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+
+
+def author_contacts(recipe, base, model, output):
+    """Freeze one new manual physical source and its original native anchor before comparing integration rules."""
+    contacts = create_contacts(1, 1, base["fixture_scale_m"] * recipe["radius_over_cell"], hertz_profile=True)
+    contacts.position.from_numpy((np.array(recipe["point_cell_units"]) * base["fixture_scale_m"])[None, None])
+    contacts.force.from_numpy(np.array(recipe["force_N"])[None, None])
+    contacts.normal.from_numpy(np.array(recipe["inward_normal"], dtype=gs.np_float)[None, None])
+    contacts.friction.fill(recipe["friction"])
+    contacts.valid.fill(True)
+    contacts.frame_position.from_numpy(np.array(base["pose_position_m"], dtype=gs.np_float)[None])
+    contacts.frame_quaternion.from_numpy(np.array(base["pose_quaternion_wxyz"], dtype=gs.np_float)[None])
+    surface = StressSurface(16, model.load_info)
+    kernel_anchor(float(np.finfo(gs.np_float).eps), contacts, surface.info, cooperative=True)
+    if np.any(qd_to_numpy(contacts.status, transpose=True)):
+        raise ValueError("An authored source violates the original source/anchor controls.")
+    physical = {
+        key: qd_to_numpy(vars(contacts)[key], transpose=True)
+        for key in (
+            "valid",
+            "position",
+            "force",
+            "normal",
+            "friction",
+            "radius",
+            "radius_status",
+            "center",
+            "anchor_face",
+            "frame_position",
+            "frame_quaternion",
+        )
+    }
+    physical["body_omega"] = np.array(base["omega_rad_per_s"], dtype=gs.np_float)[None]
+    path = output / "authored-input.npz"
+    np.savez_compressed(path, **physical)
+    write_json(
+        path.with_suffix(".json"),
+        {
+            "schema": "genesis.dpr-fast-authored-physical-input.v1",
+            "id": recipe["id"],
+            "recipe": recipe,
+            "base": base,
+            "physical_input": file_id(path),
+            "stress_options": model.options.model_dump(mode="json"),
+            "scope": "New manual finite-support physical fixture with known zero omega; not an inflation repair or altered historical input.",
+        },
+    )
+    return path
 
 
 def finite_json(value):
@@ -661,6 +728,8 @@ def main():
     source_group = parser.add_mutually_exclusive_group(required=True)
     source_group.add_argument("--archives", nargs="+", type=Path)
     source_group.add_argument("--recompute-admission", nargs="+", type=Path)
+    source_group.add_argument("--manual-control", choices=("convex-edge", "convex-tip", "u-inner-seam", "u-gap"))
+    parser.add_argument("--manual-plan", type=Path)
     parser.add_argument("--admission-method", type=Path)
     parser.add_argument("--envs", nargs="+", type=int)
     parser.add_argument("--mesh", type=Path)
@@ -714,15 +783,27 @@ def main():
     if args.recompute_admission is not None:
         recompute_admission(args, source_revision)
         return
-    if args.mesh is None:
+    if args.manual_control is not None and (args.manual_plan is None or args.coarse_controls):
+        parser.error("Authored controls require their frozen --manual-plan and cannot add coarse-rule probes.")
+    if args.mesh is None and args.manual_control is None:
         parser.error("Native frozen-rule replay requires --mesh.")
     gs.init(backend=gs.cuda, precision="64", seed=510000, logging_level="warning")
+    manual = None
+    recipe = None
+    if args.manual_control is not None:
+        manual = json.loads(args.manual_plan.read_text())
+        if manual["schema"] != "genesis.dpr-fast-authored-controls.v1":
+            raise ValueError("Use the frozen authored-control plan.")
+        recipe = next(item for item in manual["controls"] if item["id"] == args.manual_control)
+        if manual["base"]["material"] != {"young": args.young, "poisson": args.poisson, "density": args.density}:
+            raise ValueError("The authored control material must match its frozen plan.")
+        args.mesh = args.output / "authored-mesh.npz"
+        voxel_mesh(recipe["grid_shape"], recipe["cells"], manual["base"]["fixture_scale_m"], args.mesh)
     producer_files = [
         args.git_source / "genesis/engine/solvers/rigid/stress" / name
         for name in ("contact.py", "scatter.py", "surface.py", "model.py", "solve.py", "balance.py")
     ]
     producer_identities = [file_id(path) for path in producer_files]
-    identities = [file_id(path) for path in [args.mesh, args.budgets, *args.archives]]
     options = gs.options.RigidStressOptions.dpr(
         mesh=args.mesh,
         output_mode="full",
@@ -739,6 +820,9 @@ def main():
         history_size=0,
     )
     model = StressModel(options)
+    if manual is not None:
+        args.archives = [author_contacts(recipe, manual["base"], model, args.output)]
+    identities = [file_id(path) for path in [args.mesh, args.budgets, *args.archives]]
     if model.load_info.load_nodes.shape[0] != 0:
         raise ValueError("This checker qualifies volume FEM only.")
     vertices = qd_to_numpy(model.info.vertices, transpose=True)
@@ -769,6 +853,9 @@ def main():
         "worker": file_id(Path(__file__)),
         "inputs": identities,
         "native_producers": producer_identities,
+        "authored_manual_control": args.manual_control,
+        "authored_manual_plan": file_id(args.manual_plan) if manual is not None else None,
+        "admission_method": file_id(args.admission_method) if args.admission_method is not None else None,
         "options": options.model_dump(mode="json"),
         "corpus_role": args.corpus_role,
         "model": file_id(args.output / "model.npz"),
@@ -790,7 +877,9 @@ def main():
         }
         np.savez_compressed(directory / "physical-inputs.npz", **physical)
         material_binding = None
-        archived_metadata = archive.parent / "result.json"
+        archived_metadata = archive.with_suffix(".json")
+        if not archived_metadata.is_file():
+            archived_metadata = archive.parent / "result.json"
         if archived_metadata.is_file():
             metadata = json.loads(archived_metadata.read_text())
             recorded = metadata.get("stress_options")
@@ -918,6 +1007,14 @@ def main():
                 false_reject_count=sum(
                     not admit and truth is True
                     for admit, truth in zip(record["empirical_environment_admitted"], application)
+                ),
+                mass_normalized_v2_false_accept_count=sum(
+                    admit and truth is False
+                    for admit, truth in zip(record["mass_normalized_v2_environment_admitted"], application)
+                ),
+                mass_normalized_v2_false_reject_count=sum(
+                    not admit and truth is True
+                    for admit, truth in zip(record["mass_normalized_v2_environment_admitted"], application)
                 ),
                 converged_but_application_inaccurate_count=sum(
                     eligible and truth is False
