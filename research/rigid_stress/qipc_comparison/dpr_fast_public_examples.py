@@ -106,6 +106,10 @@ def main():
         if error is not None:
             result["error"] = {"type": type(error).__name__, "message": str(error), "traceback": traceback.format_exc()}
         sys.argv = previous_argv
+        native = sys.modules.get("genesis")
+        if native is not None:
+            native.destroy()
+            result["native_cleanup_completed"] = True
         if previous_display is None:
             os.environ.pop("DISPLAY", None)
         else:
