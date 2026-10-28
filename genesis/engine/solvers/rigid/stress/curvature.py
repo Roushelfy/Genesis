@@ -8,7 +8,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.utils import array_class, geom
-from genesis.utils.array_class import DataKind, V, V_MAT, V_VEC
+from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 
 class CurvatureStatus(IntEnum):
@@ -140,6 +140,10 @@ def kernel_vertex_curvature(dyn_info: array_class.DynInfo, curvature_info: Stres
     for i_v in range(curvature_info.vertices_weight.shape[0]):
         curvature_info.vertices_tensor[i_v] = qd.Matrix.zero(gs.qd_float, 3, 3)
         curvature_info.vertices_weight[i_v] = 0.0
+    # This linear-time preparation pass owns a fixed face order. Parallel
+    # floating-point atomics otherwise make immutable Hertz inputs differ
+    # between independently built scenes. Runtime contact kernels stay parallel.
+    qd.loop_config(serialize=True)
     for i_f in range(curvature_info.status.shape[0]):
         if curvature_info.status[i_f] == CurvatureStatus.SMOOTH_NORMAL_ESTIMATE:
             indices = dyn_info.faces.verts_idx[i_f]

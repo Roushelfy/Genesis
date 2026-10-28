@@ -1072,6 +1072,9 @@ def main() -> None:
                     np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)),
                 )
             workload.step(action)
+            # Warmup is outside primary timers. Stop at its first rejected step
+            # while the original source and raw rigid inputs are still present.
+            solver.check_errno()
             if metrics is not None:
                 metrics.record()
             if tick % 10 == 0:

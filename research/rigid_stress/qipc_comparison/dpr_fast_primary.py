@@ -90,7 +90,7 @@ def _failure_snapshot(error, output):
                 "options": entry.options.model_dump(mode="json"),
             }
         )
-    path = output / "first-failure.npz"
+    path = output / "exception-state.npz"
     np.savez_compressed(path, **arrays)
     return {
         "available": True,
@@ -98,7 +98,7 @@ def _failure_snapshot(error, output):
         "payload": file_id(path),
         "raw_fields": records,
         "entries": entries,
-        "scope": "Actual exception-time raw active collider/link/geom inputs and selected native source/elastic arrays. No subsequent scene advance, refit, restoration or acceptance change.",
+        "scope": "Actual exception-time raw active collider/link/geom inputs and selected native source/elastic arrays. Warmup checks stop at the first error; end-of-timed-interval errors may precede these current buffers. No subsequent scene advance, refit, restoration or acceptance change.",
     }
 
 
