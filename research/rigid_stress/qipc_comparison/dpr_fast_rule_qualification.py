@@ -552,6 +552,9 @@ def recompute_admission(args, source_revision):
                 with np.load(record["contacts"]["path"], allow_pickle=False) as saved:
                     loaded = saved["valid"] & (np.linalg.norm(saved["force"], axis=-1) > 1e-30)
                     status = saved["status"]
+                # NPZ preserves values but serializes these views contiguously; restore their reduction order.
+                native = {key: restore_face_contact_batch_layout(value) for key, value in native.items()}
+                checker = {key: restore_face_contact_batch_layout(value) for key, value in checker.items()}
                 scores = normalized_admission(native, checker)
                 is_admitted = scores["checker_supported_finite"] & (status == 0)
                 is_admitted &= scores["normalized_gradient_norm"] <= 1e-3
@@ -588,6 +591,7 @@ def recompute_admission(args, source_revision):
                         if loaded.any()
                         else None,
                         "raw_v1_reproduced_exact": bool(raw_match),
+                    "raw_reproduction_layout": "native_face_contact_batch_value",
                         "raw_v1_environment_admitted": record["empirical_environment_admitted"],
                         "normalized_gradient_max_loaded": float(
                             scores["normalized_gradient_norm"][loaded].max(initial=0)
