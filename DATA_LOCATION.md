@@ -1,5 +1,15 @@
 # Rigid-stress data and artifact locations
 
+The active automatic DPR fast-path/defaults phase from `d661349b1` uses
+`/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/`.
+Exact rejected-contact replay, authored controls, full-field/trajectory qualification,
+job logs, profiles, timing and memory outputs remain on data. Source-only frozen
+worktrees stay in workspace. Reuse the existing data-side physical environment,
+Slurm `rtx-mid` / image `1_26` and private node-local caches. Previous run directories,
+twelve original unfinished files and all prior frozen sources remain in place.
+The 2026-10-28 goal changes pressure/default semantics only after its recorded
+qualification. No data or active-environment migration is performed.
+
 The completed planar-loading DPR phase from `f8fad8ba6` uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261027-planar-loading-dpr/`.
 Frozen CPU-oracle exports, native operator/load/field controls, trajectory
