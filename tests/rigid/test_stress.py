@@ -8,6 +8,7 @@ from scipy.sparse.linalg import splu
 from scipy.spatial.transform import Rotation
 
 import genesis as gs
+from genesis.engine.solvers.rigid.stress.adaptive_pressure import kernel_adaptive_pressure, kernel_reset_adaptive
 from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
 from genesis.engine.solvers.rigid.stress.contact import (
     StressContactState,
@@ -25,7 +26,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
 from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
 from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
-from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
+from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
 from genesis.engine.solvers.rigid.stress.scatter import (
     create_scatter_workspace,
     kernel_fit_scatter_moments,
@@ -34,7 +35,7 @@ from genesis.engine.solvers.rigid.stress.scatter import (
 from genesis.engine.solvers.rigid.stress.solve import kernel_balance, kernel_full_residual, kernel_peak
 from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_VEC
+from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
@@ -127,6 +128,25 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
     assert options.radius_model == "hertz"
     assert options.pressure_profile == "hertz"
     assert RigidStressOptions(mesh=mesh).backend == "volume"
+    if stress_backend == "volume":
+        options = RigidStressOptions(
+            mesh=mesh,
+            pressure_quadrature="adaptive",
+        )
+        assert options.quadrature == 16
+        with pytest.raises(gs.GenesisException, match="quadrature=16"):
+            RigidStressOptions(mesh=mesh, quadrature=32, pressure_quadrature="adaptive")
+        with pytest.raises(gs.GenesisException, match="volume Hertz DPR"):
+            RigidStressOptions(mesh=mesh, radius_model="manual", pressure_quadrature="adaptive")
+        with pytest.raises(gs.GenesisException, match="volume Hertz DPR"):
+            RigidStressOptions(mesh=mesh, pressure_profile="dpr", pressure_quadrature="adaptive")
+        with pytest.raises(gs.GenesisException, match="volume Hertz DPR"):
+            RigidStressOptions.scr(mesh=mesh, pressure_quadrature="adaptive")
+        with pytest.raises(gs.GenesisException, match="volume Hertz DPR"):
+            RigidStressOptions.dpr(mesh=mesh, load_transfer="resolved", pressure_quadrature="adaptive")
+    else:
+        with pytest.raises(gs.GenesisException, match="volume Hertz DPR"):
+            RigidStressOptions(mesh=mesh, backend="shell", pressure_quadrature="adaptive")
     for options in (
         RigidStressOptions.scr(
             mesh=mesh,
@@ -149,6 +169,102 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
         entity.base_link.configure_stress_recovery(options)
         with pytest.raises(gs.GenesisException, match="Automatic radius and Hertz profiles require DPR patch transfer"):
             scene.build()
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+@pytest.mark.parametrize("cooperative", (False, True))
+def test_adaptive_pressure_wrench_release_and_partial_reset(nonconvex_material_mesh, tmp_path, cooperative):  # noqa: F811
+    vertices, tetrahedra, triangles, _shape = nonconvex_material_mesh
+    mesh = tmp_path / "adaptive.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles)
+    options = RigidStressOptions(
+        mesh=mesh,
+        output_mode="full",
+        pressure_quadrature="adaptive",
+    )
+    model = StressModel(options)
+    surface = StressSurface(16, model.info, adaptive=True)
+    orders = qd_to_numpy(surface.info.pressure_rules.orders, transpose=True)[:, 0]
+    offsets = qd_to_numpy(surface.info.pressure_rules.offsets, transpose=True)[:, 0]
+    rule_nodes = qd_to_numpy(surface.info.pressure_rules.nodes, transpose=True)[:, 0]
+    rule_weights = qd_to_numpy(surface.info.pressure_rules.weights, transpose=True)[:, 0]
+    assert (rule_weights > 0.0).all()
+    for order, start in zip(orders, offsets):
+        for power in range(4):
+            assert_allclose(
+                rule_weights[start : start + order] @ rule_nodes[start : start + order] ** power,
+                1.0 / (power + 1),
+                atol=1e-13,
+            )
+    contacts = create_contacts(
+        2, 2, 0.0003, cooperative=cooperative, cooperative_scatter=cooperative, hertz_profile=True, adaptive=True
+    )
+    reuse_moments = cooperative and gs.backend == gs.cuda
+    workspace = create_scatter_workspace(2, 1, reuse_moments=reuse_moments)
+    state = model.create_state(2, "full")
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
+    omega.fill(0)
+    errno = V(dtype=gs.qd_int, shape=(2,))
+    errno.fill(0)
+    coordinates = qd_to_numpy(model.info.vertices, transpose=True)
+    nodes = qd_to_numpy(model.info.surface_nodes, transpose=True).T
+    face = coordinates[nodes[0, :3]]
+    point = np.array([0.05, 0.5, 0.45]) @ face
+    normal = -qd_to_numpy(surface.info.face_normal, transpose=True)[0]
+    tangent = face[1] - face[0]
+    tangent /= np.linalg.norm(tangent)
+    force = 0.01 * (normal + 0.1 * tangent)
+    contacts.position.from_numpy(np.broadcast_to(point, (2, 2, 3)).copy())
+    contacts.normal.from_numpy(np.broadcast_to(normal, (2, 2, 3)).copy())
+    contacts.friction.fill(0.3)
+    peaks = None
+    for phase in ("load", "release", "reload"):
+        forces = np.zeros((2, 2, 3))
+        if phase != "release":
+            i_c = 1 if phase == "reload" else 0
+            forces[i_c, 0] = force
+        forces[1, 1] = 2.0 * force
+        active = np.linalg.norm(forces, axis=2) > 0.0
+        contacts.force.from_numpy(forces)
+        contacts.valid.from_numpy(active)
+        kernel_begin_step(state)
+        kernel_anchor(float(np.finfo(gs.np_float).eps), contacts, surface.info, cooperative)
+        kernel_adaptive_pressure(contacts, state, model.info, surface.info, workspace, cooperative, True, reuse_moments)
+        if reuse_moments:
+            kernel_scatter_faces(contacts, state, model.info, surface.info, workspace, True, True)
+        else:
+            kernel_scatter(contacts, state, model.info, surface.info, cooperative=False)
+        raw = qd_to_numpy(state.force, transpose=True)
+        expected = forces.sum(axis=0)
+        assert_equal(qd_to_numpy(contacts.status, transpose=True), 0)
+        assert_allclose(raw.sum(axis=1), expected, rtol=1e-8, atol=0.0)
+        assert_allclose(
+            np.cross(coordinates[None] - point, raw).sum(axis=1),
+            0.0,
+            atol=1e-8 * np.linalg.norm(expected, axis=1)[:, None] * 0.0003,
+        )
+        model.recover(omega, state, options, surface_load=True)
+        kernel_accept(state, contacts, errno)
+        assert_equal(qd_to_numpy(errno), 0)
+        assert qd_to_numpy(state.valid).all()
+        current = qd_to_numpy(state.peak, copy=True)
+        fields = qd_to_numpy(state.stress_tensor, transpose=True)
+        assert np.isfinite(fields).all()
+        if phase == "load":
+            peaks = current
+            assert (peaks > 0.0).all()
+        elif phase == "release":
+            assert_equal(raw[0], 0.0)
+            assert_equal(fields[0], 0.0)
+            assert_allclose(current[1], peaks[1], rtol=1e-8, atol=1e-10)
+            before = qd_to_numpy(contacts.admission.counters, transpose=True, copy=True)
+            kernel_reset_adaptive(np.array([0], dtype=gs.np_int), contacts)
+            after = qd_to_numpy(contacts.admission.counters, transpose=True)
+            assert_equal(after[0], 0)
+            assert_equal(after[1], before[1])
+        else:
+            assert_allclose(current, peaks, rtol=1e-8, atol=1e-10)
 
 
 @qd.kernel(graph=True)
@@ -279,7 +395,8 @@ def test_native_full_field_same_state_and_invalid_solve(tmp_path):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("update_mode", ("every_step", "manual"))
-def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer, update_mode):
+@pytest.mark.parametrize("pressure_quadrature", ("edge", "adaptive"))
+def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer, update_mode, pressure_quadrature):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -306,9 +423,19 @@ def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer, upda
     )
     maximum = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(-0.1, 0, 1), convexify=True, decimate=False))
     complete = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(0.1, 0, 1), convexify=True, decimate=False))
-    maximum.base_link.configure_stress_recovery(RigidStressOptions.dpr(mesh=mesh))
+    maximum.base_link.configure_stress_recovery(
+        RigidStressOptions.dpr(
+            mesh=mesh,
+            pressure_quadrature=pressure_quadrature,
+        )
+    )
     complete.base_link.configure_stress_recovery(
-        RigidStressOptions.dpr(mesh=mesh, output_mode="full", update_mode=update_mode)
+        RigidStressOptions.dpr(
+            mesh=mesh,
+            output_mode="full",
+            update_mode=update_mode,
+            pressure_quadrature=pressure_quadrature,
+        )
     )
     scene.build()
     entries = scene.rigid_solver.stress_recovery.links

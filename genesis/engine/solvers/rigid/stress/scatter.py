@@ -10,7 +10,8 @@ from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 from .contact import (
     StressContactState,
-    func_contact_ray,
+    func_contact_order,
+    func_contact_ray_selected,
     func_contact_sample_prepared,
     func_contact_section,
     func_force_frame,
@@ -134,7 +135,8 @@ def func_pressure_moments(
         gram = qd.Matrix.zero(gs.qd_float, 3, 3)
         load = qd.Matrix.zero(gs.qd_float, 6, 3)
         candidates = 0
-        n_q = surface.shape.shape[0]
+        n = func_contact_order(i_c, i_b, contacts, surface)
+        n_q = n * n
         start, count = i_f * n_q, n_q
         closest = qd.Vector.zero(gs.qd_float, 3)
         remaining = gs.qd_float(0.0)
@@ -160,7 +162,6 @@ def func_pressure_moments(
                 )
                 candidates = 1
             count = 0
-        n = surface.gauss.shape[0]
         is_clipped = contacts.is_refined[i_c, i_b] and not contained
         n_rays = qd.select(is_clipped, qd.select(surface.quad_vertices.shape[0] > 0, 4, 3) * n, count)
         for chunk in range((n_rays + 31) // 32):
@@ -170,8 +171,17 @@ def func_pressure_moments(
                 area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
                 n_radial = 1
                 if is_clipped:
-                    ray, area, limit = func_contact_ray(
-                        i_f, i_ray // n, i_ray % n, closest, closest - contacts.center[i_c, i_b], remaining, surface
+                    ray, area, limit = func_contact_ray_selected(
+                        i_f,
+                        i_ray // n,
+                        i_ray % n,
+                        i_c,
+                        i_b,
+                        closest,
+                        closest - contacts.center[i_c, i_b],
+                        remaining,
+                        contacts,
+                        surface,
                     )
                     # A zero-area fan contributes no load, Gram moment or positivity sample.
                     n_radial = qd.select(area > 0.0 and limit > 0.0, n, 0)
@@ -256,7 +266,8 @@ def func_scatter_faces(
         i_c, i_b = pair[0], pair[1]
         force = contacts.force[i_c, i_b]
         first, second = func_force_frame(force)
-        n_q = surface.shape.shape[0]
+        n = func_contact_order(i_c, i_b, contacts, surface)
+        n_q = n * n
         i_q_start, n_q_current = i_f * n_q, n_q
         closest = qd.Vector.zero(gs.qd_float, 3)
         remaining, contained = gs.qd_float(0.0), False
@@ -291,13 +302,16 @@ def func_scatter_faces(
                     ray = qd.Vector.zero(gs.qd_float, 3)
                     area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
                     if contacts.is_refined[i_c, i_b] and not contained:
-                        ray, area, limit = func_contact_ray(
+                        ray, area, limit = func_contact_ray_selected(
                             i_f,
                             i_q_ // n_q,
-                            i_q_ % surface.gauss.shape[0],
+                            i_q_ % n,
+                            i_c,
+                            i_b,
                             closest,
                             closest - contacts.center[i_c, i_b],
                             remaining,
+                            contacts,
                             surface,
                         )
                     coordinates, weight, position, shape, _face = func_contact_sample_prepared(
@@ -348,6 +362,13 @@ def func_scatter_faces(
     is_overflow = workspace.count[None] > workspace.tasks.shape[0]
     if is_overflow:
         workspace.overflow_calls[None] += 1
+    if qd.static(contacts.admission.rule.shape[0] > 0):
+        for i_pair in range(qd.select(is_overflow, contacts.active_count[None], 0)):
+            pair = contacts.active_pairs[i_pair]
+            i_b = pair[1]
+            qd.atomic_max(contacts.admission.overflow[i_b][0], 1)
+        for i_b in range(contacts.admission.counters.shape[0]):
+            contacts.admission.counters[i_b][7] += contacts.admission.overflow[i_b][0]
     # The incomplete task buffer contributes no loads. Overflow starts from zero
     # and integrates every original contact/face/sample, without a host transfer.
     func_scatter_warp(contacts, state, info, surface, cached_bounds, is_overflow)

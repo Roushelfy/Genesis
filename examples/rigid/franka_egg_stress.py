@@ -70,7 +70,12 @@ class FrankaEgg:
         loading_subdivisions: int = 8,
         factor_scaling: bool = False,
         factor_ordering: str = "minimum_degree",
+        stress_options: gs.options.RigidStressOptions | None = None,
     ):
+        if stress_options is not None and not stress:
+            raise ValueError("Explicit stress_options require stress=True.")
+        if stress_options is not None and public_defaults:
+            raise ValueError("Explicit stress_options cannot be combined with public_defaults.")
         self.n_envs = n_envs
         self.radius_model: str | None = None
         self.tick = 0
@@ -115,14 +120,21 @@ class FrankaEgg:
             material=gs.materials.Rigid(friction=0.6),
         )
         self.link = self.egg.base_link
-        if stress:
+        if stress_options is not None:
+            self.link.configure_stress_recovery(stress_options)
+        elif stress:
             if stress_mesh is None:
                 stress_mesh = assets / ("shell.npz" if stress_backend == "shell" else "elastic.npz")
-            defaults = gs.options.RigidStressOptions(
-                mesh=stress_mesh,
-                backend=stress_backend,
-                contact_model=contact_model,
-            )
+            integration_options = {}
+            for name, value in (
+                ("radius_model", radius_model),
+                ("pressure_profile", pressure_profile),
+                ("quadrature", quadrature),
+                ("pressure_quadrature", pressure_quadrature),
+                ("scatter_tasks_per_env", scatter_tasks_per_env),
+            ):
+                if value is not None:
+                    integration_options[name] = value
             options = gs.options.RigidStressOptions(
                 mesh=stress_mesh,
                 backend=stress_backend,
@@ -132,13 +144,7 @@ class FrankaEgg:
                 factor_scaling=factor_scaling,
                 factor_ordering=factor_ordering,
                 contact_model=contact_model,
-                radius_model=defaults.radius_model if radius_model is None else radius_model,
-                pressure_profile=defaults.pressure_profile if pressure_profile is None else pressure_profile,
                 box_edge_policy=box_edge_policy,
-                quadrature=defaults.quadrature if quadrature is None else quadrature,
-                pressure_quadrature=defaults.pressure_quadrature
-                if pressure_quadrature is None
-                else pressure_quadrature,
                 contact_block_size=contact_block_size,
                 intrinsic_support=intrinsic_support,
                 surface_fan_frontier=surface_fan_frontier,
@@ -163,11 +169,9 @@ class FrankaEgg:
                 contact_moment_reuse=contact_moment_reuse,
                 fused_rigid_post=fused_rigid_post,
                 face_parallel_scatter=face_parallel_scatter,
-                scatter_tasks_per_env=defaults.scatter_tasks_per_env
-                if scatter_tasks_per_env is None
-                else scatter_tasks_per_env,
                 cached_peak=cached_peak,
                 cached_face_bounds=cached_face_bounds,
+                **integration_options,
             )
             if public_defaults:
                 defaults = gs.options.RigidStressOptions(
@@ -178,6 +182,7 @@ class FrankaEgg:
                     raise ValueError("Public-default stress permits only a box-edge policy override.")
                 options = defaults
             self.link.configure_stress_recovery(options)
+        if stress:
             self.radius_model = self.link.stress_options.radius_model
         self.scene.build(n_envs=n_envs)
         self.robot.set_dofs_kp([4500, 4500, 3500, 3500, 2000, 2000, 2000], self.arm)
@@ -343,7 +348,7 @@ def main() -> None:
     parser.add_argument("--radius-model", choices=("manual", "hertz"), default=None)
     parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default=None)
     parser.add_argument("--quadrature", type=int, default=None)
-    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default=None)
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle", "adaptive"), default=None)
     parser.add_argument("--scatter-tasks-per-env", type=int, default=None)
     parser.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
@@ -402,8 +407,11 @@ def main() -> None:
     )
     if workload.stress:
         options = workload.link.stress_options
+        backend = options.backend
+        if backend == "shell":
+            backend += "/" + options.shell_loading
         print(
-            f"Stress configuration: {options.backend}/{options.shell_loading}, {options.radius_model} radius, "
+            f"Stress configuration: {backend}, {options.radius_model} radius, "
             f"{options.pressure_profile} pressure, {options.pressure_quadrature}/q{options.quadrature}."
         )
     for _ in range(args.steps):

@@ -4,6 +4,7 @@ import quadrants as qd
 
 from genesis.utils import array_class
 
+from .adaptive_pressure import func_adaptive_pressure
 from .association import func_associate
 from .balance import func_balance_contacts
 from .contact import (
@@ -107,18 +108,21 @@ def func_pipeline(
         automatic_radius,
     )
     func_anchor(epsilon, contacts, surface)
-    func_pack_contacts(contacts)
-    if qd.static(reuse_contact_moments):
-        func_pressure_moments(contacts, state, info, surface, scatter, cached_bounds)
+    if qd.static(contacts.admission.rule.shape[0] > 0):
+        func_adaptive_pressure(contacts, state, info, surface, scatter, cached_bounds, reuse_contact_moments)
     else:
-        func_pressure_warp(contacts, surface, False, contacts.valid, False)
-    func_pressure_correct_warp(contacts, surface)
-    func_refine_contacts(contacts)
-    if qd.static(reuse_contact_moments):
-        func_pressure_warp(contacts, surface, True, scatter.refined_pressure, True)
-    else:
-        func_pressure_warp(contacts, surface, True, contacts.valid, False)
-    func_pressure_correct_warp(contacts, surface)
+        func_pack_contacts(contacts)
+        if qd.static(reuse_contact_moments):
+            func_pressure_moments(contacts, state, info, surface, scatter, cached_bounds)
+        else:
+            func_pressure_warp(contacts, surface, False, contacts.valid, False)
+        func_pressure_correct_warp(contacts, surface)
+        func_refine_contacts(contacts)
+        if qd.static(reuse_contact_moments):
+            func_pressure_warp(contacts, surface, True, scatter.refined_pressure, True)
+        else:
+            func_pressure_warp(contacts, surface, True, contacts.valid, False)
+        func_pressure_correct_warp(contacts, surface)
     if qd.static(face_parallel):
         func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds, reuse_contact_moments)
     else:

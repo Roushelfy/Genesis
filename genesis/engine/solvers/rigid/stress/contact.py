@@ -6,7 +6,7 @@ from typing import ClassVar
 import quadrants as qd
 
 import genesis as gs
-from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
+from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V, of_kind
 from genesis.utils.simt import qd_block_min
 
 from .data import StressInfo, StressState, func_scatter_load
@@ -18,6 +18,24 @@ from .surface import StressSurfaceInfo, func_closest_triangle, func_surface_face
 # Stop at 10% of the independently checked 1e-8 contact wrench budget; the final
 # scatter acceptance and complete elastic residual/stress checks remain mandatory.
 _PRESSURE_FIT_TOLERANCE = 1e-9
+
+
+@dataclass(frozen=True)
+class StressPressureAdmission:
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    rule: qd.Tensor
+    reason: qd.Tensor
+    errors: qd.Tensor
+    check_mass: qd.Tensor
+    attempts: qd.Tensor
+    stage_errors: qd.Tensor
+    stage_mass: qd.Tensor
+    stage_status: qd.Tensor
+    stage_reason: qd.Tensor
+    stage_evaluations: qd.Tensor
+    counters: qd.Tensor
+    overflow: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -46,6 +64,7 @@ class StressContactState:
     active_count: qd.Tensor
     frame_position: qd.Tensor
     frame_quaternion: qd.Tensor
+    admission: StressPressureAdmission
 
 
 def create_contacts(
@@ -55,6 +74,7 @@ def create_contacts(
     cooperative: bool = True,
     cooperative_scatter: bool = True,
     hertz_profile: bool = False,
+    adaptive: bool = False,
 ) -> StressContactState:
     shape = (n_contacts, n_envs)
     state = StressContactState(
@@ -84,11 +104,38 @@ def create_contacts(
         active_count=V(dtype=gs.qd_int, shape=()),
         frame_position=V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)),
         frame_quaternion=V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
+        admission=StressPressureAdmission(
+            rule=V_VEC(1, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            reason=V_VEC(1, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            errors=V_VEC(4, dtype=gs.qd_float, shape=shape if adaptive else (0, 0)),
+            check_mass=V_VEC(1, dtype=gs.qd_float, shape=shape if adaptive else (0, 0)),
+            attempts=V_VEC(1, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            stage_errors=V_MAT(3, 4, dtype=gs.qd_float, shape=shape if adaptive else (0, 0)),
+            stage_mass=V_VEC(3, dtype=gs.qd_float, shape=shape if adaptive else (0, 0)),
+            stage_status=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            stage_reason=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            stage_evaluations=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            counters=V_VEC(9, dtype=qd.i64, shape=(n_envs if adaptive else 0,)),
+            overflow=V_VEC(1, dtype=gs.qd_int, shape=(n_envs if adaptive else 0,)),
+        ),
     )
     state.radius.fill(radius)
     state.radius_status.fill(0)
     state.hertz_profile.fill(hertz_profile)
     state.valid.fill(False)
+    if adaptive:
+        state.admission.rule.fill(1)
+        state.admission.reason.fill(0)
+        state.admission.errors.fill(0)
+        state.admission.check_mass.fill(0)
+        state.admission.attempts.fill(0)
+        state.admission.stage_errors.fill(0)
+        state.admission.stage_mass.fill(0)
+        state.admission.stage_status.fill(0)
+        state.admission.stage_reason.fill(0)
+        state.admission.stage_evaluations.fill(0)
+        state.admission.counters.fill(0)
+        state.admission.overflow.fill(0)
     return state
 
 
@@ -121,6 +168,28 @@ def func_patch_sample(
         weight = qd.exp(-0.5 * distance / (0.45 * 0.45)) * (1.0 - distance) ** 2 * surface_info.weights[i_q]
     coordinates = qd.Vector([1.0, relative.dot(first), relative.dot(second)])
     return coordinates, weight
+
+
+@qd.func
+def func_contact_order(i_c: int, i_b: int, contacts: StressContactState, surface: StressSurfaceInfo):
+    order = surface.gauss.shape[0]
+    if qd.static(contacts.admission.rule.shape[0] > 0):
+        i_r = contacts.admission.rule[i_c, i_b][0]
+        order = surface.pressure_rules.orders[i_r][0]
+    return order
+
+
+@qd.func
+def func_contact_gauss(i_q: int, i_c: int, i_b: int, contacts: StressContactState, surface: StressSurfaceInfo):
+    node, weight = gs.qd_float(0.0), gs.qd_float(0.0)
+    if qd.static(contacts.admission.rule.shape[0] > 0):
+        i_r = contacts.admission.rule[i_c, i_b][0]
+        i_start = surface.pressure_rules.offsets[i_r][0]
+        node = surface.pressure_rules.nodes[i_start + i_q][0]
+        weight = surface.pressure_rules.weights[i_start + i_q][0]
+    else:
+        node, weight = surface.gauss[i_q], surface.gauss_weights[i_q]
+    return node, weight
 
 
 @qd.func
@@ -198,6 +267,36 @@ def func_contact_ray(
     remaining: float,
     surface: StressSurfaceInfo,
 ):
+    return func_contact_ray_at(i_face, i_triangle, surface.gauss[i_angular], closest, offset, remaining, surface)
+
+
+@qd.func
+def func_contact_ray_selected(
+    i_face: int,
+    i_triangle: int,
+    i_angular: int,
+    i_c: int,
+    i_b: int,
+    closest: qd.types.vector(3),
+    offset: qd.types.vector(3),
+    remaining: float,
+    contacts: StressContactState,
+    surface: StressSurfaceInfo,
+):
+    angular, _weight = func_contact_gauss(i_angular, i_c, i_b, contacts, surface)
+    return func_contact_ray_at(i_face, i_triangle, angular, closest, offset, remaining, surface)
+
+
+@qd.func
+def func_contact_ray_at(
+    i_face: int,
+    i_triangle: int,
+    angular: float,
+    closest: qd.types.vector(3),
+    offset: qd.types.vector(3),
+    remaining: float,
+    surface: StressSurfaceInfo,
+):
     vertices = qd.Matrix.zero(gs.qd_float, 4, 3)
     n_fans = 3
     if surface.quad_vertices.shape[0] > 0:
@@ -213,7 +312,7 @@ def func_contact_ray(
         vertices[2, :] = surface.face_origin[i_face] + surface.face_edges[i_face][1, :]
     edge_a = vertices[i_triangle, :] - closest
     edge_b = vertices[(i_triangle + 1) % n_fans, :] - closest
-    v = surface.gauss[i_angular]
+    v = angular
     direction = (1.0 - v) * edge_a + v * edge_b
     cross = edge_a.cross(edge_b)
     area = cross.norm()
@@ -255,20 +354,25 @@ def func_contact_sample(
     remaining, contained = gs.qd_float(0.0), False
     ray = qd.Vector.zero(gs.qd_float, 3)
     area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
+    n = func_contact_order(i_c, i_b, contact_state, surface_info)
+    n_quadrature = n * n
     if i_q >= surface_info.positions.shape[0]:
         i_virtual = i_q - surface_info.positions.shape[0]
-        i_face = i_virtual // (qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3) * surface_info.shape.shape[0])
+        i_face = i_virtual // (qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3) * n_quadrature)
         closest, remaining, contained = func_contact_section(
             i_face, contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b], surface_info
         )
         if not contained:
-            ray, area, limit = func_contact_ray(
+            ray, area, limit = func_contact_ray_selected(
                 i_face,
-                (i_virtual // surface_info.shape.shape[0]) % qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3),
-                i_virtual % surface_info.gauss.shape[0],
+                (i_virtual // n_quadrature) % qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3),
+                i_virtual % n,
+                i_c,
+                i_b,
                 closest,
                 closest - contact_state.center[i_c, i_b],
                 remaining,
+                contact_state,
                 surface_info,
             )
     return func_contact_sample_prepared(
@@ -293,13 +397,14 @@ def func_contact_sample_prepared(
     ray_limit: float,
 ):
     """Integrate a sample using the unchanged face/ball section, shared by all samples of a packed face."""
-    geometry_valid = True
-    center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
-    n_quadrature = surface_info.shape.shape[0]
+    n = func_contact_order(i_c, i_b, contact_state, surface_info)
+    n_quadrature = n * n
     position = qd.Vector.zero(gs.qd_float, 3)
     weight = gs.qd_float(0.0)
     shape = qd.Vector.zero(gs.qd_float, 6)
+    u, v, weight_u, weight_v = gs.qd_float(0.0), gs.qd_float(0.0), gs.qd_float(0.0), gs.qd_float(0.0)
     i_face = i_q // n_quadrature
+    i_triangle = 0
     if i_q < surface_info.positions.shape[0]:
         position = surface_info.positions[i_q]
         weight = surface_info.weights[i_q]
@@ -311,8 +416,63 @@ def func_contact_sample_prepared(
         i_face = i_virtual // (qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3) * n_quadrature)
         i_triangle = (i_virtual // n_quadrature) % qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3)
         i_sample = i_virtual % n_quadrature
-        n = surface_info.gauss.shape[0]
-        u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
+        u, weight_u = func_contact_gauss(i_sample // n, i_c, i_b, contact_state, surface_info)
+        v, weight_v = func_contact_gauss(i_sample % n, i_c, i_b, contact_state, surface_info)
+    return func_contact_sample_at(
+        i_face,
+        i_triangle,
+        i_c,
+        i_b,
+        u,
+        v,
+        weight_u,
+        weight_v,
+        position,
+        weight,
+        shape,
+        first,
+        second,
+        closest,
+        remaining,
+        contained,
+        ray,
+        ray_area,
+        ray_limit,
+        contact_state,
+        surface_info,
+        i_q >= surface_info.positions.shape[0],
+    )
+
+
+@qd.func
+def func_contact_sample_at(
+    i_face: int,
+    i_triangle: int,
+    i_c: int,
+    i_b: int,
+    u: float,
+    v: float,
+    weight_u: float,
+    weight_v: float,
+    position: qd.types.vector(3),
+    weight: float,
+    shape: qd.types.vector(6),
+    first: qd.types.vector(3),
+    second: qd.types.vector(3),
+    closest: qd.types.vector(3),
+    remaining: float,
+    contained: bool,
+    ray: qd.types.vector(3),
+    ray_area: float,
+    ray_limit: float,
+    contact_state: StressContactState,
+    surface_info: StressSurfaceInfo,
+    virtual: bool,
+):
+    """Evaluate an original physical surface sample with explicit positive integration coordinates."""
+    geometry_valid = True
+    center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+    if virtual:
         position = closest
         if remaining > 0.0:
             if contained:
@@ -335,7 +495,7 @@ def func_contact_sample_prepared(
                         radial, derivative = ray_limit * (1.0 - u * u), 2.0 * ray_limit * u
                     position = closest + radial * ray
                     weight = ray_area * radial * derivative
-            weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
+        weight *= weight_u * weight_v
         if surface_info.quad_vertices.shape[0] > 0:
             if weight > 0.0:
                 target = surface_info.face_dual[i_face] @ (position - surface_info.face_origin[i_face])
@@ -398,7 +558,8 @@ def func_contact_cell(
         if distance.norm_sqr() < radius * radius and func_surface_face_admitted(i_cell, i_c, i_b, surface_info):
             _closest, remaining, contained = func_contact_section(i_cell, center, radius, surface_info)
             if remaining > 0.0:
-                count = surface_info.shape.shape[0]
+                order = func_contact_order(i_c, i_b, contact_state, surface_info)
+                count = order * order
                 start = surface_info.positions.shape[0] + i_cell * (
                     qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3) * count
                 )
@@ -863,8 +1024,8 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                     remaining, contained = gs.qd_float(0.0), False
                     if contact_state.is_refined[i_c, i_b] and end > start:
                         closest, remaining, contained = func_contact_section(i_cell, center, radius, surface_info)
-                    n = surface_info.gauss.shape[0]
-                    n_quadrature = surface_info.shape.shape[0]
+                    n = func_contact_order(i_c, i_b, contact_state, surface_info)
+                    n_quadrature = n * n
                     is_clipped = contact_state.is_refined[i_c, i_b] and not contained and end > start
                     n_rays = qd.select(
                         is_clipped, qd.select(surface_info.quad_vertices.shape[0] > 0, 4, 3) * n, end - start
@@ -876,8 +1037,17 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                             area, limit = gs.qd_float(0.0), gs.qd_float(0.0)
                             n_radial = 1
                             if is_clipped:
-                                ray, area, limit = func_contact_ray(
-                                    i_cell, i_ray // n, i_ray % n, closest, closest - center, remaining, surface_info
+                                ray, area, limit = func_contact_ray_selected(
+                                    i_cell,
+                                    i_ray // n,
+                                    i_ray % n,
+                                    i_c,
+                                    i_b,
+                                    closest,
+                                    closest - center,
+                                    remaining,
+                                    contact_state,
+                                    surface_info,
                                 )
                                 n_radial = qd.select(area > 0.0 and limit > 0.0, n, 0)
                             for i_radial in range(n_radial):
@@ -1170,7 +1340,8 @@ def func_scatter_warp(
                         low, high = surface_info.face_bounds_low[i_f], surface_info.face_bounds_high[i_f]
                 distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
                 if distance.dot(distance) < radius * radius and func_surface_face_admitted(i_f, i_c, i_b, surface_info):
-                    n_q = surface_info.shape.shape[0]
+                    order = func_contact_order(i_c, i_b, contact_state, surface_info)
+                    n_q = order * order
                     start, count = i_f * n_q, n_q
                     if contact_state.is_refined[i_c, i_b]:
                         start, count = (

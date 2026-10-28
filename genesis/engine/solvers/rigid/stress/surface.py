@@ -16,6 +16,16 @@ from .quadrilateral import func_quad_shape
 
 
 @dataclass(frozen=True)
+class StressPressureRules:
+    kind: ClassVar[DataKind] = DataKind.CONSTANT
+
+    orders: qd.Tensor
+    offsets: qd.Tensor
+    nodes: qd.Tensor
+    weights: qd.Tensor
+
+
+@dataclass(frozen=True)
 class StressSurfaceInfo:
     kind: ClassVar[DataKind] = DataKind.CONSTANT
 
@@ -38,10 +48,11 @@ class StressSurfaceInfo:
     quad_scale: qd.Tensor
     quad_valid: qd.Tensor
     grid: StressGridInfo
+    pressure_rules: StressPressureRules
 
 
 class StressSurface:
-    def __init__(self, quadrature: int, stress_info: StressInfo, angular: bool = False):
+    def __init__(self, quadrature: int, stress_info: StressInfo, angular: bool = False, adaptive: bool = False):
         started = time.perf_counter()
         n_faces = stress_info.surface_nodes.shape[0]
         n_quadrature = quadrature * quadrature
@@ -71,9 +82,17 @@ class StressSurface:
             quad_scale=V(dtype=gs.qd_float, shape=(max(1, n_faces if stress_info.load_nodes.shape[0] > 0 else 0),)),
             quad_valid=V(dtype=gs.qd_bool, shape=()),
             grid=allocate_grid(n_faces * n_quadrature),
+            pressure_rules=StressPressureRules(
+                orders=V_VEC(1, dtype=gs.qd_int, shape=(4 if adaptive else 0,)),
+                offsets=V_VEC(1, dtype=gs.qd_int, shape=(4 if adaptive else 0,)),
+                nodes=V_VEC(1, dtype=gs.qd_float, shape=(216 if adaptive else 0,)),
+                weights=V_VEC(1, dtype=gs.qd_float, shape=(216 if adaptive else 0,)),
+            ),
         )
-        self.info.angular_quadrature.fill(angular)
+        self.info.angular_quadrature.fill(angular or adaptive)
         kernel_gauss(self.info)
+        if adaptive:
+            kernel_pressure_rules(self.info.pressure_rules)
         if stress_info.load_nodes.shape[0] > 0:
             kernel_quad_surface(stress_info, self.info)
             if not qd_to_numpy(self.info.quad_valid):
@@ -95,6 +114,34 @@ def func_surface_face_admitted(i_face: int, i_contact: int, i_env: int, surface:
         packed = surface.face_mask[word, i_contact, i_env]
         admitted = (packed[0] & (1 << bit)) != 0
     return admitted
+
+
+@qd.kernel
+def kernel_pressure_rules(rules: StressPressureRules):
+    for i_r in range(rules.orders.shape[0]):
+        orders = qd.Vector([8, 16, 64, 128])
+        offsets = qd.Vector([0, 8, 24, 88])
+        rules.orders[i_r] = qd.Vector([orders[i_r]])
+        rules.offsets[i_r] = qd.Vector([offsets[i_r]])
+    for i_q in range(rules.nodes.shape[0]):
+        i_r = 0
+        for j_r in range(1, rules.orders.shape[0]):
+            if i_q >= rules.offsets[j_r][0]:
+                i_r = j_r
+        n = rules.orders[i_r][0]
+        i_local = i_q - rules.offsets[i_r][0]
+        x = -qd.cos(qd.math.pi * (i_local + 0.75) / (n + 0.5))
+        derivative = gs.qd_float(0.0)
+        for _ in range(32):
+            previous, value = gs.qd_float(0.0), gs.qd_float(1.0)
+            for j in range(n):
+                old = value
+                value = ((2 * j + 1) * x * value - j * previous) / (j + 1)
+                previous = old
+            derivative = n * (x * value - previous) / (x * x - 1.0)
+            x -= value / derivative
+        rules.nodes[i_q] = qd.Vector([0.5 * (x + 1.0)])
+        rules.weights[i_q] = qd.Vector([1.0 / ((1.0 - x * x) * derivative * derivative)])
 
 
 @qd.kernel

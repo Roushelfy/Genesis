@@ -31,6 +31,11 @@ from examples.speed_benchmark.stress_stages import (
     kernel_small_solve,
     kernel_weights_gram,
 )
+from genesis.engine.solvers.rigid.stress.adaptive_pressure import (
+    _ADMISSION_TOLERANCE,
+    _NORMALIZE_CHECK_MASS,
+    kernel_adaptive_pressure,
+)
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
 from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
 from genesis.engine.solvers.rigid.stress.contact import (
@@ -66,6 +71,28 @@ class PlanarRouteCounts(NamedTuple):
     material_rejections: np.ndarray
 
 
+class AdaptiveRouteCounts(NamedTuple):
+    attempted_contacts: np.ndarray
+    checker_evaluations: np.ndarray
+    angle16_attempts: np.ndarray
+    angle64_attempts: np.ndarray
+    angle128_attempts: np.ndarray
+    repaired_contacts: np.ndarray
+    rejected_contacts: np.ndarray
+    overflow_replays: np.ndarray
+    initial_affine_fits: np.ndarray
+
+
+def adaptive_route_counts(workload: FrankaEgg) -> AdaptiveRouteCounts | None:
+    if not workload.stress:
+        return None
+    admission = workload.scene.rigid_solver.stress_recovery.links[0].contacts.admission
+    if admission.rule.shape[0] == 0:
+        return None
+    counters = qd_to_numpy(admission.counters, transpose=True, copy=True)
+    return AdaptiveRouteCounts(*(counters[:, i] for i in range(9)))
+
+
 def planar_route_counts(workload: FrankaEgg) -> PlanarRouteCounts | None:
     if not workload.stress:
         return None
@@ -83,8 +110,10 @@ def planar_route_counts(workload: FrankaEgg) -> PlanarRouteCounts | None:
     )
 
 
-def planar_route_interval(
-    before: PlanarRouteCounts | None, after: PlanarRouteCounts | None, resets: int
+def route_interval(
+    before: PlanarRouteCounts | AdaptiveRouteCounts | None,
+    after: PlanarRouteCounts | AdaptiveRouteCounts | None,
+    resets: int,
 ) -> dict | None:
     if before is None:
         return None
@@ -92,12 +121,13 @@ def planar_route_interval(
     # Native diagnostic state follows checkpoint/reset semantics. A timer spanning
     # a reset cannot recover its earlier counts from endpoint snapshots alone.
     complete = resets == 0 and all((new >= old).all() for old, new in zip(before, after))
+    fields = PlanarRouteCounts._fields
+    if isinstance(before, AdaptiveRouteCounts):
+        fields = AdaptiveRouteCounts._fields
     return {
         "full_interval_counts_available": complete,
         "environment_resets_inside_timer": resets,
-        "per_environment_delta": {
-            name: (new - old).tolist() for name, old, new in zip(PlanarRouteCounts._fields, before, after)
-        }
+        "per_environment_delta": {name: (new - old).tolist() for name, old, new in zip(fields, before, after)}
         if complete
         else None,
         "terminal_counters_since_last_reset": {name: value.tolist() for name, value in after._asdict().items()},
@@ -438,7 +468,55 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         stages["automatic_radius_only"] = lambda: kernel_estimate_radii(
             entry.contacts, solver.collider.collider_state, solver.dyn_state, entry.automatic_radius
         )
-    if entry.reuse_contact_moments:
+    if options.pressure_quadrature == "adaptive":
+        stages = {
+            name: stage
+            for name, stage in stages.items()
+            if name not in ("anchor_search", "candidate_weights_constraints", "nodal_scatter")
+        }
+        stages = dict(
+            list(stages.items())[:2]
+            + [
+                (
+                    "anchor_search_adaptive_pressure_admission_nodal_scatter",
+                    lambda: (
+                        kernel_anchor(
+                            recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor
+                        ),
+                        kernel_adaptive_pressure(
+                            entry.contacts,
+                            entry.state,
+                            entry.model.load_info,
+                            entry.surface.info,
+                            entry.scatter,
+                            options.cooperative_pressure,
+                            options.cached_face_bounds,
+                            entry.reuse_contact_moments,
+                        ),
+                        kernel_scatter_faces(
+                            entry.contacts,
+                            entry.state,
+                            entry.model.load_info,
+                            entry.surface.info,
+                            entry.scatter,
+                            options.cached_face_bounds,
+                            entry.reuse_contact_moments,
+                        )
+                        if entry.scatter.tasks.shape[0] and options.cooperative_scatter
+                        else kernel_scatter(
+                            entry.contacts,
+                            entry.state,
+                            entry.model.load_info,
+                            entry.surface.info,
+                            options.cooperative_scatter,
+                            options.cached_face_bounds,
+                        ),
+                    ),
+                )
+            ]
+            + list(stages.items())[2:]
+        )
+    elif entry.reuse_contact_moments:
         # These stages share current-footprint scratch and must refresh together.
         stages = {
             name: stage
@@ -505,7 +583,9 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         times[name] = (time.perf_counter() - start) * 1e3 / repetitions
         device_times[name] = (qd.profiler.get_kernel_profiler_total_time() - device_before) * 1e3 / repetitions
     qd.profiler.print_kernel_profiler_info()
-    if entry.intrinsic is None:
+    if options.pressure_quadrature == "adaptive":
+        stages["anchor_search_adaptive_pressure_admission_nodal_scatter"]()
+    elif entry.intrinsic is None:
         kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info, entry.cooperative_anchor)
         kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
     solver.check_errno()
@@ -530,13 +610,28 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
     moment_times, moment_device_times = {}, {}
     if entry.reuse_contact_moments:
         moment_stages = {
-            "pressure_integration_fit": lambda: kernel_pressure_moments(
-                entry.contacts,
-                entry.state,
-                entry.model.load_info,
-                entry.surface.info,
-                entry.scatter,
-                options.cached_face_bounds,
+            "pressure_integration_fit_and_admission"
+            if options.pressure_quadrature == "adaptive"
+            else "pressure_integration_fit": lambda: (
+                kernel_adaptive_pressure(
+                    entry.contacts,
+                    entry.state,
+                    entry.model.load_info,
+                    entry.surface.info,
+                    entry.scatter,
+                    options.cooperative_pressure,
+                    options.cached_face_bounds,
+                    entry.reuse_contact_moments,
+                )
+                if options.pressure_quadrature == "adaptive"
+                else kernel_pressure_moments(
+                    entry.contacts,
+                    entry.state,
+                    entry.model.load_info,
+                    entry.surface.info,
+                    entry.scatter,
+                    options.cached_face_bounds,
+                )
             ),
             "nodal_scatter": lambda: kernel_scatter_faces(
                 entry.contacts,
@@ -568,7 +663,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
                 )
         assert (qd_to_numpy(entry.contacts.status) == 0).all()
     task_geometry = None
-    if entry.scatter.tasks.shape[0]:
+    if entry.scatter.tasks.shape[0] and options.pressure_quadrature != "adaptive":
         kernel_moment_geometry_counts(entry.contacts, entry.surface.info, entry.scatter, geometry_counts)
         task_geometry = dict(
             zip(
@@ -660,7 +755,7 @@ def main() -> None:
     parser.add_argument(
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
-    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default=None)
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle", "adaptive"), default=None)
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
@@ -919,6 +1014,17 @@ def main() -> None:
             "pressure_profile": stress_options.pressure_profile if stress_options is not None else None,
             "box_edge_policy": stress_options.box_edge_policy if stress_options is not None else None,
             "actual_stress_options": stress_options.model_dump(mode="json") if stress_options is not None else None,
+            "adaptive_admission": {
+                "candidate_orders": [16, 64, 128],
+                "checker_orders": [8, 16, 64],
+                "threshold": _ADMISSION_TOLERANCE,
+                "checker_mass_normalization": _NORMALIZE_CHECK_MASS,
+                "checker_work": "One logical check includes candidate-rule evaluation and two checker traversals.",
+                "initial_affine_fits": "Candidate16 fits accepted directly without constrained Newton evaluations.",
+                "scope": "Experimental cross-rule admission; field calibration and qualification remain separate.",
+            }
+            if stress_options is not None and stress_options.pressure_quadrature == "adaptive"
+            else None,
             "public_default_stress": args.public_default_stress,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,
@@ -1011,6 +1117,7 @@ def main() -> None:
                         Path("genesis/engine/entities/rigid_entity/description.py"),
                         Path("examples/rigid/franka_egg_stress.py"),
                         Path("examples/rigid/egg_stress_controller.py"),
+                        Path("examples/speed_benchmark/rigid_stress_metrics.py"),
                         Path(__file__),
                     ]
                 )
@@ -1069,6 +1176,7 @@ def main() -> None:
                     metrics.reset()
                 failure_before = None
                 planar_before = planar_route_counts(workload)
+                adaptive_before = adaptive_route_counts(workload)
                 resets_before = workload.reset_count
                 scatter_overflow_before = 0
                 if workload.stress:
@@ -1125,8 +1233,11 @@ def main() -> None:
                         else None,
                         "batch_steps_per_second": steps / elapsed,
                         "resets": workload.reset_count,
-                        "planar_routes": planar_route_interval(
+                        "planar_routes": route_interval(
                             planar_before, planar_route_counts(workload), workload.reset_count - resets_before
+                        ),
+                        "adaptive_routes": route_interval(
+                            adaptive_before, adaptive_route_counts(workload), workload.reset_count - resets_before
                         ),
                     }
                 )

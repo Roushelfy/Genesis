@@ -23,6 +23,7 @@ from genesis.utils.misc import (
     tensor_to_array,
 )
 
+from .adaptive_pressure import kernel_adaptive_pressure, kernel_reset_adaptive
 from .association import kernel_associate
 from .automatic_radius import StressRadiusInfo, StressRadiusStatus
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
@@ -133,7 +134,10 @@ class RigidStressRecovery:
                         model = ShellModel(options) if options.backend == "shell" else StressModel(options)
                     if surface is None:
                         surface = StressSurface(
-                            quadrature, model.load_info, angular=options.pressure_quadrature == "angle"
+                            quadrature,
+                            model.load_info,
+                            angular=options.pressure_quadrature == "angle",
+                            adaptive=options.pressure_quadrature == "adaptive",
                         )
                     reuse_contact_moments = (
                         options.contact_model == "pressure"
@@ -166,6 +170,7 @@ class RigidStressRecovery:
                                 and options.load_transfer == "patch"
                                 and options.cooperative_scatter,
                                 options.pressure_profile == "hertz",
+                                adaptive=options.pressure_quadrature == "adaptive",
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
@@ -406,6 +411,17 @@ class RigidStressRecovery:
                         entry.scatter,
                         entry.reuse_contact_moments,
                     )
+                elif options.pressure_quadrature == "adaptive":
+                    kernel_adaptive_pressure(
+                        entry.contacts,
+                        entry.state,
+                        entry.model.load_info,
+                        entry.surface.info,
+                        entry.scatter,
+                        options.cooperative_pressure,
+                        options.cached_face_bounds,
+                        entry.reuse_contact_moments,
+                    )
                 elif entry.reuse_contact_moments:
                     kernel_pressure_moments(
                         entry.contacts,
@@ -453,6 +469,8 @@ class RigidStressRecovery:
         for affected in self.links if entry is None else (entry,):
             affected.requested_step = -1
             kernel_reset(envs_idx, affected.state)
+            if affected.options.pressure_quadrature == "adaptive":
+                kernel_reset_adaptive(envs_idx, affected.contacts)
             if affected.planar is not None:
                 affected.planar.reset(envs_idx)
             if affected.history is not None:

@@ -3,6 +3,7 @@ from typing import Annotated, Literal
 from pydantic import Field, StrictBool
 from typing_extensions import Self
 
+import genesis as gs
 from genesis.typing import PathType, PositiveFloat, PositiveInt, ValidFloat
 
 from .options import Options
@@ -63,6 +64,10 @@ class RigidStressOptions(Options):
     to resolve small footprints near a long edge. It preserves the physical
     radius and pressure profile. The default ``"edge"`` retains edge-parameter
     quadrature; the angular variant remains experimental.
+    ``pressure_quadrature="adaptive"`` explicitly selects experimental volume Hertz patch integration with
+    ``quadrature=16``. It checks lower-order estimates and increases integration work for unresolved contacts,
+    trading checking cost for fewer high-order integrations. Bounded refinement can still reject a load. Other
+    backends and pressure profiles use the fixed integration rules.
     ``load_transfer="resolved"`` declares that pressure-mode input forces are
     already integrated boundary samples. It transfers each sample through the
     P2 shape functions of its witnessed material face, without another finite
@@ -252,7 +257,7 @@ class RigidStressOptions(Options):
     source_geometry_tolerance: PositiveFloat = 1e-8
     source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0
     quadrature: Annotated[PositiveInt, Field(le=128)] = 10
-    pressure_quadrature: Literal["edge", "angle"] = "edge"
+    pressure_quadrature: Literal["edge", "angle", "adaptive"] = "edge"
     tolerance: PositiveFloat = 1e-8
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000
@@ -286,7 +291,28 @@ class RigidStressOptions(Options):
         if data.get("contact_model", "pressure") == "intrinsic" or data.get("load_transfer", "patch") == "resolved":
             data.setdefault("radius_model", "manual")
             data.setdefault("pressure_profile", "dpr")
+        if (
+            data.get("backend", "volume") != "volume"
+            or data.get("contact_model", "pressure") != "pressure"
+            or data.get("load_transfer", "patch") != "patch"
+            or data.get("radius_model", "hertz") != "hertz"
+            or data.get("pressure_profile", "hertz") != "hertz"
+        ):
+            data.setdefault("pressure_quadrature", "edge")
+        if data.get("pressure_quadrature", type(self).model_fields["pressure_quadrature"].default) == "adaptive":
+            data.setdefault("quadrature", 16)
         super().__init__(**data)
+        if self.pressure_quadrature == "adaptive":
+            if (
+                self.backend != "volume"
+                or self.contact_model != "pressure"
+                or self.load_transfer != "patch"
+                or self.radius_model != "hertz"
+                or self.pressure_profile != "hertz"
+            ):
+                gs.raise_exception("Adaptive pressure quadrature requires volume Hertz DPR patch loading.")
+            if self.quadrature != 16:
+                gs.raise_exception("Adaptive pressure quadrature uses quadrature=16 as its initial rule.")
 
     @classmethod
     def dpr(cls, *, mesh: PathType, **options) -> Self:
