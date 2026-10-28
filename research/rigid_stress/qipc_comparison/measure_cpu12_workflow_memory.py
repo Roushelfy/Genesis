@@ -136,7 +136,17 @@ def _native_inventory(benchmark):
     groups, allocations, aliases = {}, {}, {}
     for row in rows:
         name, size = row["name"], row["bytes"]
-        if ".planar.geometry." in name:
+        if ".surface.pressure_rules." in name:
+            group = "adaptive_rule_bank_shared"
+        elif ".contacts.admission." in name:
+            group = "adaptive_admission_per_environment"
+        elif ".scatter." in name and name.rsplit(".", 1)[-1] in (
+            "source_heads",
+            "next_task",
+            "load_difference",
+        ):
+            group = "adaptive_source_chain_per_environment"
+        elif ".planar.geometry." in name:
             group = "planar_geometry_shared"
         elif ".planar.state." in name:
             group = "planar_source_and_task_state_per_environment"
@@ -161,6 +171,7 @@ def _native_inventory(benchmark):
         elif size:
             aliases[name] = row["alias_of"]
     expected_planar = not pure_rigid and benchmark.get("shell_loading") == "planar"
+    expected_adaptive = not pure_rigid and benchmark.get("pressure_quadrature") == "adaptive"
     required = (
         "planar_geometry_shared",
         "planar_source_and_task_state_per_environment",
@@ -188,13 +199,23 @@ def _native_inventory(benchmark):
             any(row["name"].endswith(".planar.material." + field) and row["bytes"] > 0 for row in rows)
             for field in ("mask", "hits")
         ),
+        "adaptive_groups_complete": not expected_adaptive
+        or all(
+            groups.get(name, {}).get("logical_bytes", 0) > 0
+            for name in (
+                "adaptive_rule_bank_shared",
+                "adaptive_admission_per_environment",
+                "adaptive_source_chain_per_environment",
+            )
+        ),
     }
     return {
-        "schema": "genesis.native-stress-buffer-audit.v1",
+        "schema": "genesis.native-stress-buffer-audit.v2",
         "passed": all(checks.values()),
         "checks": checks,
         "pure_rigid": pure_rigid,
         "planar_expected": expected_planar,
+        "adaptive_expected": expected_adaptive,
         "reported_inventory_available": available,
         "native_stress_bytes": 0 if pure_rigid else unique_bytes if available else None,
         "logical_stress_bytes_before_alias_dedup": 0 if pure_rigid else logical_bytes if available else None,
@@ -203,6 +224,7 @@ def _native_inventory(benchmark):
         "scope": "Resident buffers exposed by stress_recovery.data. Whole rigid dynamics, collider, controller, reset snapshots, Python objects, JIT code, CUDA graphs, allocator pools and context residency belong to the separate process measurements.",
         "deduplication": "The benchmark deduplicates equal tensor-view data pointers. This audit checks that declared alias accounting. Its JSON lacks storage base pointers, storage sizes and byte ranges, so it cannot certify distinct views into a shared backing allocation.",
         "fallback_aliases": "fallback_contacts reuses original contact fields and planar.state.fallback. material_surface reuses original surface fields and planar.material.mask. These Python views allocate no separate QD buffers.",
+        "adaptive_accounting": "The shared 8/16/64/128 rule bank is separate from per-environment admission scratch and capacity-bounded source-chain/difference scratch. Existing pressure-Gram/load-moment scatter buffers remain in the original scatter group. A per-environment value divides allocated capacity by batch size; it does not imply one allocation per environment.",
         "pure_rigid_inventory": "A pure rigid run has zero stress buffers. Its process memory still includes the complete rigid workflow.",
     }
 
