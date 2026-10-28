@@ -51,6 +51,16 @@ link.configure_stress_recovery(
 
 两例的材料仍使用当前默认 E=10 GPa、ν=0.3；实际物体应提供相应材料和固定厚度。`box_edge_policy="planar"` 是鸡蛋／锐边夹爪范例显式采用的廉价边缘曲率近似，不表示夹爪有软垫，也不保证锐边物理峰值准确。其他几何应选择适用的支持策略。
 
+短入口 [franka_egg_automatic_stress.py](../../../examples/rigid/franka_egg_automatic_stress.py) 直接构造上述公共 Options。壳的64环境 headless/max 和单环境 viewer/full 已完成730步实际抓取：
+
+```bash
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --backend shell --envs 64
+env -u GS_HEADLESS PYOPENGL_PLATFORM=glx PYGLET_HEADLESS=false QD_GRAPH=0 \
+  python -m examples.rigid.franka_egg_automatic_stress --backend shell --output-mode full --viewer
+```
+
+Viewer 命令需要可用的 X11 显示。图形平台变量必须在导入 Genesis/OpenGL 前设置；集群镜像的 headless EGL 与 X11 GLX 窗口采用不同的上下文。自动验证使用私有 Xvfb 和 Mesa 软件 GLX 渲染，物理仍为 CUDA/FP64；这项验证不提供渲染吞吐量。体积新默认的完整运行验证仍在进行。
+
 ## 完整 Franka 抓蛋：小批量与并行
 
 以下完整程序调用仓库已有的 [FrankaEgg 范例](../../../examples/rigid/franka_egg_stress.py)。在仓库根目录保存后运行，或将代码传给 `python -`。改变 `BACKEND` 即可选择 3D／薄壳；`ENVS` 控制并行数，`VIEWER=True` 用于有显示环境的小批量观察。
@@ -104,7 +114,7 @@ if OUTPUT == "full":
 
 ## 输出与旧配置对照
 
-`output_mode="max"` 在 build 前选择，避免完整场／壳合力场的输出存储；`get_max_stress()` 返回全物体采样点的最大 von Mises 应力，单位 Pa。完整场选择 `"full"`，调用 `get_stress_field()` 返回应力张量及 von Mises。薄壳张量为 `[B,n_quads,2,4,6]`，包括内外两侧、四个 Gauss 点和六个分量；壳 N/M/Q 的单位分别为 N/m、N、N/m。壳应力是膜＋弯曲的面内应力，与 3D 接触附近的三维应力不同。更多输出和失效状态定义见 [API](NATIVE_API.md) 与 [壳指南](RUNNING_NATIVE_SHELL_DPR.md)。
+`output_mode="max"` 在 build 前选择，避免完整场／壳合力场的输出存储；`get_max_stress()` 返回全物体采样点的最大 von Mises 应力，单位 Pa。完整场选择 `"full"`，调用 `get_stress_field()` 返回应力张量及 von Mises。体积张量为 `[B,n_tets,4,6]`，VM 为 `[B,n_tets,4]`。薄壳张量为 `[B,n_quads,2,4,6]`，包括内外两侧、四个 Gauss 点和六个分量；壳 N/M/Q 的单位分别为 N/m、N、N/m。壳应力是膜＋弯曲的面内应力，与 3D 接触附近的三维应力不同。更多输出和失效状态定义见 [API](NATIVE_API.md) 与 [壳指南](RUNNING_NATIVE_SHELL_DPR.md)。
 
 要显式复现旧半径／压力选择，在相应配置中使用：
 
