@@ -1,0 +1,55 @@
+{
+  "schema": "genesis.automatic-dpr-delivery-verification.v1",
+  "passed": true,
+  "requirements_satisfied": 22,
+  "measured_engine": "070cb0c96386250dda3a85db703d5705d5c3fccc",
+  "packet_verification": {
+    "schema": "genesis.automatic-dpr-packet-verification.v1",
+    "passed": true,
+    "packet": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/evidence/20261028-automatic-dpr-fast-path-v1",
+    "packet_bytes": 10463186,
+    "checksum_files": 1339,
+    "decoded_unique_payloads": 1336,
+    "retained_requirement_evidence": 66,
+    "campaigns": 69,
+    "tasks": 353,
+    "original_primary_rows": 102,
+    "original_valid_repeats": 90,
+    "original_failures": 12,
+    "checksum_manifest_sha256": "6ef0df518421cb615b090f3009314b4142e21a0753e5c859d5bdc4bf8f1582cb",
+    "scope": "Independent standard-library packet integrity and exact primary retention check. Numerical and physical qualifications remain those of the reviewed ledger and original audits."
+  },
+  "source_and_documentation_verification": {
+    "schema": "genesis.automatic-dpr-final-closure-precommit.v1",
+    "passed": true,
+    "checks": {
+      "all_local_document_links_resolve": true,
+      "final_python_sources_match_static_receipt": true,
+      "original12_files_unchanged": true,
+      "maintained_engine_matches_measured": true
+    },
+    "missing_links": [],
+    "documentation": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-documentation-v1.json",
+      "bytes": 3490,
+      "sha256": "ae7368748fc1cd45fe4a964c3249ba45f3f60399fdaba783c2782269f9c925b0"
+    },
+    "static": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-owned-static-v3.json",
+      "bytes": 12431,
+      "sha256": "4c3c512b90a24bd1e9f9f9a9ae49f3cca4054490d9f4494fe4de8acb50015153"
+    },
+    "preservation": {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/preservation-final-v1.json",
+      "bytes": 87133,
+      "sha256": "e0245808dd1c6439380bfc87e66ec921ce0dec68c0c754ac9bda2fdbed5a4b46"
+    },
+    "scope": "Post-package local links and current source/unfinished-file bytes; publication is the remaining delivery action."
+  },
+  "requirements_receipt": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/requirements-final-v2.json",
+    "bytes": 50373,
+    "sha256": "61d2b08fd53237e5928ece2e63e1079b9c2a35f8d37dfccff2541c7f89d2aa2d"
+  },
+  "scope": "Independent verification before publication. The containing Git commit is the publication identity. All original failures and scoped physical limitations remain in the report and ledger."
+}

@@ -1,28 +1,27 @@
 # Native rigid stress recovery: automatic DPR fast path and defaults
 
-**Active user goal, 2026-10-28:** follow [the fast-path/defaults goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md).
-Recover a qualified inexpensive volume path where practical, with application-oriented
-stress-error validation and selective refinement/fallback rather than globally
-paying for angle/q128. Diagnose the actual q16 pressure-fit failures separately
-from strict integration-reference thresholds; tolerance changes are authorized
-when measured stress accuracy and robustness justify them.
+**Completed user goal, 2026-10-28:** the [automatic DPR
+goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md) has implemented public defaults, native
+selective integration, full-field/history qualification, matched performance/memory evidence and tested public
+examples. Read the [results](docs/AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md), [running
+guide](docs/RUNNING_AUTOMATIC_DPR.md) and [22-clause
+packet](evidence/20261028-automatic-dpr-fast-path-v1/README.md).
 
-Implement automatic-radius DPR defaults consistently in the API, factories,
-Franka workload and CLI/benchmark entrypoints, retain explicit legacy/strict
-overrides, and deliver tested 3D/shell max/full and small/batched examples.
-[Current examples](docs/RUNNING_AUTOMATIC_DPR.md) use the public Hertz defaults
-and volume adaptive/q16 selection. Explicit shell planar/k32 retains Q4 elasticity.
-Keep both physical backends and the qualified planar shell route. Production
-numerics stay in the rigid feature in Quadrants. This goal is open: source,
-validation and performance delivery are required, not documentation alone.
+Ordinary volume DPR uses pressure/patch/Hertz/Hertz and adaptive angular q16 with independent checking and
+selective q64/q128 repair. Original fit/wrench/K/lifecycle gates remain. Volume remains the backend default
+and Q4 remains shell loading default; the measured shell recipe explicitly selects planar
+k32/q10/radial/blocks/cap128, FP64/history0 and GraphOff. Sharp-box planar curvature is an explicit surrogate.
 
-The frozen source `f0fd49a01b65c4ed0715dae18d8ff2d3d6878c0a` contains the default
-candidate and the repaired cooperative nonlinear fit. All12 frozen inputs and20
-CPU/CUDA loaded controls pass; the authored tip passes all four scheduling routes
-and lifecycle checks. Final-source full histories, public examples, profiles,
-memory and paired timing are tracked by the [execution record](docs/AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md).
-Keep earlier failed attempts and source-specific evidence; this is not a completed
-delivery or a reason to restart the original diagnosis.
+Measured engine is 070cb0c96386250dda3a85db703d5705d5c3fccc. B8192 max/full module gains over angle128 are
+6.269/6.237; complete policy-inference gains are 5.617/5.577. All 102 original primary processes are accounted
+for, including 12 retained edge16 warmup failures. Final eight 1200-step B4/B64 scripted/policy max/full
+histories pass; the separate 41-point path exercises eight switches. Final 48 default/lifecycle tests and 20
+loaded test executions pass.
+
+Admission is empirically qualified on the declared finite corpus, not a universal spatial bound. Old strict
+load-comparison negatives, extra adaptive memory and sharp-edge/continuum uncertainty remain explicit.
+Original 12 unfinished files,64 prior and 21 campaign frozen sources remain preserved. This closes the
+requested goal; unchanged prior campaigns are not new implementation prerequisites.
 
 ## Previous delivery: planar loading DPR optimization
 **Completed, 2026-10-27:** the [native planar loading goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)

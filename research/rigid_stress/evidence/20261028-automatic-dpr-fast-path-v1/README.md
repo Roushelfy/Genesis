@@ -1,0 +1,7 @@
+# Automatic DPR fast path and defaults: evidence packet
+
+Measured source: `070cb0c96386250dda3a85db703d5705d5c3fccc`. Run root: `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path`.
+
+`requirements-ledger.json` records all 22 decisions and their limits. `index.json.gz` maps original paths, source pins, captured workers, tasks, terminal accounting and payloads. Each payload is the exact original file compressed with gzip. Its filename is the uncompressed SHA256. All 102 primary receipts and every available original benchmark are retained, including failures. Complete field arrays and large optional histories remain at their hashed data paths. Intermediate failures and audits retain their original incomplete/negative status.
+
+Verify this packet with `sha256sum -c SHA256SUMS`. Decode the index with `gzip -dc index.json.gz`; then decode a selected payload with `gzip -dc payloads/<hash>.<extension>.gz`. For scientific reproduction, use the task's frozen engine revision and captured analysis worker, the original argument/input identities, Slurm rtx-mid / image 1_26 and a fresh data output. Set `QD_GRAPH=0` before imports and reuse the recorded data-side environment and private caches. Primary paired blocks run serially on one allocated GPU each. Profiles and memory sampling have separate jobs. The results report gives commands and the measurement scope.

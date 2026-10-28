@@ -40,15 +40,15 @@ For small finite-pressure footprints near a face edge, the optional
 the physical radius, pressure profile and original acceptance checks.
 `quadrature=128` passes the retained 64-condition heterogeneous volume bank's
 original independent load-error budget. Lower-degree failures of that strict
-intermediate comparison remain preserved. The active
-[fast-path study](AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md) separately evaluates
+intermediate comparison remain preserved. The completed
+[fast-path study](AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md) separately evaluates
 complete tensor/global/loaded/remote stress budgets and selective admission.
 Ordinary volume Hertz patch loading now selects `"adaptive"` with initialq16.
 Independently fitted8/16/64 checks admit candidate16/64/128 rules; only unresolved
 contacts advance. Original fit, source-wrench and elastic-residual gates remain.
 Shell, manual-radius, legacy-profile and SCR contexts retain edge/q10. An explicit
 `quadrature` without a rule also retains fixed edge integration. Final default
-workflow and matched cost verification remain tracked by the active goal. See the
+workflow, paired timing and memory are recorded in the fast-path report. See the
 [native candidate report](NATIVE_CANDIDATE_RESULTS_20261025.md) for accuracy,
 cost and the preserved failed configurations. This is a quadrature repair,
 not a change to the declared pressure model or its physical qualifications.

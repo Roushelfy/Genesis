@@ -20,6 +20,15 @@ def stable_bytes(path):
     return content
 
 
+def seal_payloads(payloads, index):
+    payloads.pop("SHA256SUMS", None)
+    payloads["index.json.gz"] = gzip.compress((json.dumps(index, indent=2) + "\n").encode(), compresslevel=9, mtime=0)
+    payloads["SHA256SUMS"] = "".join(
+        f"{hashlib.sha256(content).hexdigest()}  {name}\n" for name, content in sorted(payloads.items())
+    ).encode()
+    return sum(map(len, payloads.values()))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, required=True)
@@ -120,7 +129,7 @@ def main():
                     record["external_log"] = file_id(log)
                 tasks.append(record)
 
-    payloads, artifacts, omitted = {}, [], []
+    payloads, artifacts, omitted, mandatory = {}, [], [], set()
     for path in sorted(paths):
         if not path.is_file():
             raise FileNotFoundError(path)
@@ -132,6 +141,8 @@ def main():
             target = "payloads/" + identity["sha256"] + path.suffix + ".gz"
             payloads[target] = compressed
             identity["payload"] = target
+            if path in required or path.is_relative_to(run / "meta") or path.parent in campaigns:
+                mandatory.add(target)
         else:
             omitted.append({"path": str(path), "reason": "Large optional diagnostic remains at its hashed data path."})
         artifacts.append(identity)
@@ -149,7 +160,6 @@ def main():
         "slurm_accounting": accounting,
         "scope": "Exact compressed metadata, requirement evidence and all original primary benchmark/result JSON. Full fields, histories, arrays and logs remain on data; their identities in retained audits keep their original validation scope. This is not an exhaustive archive of every runtime file.",
     }
-    payloads["index.json.gz"] = gzip.compress((json.dumps(index, indent=2) + "\n").encode(), compresslevel=9, mtime=0)
     payloads["requirements-ledger.json"] = stable_bytes(args.ledger)
     payloads["README.md"] = (
         "# Automatic DPR fast path and defaults: evidence packet\n\n"
@@ -168,10 +178,23 @@ def main():
         "Primary paired blocks run serially on one allocated GPU each. Profiles and memory sampling have separate jobs. "
         "The results report gives commands and the measurement scope.\n"
     ).encode()
-    payloads["SHA256SUMS"] = "".join(
-        f"{hashlib.sha256(content).hexdigest()}  {name}\n" for name, content in sorted(payloads.items())
-    ).encode()
-    total = sum(map(len, payloads.values()))
+    optional = sorted(
+        (name for name in payloads if name.startswith("payloads/") and name not in mandatory),
+        key=lambda name: (len(payloads[name]), name),
+        reverse=True,
+    )
+    total = seal_payloads(payloads, index)
+    for name in optional:
+        if total <= 10 * 1024 * 1024:
+            break
+        del payloads[name]
+        for row in artifacts:
+            if row.get("payload") == name:
+                row.pop("payload")
+                omitted.append(
+                    {"path": row["path"], "reason": "10 MiB limit; optional copy remains at its hashed data path."}
+                )
+        total = seal_payloads(payloads, index)
     if total > 10 * 1024 * 1024:
         raise ValueError(f"Packet exceeds 10 MiB: {total} bytes. No output was written.")
     args.output.mkdir(parents=True)

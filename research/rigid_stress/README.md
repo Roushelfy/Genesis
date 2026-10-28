@@ -9,21 +9,21 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: automatic DPR fast path, defaults and examples (2026-10-28)
+## Delivered: automatic DPR fast path, defaults and examples (2026-10-28)
 
-Follow [the new goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md): diagnose volume q16 failures, qualify cheaper
-integration/fit tolerances and selective repair against actual stress error,
-then implement automatic-radius DPR as the consistent API and example default.
-Retain explicit legacy/strict choices and the qualified planar shell path.
-This follow-up is open. Ordinary Options and `.dpr()` now default to
-pressure/patch/Hertz radius/Hertz profile;40 focused CPU/CUDA checks pass for
-that physical-default migration. Volume integration now defaults to adaptive/q16,
-with selective64/128 repair and preserved explicit fixed rules. The nonlinear
-cooperative corner fix passes the12-case corpus and20 CPU/CUDA loaded tests;
-final public-default histories, examples and matched cost remain in verification. See the
-[execution progress](docs/AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md) and
-[3D and shell usage examples](docs/RUNNING_AUTOMATIC_DPR.md).
-The previous measured deliveries below retain their original scope.
+Public Options and `.dpr()` now use pressure/patch/Hertz/Hertz. Ordinary volume loading selects adaptive
+angular q16 with independent checking and selective q64/q128 repair. Explicit manual/legacy, fixed quadrature
+and SCR remain available; volume and shell Q4 remain the backend/loading defaults.
+
+All 102 primary processes are retained:90 qualified measurements and 12 original edge16 policy failures. B8192
+max/full gains over angle128 are 6.269/6.237 module and 5.617/5.577 complete policy inference. Final eight
+1200-step histories,48 default/lifecycle and 20 loaded test executions pass. Extra adaptive memory, old strict
+load negatives and finite-corpus/sharp-edge limits remain explicit.
+
+Read the [results](docs/AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md), [short volume/shell
+examples](docs/RUNNING_AUTOMATIC_DPR.md) and [22-clause
+packet](evidence/20261028-automatic-dpr-fast-path-v1/README.md). Measured source is 070cb0c96; later delivery
+commits preserve its engine. Previous deliveries retain their scope.
 
 ## Delivered: planar loading DPR integration and optimization (2026-10-27)
 

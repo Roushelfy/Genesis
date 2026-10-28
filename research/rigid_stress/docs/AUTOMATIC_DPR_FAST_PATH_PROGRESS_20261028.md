@@ -1,7 +1,7 @@
 # Automatic DPR fast path: execution progress, 2026-10-28
 
 The [remote goal](AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md) at
-`d661349b12d76ace126840107d0498562b9f3d76` remains active. The data root is
+`d661349b12d76ace126840107d0498562b9f3d76` is complete; see the [final results](AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md). The data root is
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path`.
 Its `meta/requirements-v1.json` records22 complete-scope requirements. This phase
 preserves the completed planar delivery and all original/frozen work.
@@ -37,8 +37,7 @@ failed collection because its sparse helper omitted `shell_cpu`, before running
 any test. A new captured dependency-complete helper fixed that test harness;
 original outputs remain preserved. The numerical-default candidate now selects
 adaptive/q16 for ordinary volume Hertz loading, with explicit fixed-order,
-manual and shell contexts preserved. Final default/public-example tests pass. Matched cost qualification remains
-in progress.
+manual and shell contexts preserved. Final default/public-example tests pass. Matched cost qualification is complete.
 
 ## Frozen field evidence and admission work
 
@@ -185,7 +184,7 @@ complete-interval repair incidence. Receipts are
 receipts are `meta/own-process-memory-v3-terminal-audit.json` and
 `meta/common-input-profiles-v2-terminal-audit.json`.
 
-## Final public verification and remaining delivery
+## Final public verification and delivery
 
 All48 final CPU/CUDA default/lifecycle tests pass. Actual public volume and shell
 headless B64/max and viewer B1/full commands complete730 steps. The viewer uses
@@ -201,5 +200,6 @@ same raw collider/link/geometry inputs, advance zero scene steps and reproduce
 all12 physical-source columns exactly. The final source is
 `070cb0c96386250dda3a85db703d5705d5c3fccc`. Device observers retain complete policy
 work and repair counts across resets. Intrusive profiles and own-process memory
-sampling remain separate. The primary job760098 and final evidence/recommendation
-delivery are still open. Completed histories/public examples are not pending.
+sampling remain separate. All102 original primary processes are now terminal and audited:90 qualified
+measurements and12 retained edge16 policy negatives. The final report and22-clause
+packet close the requested implementation/evidence goal.

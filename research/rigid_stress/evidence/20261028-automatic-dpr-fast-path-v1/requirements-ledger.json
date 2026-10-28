@@ -1,0 +1,902 @@
+{
+  "schema": "genesis.automatic-dpr-requirements-final.v1",
+  "created_utc": "2026-10-28T16:40:44.170739+00:00",
+  "goal_source_revision": "d661349b12d76ace126840107d0498562b9f3d76",
+  "measured_source_revision": "070cb0c96386250dda3a85db703d5705d5c3fccc",
+  "requirements": [
+    {
+      "id": "R01",
+      "requirement": "Exact frame221 diagnosis",
+      "satisfied": true,
+      "decision": "Independent sampled-support infeasibility and native residual/iteration diagnostics; original whole-array trace negative retained.",
+      "evidence": [
+        "meta/fit-failures-v1-cause-report.json",
+        "meta/fit-failures-v1-control-audit.json",
+        "meta/nearby-capture-v1-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/fit-failures-v1-cause-report.json",
+          "bytes": 10935,
+          "sha256": "8f6d034bda074a8f077c06ca7a4aff1cadc2c7dc8ac0d8fb9a72417a72ae2c96"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/fit-failures-v1-control-audit.json",
+          "bytes": 10490,
+          "sha256": "76f603b52fa13cde0136d8b6a746867109a73836927f09e39600e3e99218f43c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/nearby-capture-v1-audit.json",
+          "bytes": 22878,
+          "sha256": "f71d6bf93c5b95d3dd83d4ec5ac2f829bdb1f748bb82d058dee575fd13771fd7"
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "requirement": "Exact policy tick606 diagnosis",
+      "satisfied": true,
+      "decision": "Original env2/slot0 mechanics and failure retained; nearby captures preserve actual angular velocity and all contact sources.",
+      "evidence": [
+        "meta/fit-failures-v1-cause-report.json",
+        "meta/nearby-capture-v1-606-context-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/fit-failures-v1-cause-report.json",
+          "bytes": 10935,
+          "sha256": "8f6d034bda074a8f077c06ca7a4aff1cadc2c7dc8ac0d8fb9a72417a72ae2c96"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/nearby-capture-v1-606-context-audit.json",
+          "bytes": 30206,
+          "sha256": "947ea976d0fe5cde276f810f237225bf452d607602bcde805acd9a308bb9fe1e"
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "requirement": "Practical error budgets declared before selection",
+      "satisfied": true,
+      "decision": "5% tensor/5% peak/2% underestimation, absolute and three regional errors, independent reference-stability controls; old budgets remain separately reported.",
+      "evidence": [
+        "meta/application-budgets-v1.json",
+        "meta/frozen-rule-fields-v1-scalar-audit.json",
+        "meta/bounded-rule-fields-v2-scalar-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/application-budgets-v1.json",
+          "bytes": 11220,
+          "sha256": "5cd2532a909118a6b3343736d4078e5bd100f3fe780d4c6b8eb373e5064d64dc"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/frozen-rule-fields-v1-scalar-audit.json",
+          "bytes": 16888,
+          "sha256": "d38f1db28e28ecea817ea7b5bf34c6ffebff2f404b572c7dcf341c278d9d73f9"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/bounded-rule-fields-v2-scalar-audit.json",
+          "bytes": 89039,
+          "sha256": "35b51e5abc2f7e4de0182e853326033ed5ef357dc3b4e0bd07271fc9a220c87c"
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "requirement": "Bounded integration and stopping-tolerance study",
+      "satisfied": true,
+      "decision": "Original 1e-9/1e-7/1e-5 sweep and cheaper rules distinguish infeasible support from inaccurate converged fits; no production tolerance relaxation selected.",
+      "evidence": [
+        "meta/fit-stop-controls-v1-audit.json",
+        "meta/bounded-rule-fields-v2-scalar-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/fit-stop-controls-v1-audit.json",
+          "bytes": 56866,
+          "sha256": "1291b4ab0fe8052b97bcecdd1ce2c738cc28a2cfde1ba7821000e48eacffc6a0"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/bounded-rule-fields-v2-scalar-audit.json",
+          "bytes": 89039,
+          "sha256": "35b51e5abc2f7e4de0182e853326033ed5ef357dc3b4e0bd07271fc9a220c87c"
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "requirement": "Online admission calibration and switching",
+      "satisfied": true,
+      "decision": "44-pair source-node study: zero false accepts and 11 conservative false rejects; all three inaccurate coarse controls rejected. Native primitives and a 41-point path exercise the operator and eight switches. Finite empirical scope only.",
+      "evidence": [
+        "meta/fast-path-admission-design-v1.json",
+        "meta/admission-method-v2-predeclaration.json",
+        "meta/admission-method-v3-predeclaration.json",
+        "admission-v3-independent-refit-v1/group0/independent-refit-v3/result.json",
+        "meta/admission-v4-source-nodal-terminal-audit.json",
+        "meta/adaptive-native-node-and-portable-CPU-terminal-audit-v2.json",
+        "meta/native-trajectory-complete-v1-terminal-audit.json",
+        "meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+        "meta/authored-continuation-v3-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/fast-path-admission-design-v1.json",
+          "bytes": 16754,
+          "sha256": "74dc5c88f87527dd6da8e41eb157556601e25706bcf97ed84968a660d808a79e"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/admission-method-v2-predeclaration.json",
+          "bytes": 3443,
+          "sha256": "d2cb262d736d4174fb7e6f449e1778f1bb4787dd45b0423897432039fd6997f1"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/admission-method-v3-predeclaration.json",
+          "bytes": 9004,
+          "sha256": "76ef3e1ef6756d57937f2caa9fd7597de1fc8cea73dda5eb618510268c129216"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/admission-v3-independent-refit-v1/group0/independent-refit-v3/result.json",
+          "bytes": 225294,
+          "sha256": "3b6ff4c6aafe4b049a48472723c13b9308b270a2eb708c29cc131113e5a5b1de"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/admission-v4-source-nodal-terminal-audit.json",
+          "bytes": 6755,
+          "sha256": "210c95d840d26548f4f78f271db593b3a03498baa41b012b9fe111fd87fb2f80"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-native-node-and-portable-CPU-terminal-audit-v2.json",
+          "bytes": 80677,
+          "sha256": "448b5c763cfdc1584d5e4ec7c85bd481e35d7fb83fa41b7958b31973c8250e6a"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v1-terminal-audit.json",
+          "bytes": 114328,
+          "sha256": "13d821bbade6ab29c97b69305bfb531367095abcd15c913cd16584633ba4555b"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+          "bytes": 15626423,
+          "sha256": "45f67fd92be7db078647eeb5c5905a29b71f5ac2ea1d7a96b14945a72d339fbb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/authored-continuation-v3-terminal-audit.json",
+          "bytes": 2195,
+          "sha256": "338f5dbd0299bf9ec0ae8364b9c68f3b33b030f0a0ab0397a59fac031f2bf2cb"
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "requirement": "Source-local repair without mixed provisional loads",
+      "satisfied": true,
+      "decision": "Final selection precedes one scatter; cached/uncached/serial/forced-overflow tests preserve loads and release/reload. Original nonlinear timeouts remain explicit.",
+      "evidence": [
+        "meta/adaptive-prototype-v1-static.json",
+        "meta/adaptive-loaded-v4-terminal-audit.json",
+        "meta/adaptive-conformance-v4-terminal-audit.json",
+        "meta/adaptive-tip-uniform-fit-v2-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-prototype-v1-static.json",
+          "bytes": 7002,
+          "sha256": "9c1d630bd2fc48cc4c6d595a8c979c3fe2b809c743e51a2f4ee59a27eab398f2"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-loaded-v4-terminal-audit.json",
+          "bytes": 3848,
+          "sha256": "a539756fe19c30e684a1e59edfc975aebf4f0b1713cae866b5c207e9e1f18d47"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-conformance-v4-terminal-audit.json",
+          "bytes": 4974,
+          "sha256": "59bdedd7d885247cf46bc2e4f91830da96fac25519663f08ea1510f23a7cd3fe"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-tip-uniform-fit-v2-terminal-audit.json",
+          "bytes": 168043,
+          "sha256": "5e1bdbe2bfdde7a0604e85f4f21b7ebe68c4f7cd491ff705ebd6d8a147e98ec6"
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "requirement": "Native Quadrants implementation and original elasticity",
+      "satisfied": true,
+      "decision": "Original K, material, F/application-point M, residual, max/full and acceptance gates pass final frozen and complete-history controls.",
+      "evidence": [
+        "meta/adaptive-native-node-and-portable-CPU-terminal-audit-v2.json",
+        "meta/native-trajectory-complete-v1-terminal-audit.json",
+        "meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+        "native-trajectory-complete-v3/submission.json",
+        "meta/native-trajectory-complete-v3-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-native-node-and-portable-CPU-terminal-audit-v2.json",
+          "bytes": 80677,
+          "sha256": "448b5c763cfdc1584d5e4ec7c85bd481e35d7fb83fa41b7958b31973c8250e6a"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v1-terminal-audit.json",
+          "bytes": 114328,
+          "sha256": "13d821bbade6ab29c97b69305bfb531367095abcd15c913cd16584633ba4555b"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+          "bytes": 15626423,
+          "sha256": "45f67fd92be7db078647eeb5c5905a29b71f5ac2ea1d7a96b14945a72d339fbb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/native-trajectory-complete-v3/submission.json",
+          "bytes": 735,
+          "sha256": "84d8c53f9e6602d6308196fdb4f57c400fe9e9aee68c810dd32f2e1a8fd29cbb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v3-terminal-audit.json",
+          "bytes": 114368,
+          "sha256": "e72ea813134e6422d3c96e24546c0fee55989ba442df759c65b501843007f8c8"
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "requirement": "Changing and nonconvex physical controls",
+      "satisfied": true,
+      "decision": "All12 frozen inputs and20 CPU/CUDA loaded tests cover asymmetric, cavity/material-side, normal/friction and original-point moment behavior within their declared geometry scope.",
+      "evidence": [
+        "meta/adaptive-loaded-v4-terminal-audit.json",
+        "meta/adaptive-conformance-v4-terminal-audit.json",
+        "meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+        "adaptive-uniform-qualification-v1/group4/v4-loaded-cpu/result.json",
+        "adaptive-uniform-qualification-v1/group5/v4-loaded-gpu/result.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-loaded-v4-terminal-audit.json",
+          "bytes": 3848,
+          "sha256": "a539756fe19c30e684a1e59edfc975aebf4f0b1713cae866b5c207e9e1f18d47"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-conformance-v4-terminal-audit.json",
+          "bytes": 4974,
+          "sha256": "59bdedd7d885247cf46bc2e4f91830da96fac25519663f08ea1510f23a7cd3fe"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+          "bytes": 15626423,
+          "sha256": "45f67fd92be7db078647eeb5c5905a29b71f5ac2ea1d7a96b14945a72d339fbb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/adaptive-uniform-qualification-v1/group4/v4-loaded-cpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/adaptive-uniform-qualification-v1/group5/v4-loaded-gpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "requirement": "Lifecycle and environment isolation",
+      "satisfied": true,
+      "decision": "Final48 default/lifecycle test executions and eight complete histories pass reset, checkpoint, release/recontact and batch controls.",
+      "evidence": [
+        "meta/adaptive-loaded-v4-terminal-audit.json",
+        "meta/native-trajectory-complete-v1-terminal-audit.json",
+        "final-defaults-public-v1/group0/default-and-lifecycle-cpu/result.json",
+        "final-defaults-public-v1/group1/default-and-lifecycle-gpu/result.json",
+        "meta/native-trajectory-complete-v3-terminal-audit.json",
+        "meta/final-default-public-terminal-audit-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-loaded-v4-terminal-audit.json",
+          "bytes": 3848,
+          "sha256": "a539756fe19c30e684a1e59edfc975aebf4f0b1713cae866b5c207e9e1f18d47"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v1-terminal-audit.json",
+          "bytes": 114328,
+          "sha256": "13d821bbade6ab29c97b69305bfb531367095abcd15c913cd16584633ba4555b"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group0/default-and-lifecycle-cpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group1/default-and-lifecycle-gpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v3-terminal-audit.json",
+          "bytes": 114368,
+          "sha256": "e72ea813134e6422d3c96e24546c0fee55989ba442df759c65b501843007f8c8"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-default-public-terminal-audit-v1.json",
+          "bytes": 12435,
+          "sha256": "c96bb717eec6d5f95a81a3a812a06eca2e7fd36fa75f82f667f6956e5d799119"
+        }
+      ]
+    },
+    {
+      "id": "R10",
+      "requirement": "Same-mechanics full-field accuracy",
+      "satisfied": true,
+      "decision": "Exact native frozen-input and trajectory comparisons retain global/loaded/remote full-tensor and sampled-peak errors, original omega and all prior strict negatives.",
+      "evidence": [
+        "meta/frozen-rule-fields-v1-scalar-audit.json",
+        "meta/bounded-rule-fields-v2-scalar-audit.json",
+        "meta/bounded-coarse-controls-v2-terminal-audit.json",
+        "meta/native-trajectory-complete-v1-terminal-audit.json",
+        "meta/adaptive-uniform-corpus-v1-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/frozen-rule-fields-v1-scalar-audit.json",
+          "bytes": 16888,
+          "sha256": "d38f1db28e28ecea817ea7b5bf34c6ffebff2f404b572c7dcf341c278d9d73f9"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/bounded-rule-fields-v2-scalar-audit.json",
+          "bytes": 89039,
+          "sha256": "35b51e5abc2f7e4de0182e853326033ed5ef357dc3b4e0bd07271fc9a220c87c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/bounded-coarse-controls-v2-terminal-audit.json",
+          "bytes": 37135,
+          "sha256": "7a0ab28e73990a7142f2bbb0c4bb6f74d98196998e41fb1f1236cc75a8cdf688"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v1-terminal-audit.json",
+          "bytes": 114328,
+          "sha256": "13d821bbade6ab29c97b69305bfb531367095abcd15c913cd16584633ba4555b"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+          "bytes": 15626423,
+          "sha256": "45f67fd92be7db078647eeb5c5905a29b71f5ac2ea1d7a96b14945a72d339fbb"
+        }
+      ]
+    },
+    {
+      "id": "R11",
+      "requirement": "Complete scripted and actual policy histories",
+      "satisfied": true,
+      "decision": "Final eight1200-step B4/B64 max/full histories pass across326400 environment-frames. All positive sources remain at q16, so switching qualification comes from the separate authored path.",
+      "evidence": [
+        "meta/native-trajectory-complete-v1-terminal-audit.json",
+        "meta/native-trajectory-complete-v1-b4-independent-fields-audit.json",
+        "meta/native-trajectory-complete-v2-terminal-audit.json",
+        "native-trajectory-complete-v3/submission.json",
+        "meta/native-trajectory-complete-v3-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v1-terminal-audit.json",
+          "bytes": 114328,
+          "sha256": "13d821bbade6ab29c97b69305bfb531367095abcd15c913cd16584633ba4555b"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v1-b4-independent-fields-audit.json",
+          "bytes": 7955,
+          "sha256": "eda7d66a1f0757a405d9d3c2c6ab5958b317d798411845233a38ca0fd0a3f3c3"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v2-terminal-audit.json",
+          "bytes": 114335,
+          "sha256": "cc5a2826e39d9ec53b67ba274181d4ceee45c79cd6f1d24e64e9b03b2e144491"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/native-trajectory-complete-v3/submission.json",
+          "bytes": 735,
+          "sha256": "84d8c53f9e6602d6308196fdb4f57c400fe9e9aee68c810dd32f2e1a8fd29cbb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/native-trajectory-complete-v3-terminal-audit.json",
+          "bytes": 114368,
+          "sha256": "e72ea813134e6422d3c96e24546c0fee55989ba442df759c65b501843007f8c8"
+        }
+      ]
+    },
+    {
+      "id": "R12",
+      "requirement": "Matched primary throughput and original failures",
+      "satisfied": true,
+      "decision": "All102 original fresh processes audited in three same-device paired blocks: module/policy, B4/B8192, max/full, adaptive/edge16/angle128/planar/pure rigid. Failed warmups have no qualified rate; all repeated rates and vectors retained.",
+      "evidence": [
+        "meta/throughput-protocol-v1.json",
+        "meta/throughput-common-module-input-protocol-v1.json",
+        "meta/module-snapshot-native-qa-v3-terminal-audit.json",
+        "meta/primary-throughput-v4-source-preflight.json",
+        "primary-throughput-v1/submission.json",
+        "meta/primary-throughput-partial-audit-v4.json",
+        "meta/primary-throughput-v1-terminal-audit.json",
+        "meta/primary-throughput-summary-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/throughput-protocol-v1.json",
+          "bytes": 4440,
+          "sha256": "71f89b098c98157125bc16942833427a7af50f4247a8151efed8aa29746592e1"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/throughput-common-module-input-protocol-v1.json",
+          "bytes": 4081,
+          "sha256": "4cc2da04d9bdbbf0282330c5ec8573cff778993546754a918553d29ad92e2262"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/module-snapshot-native-qa-v3-terminal-audit.json",
+          "bytes": 28331,
+          "sha256": "e82b3260f3eabca22f72e354750e2924419a5ad35a9c430661bc8984562df77e"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-v4-source-preflight.json",
+          "bytes": 3201,
+          "sha256": "2c879ac36adaa9f5d4c0f496386be304271e4586e47ae8c3ae8c4f395df192d5"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/primary-throughput-v1/submission.json",
+          "bytes": 720,
+          "sha256": "e4ec86aecf3c3880a2e9372283b6da6010b9d74b13aa5d0dce96deb745d7236c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-partial-audit-v4.json",
+          "bytes": 49104858,
+          "sha256": "6a4840ad1ff54c857800bd9b2e372631612a3c4ccb8c9710eeb91f9361d2ed92"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-v1-terminal-audit.json",
+          "bytes": 138581833,
+          "sha256": "17f69f9a95f379e476747f6a6d649a7ca841dc04b77a9db6c1714672238d913b"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-summary-v1.json",
+          "bytes": 91072,
+          "sha256": "03edb74edf0b7815e581578e0c39b93330f49cb08cb3caaa7fcc70ea6d69b701"
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "requirement": "Combined-path profiles and work accounting",
+      "satisfied": true,
+      "decision": "Final common-input profiles bind actual adaptive source routing. Complete reset-aware device observations retain candidates/checkers, fit work, repairs, rejections and overflow work. Intrusive profiles remain outside primary timing.",
+      "evidence": [
+        "meta/adaptive-combined-profiles-v1-terminal-audit.json",
+        "meta/adaptive-source-chain-fit-increment-plan-v1.json",
+        "meta/common-input-profiles-v2-terminal-audit.json",
+        "meta/primary-throughput-v1-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-combined-profiles-v1-terminal-audit.json",
+          "bytes": 51311,
+          "sha256": "6735e6978152f3bd438c047d0ab03ac307959cec7637771c54f6fc4fe417cd7c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-source-chain-fit-increment-plan-v1.json",
+          "bytes": 9313,
+          "sha256": "eec187050e9110f74232b407fb447922534636bdc30d68025172c41e4f8d1f27"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/common-input-profiles-v2-terminal-audit.json",
+          "bytes": 67835,
+          "sha256": "f456a3c08b9b656061f984b8053b528dea99fcfb49da67f382fda1b0941e4795"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-v1-terminal-audit.json",
+          "bytes": 138581833,
+          "sha256": "17f69f9a95f379e476747f6a6d649a7ca841dc04b77a9db6c1714672238d913b"
+        }
+      ]
+    },
+    {
+      "id": "R14",
+      "requirement": "Memory and preparation cost",
+      "satisfied": true,
+      "decision": "Final adaptive own-PID memory and native shared/per-environment accounting plus original comparator measurements retain sample scope, setup cost and every failed row. All primary rates use valid/attempted accounting.",
+      "evidence": [
+        "meta/adaptive-memory-classification-controls-v1.json",
+        "meta/throughput-protocol-v1.json",
+        "meta/own-process-memory-v3-terminal-audit.json",
+        "meta/own-process-memory-v2-terminal-audit.json",
+        "meta/primary-throughput-summary-v1.json",
+        "meta/own-process-memory-v1-terminal-audit.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-memory-classification-controls-v1.json",
+          "bytes": 46402,
+          "sha256": "dc97f3d9c6568f6205bb9bc530e34a31ed0657df56835de4f17a200946900943"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/throughput-protocol-v1.json",
+          "bytes": 4440,
+          "sha256": "71f89b098c98157125bc16942833427a7af50f4247a8151efed8aa29746592e1"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/own-process-memory-v3-terminal-audit.json",
+          "bytes": 59823,
+          "sha256": "7d210f654e8fc50d3dfa1c93959dc65a0653b8f144e1bdfcf2ed883198635f59"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/own-process-memory-v2-terminal-audit.json",
+          "bytes": 109117,
+          "sha256": "ff1645539c69f9da25528690712d23ce0b2ab2e61591b5b8bbf9113da9f76dea"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-summary-v1.json",
+          "bytes": 91072,
+          "sha256": "03edb74edf0b7815e581578e0c39b93330f49cb08cb3caaa7fcc70ea6d69b701"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/own-process-memory-v1-terminal-audit.json",
+          "bytes": 182346,
+          "sha256": "70a3946911af39955f5bc6dc8078ca30b0906138fba7d51c1ce8d2130b984c5a"
+        }
+      ]
+    },
+    {
+      "id": "R15",
+      "requirement": "Public physical defaults",
+      "satisfied": true,
+      "decision": "Ordinary Options/dpr select pressure/patch/Hertz/Hertz; volume remains backend default and shell Q4 remains loading default.",
+      "evidence": [
+        "meta/default-focused-v2-qualification.json",
+        "final-defaults-public-v1/group0/default-and-lifecycle-cpu/result.json",
+        "final-defaults-public-v1/group1/default-and-lifecycle-gpu/result.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/default-focused-v2-qualification.json",
+          "bytes": 2008,
+          "sha256": "3be8553d50383bad91842510b6ae85991a44f408b119e38255a256668efbaaf4"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group0/default-and-lifecycle-cpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group1/default-and-lifecycle-gpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        }
+      ]
+    },
+    {
+      "id": "R16",
+      "requirement": "Actual workload and CLI default inheritance",
+      "satisfied": true,
+      "decision": "Omitted options reach public Options; actual choices are recorded. Real default/public CLI commands pass. Unconfigured links do not gain stress recovery.",
+      "evidence": [
+        "meta/default-focused-v2-qualification.json",
+        "meta/adaptive-prototype-v1-static.json",
+        "meta/active-defaults-readonly-audit-v1.json",
+        "meta/adaptive-E6-entrypoint-smokes-terminal-audit.json",
+        "final-defaults-public-v1/group2/volume-headless-max/result.json",
+        "final-defaults-public-v1/group3/volume-viewer-full/result.json",
+        "final-defaults-cli-full-v2/group0/volume-default-cli-full/result.json",
+        "meta/final-default-public-terminal-audit-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/default-focused-v2-qualification.json",
+          "bytes": 2008,
+          "sha256": "3be8553d50383bad91842510b6ae85991a44f408b119e38255a256668efbaaf4"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-prototype-v1-static.json",
+          "bytes": 7002,
+          "sha256": "9c1d630bd2fc48cc4c6d595a8c979c3fe2b809c743e51a2f4ee59a27eab398f2"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/active-defaults-readonly-audit-v1.json",
+          "bytes": 12770,
+          "sha256": "4ab600817d7a39d0ebbabc37dfe45b7f88c0dbc7db683919409573190cdfeb69"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-E6-entrypoint-smokes-terminal-audit.json",
+          "bytes": 16274,
+          "sha256": "bcde9511afdcdc7c2bc2f8945400be112e498070dcf375d0f4b058df7d229e1c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group2/volume-headless-max/result.json",
+          "bytes": 2101,
+          "sha256": "5def51c3ddb881170234c9b9a9a09490655e71199cedf3df8a67ef2decf67fcf"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group3/volume-viewer-full/result.json",
+          "bytes": 11127,
+          "sha256": "9f000710ff624283e78632402bad3ae2f383648e06b6c265e8746337140bac10"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-cli-full-v2/group0/volume-default-cli-full/result.json",
+          "bytes": 2156,
+          "sha256": "acc2cd396417d9942a0e7baaccac20c22c4a67718ed7540b84def4d8886a46db"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-default-public-terminal-audit-v1.json",
+          "bytes": 12435,
+          "sha256": "c96bb717eec6d5f95a81a3a812a06eca2e7fd36fa75f82f667f6956e5d799119"
+        }
+      ]
+    },
+    {
+      "id": "R17",
+      "requirement": "Explicit manual, legacy, strict and SCR contexts",
+      "satisfied": true,
+      "decision": "Focused context tests and complete manual6mm/legacy and angle128 commands pass. Explicit quadrature keeps fixed edge behavior when the rule is omitted.",
+      "evidence": [
+        "meta/default-focused-v2-qualification.json",
+        "meta/adaptive-prototype-v1-static.json",
+        "final-defaults-public-v1/group5/volume-manual-max/result.json",
+        "final-defaults-public-v1/group6/volume-strict-full/result.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/default-focused-v2-qualification.json",
+          "bytes": 2008,
+          "sha256": "3be8553d50383bad91842510b6ae85991a44f408b119e38255a256668efbaaf4"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-prototype-v1-static.json",
+          "bytes": 7002,
+          "sha256": "9c1d630bd2fc48cc4c6d595a8c979c3fe2b809c743e51a2f4ee59a27eab398f2"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group5/volume-manual-max/result.json",
+          "bytes": 2239,
+          "sha256": "ee04a2beb0dfdf6c274bff798192913797d850768eea74c699732fd8fcbab46c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group6/volume-strict-full/result.json",
+          "bytes": 2210,
+          "sha256": "210b45223e7615fac60013f6a2595e541363b530127e93385633bed2505b9b51"
+        }
+      ]
+    },
+    {
+      "id": "R18",
+      "requirement": "Qualified cheap default and explicit sharp-edge policy",
+      "satisfied": true,
+      "decision": "Adaptive angular16 with independently fitted8/16/64 admission and selective64/128 repair is the qualified volume default. Original gates and unsupported-geometry policy remain; sharp-box planar surrogate stays explicit.",
+      "evidence": [
+        "meta/adaptive-default-promotion-candidate-plan-v1.json",
+        "meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+        "meta/authored-continuation-v3-terminal-audit.json",
+        "primary-throughput-v1/submission.json",
+        "meta/primary-throughput-summary-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-default-promotion-candidate-plan-v1.json",
+          "bytes": 5113,
+          "sha256": "f56ccf81199ea0d1588bed53b83bda1e29b125b6379080954e3d5d3d454c45f5"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-uniform-corpus-v1-terminal-audit.json",
+          "bytes": 15626423,
+          "sha256": "45f67fd92be7db078647eeb5c5905a29b71f5ac2ea1d7a96b14945a72d339fbb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/authored-continuation-v3-terminal-audit.json",
+          "bytes": 2195,
+          "sha256": "338f5dbd0299bf9ec0ae8364b9c68f3b33b030f0a0ab0397a59fac031f2bf2cb"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/primary-throughput-v1/submission.json",
+          "bytes": 720,
+          "sha256": "e4ec86aecf3c3880a2e9372283b6da6010b9d74b13aa5d0dce96deb745d7236c"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-summary-v1.json",
+          "bytes": 91072,
+          "sha256": "03edb74edf0b7815e581578e0c39b93330f49cb08cb3caaa7fcc70ea6d69b701"
+        }
+      ]
+    },
+    {
+      "id": "R19",
+      "requirement": "Short runnable volume and shell examples",
+      "satisfied": true,
+      "decision": "Real730-step public volume/shell B64/max headless and B1/full viewer commands pass. The guide specifies material, shell thickness/k32, shapes/units, import order and legacy/reference overrides.",
+      "evidence": [
+        "meta/adaptive-prototype-v1-static.json",
+        "meta/public-shell-example-intermediate-v1.json",
+        "meta/public-shell-viewer-glx-v2-audit.json",
+        "final-defaults-public-v1/group2/volume-headless-max/result.json",
+        "final-defaults-public-v1/group3/volume-viewer-full/result.json",
+        "meta/final-public-shell-v2-terminal-audit.json",
+        "meta/final-default-public-terminal-audit-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-prototype-v1-static.json",
+          "bytes": 7002,
+          "sha256": "9c1d630bd2fc48cc4c6d595a8c979c3fe2b809c743e51a2f4ee59a27eab398f2"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/public-shell-example-intermediate-v1.json",
+          "bytes": 1256,
+          "sha256": "2644ea5b9635fee4ea9f1942d69dad4a5506da123b625dfd12fb16c384d6610e"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/public-shell-viewer-glx-v2-audit.json",
+          "bytes": 5570,
+          "sha256": "553cdef836a8c6689b76fc5ecb2df5a926ccb1748921478529229de5ea2814e2"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group2/volume-headless-max/result.json",
+          "bytes": 2101,
+          "sha256": "5def51c3ddb881170234c9b9a9a09490655e71199cedf3df8a67ef2decf67fcf"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group3/volume-viewer-full/result.json",
+          "bytes": 11127,
+          "sha256": "9f000710ff624283e78632402bad3ae2f383648e06b6c265e8746337140bac10"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-public-shell-v2-terminal-audit.json",
+          "bytes": 4191,
+          "sha256": "ba74d04a1195a8dbe34832c1cfbb53417c7f94c42f56b31c100f179c43650b61"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-default-public-terminal-audit-v1.json",
+          "bytes": 12435,
+          "sha256": "c96bb717eec6d5f95a81a3a812a06eca2e7fd36fa75f82f667f6956e5d799119"
+        }
+      ]
+    },
+    {
+      "id": "R20",
+      "requirement": "Focused regression coverage",
+      "satisfied": true,
+      "decision": "Final48 CPU/CUDA default/lifecycle and20 loaded controls pass, with separate deterministic-curvature controls; these are test execution counts, not a sum of unique test definitions.",
+      "evidence": [
+        "meta/default-focused-v2-qualification.json",
+        "adaptive-focused-v1/tasks.json",
+        "meta/adaptive-loaded-v4-terminal-audit.json",
+        "final-defaults-public-v1/group0/default-and-lifecycle-cpu/result.json",
+        "final-defaults-public-v1/group1/default-and-lifecycle-gpu/result.json",
+        "adaptive-uniform-qualification-v1/group4/v4-loaded-cpu/result.json",
+        "adaptive-uniform-qualification-v1/group5/v4-loaded-gpu/result.json",
+        "meta/final-owned-static-v3.json",
+        "meta/final-default-public-terminal-audit-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/default-focused-v2-qualification.json",
+          "bytes": 2008,
+          "sha256": "3be8553d50383bad91842510b6ae85991a44f408b119e38255a256668efbaaf4"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/adaptive-focused-v1/tasks.json",
+          "bytes": 1695,
+          "sha256": "79d779764bb25c53e683275ade57253c3e4ff601a0920ac78a5debe45dc3598d"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/adaptive-loaded-v4-terminal-audit.json",
+          "bytes": 3848,
+          "sha256": "a539756fe19c30e684a1e59edfc975aebf4f0b1713cae866b5c207e9e1f18d47"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group0/default-and-lifecycle-cpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/final-defaults-public-v1/group1/default-and-lifecycle-gpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/adaptive-uniform-qualification-v1/group4/v4-loaded-cpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/adaptive-uniform-qualification-v1/group5/v4-loaded-gpu/result.json",
+          "bytes": 39,
+          "sha256": "18db27e7a3348f7b8b2de833632fbcfbd70ed3fc66e2eb7ae129a9fd9015b054"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-owned-static-v3.json",
+          "bytes": 12431,
+          "sha256": "4c3c512b90a24bd1e9f9f9a9ae49f3cca4054490d9f4494fe4de8acb50015153"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-default-public-terminal-audit-v1.json",
+          "bytes": 12435,
+          "sha256": "c96bb717eec6d5f95a81a3a812a06eca2e7fd36fa75f82f667f6956e5d799119"
+        }
+      ]
+    },
+    {
+      "id": "R21",
+      "requirement": "Current recommendations and delivery documentation",
+      "satisfied": true,
+      "decision": "GOAL, README, AGENTS, API, running guide and results give one measured configuration per backend, speed/error/memory tradeoffs and discrete/continuum limits.",
+      "evidence": [
+        "meta/final-documentation-v1.json",
+        "meta/primary-throughput-summary-v1.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-documentation-v1.json",
+          "bytes": 3490,
+          "sha256": "ae7368748fc1cd45fe4a964c3249ba45f3f60399fdaba783c2782269f9c925b0"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/primary-throughput-summary-v1.json",
+          "bytes": 91072,
+          "sha256": "03edb74edf0b7815e581578e0c39b93330f49cb08cb3caaa7fcc70ea6d69b701"
+        }
+      ]
+    },
+    {
+      "id": "R22",
+      "requirement": "Preservation, storage and reproducibility",
+      "satisfied": true,
+      "decision": "Original12 files, prior64 and campaign21 frozen sources, and all69 source/helper inventories pass read-only checks. Runtime data stay under data; exact sources, original failures and reproduction inputs remain available.",
+      "evidence": [
+        "meta/start-state.json",
+        "meta/preservation-intermediate-v2.json",
+        "meta/preservation-intermediate-v3.json",
+        "meta/prior64-preservation-intermediate-v1.json",
+        "meta/preservation-final-v1.json",
+        "meta/final-owned-static-v3.json"
+      ],
+      "evidence_identities": [
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/start-state.json",
+          "bytes": 4180,
+          "sha256": "5a725a69c52781b3b0dcb4abdc564ed9ceca88b3951d581f3cc8e5f9302d17ee"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/preservation-intermediate-v2.json",
+          "bytes": 7482,
+          "sha256": "79dde03aaf0ed32b594a9575cedf8c93fd8978cfdccbaffc72b383ae9c1f8e5e"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/preservation-intermediate-v3.json",
+          "bytes": 7521,
+          "sha256": "b65b4d7c4d04e4baf2c8c4eb8d4f2c7449569303b9cf4c48245e4395feba834a"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/prior64-preservation-intermediate-v1.json",
+          "bytes": 19156,
+          "sha256": "e47222841cadea595b8b360ab999c1a2d3004c673d1de2af2f972c6b81e2fb18"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/preservation-final-v1.json",
+          "bytes": 87133,
+          "sha256": "e0245808dd1c6439380bfc87e66ec921ce0dec68c0c754ac9bda2fdbed5a4b46"
+        },
+        {
+          "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/final-owned-static-v3.json",
+          "bytes": 12431,
+          "sha256": "4c3c512b90a24bd1e9f9f9a9ae49f3cca4054490d9f4494fe4de8acb50015153"
+        }
+      ]
+    }
+  ],
+  "all22_satisfied": true,
+  "scope": "Reviewed implementation/evidence decisions. Packet checksum/link validation and normal branch publication follow before the active goal is closed.",
+  "goal_complete": false,
+  "builder": {
+    "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261028-automatic-dpr-fast-path/meta/build-requirements-final-v2.py",
+    "bytes": 9243,
+    "sha256": "2c5c5d3cc0d74609cf1ff8f86efd0ca249272ab621e4a9bd9fe20d7e8d546148"
+  }
+}

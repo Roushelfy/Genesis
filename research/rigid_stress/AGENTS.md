@@ -1,24 +1,23 @@
 # Working on native rigid stress recovery
 
-**Active user goal, 2026-10-28:** implement [automatic DPR fast path, defaults and examples](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md).
-Read [GOAL.md](GOAL.md) first. Diagnose volume edge/q16 failures, evaluate practical
-stress-error budgets and fit/load tolerances, and prefer a qualified cheap path
-with selective repair over global q128. This user goal explicitly permits
-evidence-backed changes to pressure-fit/load acceptance; older instructions to
-keep every such threshold unchanged do not prohibit this work. Preserve strict
-controls and do not weaken unrelated elasticity/material/lifecycle checks.
+**Completed user goal, 2026-10-28:** [automatic DPR fast
+path/defaults](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md). Read [GOAL.md](GOAL.md), the
+[results](docs/AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md) and [22-clause
+packet](evidence/20261028-automatic-dpr-fast-path-v1/README.md).
 
-Make automatic-radius + Hertz-pressure DPR the actual API/factory/workload/CLI
-default, preserving explicit manual/legacy and SCR alternatives. Volume remains
-the backend default; retain Q4 loading by default for shell and show the qualified
-planar recipe explicitly. Add and run simple 3D/shell, max/full and batched Franka
-examples; [the current examples](docs/RUNNING_AUTOMATIC_DPR.md) use the implemented
-volume adaptive/q16 default and an explicit shell planar/k32 recipe. Finish their
-final-source verification and matched cost accounting. Keep native production numerics in Quadrants,
-the mature load model, arbitrary contacts/friction and existing planar winners.
-Use focused low-model accuracy, actual profiles and matched full-path throughput.
-Avoid reopening unchanged prior experiments or turning this goal into a broad
-convergence/archival campaign. Standing preservation/storage policies still apply.
+Keep ordinary pressure/patch/Hertz/Hertz defaults and volume adaptive16 with independent source-node checking
+and selective q64/q128 repair. Preserve original fit 1e-9, source 1e-8, K/material/lifecycle checks,
+source-local replacement, serial/overflow paths and uniform cooperative Newton decisions. Explicit
+manual/legacy, fixed quadrature and SCR contexts remain supported. Volume and shell Q4 stay public
+backend/loading defaults; use the documented planar k32 recipe explicitly for the measured shell workload.
+
+Engine 070cb0c96 has all 102 primary receipts (90 qualified,12 edge16 negatives), final eight complete
+histories,48 default/lifecycle and 20 loaded test executions. B8192 max/full gains over angle128 are
+6.269/6.237 module and 5.617/5.577 complete policy inference. Retain the empirical admission scope,
+authored-only switching evidence, extra memory, old strict load negatives and continuum sharp-edge
+limitations. Preserve original 12 files,64 prior and 21 new frozen sources, all raw failures and the data-side
+run. Do not restart unchanged diagnosis, broad convergence or prior closed campaigns without new user scope or
+a concrete changed-workload reason. Standing policies below apply.
 
 ## Previous completed planar goal
 

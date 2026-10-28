@@ -1,6 +1,6 @@
 # 自动半径＋DPR 使用范例
 
-普通 Options 和 `.dpr()` 默认选择 pressure/patch/Hertz 半径/Hertz 压力轮廓。体积加载默认采用 adaptive/q16，仅对未通过独立积分检查的接触升级至 q64、q128。薄壳仍默认 Q4 加载；下面显式选择已验证的 planar/k32 配方。最终示例、完整历史和配对计时状态见[执行记录](AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md)，当前目标仍未关闭。
+普通 Options 和 `.dpr()` 默认选择 pressure/patch/Hertz 半径/Hertz 压力轮廓。体积加载默认采用 adaptive/q16，仅对未通过独立积分检查的接触升级至 q64、q128。薄壳仍默认 Q4 加载；下面显式选择已验证的 planar/k32 配方。公共示例、完整历史及三组配对计时均已完成，精度、速度和显存取舍见[结果报告](AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md)。
 
 在仓库根目录使用已安装 Genesis／Quadrants 的环境。集群上遵循 [运行位置说明](RUNNING.md)，在计算节点执行；下面不涉及 Slurm 或缓存配置。所有 stress 配置在 `scene.build()` 之前完成。
 
@@ -48,13 +48,14 @@ link.configure_stress_recovery(
 
 ```bash
 QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --envs 64
-QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --output-mode full --viewer
+env -u GS_HEADLESS PYOPENGL_PLATFORM=glx PYGLET_HEADLESS=false QD_GRAPH=0 \
+  python -m examples.rigid.franka_egg_automatic_stress --output-mode full --viewer
 QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --backend shell --envs 64
 env -u GS_HEADLESS PYOPENGL_PLATFORM=glx PYGLET_HEADLESS=false QD_GRAPH=0 \
   python -m examples.rigid.franka_egg_automatic_stress --backend shell --output-mode full --viewer
 ```
 
-Viewer 命令需要可用的 X11 显示。图形平台变量必须在导入 Genesis/OpenGL 前设置；集群镜像的 headless EGL 与 X11 GLX 窗口采用不同的上下文。自动验证使用私有 Xvfb 和 Mesa 软件 GLX 渲染，物理仍为 CUDA/FP64；这项验证不提供渲染吞吐量。体积新默认的完整运行验证仍在进行。
+Viewer 命令需要可用的 X11 显示。图形平台变量必须在导入 Genesis/OpenGL 前设置；集群镜像的 headless EGL 与 X11 GLX 窗口采用不同的上下文。自动验证使用私有 Xvfb 和 Mesa 软件 GLX 渲染，物理仍为 CUDA/FP64；这项验证不提供渲染吞吐量。体积／薄壳的 730 步 headless 和实际 GLX viewer 入口均已验证通过。
 
 ## 完整 Franka 抓蛋：小批量与并行
 
