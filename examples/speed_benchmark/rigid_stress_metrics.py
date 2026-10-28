@@ -33,6 +33,15 @@ COUNTERS = (
     "two_finger_contact_steps",
     "egg_contact_count_max",
     "history_prediction_hit_steps",
+    "adaptive_attempted_contacts",
+    "adaptive_checker_evaluations",
+    "adaptive_angle16_attempts",
+    "adaptive_angle64_attempts",
+    "adaptive_angle128_attempts",
+    "adaptive_repaired_contacts",
+    "adaptive_rejected_contacts",
+    "adaptive_overflow_replays",
+    "adaptive_initial_affine_fits",
 )
 
 
@@ -121,6 +130,20 @@ def kernel_recovery_work_metrics(
                 evaluations += contact_state.evaluations[i_c, i_b]
                 maximum_evaluations = qd.max(maximum_evaluations, contact_state.evaluations[i_c, i_b])
                 maximum_samples = qd.max(maximum_samples, contact_state.candidate_count[i_c, i_b])
+                if qd.static(contact_state.admission.rule.shape[0] > 0):
+                    attempts = contact_state.admission.attempts[i_c, i_b][0]
+                    reason = contact_state.admission.reason[i_c, i_b][0]
+                    metrics_state.counters[21, i_b] += gs.qd_int(attempts > 0 or reason != 0)
+                    metrics_state.counters[22, i_b] += attempts
+                    for i_stage in qd.static(range(3)):
+                        metrics_state.counters[23 + i_stage, i_b] += gs.qd_int(attempts > i_stage)
+                    metrics_state.counters[26, i_b] += gs.qd_int(attempts > 1)
+                    metrics_state.counters[27, i_b] += gs.qd_int(reason != 0)
+                    metrics_state.counters[29, i_b] += gs.qd_int(
+                        attempts > 0
+                        and contact_state.admission.stage_status[i_c, i_b][0] == 0
+                        and contact_state.admission.stage_evaluations[i_c, i_b][0] == 0
+                    )
         metrics_state.counters[10, i_b] += gs.qd_int(loaded)
         metrics_state.counters[11, i_b] += evaluations
         metrics_state.counters[12, i_b] = qd.max(metrics_state.counters[12, i_b], maximum_evaluations)
@@ -131,6 +154,8 @@ def kernel_recovery_work_metrics(
         metrics_state.counters[17, i_b] += gs.qd_int(not stress_state.step_valid[i_b])
         if qd.static(has_history):
             metrics_state.counters[20, i_b] += gs.qd_int(history_hit[i_b])
+        if qd.static(contact_state.admission.rule.shape[0] > 0):
+            metrics_state.counters[28, i_b] += contact_state.admission.overflow[i_b][0]
 
 
 class RolloutMetrics:
@@ -195,6 +220,7 @@ class RolloutMetrics:
                 "descent": "Height decreases by more than 0.001 m over one dt=0.01 step in the named controller window.",
                 "tail": "Per-environment recorded fit evaluations, sample counts, integration retries and elastic work. These are parallel work proxies, not individual GPU wall times.",
                 "history_prediction_hit": "The current load's history prediction passes the complete residual before recovery. Counted after the step, before the next controller reset; zero when history is disabled.",
+                "adaptive_routes": "Per-step source attempts/stage status and overflow flags are accumulated outside scene checkpoint/reset state. Counts cover the complete observed interval across resets. Fixed-rule and rigid runs report zero adaptive work.",
                 "timing": "Both device collection kernels and the public position getter are inside each rollout step. Boundary exports are outside repeat timing.",
             },
             "totals": {
