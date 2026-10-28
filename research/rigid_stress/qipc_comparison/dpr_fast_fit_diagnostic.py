@@ -718,6 +718,13 @@ def main():
             ("faces", faces),
         )
     }
+    if not api.np.isfinite(samples["weights"]).all() or (samples["weights"] < 0).any():
+        api.np.savez_compressed(args.output / "invalid-native-sampled-problem.npz", **samples)
+        result["sample_failure"] = (
+            "Native weights contain nonfinite or negative entries; complete raw sample arrays preserved."
+        )
+        _write(args.output / "result.json", result)
+        raise RuntimeError(result["sample_failure"])
     positive = samples["weights"] > 0
     samples = {key: value[positive] for key, value in samples.items()}
     x, w, p = samples["coordinates"], samples["weights"], samples["positions"]
