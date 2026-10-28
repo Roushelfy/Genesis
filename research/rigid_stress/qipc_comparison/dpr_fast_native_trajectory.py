@@ -218,7 +218,7 @@ class ReplayRoute:
             n_contacts, n_envs, entry.options.contact_radius, True, True, True, adaptive
         )
         self.state = entry.model.create_state(n_envs, "full")
-        self.scatter = api.create_scatter_workspace(n_envs, self.capacity, reuse_moments=True)
+        self.scatter = api.create_scatter_workspace(n_envs, self.capacity, reuse_moments=True, adaptive=adaptive)
         self.omega = api.V_VEC(3, dtype=api.gs.qd_float, shape=(n_envs,))
         self.errno = api.V(dtype=api.gs.qd_int, shape=(n_envs,))
         self.errno.fill(0)
@@ -279,7 +279,12 @@ class RawWitness:
             True,
             route.options.pressure_quadrature == "adaptive",
         )
-        self.scatter = api.create_scatter_workspace(n_envs, route.scatter.tasks.shape[0] // n_envs, reuse_moments=True)
+        self.scatter = api.create_scatter_workspace(
+            n_envs,
+            route.scatter.tasks.shape[0] // n_envs,
+            reuse_moments=True,
+            adaptive=route.options.pressure_quadrature == "adaptive",
+        )
         self.state = route.entry.model.create_state(n_envs, "max")
 
     def run(self, physical, actual, environments, vertices, output):
