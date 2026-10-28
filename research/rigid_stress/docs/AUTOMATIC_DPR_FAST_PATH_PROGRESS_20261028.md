@@ -99,14 +99,23 @@ caches and use complete CPU/serial/overflow fallback paths. Preparation and
 runtime stay in Quadrants. No q128 evaluation is required merely to screen an
 ordinary source.
 
-The v4 loaded suite passes16 CPU/CUDA cases, including material cavities,
+The v8 loaded suite passes16 CPU/CUDA cases, including material cavities,
 cooperative/scalar execution, constrained task capacity, full output, release,
 slot changes and partial reset. Actual606 and the authored convex edge pass
-cached/uncached/serial/forced-overflow lifecycle controls on CUDA. Nine of12
-frozen corpus cases complete successfully; the manual-tip group reaches its
-one-hour allocation limit before producing a result, leaving two following
-cases unexecuted. That timeout is retained and does not qualify the missing
-cases. A subsequent exact traversal optimization is under fresh validation.
+cached/uncached/serial/forced-overflow lifecycle controls on CUDA. Eleven of12
+frozen corpus cases now pass, including the separately completed U-inner/U-gap
+controls. The original manual-tip cooperative attempts time out. An unchanged
+GPU serial replay passes all original model, source, independent-stage and
+field gates, with28 Newton evaluations and finalq128 selection. A same-runtime
+prewarm control completes the convex-edge input and then stalls on the original
+tip. Separate synchronized native phase calls complete moment preparation,
+initial fitting, original nonlinear correction and source-chain construction;
+the stall occurs in the adaptive phase with the GPU busy. Module-load stacks
+alone therefore do not establish a compiler/JIT cause. A lane-owned Newton
+control candidate now passes cached/uncached/serial/overflow tip routes and
+release/reload, retaining28 Newton evaluations and finalq128. Broader affected
+controls remain in progress before numerical default promotion. Original timeouts and the candidate's initial unsigned-lane
+argument compilation failure remain retained.
 
 The original CPU-versus-GPU byte guard detects differences in16 derived model
 arrays. An independent diagnostic keeps all physical/topological inputs exact,
@@ -137,14 +146,42 @@ Separate combined-path profiles identify adaptive fit integration as the
 remaining dominant cost. The new implementation reuses each source's complete,
 validated geometry chain during fitting, avoiding unrelated empty faces while
 retaining the same samples, fits and admission thresholds. Its parity and cost
-are still under validation; diagnostic profiles from independently advanced
-scenes are not strict paired speed comparisons.
+pass the loaded and lifecycle controls. Earlier diagnostic profiles from
+independently advanced scenes are not strict paired speed comparisons.
+
+A41-point authored convex-edge radius continuation now exercises eight actual
+16/64/128 switches,13 repair frames, contained-disk exit, mirror roundtrips and
+release/reload. Worst regional tensor, peak and underestimation errors are
+0.020533%,0.013893% and0.008364%; the largest extra field jump relative toq128 is
+0.027029%. All original source/K gates and the selectedq256 reference controls
+pass. This qualifies the authored integration mechanism, not an arbitrary
+live Hertz-radius trajectory. See `meta/authored-continuation-v1-terminal-audit.json`.
+
+Raw collider/link/geometry snapshot consumers now reproduce all12 physical
+source columns exactly across five B4 volume/shell routes; the B8192 adaptive
+consumer also passes. Original failures exposed nondeterministic atomic vertex
+curvature accumulation and a tuple/list metadata mismatch. The accepted
+curvature preparation traverses the original face contributions serially in
+Quadrants, retaining the exact area weights, projection and normalization.
+CPU/CUDA tests independently verify the tensor and eight byte-identical repeats.
+Consumers advance zero scene steps and preserve raw inputs through preparation
+and measurement. Eight intrusive profiles pass these shared-input controls;
+their different GPU UUIDs still preclude primary paired rate claims.
+
+Six E13 memory workers complete the730-step warmup and730-step policy interval.
+Adaptive B8192 max/full uses sampled own-process peaks13.885/14.729GiB and native
+buffers3938.709/4778.709MiB; planar B8192 full reaches14.887GiB. The corresponding
+B4 sampled peaks are2.271GiB. These are sampled lower bounds and retain cold
+preparation accounting; reset-affected endpoint counters do not establish
+complete-interval repair incidence. Receipts are
+`meta/module-snapshot-native-qa-v3-terminal-audit.json`,
+`meta/common-input-profiles-v1-terminal-audit.json` and
+`meta/own-process-memory-v2-terminal-audit.json`.
 
 ## Remaining delivery work
 
-Numerical default promotion, complete frozen-corpus qualification, a nonvacuous
-switching control, strict common-input paired timing, process memory/preparation
-measurements and final recommendations remain open. Module timing now requires
+Numerical default promotion, the remaining nonlinear cooperative qualification,
+strict common-input paired timing and final recommendations remain open. Module timing requires
 a shared raw collider/link/geometry snapshot before association and Hertz sizing;
 matching seeds or contact counts alone does not establish input equality.
 
