@@ -130,7 +130,7 @@ def inspect_row(group, task, directory, source, revision):
     checks["all_steps_valid"] = invalid == 0
     row["setup_seconds"] = benchmark["setup_seconds"]
     row["actual_options"] = benchmark["actual_stress_options"]
-    row["native_buffer_bytes"] = benchmark["native_buffer_bytes"]
+    row["native_buffer_bytes"] = 0 if route == "pure_rigid" else benchmark["native_buffer_bytes"]
     row["policy"] = benchmark["policy"]
     options = benchmark["actual_stress_options"]
     if route != "pure_rigid":
