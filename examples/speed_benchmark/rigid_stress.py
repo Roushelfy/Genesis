@@ -23,6 +23,12 @@ import torch
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from examples.speed_benchmark.rigid_stress_metrics import RolloutMetrics
+from examples.speed_benchmark.rigid_stress_snapshot import (
+    restore_module_snapshot,
+    save_module_snapshot,
+    snapshot_bindings,
+    verify_module_snapshot,
+)
 from examples.speed_benchmark.stress_stages import (
     kernel_estimate_radii,
     kernel_moment_geometry_counts,
@@ -258,7 +264,9 @@ def array_identity(value: np.ndarray) -> dict:
     }
 
 
-def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | None = None) -> dict:
+def prepare_recovery_snapshot(
+    workload: FrankaEgg, geometry: GeometryFrame | None = None, restore_input: bool = True
+) -> dict:
     """Check the independent recovery route before timing its frozen input."""
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
@@ -272,10 +280,11 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
         qd_to_numpy(entry.contacts.frame_position, transpose=True, copy=True),
         qd_to_numpy(entry.contacts.frame_quaternion, transpose=True, copy=True),
     )
-    restore_frame(workload)
-    if entry.automatic_radius is not None:
-        assert geometry is not None
-        kernel_restore_geometry(geometry.position, geometry.quaternion, solver.dyn_state)
+    if restore_input:
+        restore_frame(workload)
+        if entry.automatic_radius is not None:
+            assert geometry is not None
+            kernel_restore_geometry(geometry.position, geometry.quaternion, solver.dyn_state)
     solver.stress_recovery.recover(0)
     qd.sync()
     solver.check_errno()
@@ -431,11 +440,25 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
             "loaded_slot_mask_sha256": hashlib.sha256(physical_loaded.tobytes(order="C")).hexdigest(),
             "ordered_original_anchor_sha256": hashlib.sha256(centers.tobytes(order="C")).hexdigest(),
         },
+        "physical_source_column_identities": [
+            array_identity(source_values[:, index]) for index in range(source_values.shape[1])
+        ],
+        "ordered_target_anchor_identity": array_identity(centers),
+        "ordered_target_anchor_face_identity": array_identity(
+            qd_to_numpy(entry.contacts.anchor_face, transpose=True)[physical_loaded][source_order]
+        ),
     }
 
 
-def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | None) -> dict:
-    snapshot_check = prepare_recovery_snapshot(workload, geometry)
+def profile(
+    workload: FrankaEgg,
+    repetitions: int,
+    geometry: GeometryFrame | None,
+    restore_input: bool = True,
+    snapshot_check: dict | None = None,
+) -> dict:
+    if snapshot_check is None:
+        snapshot_check = prepare_recovery_snapshot(workload, geometry, restore_input)
     recovery = workload.scene.rigid_solver.stress_recovery
     entry = recovery.links[0]
     solver = workload.scene.rigid_solver
@@ -721,7 +744,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         # All measurements above are finished. Bind routing to one additional
         # complete recovery, rather than the tail of an intrusive partial stage.
         counters_before = adaptive_route_counts(workload)
-        full_snapshot = prepare_recovery_snapshot(workload, geometry)
+        full_snapshot = prepare_recovery_snapshot(workload, geometry, restore_input)
         counters_after = adaptive_route_counts(workload)
         counter_delta = {
             key: int((after - before).sum())
@@ -848,6 +871,13 @@ def main() -> None:
     parser.add_argument("--source-revision", default=os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"))
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
+    snapshot_group = parser.add_mutually_exclusive_group()
+    snapshot_group.add_argument(
+        "--save-module-snapshot", type=Path, help="Save validated raw rigid inputs after module warmup."
+    )
+    snapshot_group.add_argument(
+        "--module-snapshot", type=Path, help="Restore common raw rigid inputs; skip moving scene warmup."
+    )
     parser.add_argument("--serial-solve", action="store_true")
     anchor_group = parser.add_mutually_exclusive_group()
     anchor_group.add_argument("--cooperative-anchor", action="store_const", const=True, default=None)
@@ -922,6 +952,12 @@ def main() -> None:
         parser.error("Trace steps must be positive.")
     if args.trajectory_metrics and args.scope in ("profile", "recovery"):
         parser.error("Trajectory metrics require rigid, live, policy or policy-rigid scope.")
+    snapshot_directory = args.module_snapshot if args.module_snapshot is not None else args.save_module_snapshot
+    if snapshot_directory is not None:
+        if args.scope not in ("profile", "recovery") or args.trace:
+            parser.error("Raw module snapshots require recovery/profile scope without a moving trace.")
+        if args.save_module_snapshot is not None and args.warmup < 1:
+            parser.error("A snapshot producer requires a real scene warmup.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
     start = time.perf_counter()
@@ -1010,10 +1046,11 @@ def main() -> None:
         policy_digest.update(str(value.shape).encode())
         policy_digest.update(value.tobytes())
     policy_error_rad = 0.0
+    scene_warmup_steps = 0 if args.module_snapshot is not None else args.warmup
     with torch.inference_mode():
         quality = []
         geometry = None
-        for tick in range(args.warmup):
+        for tick in range(scene_warmup_steps):
             action = None
             if args.scope.startswith("policy"):
                 observation = workload.observation()
@@ -1100,6 +1137,48 @@ def main() -> None:
                 quality.append(summarize_warmup(row) if args.summarize_warmup else row)
         qd.sync()
         workload.scene.rigid_solver.check_errno()
+        prepared_snapshot = None
+        module_snapshot = None
+        snapshot_prepare_seconds = None
+        module_warmup_calls = 0
+        if snapshot_directory is not None:
+            prepare_start = time.perf_counter()
+            bindings = snapshot_bindings(
+                workload,
+                {
+                    "level": args.level,
+                    "seed": args.seed,
+                    "varied": args.varied,
+                    "egg_geometry": args.egg_geometry,
+                    "collision_method": args.collision_method,
+                    "contact_patch": args.contact_patch,
+                    "native_controller": not args.torch_controller,
+                    "dt": 0.01,
+                    "substeps": 1,
+                },
+            )
+            if args.module_snapshot is not None:
+                module_snapshot = restore_module_snapshot(workload, snapshot_directory, bindings)
+                # Establish this route's fitted baseline from raw rigid inputs,
+                # including its own capture, association, Hertz sizing and K.
+                solver.stress_recovery.recover(0)
+                qd.sync()
+                solver.check_errno()
+                module_warmup_calls += 1
+                geometry = GeometryFrame(
+                    np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)),
+                    np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True, copy=True)),
+                )
+            prepared_snapshot = prepare_recovery_snapshot(
+                workload, geometry, restore_input=args.module_snapshot is None
+            )
+            module_warmup_calls += 1
+            if args.save_module_snapshot is not None:
+                module_snapshot = save_module_snapshot(workload, snapshot_directory, bindings, prepared_snapshot)
+            module_snapshot["raw_inputs_exact_after_preparation"] = (
+                verify_module_snapshot(workload, snapshot_directory) == module_snapshot["raw_input_sha256"]
+            )
+            snapshot_prepare_seconds = time.perf_counter() - prepare_start
         result = {
             "scope": args.scope,
             "envs": args.envs,
@@ -1266,7 +1345,10 @@ def main() -> None:
             "quadrants": qd.__version__,
             "torch": torch.__version__,
             "setup_seconds": setup_seconds,
-            "warmup_steps": args.warmup,
+            "warmup_steps": scene_warmup_steps,
+            "declared_scene_warmup_steps": args.warmup,
+            "module_warmup_calls": module_warmup_calls,
+            "module_snapshot": module_snapshot,
             "warmup_diagnostics": "ranges_and_nonfinite_counts" if args.summarize_warmup else "full_arrays",
             "warmup_quality": quality,
             "trajectory_metrics": {"warmup": metrics.summary(), "repeats": []} if metrics is not None else None,
@@ -1283,16 +1365,34 @@ def main() -> None:
         }
         policy_reference = None
         if args.scope == "profile":
-            result.update(profile(workload, args.steps, geometry))
+            result.update(
+                profile(
+                    workload,
+                    args.steps,
+                    geometry,
+                    restore_input=snapshot_directory is None,
+                    snapshot_check=prepared_snapshot,
+                )
+            )
         else:
             if args.scope == "recovery":
                 prepare_start = time.perf_counter()
                 # Live warmup may only compile the combined rigid-post graph.
                 # Compile/capture this standalone path before timing its repeats.
-                result["recovery_snapshot_check"] = prepare_recovery_snapshot(workload, geometry)
-                result["recovery_preparation_steps"] = 1
-                result["recovery_preparation_seconds_including_JIT"] = time.perf_counter() - prepare_start
+                result["recovery_snapshot_check"] = (
+                    prepare_recovery_snapshot(workload, geometry) if prepared_snapshot is None else prepared_snapshot
+                )
+                result["recovery_preparation_steps"] = module_warmup_calls if snapshot_directory is not None else 1
+                result["recovery_preparation_seconds_including_JIT"] = (
+                    time.perf_counter() - prepare_start
+                    if snapshot_prepare_seconds is None
+                    else snapshot_prepare_seconds
+                )
                 result["recovery_input"] = "Frozen actual contact snapshot with its matching pre-integration frame."
+                if snapshot_directory is not None:
+                    result["recovery_input"] = (
+                        "Shared raw rigid collider/link/geometry inputs; native capture, association and Hertz sizing."
+                    )
             rows = []
             for _ in range(args.repetitions):
                 if args.scope != "recovery":
@@ -1482,6 +1582,10 @@ def main() -> None:
                 "scope": "Intrusive moving steps after timing; excluded from headline rates and pre-trace memory accounting.",
             }
             workload.scene.rigid_solver.check_errno()
+    if snapshot_directory is not None:
+        result["module_snapshot"]["raw_inputs_exact_after_measurement"] = (
+            verify_module_snapshot(workload, snapshot_directory) == result["module_snapshot"]["raw_input_sha256"]
+        )
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     if args.compact_log:
         for key in ("warmup_quality", "egg_position_m", "maximum_stress_Pa"):
