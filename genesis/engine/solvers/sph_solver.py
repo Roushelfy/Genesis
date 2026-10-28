@@ -1207,31 +1207,31 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         The error is the average density deviation (normalized by the rest density) for the density solve, and the
         average normalized density change rate for the divergence solve.
         """
-        # dt for the divergence solve, dt^2 for the density solve.
-        dt_pow = self._substep_dt
-        if qd.static(not is_divergence):
-            dt_pow = self._substep_dt * self._substep_dt
+        # dt for the divergence solve, dt^2 for the density solve. Compile-time constants, as statements outside the loops
+        # of a kernel run as serial tasks of their own.
+        dt_pow = qd.static(self._substep_dt if is_divergence else self._substep_dt**2)
 
-        for i_b in range(self._B):
-            self.envs_solver_error[i_b] = 0.0
+        for i_r, i_b in qd.ndrange(qd.static(self._n_wrench_rows), self._B):
+            if i_r == 0:
+                self.envs_solver_error[i_b] = 0.0
+            if qd.static(self._has_rigid_coupling):
+                self.coupled_wrench[i_r, i_b] = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 self._func_compute_pressure_acc(i_p, i_b, is_divergence)
-
-        if qd.static(self._has_rigid_coupling):
-            # Response of the coupled links to the boundary pressure of the iteration (SPH_SOLVER_DESIGN.md section 5.1)
-            n_coupled_6 = 6 * self.coupled_links_idx.shape[0]
-            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
-                self.coupled_wrench[i_r, i_b] = 0.0
-            for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-                if self.particles_reordered[i_p, i_b].active:
+                if qd.static(self._has_rigid_coupling):
+                    # Reaction of the boundary pressure of the iteration on the coupled links (SPH_SOLVER_DESIGN.md
+                    # section 5.1)
                     i_m = self.particles_reordered[i_p, i_b].material
                     mass_kappa = self.materials[i_m].mass * self._func_pressure_density2_norm(i_p, i_b, is_divergence)
                     self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
-            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+
+        if qd.static(self._has_rigid_coupling):
+            # Response of the coupled links to that reaction
+            for i_r, i_b in qd.ndrange(qd.static(self._n_wrench_rows), self._B):
                 acc = gs.qd_float(0.0)
-                for i_col in range(n_coupled_6):
+                for i_col in range(qd.static(self._n_wrench_rows)):
                     acc += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
                 self.coupled_acc[i_r, i_b] = acc
 
@@ -1268,7 +1268,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 else:
                     self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
 
-                self.envs_solver_error[i_b] += error
+                # Most particles of a converging solve have no error, and skipping their atomic additions to the error
+                # of the environment relieves the contention on it.
+                if error > 0.0:
+                    self.envs_solver_error[i_b] += error
 
         max_avg_error = gs.qd_float(0.0)
         for i_b in range(self._B):
@@ -3019,6 +3022,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         if self._scene.n_envs == 0:
             dissipation = dissipation[0]
         return dissipation
+
+    @property
+    def _n_wrench_rows(self):
+        """Number of rows of the wrenches of the coupled links, at least one for kernels that also reset scalars."""
+        return max(6 * len(self._coupled_links_idx), 1) if self._has_rigid_coupling else 1
 
     @property
     def boundary_particle_radius(self):
