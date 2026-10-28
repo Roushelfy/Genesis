@@ -285,6 +285,37 @@ def func_adaptive_fit(
 
 
 @qd.func
+def func_adaptive_node_error(i_pair: int, n_tasks: int, surface_nodes: qd.Tensor, workspace: StressScatterWorkspace):
+    """Assemble one source's signed original P2-node differences before taking L1."""
+    node_error = gs.qd_float(0.0)
+    i_task = workspace.source_heads[i_pair][0]
+    for _entry in range(n_tasks):
+        if i_task >= 0:
+            i_f = workspace.tasks[i_task][1]
+            for a in qd.static(range(6)):
+                node = surface_nodes[i_f, a]
+                first = True
+                value = gs.qd_float(0.0)
+                i_other = workspace.source_heads[i_pair][0]
+                before_current = True
+                for _other_entry in range(n_tasks):
+                    if i_other >= 0:
+                        other_face = workspace.tasks[i_other][1]
+                        for b in qd.static(range(6)):
+                            if surface_nodes[other_face, b] == node:
+                                value += workspace.load_difference[i_other][b]
+                                if (before_current and i_other != i_task) or (i_other == i_task and b < a):
+                                    first = False
+                        if i_other == i_task:
+                            before_current = False
+                        i_other = workspace.next_task[i_other][0]
+                if first:
+                    node_error += qd.abs(value)
+            i_task = workspace.next_task[i_task][0]
+    return node_error
+
+
+@qd.func
 def func_adaptive_check(
     i_pair: int,
     i_c: int,
@@ -367,31 +398,7 @@ def func_adaptive_check(
         if qd.static(cooperative):
             qd.simt.subgroup.sync()
         if i_lane == 0:
-            # Canonical first occurrence is local to this stable source chain.
-            i_task = workspace.source_heads[i_pair][0]
-            for _entry in range(n_tasks):
-                if i_task >= 0:
-                    i_f = workspace.tasks[i_task][1]
-                    for a in qd.static(range(6)):
-                        node = info.surface_nodes[i_f, a]
-                        first = True
-                        value = gs.qd_float(0.0)
-                        i_other = workspace.source_heads[i_pair][0]
-                        before_current = True
-                        for _other_entry in range(n_tasks):
-                            if i_other >= 0:
-                                other_face = workspace.tasks[i_other][1]
-                                for b in qd.static(range(6)):
-                                    if info.surface_nodes[other_face, b] == node:
-                                        value += workspace.load_difference[i_other][b]
-                                        if (before_current and i_other != i_task) or (i_other == i_task and b < a):
-                                            first = False
-                                if i_other == i_task:
-                                    before_current = False
-                                i_other = workspace.next_task[i_other][0]
-                        if first:
-                            node_error += qd.abs(value)
-                    i_task = workspace.next_task[i_task][0]
+            node_error = func_adaptive_node_error(i_pair, n_tasks, info.surface_nodes, workspace)
         if qd.static(cooperative):
             node_error = qd.simt.subgroup.reduce_all_add(node_error)
     else:
