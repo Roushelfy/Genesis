@@ -13,13 +13,13 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
 
 | Milestone | State |
 | --- | --- |
-| M0 equations, units, cases, acceptance, measurement boundaries | done: SPH_SOLVER_DESIGN.md; baseline measurements below |
-| M1 implicit interior and wall viscosity with analytic validation and load accounting | implemented; V2, V4, V5 measured, V1 and V3 open (see open items) |
-| M2 reaction readout and rigid stage integration | done: readout for fixed, prescribed and dynamic links, fluid stage inside the rigid substep |
-| M3 strong pressure-viscosity-rigid coupling | block iteration converged with momentum-exact exchange (V6); constraint consistency loop implemented (`SPHOptions.max_constraint_iterations`, contact receipts) |
-| M4 robustness campaigns | in progress: light link, leakage guard, snapshot and selected-environment reset (V12 driver, warm starts in the state); thin wall and coarse cups open |
-| M5 optimization ablations | pending |
-| M6 FluidBench re-run and documentation | pending |
+| M0 equations, units, cases, acceptance, measurement boundaries | done: SPH_SOLVER_DESIGN.md (V12 acceptance revised for GPU round-off); baseline below |
+| M1 implicit interior and wall viscosity with analytic validation and load accounting | implemented; measured V1-V5 at dc03db16e (FluidBench `report/sph_goal.md`): dissipation readout 0.995 of the energy loss, V5 within its bar, V1, V2, V3, V4 outside theirs (wall slip and pressure friction, open items) |
+| M2 reaction readout and rigid stage integration | done: readout for fixed, prescribed and dynamic links, fluid stage inside the rigid substep; readout equals the link impulse (`test_fluid_load_readout_is_link_impulse`) |
+| M3 strong pressure-viscosity-rigid coupling | done: block iteration with momentum-exact exchange (V6 3e-6 / 6e-6 per s), constraint consistency loop (contact balance within 1 %), residual histories in `SPHSolveStats` |
+| M4 robustness campaigns | partly: light link, snapshot and selected-environment reset, thin walls at R2 and R3 (reentrant edges closed, finding 14) pass; R1 (coarse) cups fail in S1-S3 at the FluidBench time step, V9 fails |
+| M5 optimization ablations | done for one environment and batches: neighbor lists, fused iteration, Chebyshev density solves (3.2x / 3.4x at dt x1 / x8 over the model revision 26832080b, timing runs), batches of 1-16 environments; RTF target 0.5 not reached (0.151 at dt x8, not accuracy-qualified) |
+| M6 FluidBench re-run and documentation | done: S1-S3 at R1-R3 on dc03db16e with analysis (`report/sph_goal.md`, generated), S2 usable at R2; example `examples/coupling/sph_paddle.py`, option and readout docstrings; limitations below |
 
 ## Baseline at the starting revision (92c78327)
 
@@ -218,6 +218,7 @@ the stirring, three repeats, iteration cap 100 so that every solve converges; re
 | cbc79cd98 neighbor lists | 0.0241 | 41.8, 43.1, 40.6 | 0.0735 | 13.6, 13.7, 13.7 | 51.0 / 165.2 |
 | 51e488d49 fused iteration | 0.0290 | 37.8, 34.7, 33.6 | 0.0818 | 12.2, 12.3, 12.5 | 47.8 / 165.5 |
 | 0ea1569d5 Chebyshev | 0.0412 | 24.5, 24.7, 24.3 | 0.156 | 6.4, 6.5, 6.5 | 19.5 / 67.9 |
+| dc03db16e reentrant edges closed | 0.0521 | 19.3, 19.6, 19.4 | 0.151 | 6.6, 6.7, 6.8 | 10.1 / 69.9 |
 
 The target RTF of 0.5 is not reached: the fastest converged configuration runs at 0.156 (dt x8), and S1 is not
 accuracy-qualified at any time step (see the S1 table above).
@@ -240,15 +241,19 @@ accuracy-qualified at any time step (see the S1 table above).
 | warm start of the density solve at 0.75 or 1.0 of the last pressure instead of 0.5 | measured, not adopted: 45 to 41 and 35 iterations per substep at dt x1, but water at rest stays noisier (closed column kinetic energy 3.7e-4 to 2.6e-4 J over 0.9 s against 3.3e-4 to 1.3e-4 J) | `gs-dfsph__S1__f2@sphgoal-ws*`, `logs/ws1.0_cn.log` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
-## Open items
+## Remaining limitations (failing acceptance criteria at dc03db16e)
 
-- V1 (Stokes first problem) and V3 (pipe flow) drivers: the sliding-floor trough is limited by the closed-cavity return
-  flow and the free-surface pressure resolution.
-- Pressure friction (finding 11) without heating: the isotropic pressure is accurate for viscous flows but heats water.
-- V4 decay deficit (-23 % at dx 2.5 mm), V8 draft offset (-14 %), buoyancy of a sphere resting on the floor (-23 %).
-- V12 acceptance: GPU atomics make two runs from the same state differ, so a restart is compared with a second replay
-  and with a restart without warm starts. In three runs the first step after a restart departed from the reference by
-  7.8e-5 and 4.4e-5 (second replay 8.0e-5 and 5.2e-5, no warm start 3.3e-3), and once by 2.5e-4 (second replay
-  3.8e-5, no warm start 1.9e-3); receipts `state__pt3_state_{a,b}`, `state__fe_state`. The criterion needs the
-  spread of the replays over several runs.
-- V9, V11, S1 spin-down accuracy, M5, M6.
+- Wall shear. The viscous no-slip wall under-transmits shear where the pressure is low: the gravity-driven pipe flow
+  runs 1.90, 0.97 and 0.75 too fast on the centerline at R / dx = 4, 6, 8 (V3, bar 10 %), and the closed-cylinder mode
+  decays 23 % slow (V4, bar 10 %). Under a hydrostatic head the pressure pairs add a shear stress (finding 11), so the
+  Couette torque is 9-43 % high (V2) and the sliding-floor shear 28-147 % high (V1); the optional isotropic pressure
+  removes that part but heats water.
+- V9 settling sphere: 0.0037 m/s against 0.0144 m/s at dx 3.5 mm (receipt `settling__v9_dx0.0035_nu1e-2`); the finer
+  runs of the ladder were still running at this record.
+- V8 draft -14 % and buoyancy of a sphere resting on the floor -23 % (no fluid under the contact cap).
+- V10 hold: controller against readout 5 % (slide) and 9 % (hinge); stir energy balance -15 %.
+- Coarse resolution: R1 cups (wall thinner than two particle sizes) fail in S1-S3 at the FluidBench time step and run at
+  dt x4; S3 at R3 flagged by one particle above ten times the characteristic speed.
+- FluidBench S1 is not accuracy-qualified at any time step (spin-down time -68 %, L_z 22-26 %, volume 6 % from the
+  first frame), S3 misses the mixing index; S2 is usable at R2.
+- Speed: RTF 0.052 at the FluidBench time step and 0.151 at dt x8 for S1 R2 (timing runs), against the 0.5 target.

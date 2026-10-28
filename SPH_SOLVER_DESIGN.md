@@ -221,7 +221,7 @@ tolerance) invalidates the sample it belongs to.
 | V9 | Stokes settling sphere, high viscosity | terminal velocity `2/9 (rho_s - rho_f) g R^2 / mu` with the container-wall (Faxen) correction | within 20 % at the finest resolution, converging |
 | V10 | Hinged plate driven in fluid (articulated, joint torque readout) and a velocity-driven arm stirring a cup | joint torque readout vs the coupling wrench, energy balance (external work = kinetic energy change + dissipation) | balance closes within 5 % of the external work |
 | V11 | Thin-wall cup (4 mm wall) at R0 and R1, offsets and orientations | leakage, start-up velocity from rest | no particle crosses the wall, start-up max velocity below 0.05 m/s from rest |
-| V12 | State: snapshot/restart, reset, selected-environment reset | bitwise equal continuation on the same backend | exact |
+| V12 | State: snapshot/restart, reset, selected-environment reset | continuation from the restored state; GPU atomic reductions make two runs from the same state differ by round-off, so a second restart sets the floor and a restart without the pressure warm starts the scale of a missing state | first step departs from the reference by at most a tenth of the departure without warm starts, and the run by at most ten times the departure between two restarts |
 | V13 | FluidBench S1 (stirring and spin-down), S2 (pouring), S3 (mixing) | FluidBench metrics against its frozen references | FluidBench tolerances |
 
 ## 10. Performance measurement boundaries
