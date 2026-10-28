@@ -87,6 +87,11 @@ def _api():
         planar_query_execution_modes,
         prepare_recovery_snapshot,
     )
+    from examples.speed_benchmark.rigid_stress_snapshot import (
+        restore_module_snapshot,
+        snapshot_bindings,
+        verify_module_snapshot,
+    )
     from genesis.utils.misc import qd_to_numpy
 
     from .artifacts import runtime_identity
@@ -150,15 +155,29 @@ def main():
     parser.add_argument("--tasks-per-env", type=int, default=32)
     parser.add_argument("--warmup", type=int, default=130)
     parser.add_argument("--steps", type=int, default=10)
+    parser.add_argument("--module-snapshot", type=Path, help="Trace native recovery on common raw rigid inputs.")
     args = parser.parse_args()
     if min(args.envs, args.warmup, args.steps, args.tasks_per_env) < 1:
         parser.error("Environment, warmup, trace-step and task counts must be positive.")
+    if args.module_snapshot is not None and args.scope != "module":
+        parser.error("A common raw module snapshot cannot drive a moving scene trace.")
+    recipe = None
+    if args.module_snapshot is not None:
+        recipe = json.loads((args.module_snapshot / "manifest.json").read_text())["bindings"]["recipe"]
     args.output.mkdir(parents=True, exist_ok=False)
     api = _api()
-    api.gs.init(backend=api.gs.gpu, precision="64", seed=510000, logging_level="warning")
+    api.gs.init(
+        backend=api.gs.gpu,
+        precision="64",
+        seed=510000 if recipe is None else recipe["seed"],
+        logging_level="warning",
+    )
     started = time.perf_counter()
     workload = api.FrankaEgg(
         args.envs,
+        level=1 if recipe is None else recipe["level"],
+        seed=510000 if recipe is None else recipe["seed"],
+        varied=False if recipe is None else recipe["varied"],
         conditions=args.conditions,
         stress_backend="shell",
         shell_loading=args.shell_loading,
@@ -167,7 +186,16 @@ def main():
         radius_model="hertz",
         pressure_profile="hertz",
         box_edge_policy="planar",
-        egg_geometry="mesh64",
+        egg_geometry="mesh64" if recipe is None else recipe["egg_geometry"],
+        use_gjk_collision=None
+        if recipe is None
+        else {"auto": None, "mpr": False, "gjk": True}[recipe["collision_method"]],
+        enable_contact_patch=None
+        if recipe is None
+        else {"auto": None, "on": True, "off": False}[recipe["contact_patch"]],
+        native_controller=True if recipe is None else recipe["native_controller"],
+        timestep=0.01 if recipe is None else recipe["dt"],
+        substeps=1 if recipe is None else recipe["substeps"],
         quadrature=args.quadrature,
         pressure_quadrature=args.pressure_quadrature,
         scatter_tasks_per_env=args.tasks_per_env,
@@ -179,7 +207,8 @@ def main():
         entry.planar.hierarchical_query = args.planar_query == "blocks"
     setup_seconds = time.perf_counter() - started
     geometry = None
-    for tick in range(args.warmup):
+    scene_warmup_steps = args.warmup if args.module_snapshot is None else 0
+    for tick in range(scene_warmup_steps):
         if tick == args.warmup - 1 and args.scope == "module":
             solver = workload.scene.rigid_solver
             solver.update_forward_pos()
@@ -188,7 +217,30 @@ def main():
                 api.np.ascontiguousarray(api.qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True)),
             )
         workload.step()
-    snapshot = api.prepare_recovery_snapshot(workload, geometry) if args.scope == "module" else None
+    module_snapshot = None
+    module_warmup_calls = 0
+    snapshot_prepare_seconds = None
+    if args.module_snapshot is not None:
+        prepare_started = time.perf_counter()
+        bindings = api.snapshot_bindings(workload, recipe)
+        module_snapshot = api.restore_module_snapshot(workload, args.module_snapshot, bindings)
+        solver = workload.scene.rigid_solver
+        solver.stress_recovery.recover(0)
+        api.qd.sync()
+        solver.check_errno()
+        module_warmup_calls += 1
+        geometry = api.GeometryFrame(
+            api.np.ascontiguousarray(api.qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True)),
+            api.np.ascontiguousarray(api.qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True)),
+        )
+        snapshot = api.prepare_recovery_snapshot(workload, geometry, restore_input=False)
+        module_warmup_calls += 1
+        module_snapshot["raw_inputs_exact_after_preparation"] = (
+            api.verify_module_snapshot(workload, args.module_snapshot) == module_snapshot["raw_input_sha256"]
+        )
+        snapshot_prepare_seconds = time.perf_counter() - prepare_started
+    else:
+        snapshot = api.prepare_recovery_snapshot(workload, geometry) if args.scope == "module" else None
     before = _checks(api, workload)
     routes_before = _routes(api, workload)
     api.qd.sync()
@@ -207,6 +259,10 @@ def main():
     trace = args.output / "trace.json"
     profiler.export_chrome_trace(str(trace))
     after = _checks(api, workload)
+    if args.module_snapshot is not None:
+        module_snapshot["raw_inputs_exact_after_measurement"] = (
+            api.verify_module_snapshot(workload, args.module_snapshot) == module_snapshot["raw_input_sha256"]
+        )
     routes_after = _routes(api, workload)
     groups, kernels, counts = defaultdict(float), defaultdict(float), Counter()
     for event in json.loads(trace.read_text())["traceEvents"]:
@@ -228,6 +284,11 @@ def main():
         "setup_seconds_including_JIT": setup_seconds,
         "intrusive_trace_seconds": trace_seconds,
         "snapshot_check": snapshot,
+        "module_snapshot": module_snapshot,
+        "snapshot_rigid_recipe": recipe,
+        "scene_warmup_steps": scene_warmup_steps,
+        "module_warmup_calls": module_warmup_calls,
+        "snapshot_preparation_seconds_including_IO_JIT": snapshot_prepare_seconds,
         "before_checks": before,
         "after_checks": after,
         "routes_before": routes_before,
