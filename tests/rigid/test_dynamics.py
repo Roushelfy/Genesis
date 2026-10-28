@@ -378,6 +378,39 @@ def test_apply_external_wrench(xml_path, show_viewer, tol):
 
 
 @pytest.mark.required
+@pytest.mark.precision("32")
+def test_small_free_body_torque(show_viewer):
+    # The midpoint integration of a free body solves its rotation by Newton iteration. A torque below the absolute part
+    # of the tolerance of single precision must still spin the body up, here a 3 cm cube under 1e-7 N m.
+    SIDE, DENSITY, N_STEPS = 0.03, 600.0, 50
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=2e-3,
+            substeps=4,
+            gravity=(0.0, 0.0, 0.0),
+        ),
+        show_viewer=show_viewer,
+    )
+    box = scene.add_entity(
+        gs.morphs.Box(
+            size=(SIDE, SIDE, SIDE),
+            euler=(0.0, 0.0, 20.0),
+        ),
+        material=gs.materials.Rigid(rho=DENSITY),
+    )
+    scene.build()
+    inertia = DENSITY * SIDE**5 / 6.0
+    torque = np.array([1e-7, -2e-7, 5e-7])
+    box.set_dofs_velocity((0.05, -0.02, 0.01, 1.0, -2.0, 10.0))
+    ang_init = tensor_to_array(box.get_ang())
+    for _ in range(N_STEPS):
+        box.apply_links_external_wrench(torque=torque[None], ref=gs.link_ref_frame.link_COM)
+        scene.step()
+    ang = tensor_to_array(box.get_ang())
+    assert_allclose(inertia * (ang - ang_init), N_STEPS * scene.dt * torque, rtol=0.02)
+
+
+@pytest.mark.required
 @pytest.mark.parametrize("integrator", [gs.integrator.Euler, gs.integrator.approximate_implicitfast])
 def test_energy_analytical_and_conservation(
     spring_double_pendulum, implicit_inertial_origin_chain, show_viewer, tol, integrator

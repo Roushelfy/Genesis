@@ -2083,6 +2083,11 @@ def func_midpoint_free_body(
     # is the moment of the linear augmentation E_lin. The translation midpoint gives a_origin = a_com - u, with (m * Id
     # + E_lin) @ a_com = f + m * g + E_lin @ u and u = alpha x r_com + w_mid x (w_mid x r_com). Each candidate is
     # evaluated once. An accepted one takes a Newton step, a rejected one halves the step.
+    # The tolerance has an absolute part of tol N m, as in MuJoCo. In single precision, 1e-6 N m can exceed the whole
+    # torque on a small body, which the initial guess w_mid = w then drops, so the floor is the torque itself there.
+    tol_floor = gs.qd_float(1.0)
+    if qd.static(gs.qd_float == qd.f32):
+        tol_floor = tau_com.norm()
     w_mid = w
     w_try = w
     delta = qd.Vector.zero(gs.qd_float, 3)
@@ -2101,7 +2106,7 @@ def func_midpoint_free_body(
         if f_norm < 0.0 or f.norm() < f_norm:
             w_mid = w_try
             f_norm = f.norm()
-            if f_norm < tol * (1.0 + i2h * Iw.norm()):
+            if f_norm < tol * (tol_floor + i2h * Iw.norm()):
                 break
             # J = 2/h * (I + E) + d(w x Iw)/dw, with d(w x Iw)/dw = skew(w_mid) @ I - skew(I @ w_mid)
             skew_w = qd.Matrix([[0.0, -w_mid[2], w_mid[1]], [w_mid[2], 0.0, -w_mid[0]], [-w_mid[1], w_mid[0], 0.0]])
