@@ -119,6 +119,7 @@ def kernel_recovery_work_metrics(
     contact_state: StressContactState,
     stress_state: StressState,
     has_history: qd.template(),
+    has_adaptive: qd.template(),
 ):
     for i_b in range(metrics_state.previous_phase.shape[0]):
         loaded, refined = False, False
@@ -130,7 +131,7 @@ def kernel_recovery_work_metrics(
                 evaluations += contact_state.evaluations[i_c, i_b]
                 maximum_evaluations = qd.max(maximum_evaluations, contact_state.evaluations[i_c, i_b])
                 maximum_samples = qd.max(maximum_samples, contact_state.candidate_count[i_c, i_b])
-                if qd.static(contact_state.admission.rule.shape[0] > 0):
+                if qd.static(has_adaptive):
                     attempts = contact_state.admission.attempts[i_c, i_b][0]
                     reason = contact_state.admission.reason[i_c, i_b][0]
                     metrics_state.counters[21, i_b] += gs.qd_int(attempts > 0 or reason != 0)
@@ -154,7 +155,7 @@ def kernel_recovery_work_metrics(
         metrics_state.counters[17, i_b] += gs.qd_int(not stress_state.step_valid[i_b])
         if qd.static(has_history):
             metrics_state.counters[20, i_b] += gs.qd_int(history_hit[i_b])
-        if qd.static(contact_state.admission.rule.shape[0] > 0):
+        if qd.static(has_adaptive):
             metrics_state.counters[28, i_b] += contact_state.admission.overflow[i_b][0]
 
 
@@ -206,7 +207,12 @@ class RolloutMetrics:
             entry = self.workload.scene.rigid_solver.stress_recovery.links[0]
             history_hit = entry.state.step_valid if entry.history is None else entry.history.state.hit
             kernel_recovery_work_metrics(
-                history_hit, self.state, entry.contacts, entry.state, has_history=entry.history is not None
+                history_hit,
+                self.state,
+                entry.contacts,
+                entry.state,
+                has_history=entry.history is not None,
+                has_adaptive=entry.options.pressure_quadrature == "adaptive",
             )
 
     def summary(self):
