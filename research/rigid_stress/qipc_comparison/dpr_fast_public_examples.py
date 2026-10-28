@@ -321,10 +321,15 @@ def main():
     }
     write_json(args.output / "result.json", result)
     previous_argv, previous_display = sys.argv, os.environ.get("DISPLAY")
+    previous_graphics = {name: os.environ.get(name) for name in ("PYOPENGL_PLATFORM", "PYGLET_HEADLESS", "GS_HEADLESS")}
     server, server_log = None, None
     started = time.perf_counter()
     try:
         if args.viewer:
+            if "OpenGL" in sys.modules or "genesis" in sys.modules:
+                raise RuntimeError(
+                    "A private Xvfb viewer must select GLX in a fresh process before importing Genesis/OpenGL."
+                )
             executable = shutil.which("Xvfb")
             if executable is None:
                 raise RuntimeError("The allocated image has no Xvfb executable for the requested viewer verification.")
@@ -350,6 +355,42 @@ def main():
             result["private_display"] = os.environ["DISPLAY"]
             result["xvfb_pid"] = server.pid
             result["xvfb_executable"] = executable
+            # image1_26 exports EGL for offscreen use. This owned Xvfb display
+            # creates GLX contexts; select their matching loader before imports.
+            os.environ["PYOPENGL_PLATFORM"] = "glx"
+            os.environ["PYGLET_HEADLESS"] = "false"
+            os.environ.pop("GS_HEADLESS", None)
+            result["previous_graphics_environment"] = previous_graphics
+            result["viewer_graphics_environment"] = {
+                name: os.environ.get(name)
+                for name in ("DISPLAY", "PYOPENGL_PLATFORM", "PYGLET_HEADLESS", "GS_HEADLESS")
+            }
+            with (args.output / "gl-preflight.log").open("x") as preflight_log:
+                preflight = subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "research.rigid_stress.qipc_comparison.dpr_fast_public_examples",
+                        "--gl-probe-child",
+                        "--output",
+                        str(args.output / "gl-preflight"),
+                    ],
+                    stdout=preflight_log,
+                    stderr=subprocess.STDOUT,
+                    timeout=90,
+                    check=False,
+                )
+            preflight_path = args.output / "gl-preflight/result.json"
+            result["viewer_gl_preflight"] = json.loads(preflight_path.read_text()) if preflight_path.is_file() else None
+            if (
+                preflight.returncode != 0
+                or result["viewer_gl_preflight"] is None
+                or not result["viewer_gl_preflight"]["passed"]
+            ):
+                raise RuntimeError("The real GL3 window preflight failed before building the public physics example.")
+            result["viewer_scope"] = (
+                "Real public interactive viewer on an owned Xvfb GLX display; actual renderer is recorded by the real-window preflight. Software GLX rendering validates functionality only, not render throughput. The public GPU physics configuration is unchanged."
+            )
         sys.argv = argv
         namespace = runpy.run_module(module, run_name="__main__")
         gs = namespace["gs"]
@@ -364,6 +405,23 @@ def main():
         ]
         result["public_command_completed"] = True
         result["passed"] = True
+        if args.viewer:
+            import pyglet
+
+            from genesis.ext.pyrender import Viewer
+
+            windows = [window for window in pyglet.app.windows if isinstance(window, Viewer)]
+            result["actual_public_viewer_windows"] = [
+                {
+                    "visible": window.visible,
+                    "is_active": window.is_active,
+                    "caption": window.caption,
+                    "width": window.width,
+                    "height": window.height,
+                }
+                for window in windows
+            ]
+            result["passed"] &= any(window.visible and window.is_active for window in windows)
     finally:
         error = sys.exc_info()[1]
         if error is not None:
@@ -373,6 +431,12 @@ def main():
         if native is not None:
             native.destroy()
             result["native_cleanup_completed"] = True
+        if args.viewer:
+            for name, value in previous_graphics.items():
+                if value is None:
+                    os.environ.pop(name, None)
+                else:
+                    os.environ[name] = value
         if previous_display is None:
             os.environ.pop("DISPLAY", None)
         else:
