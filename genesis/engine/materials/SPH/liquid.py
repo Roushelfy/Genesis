@@ -12,7 +12,9 @@ class Liquid(Base):
     rest_density : float, optional
         The rest density (kg/m³). Default is 1000.0.
     viscosity : float, optional
-        The viscosity of the liquid. Default is 0.005.
+        Kinematic viscosity of the liquid in m^2/s (water is about 1e-6). Higher values damp the flow and drag on the
+        walls more. The default solver integrates the viscosity implicitly, so any value is stable, but very viscous
+        liquids need more solver iterations per substep. Default is 0.005.
     surface_tension : float, optional
         The surface tension of the liquid. Default is 0.01.
     vorticity : float, optional

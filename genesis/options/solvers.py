@@ -782,6 +782,18 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         Whether DFSPH starts each pressure solve from half the pressure of the previous substep. This reduces the
         number of solver iterations for fluid at rest or in slow motion, but it can carry pressure spikes from
         violent impacts over to the next substep. Defaults to True.
+    max_viscosity_error : float, optional
+        Maximum relative residual of the implicit viscosity solve, and of the agreement between the viscosity and the
+        pressure of a substep. Smaller values give a more accurate viscous damping and wall drag at the cost of more
+        solver iterations. Only used by the default solver. Defaults to 0.1%.
+    max_viscosity_solver_iterations : int, optional
+        Maximum number of iterations of the implicit viscosity solve. A substep that reaches it keeps the velocity of
+        the last iteration and is reported as unconverged. Only used by the default solver. Defaults to 100.
+    max_coupling_iterations : int, optional
+        Maximum number of passes alternating the viscosity solve and the density solve of a substep. A single pass
+        suffices for fluids about as viscous as water, while very viscous fluids under pressure need more, which cost
+        time. A substep that reaches the limit is reported as unconverged. Only used by the default solver.
+        Defaults to 30.
     micropolar : bool, optional
         Whether to model the micro-rotation of the fluid particles, which restores the small-scale vortices that
         particle-based fluids damp out, yielding livelier splashes and swirls. Its strength is set per material by
@@ -817,6 +829,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     min_density_solver_iterations: PositiveInt = 1
     skip_divergence_solver: StrictBool = False
     warm_start: StrictBool = True
+    max_viscosity_error: PositiveFloat = 0.1 * 0.01
+    max_viscosity_solver_iterations: PositiveInt = 100
+    max_coupling_iterations: PositiveInt = 30
     micropolar: StrictBool = False
     boundary_offset: NonNegativeFloat | None = None
 
