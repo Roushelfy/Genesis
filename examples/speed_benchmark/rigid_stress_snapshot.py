@@ -177,7 +177,7 @@ def snapshot_bindings(workload: FrankaEgg, recipe: dict) -> dict:
         "observed_link_index": entry.link.idx,
         "environment_count": workload.n_envs,
         "precision": np.dtype(gs.np_float).str,
-        "quadrants_version": qd.__version__,
+        "quadrants_version": list(qd.__version__),
         "constraint_contacts_enabled": not solver._disable_constraint,
         "source_epsilon": solver.stress_recovery.source_epsilon,
         "batch_offsets": solver._links_offset_quat.ndim == 3,

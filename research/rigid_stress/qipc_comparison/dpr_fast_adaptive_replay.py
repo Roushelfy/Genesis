@@ -516,6 +516,11 @@ def main():
     parser.add_argument("--modes", nargs="+", choices=("cached", "uncached", "serial", "overflow"), default=["cached"])
     parser.add_argument("--fixed-controls", nargs="*", choices=("edge16", "angle128"), default=[])
     parser.add_argument(
+        "--prewarm-reference",
+        type=Path,
+        help="Diagnostic only: prewarm identical model/runtime with another frozen input.",
+    )
+    parser.add_argument(
         "--lifecycle", action="store_true", help="Reuse each runtime for release then source-slot permutation/reload."
     )
     parser.add_argument("--tasks-per-env", type=int, default=32)
@@ -746,6 +751,32 @@ def main():
         "scope": "Frozen native replay and finite-model regional application comparison. Saved R/anchor/F/friction/omega/pose and all original elastic constants are retained. Conditional historical and authored manual support scopes are not promoted to automatic-radius whole-frame qualification.",
     }
     write_json(args.output / "result.json", finite_json(result))
+    prewarm_frame = None
+    if args.prewarm_reference is not None:
+        control_path = args.prewarm_reference / "result.json"
+        control = json.loads(control_path.read_text())
+        if not control.get("complete") or not control.get("passed") or len(control["rows"]) != 1:
+            raise ValueError("Prewarm control must be one completed frozen-reference row.")
+        control_model = read_npz(checked_identity(control["model"]))
+        if set(control_model) != set(original_model) or not all(
+            exact_array(control_model[key], original_model[key]) for key in original_model
+        ):
+            raise ValueError("Prewarm control must retain every original model array exactly.")
+        if {key: value for key, value in control["options"].items() if key != "mesh"} != {
+            key: value for key, value in saved["options"].items() if key != "mesh"
+        }:
+            raise ValueError("Prewarm control changed original physical/options values.")
+        control_row = control["rows"][0]
+        identity = checked_identity(control_row["physical_inputs"])
+        prewarm_frame = load_frame(Path(identity["path"]), control_row["name"], False, None)
+        if prewarm_frame.valid.shape != frame.valid.shape or not exact_array(prewarm_frame.omega, frame.omega):
+            raise ValueError("Prewarm control must retain runtime shape and angular velocity.")
+        result["prewarm_control"] = {
+            "reference": file_id(control_path),
+            "model": control["model"],
+            "physical_inputs": identity,
+            "scope": "Reuse the same allocated runtime for a distinct predeclared input, then upload and evaluate the unchanged original target. Diagnostic compile/load scheduling control only.",
+        }
     baseline_fields = None
     baseline_status = None
     baseline_rules = None
@@ -753,6 +784,15 @@ def main():
         native = runtime(model, options, frame, "adaptive", mode, args.tasks_per_env)
         directory = args.output / mode
         directory.mkdir()
+        if prewarm_frame is not None:
+            result["diagnostic_phase"] = "prewarm_reference"
+            write_json(args.output / "result.json", finite_json(result))
+            warm_report, _warm_fields, _warm_contact = evaluate(
+                model, prewarm_frame, "adaptive", mode, native, directory / "prewarm-control"
+            )
+            write_json(directory / "prewarm-control" / "result.json", finite_json(warm_report))
+            result["diagnostic_phase"] = "original_target_after_prewarm"
+            write_json(args.output / "result.json", finite_json(result))
         report, fields, contact = evaluate(model, frame, "adaptive", mode, native, directory / "load")
         add_application(
             report, fields, reference, frame, positions, weights, row["reference_evaluable_per_environment"]
