@@ -239,11 +239,10 @@ def test_adaptive_pressure_wrench_release_and_partial_reset(nonconvex_material_m
         expected = forces.sum(axis=0)
         assert_equal(qd_to_numpy(contacts.status, transpose=True), 0)
         assert_allclose(raw.sum(axis=1), expected, rtol=1e-8, atol=0.0)
-        assert_allclose(
-            np.cross(coordinates[None] - point, raw).sum(axis=1),
-            0.0,
-            atol=1e-8 * np.linalg.norm(expected, axis=1)[:, None] * 0.0003,
-        )
+        moment = np.cross(coordinates[None] - point, raw).sum(axis=1)
+        force_norm = np.linalg.norm(expected, axis=1)
+        assert (np.linalg.norm(moment, axis=1) <= 1e-8 * force_norm * 0.0003).all()
+        assert_equal(moment[force_norm == 0.0], 0.0)
         model.recover(omega, state, options, surface_load=True)
         kernel_accept(state, contacts, errno)
         assert_equal(qd_to_numpy(errno), 0)
