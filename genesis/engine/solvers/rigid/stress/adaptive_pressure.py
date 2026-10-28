@@ -320,19 +320,19 @@ def func_adaptive_fit(
         if qd.static(cooperative):
             # One lane owns iteration decisions; all lanes enter subsequent collectives together
             for a in qd.static(range(3)):
-                coefficient[a] = qd.simt.subgroup.broadcast(coefficient[a], 0)
-                step[a] = qd.simt.subgroup.broadcast(step[a], 0)
-            weight_sum = qd.simt.subgroup.broadcast(weight_sum, 0)
-            fraction = qd.simt.subgroup.broadcast(fraction, 0)
-            slope = qd.simt.subgroup.broadcast(slope, 0)
-            status = qd.simt.subgroup.broadcast(status, 0)
-            candidates = qd.simt.subgroup.broadcast(candidates, 0)
-            invalid = qd.simt.subgroup.broadcast(invalid, 0)
-            iterations = qd.simt.subgroup.broadcast(iterations, 0)
-            line_evaluations = qd.simt.subgroup.broadcast(line_evaluations, 0)
-            accepted = qd.simt.subgroup.broadcast(gs.qd_int(accepted), 0) != 0
-            line = qd.simt.subgroup.broadcast(gs.qd_int(line), 0) != 0
-            stop = qd.simt.subgroup.broadcast(gs.qd_int(stop), 0) != 0
+                coefficient[a] = qd.simt.subgroup.broadcast(coefficient[a], qd.u32(0))
+                step[a] = qd.simt.subgroup.broadcast(step[a], qd.u32(0))
+            weight_sum = qd.simt.subgroup.broadcast(weight_sum, qd.u32(0))
+            fraction = qd.simt.subgroup.broadcast(fraction, qd.u32(0))
+            slope = qd.simt.subgroup.broadcast(slope, qd.u32(0))
+            status = qd.simt.subgroup.broadcast(status, qd.u32(0))
+            candidates = qd.simt.subgroup.broadcast(candidates, qd.u32(0))
+            invalid = qd.simt.subgroup.broadcast(invalid, qd.u32(0))
+            iterations = qd.simt.subgroup.broadcast(iterations, qd.u32(0))
+            line_evaluations = qd.simt.subgroup.broadcast(line_evaluations, qd.u32(0))
+            accepted = qd.simt.subgroup.broadcast(gs.qd_int(accepted), qd.u32(0)) != 0
+            line = qd.simt.subgroup.broadcast(gs.qd_int(line), qd.u32(0)) != 0
+            stop = qd.simt.subgroup.broadcast(gs.qd_int(stop), qd.u32(0)) != 0
     if weight_sum > 0.0:
         coefficient /= weight_sum
     status = 0 if accepted and invalid == 0 else 3
