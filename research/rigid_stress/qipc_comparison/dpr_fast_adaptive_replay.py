@@ -66,6 +66,7 @@ if IS_SLURM:
     from genesis.utils.array_class import V_VEC, V
     from genesis.utils.misc import qd_to_numpy
 
+    from .dpr_fast_phase_trace import trace_adaptive
     from .dpr_fast_rule_qualification import (
         finite_json,
         kernel_prepare_frozen,
@@ -85,6 +86,7 @@ if IS_SLURM:
         omega: qd.Tensor
         errno: qd.Tensor
         reuse_moments: bool
+        trace_phases: bool = False
 
 
 def checked_identity(record):
@@ -287,9 +289,14 @@ def evaluate(model, frame, rule, mode, native, directory):
     qd.sync()
     start = time.perf_counter()
     if rule == "adaptive":
-        kernel_adaptive_pressure(
-            contacts, state, model.load_info, surface.info, workspace, mode != "serial", mode != "uncached", reuse
-        )
+        if native.trace_phases:
+            trace_adaptive(
+                contacts, state, model.load_info, surface.info, workspace, mode != "uncached", reuse, directory
+            )
+        else:
+            kernel_adaptive_pressure(
+                contacts, state, model.load_info, surface.info, workspace, mode != "serial", mode != "uncached", reuse
+            )
         if mode == "serial" or gs.backend != gs.cuda:
             kernel_scatter(contacts, state, model.load_info, surface.info, cooperative=False)
         else:
@@ -515,6 +522,7 @@ def main():
     parser.add_argument("--case", help="Exact original rows[].name; required for multi-row references.")
     parser.add_argument("--modes", nargs="+", choices=("cached", "uncached", "serial", "overflow"), default=["cached"])
     parser.add_argument("--fixed-controls", nargs="*", choices=("edge16", "angle128"), default=[])
+    parser.add_argument("--trace-kernel-phases", action="store_true", help="Diagnostic synchronized CUDA phases.")
     parser.add_argument(
         "--prewarm-reference",
         type=Path,
@@ -536,6 +544,8 @@ def main():
     args = parser.parse_args()
     if not IS_SLURM:
         parser.error("Scientific execution requires Slurm rtx-mid/image1_26.")
+    if args.trace_kernel_phases and (args.backend != "cuda" or "serial" in args.modes):
+        parser.error("Phase tracing requires cooperative CUDA modes.")
     if (
         args.tasks_per_env < 1
         or len(set(args.modes)) != len(args.modes)
@@ -782,6 +792,8 @@ def main():
     baseline_rules = None
     for mode in args.modes:
         native = runtime(model, options, frame, "adaptive", mode, args.tasks_per_env)
+        if args.trace_kernel_phases:
+            native = dataclasses.replace(native, trace_phases=True)
         directory = args.output / mode
         directory.mkdir()
         if prewarm_frame is not None:
