@@ -6,6 +6,7 @@ replayed without rigid advancement. Rejected rules remain recorded negatives.
 
 import argparse
 import dataclasses
+import hashlib
 import json
 import os
 import subprocess
@@ -391,6 +392,123 @@ def normalized_admission(native, checker):
     }
 
 
+def raw_admission(native, checker):
+    """Evaluate the two unnormalized per-source scores without changing array layout."""
+    gradient = checker["face_gradient"].sum(axis=2) - np.array([1.0, 0.0, 0.0])
+    difference = checker["face_load_fractions"] - native["face_load_fractions"]
+    return np.linalg.norm(gradient, axis=-1), np.abs(difference).sum(axis=(-2, -1))
+
+
+def restore_face_contact_batch_layout(value):
+    """Restore the native face/contact/batch/value readback strides without changing logical bytes."""
+    axes = (2, 1, 0, *range(3, value.ndim))
+    return np.transpose(np.ascontiguousarray(np.transpose(value, axes)), axes)
+
+
+def diagnose_export_layout(args, source_revision):
+    """Locate exact-score discrepancies for contiguous and reconstructed readback layouts."""
+    inputs = [file_id(path / "result.json") for path in args.recompute_admission]
+    rows = []
+    for directory in args.recompute_admission:
+        original = json.loads((directory / "result.json").read_text())
+        for case in original["rows"]:
+            for record in case["rules"]:
+                identities = [record[key] for key in ("moment_witness", "admission", "contacts")]
+                if identities != [file_id(item["path"]) for item in identities]:
+                    raise ValueError("An exported moment/contact artifact changed before layout diagnosis.")
+                with np.load(record["moment_witness"]["path"], allow_pickle=False) as saved:
+                    native = {key: saved[key] for key in saved.files}
+                with np.load(record["admission"]["path"], allow_pickle=False) as saved:
+                    checker = {key[6:]: saved[key] for key in saved.files if key.startswith("check_")}
+                expected = (
+                    np.array(record["independent_gradient_norm"]),
+                    np.array(record["local_P2_load_L1_discrepancy"]),
+                )
+                layout_rows = []
+                for layout in ("saved_contiguous", "native_face_contact_batch", "fortran"):
+                    if layout == "native_face_contact_batch":
+                        current_native = {
+                            key: restore_face_contact_batch_layout(value) for key, value in native.items()
+                        }
+                        current_checker = {
+                            key: restore_face_contact_batch_layout(value) for key, value in checker.items()
+                        }
+                    elif layout == "fortran":
+                        current_native = {key: np.asfortranarray(value) for key, value in native.items()}
+                        current_checker = {key: np.asfortranarray(value) for key, value in checker.items()}
+                    else:
+                        current_native, current_checker = native, checker
+                    actual = raw_admission(current_native, current_checker)
+                    metrics = []
+                    for name, observed, reference in zip(("gradient_norm", "P2_L1"), actual, expected):
+                        is_equal = observed == reference
+                        differences = np.abs(observed - reference)
+                        bits_observed, bits_reference = observed.view(np.uint64), reference.view(np.uint64)
+                        ulps = np.maximum(bits_observed, bits_reference) - np.minimum(bits_observed, bits_reference)
+                        mismatches = []
+                        for env, slot in np.argwhere(~is_equal):
+                            mismatches.append(
+                                {
+                                    "environment": int(env),
+                                    "original_environment": case["original_environment_indices"][env],
+                                    "slot": int(slot),
+                                    "recorded": float(reference[env, slot]),
+                                    "recomputed": float(observed[env, slot]),
+                                    "recorded_hex": float(reference[env, slot]).hex(),
+                                    "recomputed_hex": float(observed[env, slot]).hex(),
+                                    "absolute_difference": float(differences[env, slot]),
+                                    "ulps": int(ulps[env, slot]),
+                                }
+                            )
+                        metrics.append(
+                            {
+                                "score": name,
+                                "exact": bool(is_equal.all()),
+                                "max_absolute_difference": float(differences.max(initial=0)),
+                                "max_ulps": int(ulps.max(initial=0)),
+                                "mismatches": mismatches,
+                            }
+                        )
+                    fields = []
+                    for name in ("face_gradient", "face_load_fractions"):
+                        value = current_checker[name]
+                        logical = value.tobytes(order="C")
+                        fields.append(
+                            {
+                                "name": name,
+                                "shape": list(value.shape),
+                                "strides": list(value.strides),
+                                "C_contiguous": bool(value.flags.c_contiguous),
+                                "F_contiguous": bool(value.flags.f_contiguous),
+                                "logical_C_bytes_sha256": hashlib.sha256(logical).hexdigest(),
+                                "logical_bytes_equal_saved": logical == checker[name].tobytes(order="C"),
+                            }
+                        )
+                    layout_rows.append({"layout": layout, "scores": metrics, "fields": fields})
+                rows.append(
+                    {
+                        "case": case["name"],
+                        "rule": record["rule"],
+                        "source_result": file_id(directory / "result.json"),
+                        "source_artifacts": identities,
+                        "layouts": layout_rows,
+                    }
+                )
+    is_unchanged = inputs == [file_id(path / "result.json") for path in args.recompute_admission]
+    result = {
+        "schema": "genesis.dpr-fast-export-layout-diagnostic.v1",
+        "complete": True,
+        "passed": is_unchanged,
+        "source_revision": source_revision,
+        "worker": file_id(Path(__file__)),
+        "original_results": inputs,
+        "original_results_unchanged": is_unchanged,
+        "rows": rows,
+        "scope": "Slurm-only diagnostic of exact raw score reproduction. No tolerance relaxation, new v2 acceptance, mechanical replay or original artifact write.",
+    }
+    write_json(args.output / "result.json", finite_json(result))
+
+
 def recompute_admission(args, source_revision):
     """Evaluate both empirical methods from immutable exported moments without replaying mechanics."""
     if args.admission_method is None:
@@ -441,8 +559,7 @@ def recompute_admission(args, source_revision):
                 environment_admitted = np.all(is_admitted | ~loaded, axis=1)
                 environment_admitted &= record["source_and_elastic_eligible_per_environment"]
                 admitted_list = environment_admitted.tolist()
-                raw_gradient = np.linalg.norm(checker["face_gradient"].sum(axis=2) - np.array([1.0, 0.0, 0.0]), axis=-1)
-                raw_L1 = np.abs(checker["face_load_fractions"] - native["face_load_fractions"]).sum(axis=(-2, -1))
+                raw_gradient, raw_L1 = raw_admission(native, checker)
                 raw_match = np.array_equal(raw_gradient, record["independent_gradient_norm"])
                 raw_match &= np.array_equal(raw_L1, record["local_P2_load_L1_discrepancy"])
                 if not raw_match:
@@ -731,6 +848,7 @@ def main():
     source_group.add_argument("--manual-control", choices=("convex-edge", "convex-tip", "u-inner-seam", "u-gap"))
     parser.add_argument("--manual-plan", type=Path)
     parser.add_argument("--admission-method", type=Path)
+    parser.add_argument("--diagnose-export-layout", action="store_true")
     parser.add_argument("--envs", nargs="+", type=int)
     parser.add_argument("--mesh", type=Path)
     parser.add_argument("--budgets", type=Path, required=True)
@@ -781,7 +899,10 @@ def main():
         ["git", "-C", str(args.git_source), "rev-parse", "HEAD"], text=True
     ).strip()
     if args.recompute_admission is not None:
-        recompute_admission(args, source_revision)
+        if args.diagnose_export_layout:
+            diagnose_export_layout(args, source_revision)
+        else:
+            recompute_admission(args, source_revision)
         return
     if args.manual_control is not None and (args.manual_plan is None or args.coarse_controls):
         parser.error("Authored controls require their frozen --manual-plan and cannot add coarse-rule probes.")
