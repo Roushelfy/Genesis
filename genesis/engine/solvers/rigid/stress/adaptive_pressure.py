@@ -262,9 +262,10 @@ def func_adaptive_fit(
     fraction, slope = gs.qd_float(1.0), gs.qd_float(0.0)
     step = qd.Vector.zero(gs.qd_float, 3)
     line_evaluations = 0
+    stop = False
     # One evaluator serves initialization, Newton evaluation and Armijo backtracking.
     for i_evaluation in range(1 + 80 * 41):
-        if accepted or invalid > 0 or (i_evaluation > 0 and not line and iterations >= 80):
+        if stop or accepted or invalid > 0 or (i_evaluation > 0 and not line and iterations >= 80):
             break
         candidate = coefficient
         if line:
@@ -286,35 +287,52 @@ def func_adaptive_fit(
             i_evaluation == 0,
             cooperative,
         )
-        invalid += sample_invalid
-        if i_evaluation == 0:
-            coefficient, weight_sum, status = func_pressure_initial(gram)
-            candidates = sample_count
-            accepted = status == 0
-            coefficient *= weight_sum
-            if status == 3:
-                invalid += gs.qd_int(qd.math.isnan(gram.norm()) or qd.math.isinf(gram.norm()))
-                if invalid == 0:
-                    break
-        elif not line:
-            iterations += 1
-            accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
-            proposed_step, nonsingular = func_pressure_step(gram, gradient)
-            if not accepted and nonsingular:
-                step = proposed_step
-                slope = gradient.dot(step)
-                fraction, line = gs.qd_float(1.0), True
-                line_evaluations = 0
-            elif not accepted:
-                break
-        else:
-            line_evaluations += 1
-            if objective >= 1e-4 * fraction * slope - 1e-15:
-                coefficient, line = candidate, False
+        if i_lane == 0:
+            invalid += sample_invalid
+            if i_evaluation == 0:
+                coefficient, weight_sum, status = func_pressure_initial(gram)
+                candidates = sample_count
+                accepted = status == 0
+                coefficient *= weight_sum
+                if status == 3:
+                    invalid += gs.qd_int(qd.math.isnan(gram.norm()) or qd.math.isinf(gram.norm()))
+                    if invalid == 0:
+                        stop = True
+            elif not line:
+                iterations += 1
+                accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
+                proposed_step, nonsingular = func_pressure_step(gram, gradient)
+                if not accepted and nonsingular:
+                    step = proposed_step
+                    slope = gradient.dot(step)
+                    fraction, line = gs.qd_float(1.0), True
+                    line_evaluations = 0
+                elif not accepted:
+                    stop = True
             else:
-                fraction *= 0.5
-                if line_evaluations >= 40:
-                    line = False
+                line_evaluations += 1
+                if objective >= 1e-4 * fraction * slope - 1e-15:
+                    coefficient, line = candidate, False
+                else:
+                    fraction *= 0.5
+                    if line_evaluations >= 40:
+                        line = False
+        if qd.static(cooperative):
+            # One lane owns iteration decisions; all lanes enter subsequent collectives together
+            for a in qd.static(range(3)):
+                coefficient[a] = qd.simt.subgroup.broadcast(coefficient[a], 0)
+                step[a] = qd.simt.subgroup.broadcast(step[a], 0)
+            weight_sum = qd.simt.subgroup.broadcast(weight_sum, 0)
+            fraction = qd.simt.subgroup.broadcast(fraction, 0)
+            slope = qd.simt.subgroup.broadcast(slope, 0)
+            status = qd.simt.subgroup.broadcast(status, 0)
+            candidates = qd.simt.subgroup.broadcast(candidates, 0)
+            invalid = qd.simt.subgroup.broadcast(invalid, 0)
+            iterations = qd.simt.subgroup.broadcast(iterations, 0)
+            line_evaluations = qd.simt.subgroup.broadcast(line_evaluations, 0)
+            accepted = qd.simt.subgroup.broadcast(gs.qd_int(accepted), 0) != 0
+            line = qd.simt.subgroup.broadcast(gs.qd_int(line), 0) != 0
+            stop = qd.simt.subgroup.broadcast(gs.qd_int(stop), 0) != 0
     if weight_sum > 0.0:
         coefficient /= weight_sum
     status = 0 if accepted and invalid == 0 else 3
