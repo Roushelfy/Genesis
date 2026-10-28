@@ -17,7 +17,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 
-def _api():
+def _api(research_fit_tolerance=None):
     import numpy as np
     import quadrants as qd
     import scipy.optimize
@@ -53,6 +53,14 @@ def _api():
     from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
     from genesis.utils.array_class import V_MAT, V_VEC, V
     from genesis.utils.misc import qd_to_numpy
+
+    native_fit_tolerance = _PRESSURE_FIT_TOLERANCE
+    if research_fit_tolerance is not None:
+        if research_fit_tolerance not in (1e-9, 1e-7, 1e-5):
+            raise ValueError("Use only the bounded research fit-stop controls.")
+        # Only this research copy closes over the override. The imported module,
+        # native initial solve, unmodified native fit and scatter gates stay intact.
+        _PRESSURE_FIT_TOLERANCE = research_fit_tolerance
 
     @dataclasses.dataclass(frozen=True)
     class FitTrace:
@@ -522,6 +530,26 @@ def _trace_summary(api, arrays, phase):
     }
 
 
+def _make_trace(api):
+    trace = api.FitTrace(
+        events=api.V_VEC(4, dtype=api.gs.qd_int, shape=(80 * 41, 2)),
+        scalars=api.V_VEC(8, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
+        coefficient=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
+        candidate=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
+        gradient=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
+        hessian=api.V_MAT(3, 3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
+        step=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
+        nonsingular=api.V(dtype=api.gs.qd_bool, shape=(80 * 41, 2)),
+        next_state=api.V_VEC(4, dtype=api.gs.qd_int, shape=(80 * 41, 2)),
+        count=api.V(dtype=api.gs.qd_int, shape=(2,)),
+        entry=api.V_VEC(4, dtype=api.gs.qd_int, shape=(2,)),
+        entry_values=api.V_VEC(4, dtype=api.gs.qd_float, shape=(2,)),
+    )
+    for field in dataclasses.fields(trace):
+        vars(trace)[field.name].fill(0)
+    return trace
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path, required=True)
@@ -647,22 +675,7 @@ def main():
     native_state, traced_state = model.create_state(n_envs, "max"), model.create_state(n_envs, "max")
     native_workspace = api.create_scatter_workspace(n_envs, args.tasks_per_env, reuse_moments=True)
     traced_workspace = api.create_scatter_workspace(n_envs, args.tasks_per_env, reuse_moments=True)
-    trace = api.FitTrace(
-        events=api.V_VEC(4, dtype=api.gs.qd_int, shape=(80 * 41, 2)),
-        scalars=api.V_VEC(8, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
-        coefficient=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
-        candidate=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
-        gradient=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
-        hessian=api.V_MAT(3, 3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
-        step=api.V_VEC(3, dtype=api.gs.qd_float, shape=(80 * 41, 2)),
-        nonsingular=api.V(dtype=api.gs.qd_bool, shape=(80 * 41, 2)),
-        next_state=api.V_VEC(4, dtype=api.gs.qd_int, shape=(80 * 41, 2)),
-        count=api.V(dtype=api.gs.qd_int, shape=(2,)),
-        entry=api.V_VEC(4, dtype=api.gs.qd_int, shape=(2,)),
-        entry_values=api.V_VEC(4, dtype=api.gs.qd_float, shape=(2,)),
-    )
-    for field in dataclasses.fields(trace):
-        vars(trace)[field.name].fill(0)
+    trace = _make_trace(api)
     api.kernel_pressure_moments(native_contacts, native_state, model.load_info, surface.info, native_workspace, True)
     native = _arrays(api, native_contacts)
     api.np.savez_compressed(args.output / "native-contacts.npz", **native)
