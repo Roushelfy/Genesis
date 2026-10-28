@@ -58,6 +58,8 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
     assert options.radius_model == "hertz"
     assert options.pressure_profile == "hertz"
     assert options.shell_loading == "q4"
+    assert options.pressure_quadrature == ("adaptive" if stress_backend == "volume" else "edge")
+    assert options.quadrature == (16 if stress_backend == "volume" else 10)
     assert (
         RigidStressOptions.dpr(
             mesh=mesh,
@@ -76,6 +78,8 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
             )
             assert options.radius_model == radius_model
             assert options.pressure_profile == pressure_profile
+            automatic_volume = stress_backend == "volume" and radius_model == "hertz" and pressure_profile == "hertz"
+            assert options.pressure_quadrature == ("adaptive" if automatic_volume else "edge")
             assert_allclose(options.contact_radius, 0.006, atol=1e-15)
             assert (
                 options.model_dump()
@@ -97,6 +101,7 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
     assert options.load_transfer == "patch"
     assert options.radius_model == "manual"
     assert options.pressure_profile == "dpr"
+    assert options.pressure_quadrature == "edge"
     assert options.intrinsic_load_partition == "body_source_prior"
     assert options.output_mode == "full"
     assert_allclose(options.contact_radius, 0.004, atol=1e-15)
@@ -128,6 +133,12 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
     assert options.radius_model == "hertz"
     assert options.pressure_profile == "hertz"
     assert RigidStressOptions(mesh=mesh).backend == "volume"
+    explicit_order = RigidStressOptions(mesh=mesh, backend=stress_backend, quadrature=32)
+    assert explicit_order.pressure_quadrature == "edge"
+    assert explicit_order.quadrature == 32
+    strict = RigidStressOptions(mesh=mesh, backend=stress_backend, pressure_quadrature="angle", quadrature=128)
+    assert strict.pressure_quadrature == "angle"
+    assert strict.quadrature == 128
     if stress_backend == "volume":
         options = RigidStressOptions(
             mesh=mesh,

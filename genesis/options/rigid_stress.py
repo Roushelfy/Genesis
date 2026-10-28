@@ -60,14 +60,13 @@ class RigidStressOptions(Options):
     original Gaussian/taper profile, including when only the radius is estimated. Changing the profile changes the
     load model and its quadrature error. Neither choice introduces a friction-history solver.
     ``quadrature`` controls surface integration cost and accuracy.
-    ``pressure_quadrature="angle"`` samples each surface fan uniformly in angle
-    to resolve small footprints near a long edge. It preserves the physical
-    radius and pressure profile. The default ``"edge"`` retains edge-parameter
-    quadrature; the angular variant remains experimental.
-    ``pressure_quadrature="adaptive"`` explicitly selects experimental volume Hertz patch integration with
-    ``quadrature=16``. It checks lower-order estimates and increases integration work for unresolved contacts,
-    trading checking cost for fewer high-order integrations. Bounded refinement can still reject a load. Other
-    backends and pressure profiles use the fixed integration rules.
+    Volume Hertz patch loading defaults to ``pressure_quadrature="adaptive"`` and ``quadrature=16``. Independently
+    fitted8/16/64 checks admit candidate16/64/128 integration, retaining the original force/moment and elastic
+    residual checks. Only unresolved contacts advance to the next rule; bounded refinement can still reject a load.
+    ``pressure_quadrature="angle"`` selects fixed angular integration, includingq128 reference controls.
+    ``"edge"`` selects fixed edge-parameter integration. Shell and other loading contexts retain edge/q10.
+    An explicit ``quadrature`` without a rule retains fixed edge integration; select ``"adaptive"`` explicitly
+    when also specifying its initial order16. Integration choices preserve the physical radius and pressure law.
     ``load_transfer="resolved"`` declares that pressure-mode input forces are
     already integrated boundary samples. It transfers each sample through the
     P2 shape functions of its witnessed material face, without another finite
@@ -257,7 +256,7 @@ class RigidStressOptions(Options):
     source_geometry_tolerance: PositiveFloat = 1e-8
     source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0
     quadrature: Annotated[PositiveInt, Field(le=128)] = 10
-    pressure_quadrature: Literal["edge", "angle", "adaptive"] = "edge"
+    pressure_quadrature: Literal["edge", "angle", "adaptive"] = "adaptive"
     tolerance: PositiveFloat = 1e-8
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000
@@ -297,6 +296,7 @@ class RigidStressOptions(Options):
             or data.get("load_transfer", "patch") != "patch"
             or data.get("radius_model", "hertz") != "hertz"
             or data.get("pressure_profile", "hertz") != "hertz"
+            or "quadrature" in data
         ):
             data.setdefault("pressure_quadrature", "edge")
         if data.get("pressure_quadrature", type(self).model_fields["pressure_quadrature"].default) == "adaptive":

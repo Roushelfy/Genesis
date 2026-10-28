@@ -284,6 +284,7 @@ def main():
     parser.add_argument("--envs", type=int, required=True)
     parser.add_argument("--steps", type=int, default=730)
     parser.add_argument("--viewer", action="store_true")
+    parser.add_argument("--variant", choices=("automatic", "manual", "strict", "default-cli"), default="automatic")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if (
@@ -305,6 +306,17 @@ def main():
         "--steps",
         str(args.steps),
     ]
+    if args.variant != "automatic":
+        module = "examples.rigid.franka_egg_stress"
+        argv[0] = module
+        argv[argv.index("--backend")] = "--stress-backend"
+        argv.extend(("--box-edge-policy", "planar"))
+        if args.variant == "manual":
+            argv.extend(("--radius-model", "manual", "--pressure-profile", "dpr", "--quadrature", "10"))
+        elif args.variant == "strict":
+            argv.extend(("--pressure-quadrature", "angle", "--quadrature", "128"))
+        else:
+            argv.append("--public-default-stress")
     if args.viewer:
         argv.append("--viewer")
     result = {

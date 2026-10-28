@@ -35,8 +35,10 @@ Source `150c5d85cf2079838db3c2b7d29e437649d79128` passes20 CPU and20 CUDA option
 public shell, intrinsic and resolved lifecycle cases. The earlier v1 test attempt
 failed collection because its sparse helper omitted `shell_cpu`, before running
 any test. A new captured dependency-complete helper fixed that test harness;
-original outputs remain preserved. Numerical defaults are still provisional
-edge/q10 pending the fast/adaptive qualification and selection below.
+original outputs remain preserved. The numerical-default candidate now selects
+adaptive/q16 for ordinary volume Hertz loading, with explicit fixed-order,
+manual and shell contexts preserved. Final default/public-example tests and
+matched cost qualification remain in progress.
 
 ## Frozen field evidence and admission work
 
