@@ -716,6 +716,83 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
                 qd_to_numpy(geometry_counts).tolist(),
             )
         )
+    adaptive_snapshot = None
+    if options.pressure_quadrature == "adaptive":
+        # All measurements above are finished. Bind routing to one additional
+        # complete recovery, rather than the tail of an intrusive partial stage.
+        counters_before = adaptive_route_counts(workload)
+        full_snapshot = prepare_recovery_snapshot(workload, geometry)
+        counters_after = adaptive_route_counts(workload)
+        counter_delta = {
+            key: int((after - before).sum())
+            for key, before, after in zip(counters_before._fields, counters_before, counters_after)
+        }
+        assert all((after >= before).all() for before, after in zip(counters_before, counters_after))
+        loaded = (qd_to_torch(entry.contacts.valid, transpose=True) != 0) & (
+            torch.linalg.vector_norm(qd_to_torch(entry.contacts.force, transpose=True), dim=-1) > 1e-30
+        )
+        selected = tensor_to_array(qd_to_torch(entry.contacts.admission.rule, transpose=True)[loaded])[..., 0]
+        attempts = tensor_to_array(qd_to_torch(entry.contacts.admission.attempts, transpose=True)[loaded])[..., 0]
+        status = tensor_to_array(qd_to_torch(entry.contacts.status, transpose=True)[loaded])
+        stage_status = tensor_to_array(qd_to_torch(entry.contacts.admission.stage_status, transpose=True)[loaded])
+        checker_status = tensor_to_array(
+            qd_to_torch(entry.contacts.admission.stage_checker_status, transpose=True)[loaded]
+        )
+        stage_evaluations = tensor_to_array(
+            qd_to_torch(entry.contacts.admission.stage_evaluations, transpose=True)[loaded]
+        )
+        checker_evaluations = tensor_to_array(
+            qd_to_torch(entry.contacts.admission.stage_checker_evaluations, transpose=True)[loaded]
+        )
+        stage_errors = tensor_to_array(qd_to_torch(entry.contacts.admission.stage_errors, transpose=True)[loaded])
+        orders = qd_to_numpy(entry.surface.info.pressure_rules.orders, transpose=True)[:, 0]
+        executed = np.arange(3)[None] < attempts[:, None]
+        checker_executed = executed & (stage_status == 0)
+        assert counter_delta["attempted_contacts"] == selected.size
+        assert counter_delta["checker_evaluations"] == checker_executed.sum()
+        adaptive_snapshot = {
+            "scope": "Untimed one complete native frozen recovery after all profile measurements; not cumulative warmup/profile totals or exclusive checker timing.",
+            "full_recovery_calls": 1,
+            "snapshot_check": full_snapshot,
+            "same_physical_input_bytes_as_profile": full_snapshot["physical_source_identity"]
+            == snapshot_check["physical_source_identity"],
+            "profile_input_identity": snapshot_check["physical_source_identity"],
+            "loaded_source_threshold_N": 1e-30,
+            "loaded_sources": int(selected.size),
+            "counter_delta_totals": counter_delta,
+            "actual_rule_orders": orders.tolist(),
+            "selected_order_counts": {
+                str(order): int(np.count_nonzero(selected == index)) for index, order in enumerate(orders)
+            },
+            "attempt_count_distribution": {str(count): int(np.count_nonzero(attempts == count)) for count in (1, 2, 3)},
+            "source_status_counts": {str(code): int(np.count_nonzero(status == code)) for code in np.unique(status)},
+            "stage_attempted_sources": executed.sum(axis=0).tolist(),
+            "stage_checker_fits": checker_executed.sum(axis=0).tolist(),
+            "stage_candidate_Newton_total": np.where(executed, stage_evaluations, 0).sum(axis=0).tolist(),
+            "stage_checker_Newton_total": np.where(checker_executed, checker_evaluations, 0).sum(axis=0).tolist(),
+            "candidate_Newton": {
+                "total": int(stage_evaluations[executed].sum()),
+                "minimum": int(stage_evaluations[executed].min()) if executed.any() else None,
+                "maximum": int(stage_evaluations[executed].max()) if executed.any() else None,
+            },
+            "checker_Newton": {
+                "total": int(checker_evaluations[checker_executed].sum()),
+                "minimum": int(checker_evaluations[checker_executed].min()) if checker_executed.any() else None,
+                "maximum": int(checker_evaluations[checker_executed].max()) if checker_executed.any() else None,
+            },
+            "checker_failed_fits": int(np.count_nonzero(checker_executed & (checker_status != 0))),
+            "maximum_checked_source_node_L1": float(stage_errors[..., 3][checker_executed].max(initial=0.0)),
+            "source_examples": [
+                {
+                    "environment_contact": location,
+                    "selected_order": int(orders[selected[index]]),
+                    "attempts": int(attempts[index]),
+                    "candidate_Newton_by_stage": stage_evaluations[index].tolist(),
+                    "checker_Newton_by_stage": checker_evaluations[index].tolist(),
+                }
+                for index, location in enumerate(tensor_to_array(torch.nonzero(loaded)[:8]).tolist())
+            ],
+        }
     return {
         "recovery_snapshot_check": snapshot_check,
         "stage_wall_ms": times,
@@ -723,6 +800,7 @@ def profile(workload: FrankaEgg, repetitions: int, geometry: GeometryFrame | Non
         "moment_stage_wall_ms": moment_times,
         "moment_stage_recorded_kernel_ms": moment_device_times,
         "task_geometry_counts": task_geometry,
+        "profile_adaptive_snapshot": adaptive_snapshot,
         "cuda_graphs_enabled": os.environ.get("QD_GRAPH", "1") == "1",
         "stage_timing_note": "Intrusive profiling only. Recorded kernel time omits captured CUDA graphs, so zero does not mean zero device work and subtracting it from wall time does not measure launch overhead. With QD_GRAPH=0 the secondary profile includes individual kernel execution but changes scheduling. Moment subdivisions refresh pressure scratch before each scatter and synchronize every stage.",
         "contacts_per_environment": contacts.sum(axis=1).tolist(),
