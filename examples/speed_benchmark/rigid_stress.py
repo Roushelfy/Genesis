@@ -33,7 +33,7 @@ from examples.speed_benchmark.stress_stages import (
 )
 from genesis.engine.solvers.rigid.stress.adaptive_pressure import (
     _ADMISSION_TOLERANCE,
-    _NORMALIZE_CHECK_MASS,
+    _ADMISSION_VERSION,
     kernel_adaptive_pressure,
 )
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
@@ -1060,13 +1060,15 @@ def main() -> None:
             "box_edge_policy": stress_options.box_edge_policy if stress_options is not None else None,
             "actual_stress_options": stress_options.model_dump(mode="json") if stress_options is not None else None,
             "adaptive_admission": {
+                "version": _ADMISSION_VERSION,
                 "candidate_orders": [16, 64, 128],
                 "checker_orders": [8, 16, 64],
                 "threshold": _ADMISSION_TOLERANCE,
-                "checker_mass_normalization": _NORMALIZE_CHECK_MASS,
-                "checker_work": "One logical check includes candidate-rule evaluation and two checker traversals.",
+                "checker_coefficient": "Independent strict fit under the checker rule, with its own unit source mass.",
+                "score": "Assemble signed candidate-minus-checker P2 fractions by original node within each source, then L1; sources do not cancel each other.",
+                "checker_work": "Independent strict checker fit, candidate/checker face integration and complete source-node assembly; all work is timed.",
                 "initial_affine_fits": "Candidate16 fits accepted directly without constrained Newton evaluations.",
-                "scope": "Experimental cross-rule admission; field calibration and qualification remain separate.",
+                "scope": "Empirical independent-refit source-node admission. Native field/negative-control/trajectory qualification remains separately recorded.",
             }
             if stress_options is not None and stress_options.pressure_quadrature == "adaptive"
             else None,

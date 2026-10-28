@@ -9,6 +9,7 @@ import argparse
 import dataclasses
 import hashlib
 import json
+import math
 import os
 import subprocess
 import time
@@ -108,6 +109,73 @@ def exact_array(actual, expected):
         and actual.shape == expected.shape
         and actual.tobytes(order="C") == expected.tobytes(order="C")
     )
+
+
+def validate_cpu_model_control(control, reference_result, reference_model, reference_options):
+    """Validate the explicit CPU arithmetic receipt without relaxing array identity."""
+    flags = (
+        "complete",
+        "diagnostic_execution_completed",
+        "original_artifacts_unchanged",
+        "physical_topology_gauge_samples_exact",
+        "options_exact",
+    )
+    if control.get("schema") != "genesis.dpr-fast-CPU-model-roundoff-diagnostic.v1" or any(
+        control.get(key) is not True for key in flags
+    ):
+        raise ValueError("CPU model control requires a completed, exactly bound model diagnostic.")
+    if (
+        control["original_result"] != reference_result
+        or control["original_model"] != reference_model
+        or control["options"] != reference_options
+    ):
+        raise ValueError("CPU model diagnostic belongs to a different original reference/model/options.")
+    exact_fields = (
+        "vertices",
+        "elements",
+        "surface_nodes",
+        "row_start",
+        "columns",
+        "pins",
+        "is_free",
+        "sample_positions",
+    )
+    if any(control["field_comparisons"][key]["bytes_exact"] is not True for key in exact_fields):
+        raise ValueError("CPU model diagnostic changed physical topology, gauge or sample positions.")
+    for values in control["field_comparisons"].values():
+        if values["dtype_and_shape_exact"] is not True:
+            raise ValueError("CPU model diagnostic changed an array type or shape.")
+        if values["CPU"]["dtype"].endswith(("f4", "f8")):
+            if values["CPU_nonfinite_entries"] != 0 or values["reference_nonfinite_entries"] != 0:
+                raise ValueError("CPU model diagnostic contains nonfinite model values.")
+        elif values["bytes_exact"] is not True:
+            raise ValueError("CPU model diagnostic changed integer or Boolean topology.")
+    checks = control["independent_CSR_mass_relief_controls"]
+    for key in ("CSR_values", "recomputed_relief", "own_K_solved_displacement", "own_mass_relieved_rhs"):
+        values = checks[key]
+        if (
+            values["dtype_and_shape_exact"] is not True
+            or not math.isfinite(values["relative_L2_difference"])
+            or not 0.0 <= values["relative_L2_difference"] <= 1e-8
+        ):
+            raise ValueError("CPU model diagnostic failed the original numerical operator control scale.")
+    for key in ("CPU_original_K_checks", "reference_original_K_checks"):
+        if not checks[key]:
+            raise ValueError("Missing original own-K residual controls.")
+        for row in checks[key]:
+            residual, budget = row["original_free_K_residual"], row["original_K_residual_budget"]
+            wrench = row["relieved_rigid_wrench_relative"]
+            if (
+                row["original_K_gate_passed_for_independent_solve"] is not True
+                or row["pinned_displacement_exact_zero"] is not True
+                or not math.isfinite(residual)
+                or not math.isfinite(budget)
+                or not math.isfinite(wrench)
+                or not 0.0 <= residual <= budget
+                or budget < reference_options["absolute_tolerance"]
+                or not 0.0 <= wrench <= 1e-8
+            ):
+                raise ValueError("CPU model diagnostic failed original K, gauge or relief checks.")
 
 
 def read_npz(identity):
@@ -452,6 +520,11 @@ def main():
     )
     parser.add_argument("--tasks-per-env", type=int, default=32)
     parser.add_argument("--backend", choices=("cpu", "cuda"), default="cuda")
+    parser.add_argument(
+        "--cpu-model-control",
+        type=Path,
+        help="Explicit separately diagnosed CPU arithmetic model; CUDA keeps the original exact guard.",
+    )
     parser.add_argument("--budgets", type=Path, required=True)
     parser.add_argument("--git-source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -468,6 +541,8 @@ def main():
         parser.error(
             "Fixed-route parity reuses the original CUDA face-parallel control; omit --fixed-controls for CPU."
         )
+    if args.cpu_model_control is not None and args.backend != "cpu":
+        parser.error("--cpu-model-control is restricted to the explicit portable CPU control.")
     if Path(gs.__file__).resolve().parent.parent != args.git_source.resolve():
         raise ValueError("Imported Genesis differs from the explicit immutable --git-source.")
     validate_budgets(args.budgets)
@@ -536,7 +611,77 @@ def main():
     model_exact = set(original_model) == set(current_model) and all(
         exact_array(current_model[key], original_model[key]) for key in current_model
     )
-    if not model_exact:
+    cpu_model_control = None
+    if args.cpu_model_control is not None:
+        control_identity = file_id(args.cpu_model_control)
+        control = json.loads(args.cpu_model_control.read_text())
+        validate_cpu_model_control(control, file_id(reference_path), saved["model"], saved["options"])
+        control_model = read_npz(control["CPU_model"])
+        mesh_binding = next(
+            (
+                identity
+                for identity in saved["inputs"]
+                if Path(identity["path"]).resolve() == Path(options.mesh).resolve()
+            ),
+            None,
+        )
+        if mesh_binding is None:
+            raise ValueError("Original mesh identity is missing from the bound reference inputs.")
+        checked_identity(mesh_binding)
+        physical_exact = all(
+            exact_array(current_model[key], original_model[key])
+            for key in (
+                "vertices",
+                "elements",
+                "surface_nodes",
+                "row_start",
+                "columns",
+                "pins",
+                "is_free",
+                "sample_positions",
+            )
+        )
+        cpu_exact = set(current_model) == set(control_model) and all(
+            exact_array(current_model[key], control_model[key]) for key in current_model
+        )
+        if not physical_exact or not cpu_exact:
+            np.savez_compressed(args.output / "failed-fresh-CPU-model.npz", **current_model)
+            write_json(
+                args.output / "CPU-model-control-failure.json",
+                {
+                    "schema": "genesis.dpr-fast-CPU-model-exact-control-failure.v1",
+                    "passed": False,
+                    "diagnostic": control_identity,
+                    "expected_CPU_model": control["CPU_model"],
+                    "actual_CPU_model": file_id(args.output / "failed-fresh-CPU-model.npz"),
+                    "physical_fields_exact": physical_exact,
+                    "all_CPU_fields_exact": cpu_exact,
+                    "field_identities": {
+                        key: {
+                            "actual": array_identity(value),
+                            "diagnosed_CPU": array_identity(control_model[key]) if key in control_model else None,
+                            "exact": key in control_model and exact_array(value, control_model[key]),
+                        }
+                        for key, value in current_model.items()
+                    },
+                    "scope": "Fresh CPU byte guard failed; no allclose or reference upload was substituted.",
+                },
+            )
+            raise ValueError("Fresh CPU model differs from its separately diagnosed exact CPU arithmetic control.")
+        cpu_model_control = {
+            "schema": "genesis.dpr-fast-portable-CPU-model-control.v1",
+            "diagnostic": control_identity,
+            "CPU_model": control["CPU_model"],
+            "original_mesh": mesh_binding,
+            "fresh_CPU_all_arrays_bitwise_equal": cpu_exact,
+            "original_physical_topology_gauge_samples_exact": physical_exact,
+            "diagnostic_qualification_passed": control["qualification_passed"],
+            "scope": "Exact separately constructed CPU arithmetic control; original GPU arrays need not be byte-identical. No reference model data is uploaded to production.",
+        }
+        bound.extend(
+            [control_identity, control["CPU_model"], checked_identity(control["independent_controls"]), mesh_binding]
+        )
+    if not model_exact and cpu_model_control is None:
         raise ValueError("Original model/K/mass/gauge/topology/sample arrays differ from the saved reference.")
     reference = read_npz(reference_record["fields"])
     if not exact_array(reference["omega"], frame.omega):
@@ -592,6 +737,10 @@ def main():
         "independent_stage_moment_references": moment_identities,
         "fixed_controls_are_candidate_regressions": True,
         "original_model_all_arrays_bitwise_equal": model_exact,
+        "model_identity_mode": "diagnosed_CPU_arithmetic_exact.v1"
+        if cpu_model_control is not None
+        else "original_GPU_arrays_exact.v1",
+        "portable_CPU_model_control": cpu_model_control,
         "modes": [],
         "fixed_controls": [],
         "scope": "Frozen native replay and finite-model regional application comparison. Saved R/anchor/F/friction/omega/pose and all original elastic constants are retained. Conditional historical and authored manual support scopes are not promoted to automatic-radius whole-frame qualification.",

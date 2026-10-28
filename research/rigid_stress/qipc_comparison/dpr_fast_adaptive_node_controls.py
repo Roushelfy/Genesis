@@ -51,7 +51,7 @@ if IS_SLURM:
 def load_control(row, pair, negative):
     physical = read_npz(row["physical_inputs"])
     loaded = physical["valid"] & (np.linalg.norm(physical["force"], axis=-1) > 1e-30)
-    source_indices = [tuple(index) for index in np.argwhere(loaded)]
+    source_indices = [tuple(index) for index in np.argwhere(loaded).tolist()]
     base = read_npz(pair["base_source_artifacts"][0])["face_load_fractions"]
     checker = read_npz(pair["checker_source_artifacts"][0])["face_load_fractions"]
     model = read_npz(pair["nodal_v4"]["model"])
