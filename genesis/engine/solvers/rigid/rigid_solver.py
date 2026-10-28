@@ -1261,6 +1261,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
     def substep(self, f):
         # from genesis.utils.tools import create_timer
         from genesis.engine.couplers import SAPCoupler
+        from genesis.engine.solvers.sph_solver import SPHSolver
 
         if self._requires_grad and f == 0:
             kernel_save_adjoint_cache(f, self.dyn_state, self._rigid_adjoint_cache, self.rigid_info, self.rigid_config)
@@ -1324,6 +1325,10 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 self._is_backward,
                 not self._disable_constraint,
             )
+            # The fluid of the SPH solver exchanges momentum with the coupled links within the substep: its impulse
+            # joins the smooth force before the constraints are assembled and solved (see SPHSolver.is_rigid_coupled).
+            if isinstance(self.sim.sph_solver, SPHSolver) and self.sim.sph_solver.is_rigid_coupled:
+                self.sim.sph_solver.substep_coupled_with_rigid(f)
             if self._enable_collision:
                 collider.detection()
             if not self._disable_constraint:

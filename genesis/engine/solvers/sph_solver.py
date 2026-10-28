@@ -14,6 +14,7 @@ from genesis.engine.boundaries import CubeBoundary
 from genesis.engine.couplers import LegacyCoupler
 from genesis.engine.entities import SPHEntity
 from genesis.engine.materials import SPH
+from genesis.engine.solvers.rigid.abd.forward_dynamics import func_solve_mass_batch
 from genesis.engine.states.solvers import SPHSolverState
 from genesis.utils import array_class
 from genesis.utils.misc import qd_to_torch, tensor_to_array
@@ -98,6 +99,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._boundary_offset = options.boundary_offset
         self._n_boundary_particles = 0
         self._has_boundary = False
+        # Links with degrees of freedom that carry boundary particles, which exchange momentum with the fluid in both
+        # directions (SPH_SOLVER_DESIGN.md section 2). Resolved at build time.
+        self._coupled_links_idx = np.zeros(0, dtype=gs.np_int)
+        self._has_rigid_coupling = False
         self._solve_stats = SPHSolveStats()
 
         # spatial hasher
@@ -249,6 +254,41 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 shape=(self._n_particles, self._B, N_BOUNDARY_SLOTS), needs_grad=False, layout=qd.Layout.SOA
             )
             self.envs_boundary_slot_overflows = qd.field(gs.qd_int, shape=(self._B,))
+
+        if self._has_rigid_coupling:
+            # Rigid side of the coupling, in the space of the spatial velocities of the coupled links (angular then
+            # linear part, about the center of mass of their kinematic tree, see func_vel_at_point), per environment.
+            # The mobility Lambda = S M^-1 S^T maps a wrench on any coupled link to the change of the spatial
+            # acceleration of every coupled link through the articulation, S stacking the motion subspaces of the
+            # degrees of freedom of each link and its ancestors. See SPH_SOLVER_DESIGN.md section 5.
+            rigid_solver = self.sim.rigid_solver
+            n_coupled_6 = 6 * len(self._coupled_links_idx)
+            self.links_coupled_idx = qd.field(gs.qd_int, shape=(rigid_solver.n_links,))
+            self.coupled_links_idx = qd.field(gs.qd_int, shape=(len(self._coupled_links_idx),))
+            self.coupled_mobility = qd.field(gs.qd_float, shape=(n_coupled_6, n_coupled_6, self._B))
+            # spatial velocity seen by the fluid, its value before the impulses of the substep plus the smooth
+            # acceleration, and its value at the start of the current solve
+            self.coupled_vel = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.coupled_vel_star = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.coupled_vel_base = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            # spatial acceleration of the response to the pressure of the current iteration, and its wrench
+            self.coupled_acc = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.coupled_wrench = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            # impulses of the fluid on the coupled links in the substep, from the divergence, viscosity and density
+            # solves (wrenches times the substep)
+            self.coupled_impulse_div = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.coupled_impulse_visc = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.coupled_impulse_den = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            # wall viscosity of the coupled links in their spatial velocity space, K (block diagonal, 6 x 6 per link)
+            # and the wrench of the fluid velocity, f, and the dense system (I + h Lambda K) xi = rhs
+            self.coupled_visc_stiffness = qd.field(gs.qd_float, shape=(n_coupled_6, 6, self._B))
+            self.coupled_visc_force = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.coupled_system = qd.field(gs.qd_float, shape=(n_coupled_6, n_coupled_6 + 1, self._B))
+            # largest change of the coupled velocities over the last viscosity pass, relative to their magnitude
+            self.envs_coupled_vel_change = qd.field(gs.qd_float, shape=(self._B,))
+            # right-hand side and solution of the solves with the rigid mass matrix
+            self.dofs_coupling_rhs = qd.field(gs.qd_float, shape=(rigid_solver.n_dofs_, self._B))
+            self.dofs_coupling_sol = qd.field(gs.qd_float, shape=(rigid_solver.n_dofs_, self._B))
             # center of mass of each link in world frame at the current substep, the reference point of the torque
             self.links_com = qd.Vector.field(3, dtype=gs.qd_float, shape=(n_links, self._B))
             # spatial velocity of each link at the current substep (see func_vel_at_point), which gives the rigid
@@ -377,6 +417,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                             boundaries_active.append(active)
             self._n_boundary_particles = sum(len(pos_local) for pos_local in boundaries_pos_local)
             self._has_boundary = self._n_boundary_particles > 0
+            if self._has_boundary:
+                boundaries_link_idx_all = np.concatenate(boundaries_link_idx)
+                boundaries_is_fixed_all = np.concatenate(boundaries_is_fixed)
+                self._coupled_links_idx = np.unique(boundaries_link_idx_all[boundaries_is_fixed_all == 0])
+            self._has_rigid_coupling = len(self._coupled_links_idx) > 0
             self._has_viscosity = any(entity.material.viscosity > 0.0 for entity in self.entities)
             if self._has_boundary:
                 gs.logger.info(f"SPH boundary sampled with ~<{self._n_boundary_particles}>~ particles.")
@@ -385,6 +430,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
             self.init_particle_fields()
             self.init_ckpt()
+            if self._has_rigid_coupling:
+                links_coupled_idx = np.full(rigid_solver.n_links, -1, dtype=gs.np_int)
+                links_coupled_idx[self._coupled_links_idx] = np.arange(len(self._coupled_links_idx), dtype=gs.np_int)
+                self._kernel_set_coupled_links(links_coupled_idx, self._coupled_links_idx)
 
             for entity in self.entities:
                 entity._add_to_solver()
@@ -748,8 +797,28 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     # BWJ23 eq. (32): boundary particles carry no constraint of their own, so they only enter the
                     # gradient of the constraint of particle i, and not the sum of squared neighbor gradients.
                     for k in range(N_BOUNDARY_SLOTS):
-                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                            ret.grad_p_i += self.particles_boundary_slots[i_p, i_b, k].grad
+                        i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
+                        if i_l != -1:
+                            grad = self.particles_boundary_slots[i_p, i_b, k].grad
+                            ret.grad_p_i += grad
+                            if qd.static(self._has_rigid_coupling):
+                                # The pressure of the particle also moves the coupled link it pushes, which feeds back
+                                # on its own constraint through the mobility of the link (BWJ23 for dynamic bodies).
+                                i_c = self.links_coupled_idx[i_l]
+                                if i_c != -1:
+                                    torque = (
+                                        self.particles_reordered[i_p, i_b].pos - self.links_root_com[i_l, i_b]
+                                    ).cross(grad)
+                                    wrench = qd.Vector([torque[0], torque[1], torque[2], grad[0], grad[1], grad[2]])
+                                    response = gs.qd_float(0.0)
+                                    for a in qd.static(range(6)):
+                                        for b in qd.static(range(6)):
+                                            response += (
+                                                wrench[a]
+                                                * self.coupled_mobility[6 * i_c + a, 6 * i_c + b, i_b]
+                                                * wrench[b]
+                                            )
+                                    ret.sum_grad_p_k += self.materials[i_m].mass * response
 
                 sum_grad_p_k = ret.sum_grad_p_k + ret.grad_p_i.norm_sqr()
                 factor = gs.qd_float(0.0)
@@ -891,6 +960,22 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             if self.particles_reordered[i_p, i_b].active:
                 self._func_compute_pressure_acc(i_p, i_b, is_divergence)
 
+        if qd.static(self._has_rigid_coupling):
+            # Response of the coupled links to the boundary pressure of the iteration (SPH_SOLVER_DESIGN.md section 5.1)
+            n_coupled_6 = 6 * self.coupled_links_idx.shape[0]
+            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+                self.coupled_wrench[i_r, i_b] = 0.0
+            for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+                if self.particles_reordered[i_p, i_b].active:
+                    i_m = self.particles_reordered[i_p, i_b].material
+                    mass_kappa = self.materials[i_m].mass * self._func_pressure_density2_norm(i_p, i_b, is_divergence)
+                    self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
+            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+                acc = gs.qd_float(0.0)
+                for i_col in range(n_coupled_6):
+                    acc += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
+                self.coupled_acc[i_r, i_b] = acc
+
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 predicted_source = gs.qd_float(0.0)
@@ -904,12 +989,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 )
 
                 if qd.static(self._has_boundary):
-                    # BWJ23 eq. (34): the pressure acceleration of a boundary particle is zero.
+                    # BWJ23 eq. (34): the pressure acceleration of a boundary particle is the one of its link, zero for
+                    # a link that is not coupled.
                     for k in range(N_BOUNDARY_SLOTS):
                         if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                            predicted_source += self.particles_reordered[i_p, i_b].pressure_acc.dot(
-                                self.particles_boundary_slots[i_p, i_b, k].grad
-                            )
+                            acc_rel = self.particles_reordered[i_p, i_b].pressure_acc
+                            if qd.static(self._has_rigid_coupling):
+                                acc_rel -= self._func_coupled_point_acc(i_p, i_b, k)
+                            predicted_source += acc_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
 
                 self.particles_reordered[i_p, i_b].predicted_source = predicted_source
 
@@ -949,6 +1036,30 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         pressure_vel - self.particles_viscosity[i_p, i_b].pressure_vel
                     )
                     self.particles_viscosity[i_p, i_b].pressure_vel = pressure_vel
+
+        if qd.static(self._has_rigid_coupling):
+            # The impulse of the converged pressure on the coupled links, applied once to their velocities.
+            n_coupled_6 = 6 * self.coupled_links_idx.shape[0]
+            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+                self.coupled_wrench[i_r, i_b] = 0.0
+            for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+                if self.particles_reordered[i_p, i_b].active:
+                    i_m = self.particles_reordered[i_p, i_b].material
+                    mass_kappa = self.materials[i_m].mass * self._func_pressure_density2_norm(i_p, i_b, is_divergence)
+                    self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
+            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+                impulse = self._substep_dt * self.coupled_wrench[i_r, i_b]
+                if qd.static(is_divergence):
+                    self.coupled_impulse_div[i_r, i_b] = impulse
+                else:
+                    self.coupled_impulse_den[i_r, i_b] = impulse
+            for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+                vel = self.coupled_vel_base[i_r, i_b]
+                for i_col in range(n_coupled_6):
+                    vel += self._substep_dt * self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
+                self.coupled_vel[i_r, i_b] = vel
+            for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
+                self._func_set_coupled_links_vel(i_c, i_b)
 
     def _pressure_solve(self, is_divergence, keep_pressure=False):
         """
@@ -1497,6 +1608,335 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self.links_fluid_angular_impulse[i_l, i_b] += (pos_i - self.links_com[i_l, i_b]).cross(impulse)
 
     # ------------------------------------------------------------------------------------
+    # ---------------------------------- rigid coupling ----------------------------------
+    # ------------------------------------------------------------------------------------
+    # The fluid stage of a substep runs inside the substep of the rigid solver, between its forward dynamics and its
+    # constraint solve (SPH_SOLVER_DESIGN.md section 4): the pressure and viscosity solves see the response of the coupled
+    # links through their mobility, and their net impulse enters the smooth force of the rigid solver, so that the
+    # constraint solve and the integration of the rigid solver take the fluid load of the same substep.
+
+    @qd.kernel
+    def _kernel_set_coupled_links(self, links_coupled_idx: qd.types.ndarray(), coupled_links_idx: qd.types.ndarray()):
+        for i_l in range(self.links_coupled_idx.shape[0]):
+            self.links_coupled_idx[i_l] = links_coupled_idx[i_l]
+        for i_c in range(self.coupled_links_idx.shape[0]):
+            self.coupled_links_idx[i_c] = coupled_links_idx[i_c]
+
+    @qd.func
+    def _func_chain_spatial_vel(
+        self,
+        i_c: int,
+        i_b: int,
+        vec: qd.Tensor,
+        dyn_state: array_class.DynState,
+        dyn_info: array_class.DynInfo,
+        rigid_config: qd.template(),
+    ):
+        """Return the spatial velocity (angular and linear part) of coupled link i_c for the dof velocities vec."""
+        ang = qd.Vector.zero(gs.qd_float, 3)
+        lin = qd.Vector.zero(gs.qd_float, 3)
+        i_l = self.coupled_links_idx[i_c]
+        for _ in range(self.links_coupled_idx.shape[0]):
+            if i_l != -1:
+                I_l = [i_l, i_b] if qd.static(rigid_config.batch_links_info) else i_l
+                for i_d in range(dyn_info.links.dof_start[I_l], dyn_info.links.dof_end[I_l]):
+                    ang += dyn_state.dofs.cdof_ang[i_d, i_b] * vec[i_d, i_b]
+                    lin += dyn_state.dofs.cdof_vel[i_d, i_b] * vec[i_d, i_b]
+                i_l = dyn_info.links.parent_idx[I_l]
+        return ang, lin
+
+    @qd.func
+    def _func_chain_add_wrench(
+        self,
+        i_c: int,
+        i_b: int,
+        torque: qd.types.vector(3),
+        force: qd.types.vector(3),
+        vec: qd.Tensor,
+        dyn_state: array_class.DynState,
+        dyn_info: array_class.DynInfo,
+        rigid_config: qd.template(),
+    ):
+        """Add to the dof forces vec the generalized force of a wrench on coupled link i_c (torque about the center of
+        mass of its kinematic tree)."""
+        i_l = self.coupled_links_idx[i_c]
+        for _ in range(self.links_coupled_idx.shape[0]):
+            if i_l != -1:
+                I_l = [i_l, i_b] if qd.static(rigid_config.batch_links_info) else i_l
+                for i_d in range(dyn_info.links.dof_start[I_l], dyn_info.links.dof_end[I_l]):
+                    vec[i_d, i_b] += dyn_state.dofs.cdof_ang[i_d, i_b].dot(torque) + dyn_state.dofs.cdof_vel[
+                        i_d, i_b
+                    ].dot(force)
+                i_l = dyn_info.links.parent_idx[I_l]
+
+    @qd.kernel
+    def _kernel_init_rigid_coupling(
+        self,
+        dyn_state: array_class.DynState,
+        dyn_info: array_class.DynInfo,
+        rigid_info: array_class.RigidInfo,
+        rigid_config: qd.template(),
+    ):
+        """Compute the mobility of the coupled links and take their spatial velocities at the start of the substep.
+
+        Column (c, s) of the mobility is the spatial acceleration of every coupled link for a unit wrench component s
+        on link c, solved with the mass matrix factor of the forward dynamics of the substep.
+        """
+        n_coupled = self.coupled_links_idx.shape[0]
+        n_dofs = self.dofs_coupling_rhs.shape[0]
+        for i_b in range(self._B):
+            for i_col in range(6 * n_coupled):
+                i_c = i_col // 6
+                i_s = i_col % 6
+                for i_d in range(n_dofs):
+                    self.dofs_coupling_rhs[i_d, i_b] = 0.0
+                torque = qd.Vector(
+                    [qd.cast(i_s == 0, gs.qd_float), qd.cast(i_s == 1, gs.qd_float), qd.cast(i_s == 2, gs.qd_float)]
+                )
+                force = qd.Vector(
+                    [qd.cast(i_s == 3, gs.qd_float), qd.cast(i_s == 4, gs.qd_float), qd.cast(i_s == 5, gs.qd_float)]
+                )
+                self._func_chain_add_wrench(
+                    i_c, i_b, torque, force, self.dofs_coupling_rhs, dyn_state, dyn_info, rigid_config
+                )
+                func_solve_mass_batch(
+                    i_b, self.dofs_coupling_rhs, self.dofs_coupling_sol, dyn_state, rigid_info, rigid_config
+                )
+                for i_r in range(n_coupled):
+                    ang, lin = self._func_chain_spatial_vel(
+                        i_r, i_b, self.dofs_coupling_sol, dyn_state, dyn_info, rigid_config
+                    )
+                    for k in qd.static(range(3)):
+                        self.coupled_mobility[6 * i_r + k, i_col, i_b] = ang[k]
+                        self.coupled_mobility[6 * i_r + 3 + k, i_col, i_b] = lin[k]
+
+        for i_c, i_b in qd.ndrange(n_coupled, self._B):
+            i_l = self.coupled_links_idx[i_c]
+            for k in qd.static(range(3)):
+                self.coupled_vel[6 * i_c + k, i_b] = dyn_state.links.cd_ang[i_l, i_b][k]
+                self.coupled_vel[6 * i_c + 3 + k, i_b] = dyn_state.links.cd_vel[i_l, i_b][k]
+            for k in range(6):
+                self.coupled_vel_base[6 * i_c + k, i_b] = self.coupled_vel[6 * i_c + k, i_b]
+                self.coupled_impulse_div[6 * i_c + k, i_b] = 0.0
+                self.coupled_impulse_visc[6 * i_c + k, i_b] = 0.0
+                self.coupled_impulse_den[6 * i_c + k, i_b] = 0.0
+
+    @qd.func
+    def _func_set_coupled_links_vel(self, i_c, i_b):
+        """Copy the spatial velocity the fluid sees for coupled link i_c into the velocity fields of the links."""
+        i_l = self.coupled_links_idx[i_c]
+        self.links_ang[i_l, i_b] = qd.Vector(
+            [self.coupled_vel[6 * i_c, i_b], self.coupled_vel[6 * i_c + 1, i_b], self.coupled_vel[6 * i_c + 2, i_b]]
+        )
+        self.links_vel[i_l, i_b] = qd.Vector(
+            [self.coupled_vel[6 * i_c + 3, i_b], self.coupled_vel[6 * i_c + 4, i_b], self.coupled_vel[6 * i_c + 5, i_b]]
+        )
+
+    @qd.kernel
+    def _kernel_set_coupled_vel_star(
+        self, dyn_state: array_class.DynState, dyn_info: array_class.DynInfo, rigid_config: qd.template()
+    ):
+        """Set the coupled velocities to their value after the divergence impulse and the smooth acceleration."""
+        for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
+            ang, lin = self._func_chain_spatial_vel(
+                i_c, i_b, dyn_state.dofs.acc_smooth, dyn_state, dyn_info, rigid_config
+            )
+            for k in qd.static(range(3)):
+                self.coupled_vel[6 * i_c + k, i_b] += self._substep_dt * ang[k]
+                self.coupled_vel[6 * i_c + 3 + k, i_b] += self._substep_dt * lin[k]
+            for k in range(6):
+                self.coupled_vel_star[6 * i_c + k, i_b] = self.coupled_vel[6 * i_c + k, i_b]
+            self._func_set_coupled_links_vel(i_c, i_b)
+
+    @qd.kernel
+    def _kernel_set_coupled_vel_base(self, with_viscosity: bool):
+        """Set the coupled velocities to the base of the density solve: v* plus the response to the viscous impulse."""
+        n_coupled_6 = 6 * self.coupled_links_idx.shape[0]
+        for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+            vel = self.coupled_vel_star[i_r, i_b]
+            if with_viscosity:
+                for i_col in range(n_coupled_6):
+                    vel += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_impulse_visc[i_col, i_b]
+            self.coupled_vel_base[i_r, i_b] = vel
+            self.coupled_vel[i_r, i_b] = vel
+        for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
+            self._func_set_coupled_links_vel(i_c, i_b)
+
+    @qd.func
+    def _func_add_coupled_wrench(self, i_p, i_b, mass_kappa):
+        """Add the reaction of the boundary pressure of fluid particle i_p to the wrenches of the coupled links."""
+        pos_i = self.particles_reordered[i_p, i_b].pos
+        for k in range(N_BOUNDARY_SLOTS):
+            i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
+            if i_l != -1:
+                i_c = self.links_coupled_idx[i_l]
+                if i_c != -1:
+                    force = mass_kappa * self.particles_boundary_slots[i_p, i_b, k].grad
+                    torque = (pos_i - self.links_root_com[i_l, i_b]).cross(force)
+                    for j in qd.static(range(3)):
+                        self.coupled_wrench[6 * i_c + j, i_b] += torque[j]
+                        self.coupled_wrench[6 * i_c + 3 + j, i_b] += force[j]
+
+    @qd.func
+    def _func_coupled_point_acc(self, i_p, i_b, k):
+        """Return the acceleration of the link of boundary slot k of fluid particle i_p at the particle, due to the
+        pressure of the current iteration (zero for a link that is not coupled)."""
+        res = qd.Vector.zero(gs.qd_float, 3)
+        i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
+        i_c = self.links_coupled_idx[i_l]
+        if i_c != -1:
+            ang = qd.Vector(
+                [self.coupled_acc[6 * i_c, i_b], self.coupled_acc[6 * i_c + 1, i_b], self.coupled_acc[6 * i_c + 2, i_b]]
+            )
+            lin = qd.Vector(
+                [
+                    self.coupled_acc[6 * i_c + 3, i_b],
+                    self.coupled_acc[6 * i_c + 4, i_b],
+                    self.coupled_acc[6 * i_c + 5, i_b],
+                ]
+            )
+            res = lin + ang.cross(self.particles_reordered[i_p, i_b].pos - self.links_root_com[i_l, i_b])
+        return res
+
+    @qd.kernel
+    def _kernel_solve_coupled_viscosity(self) -> float:
+        """Solve the velocities of the coupled links under the wall viscosity of the fluid velocities of the pass.
+
+        The wall dissipation of the slots (see _kernel_compute_viscosity_geometry) is quadratic in the spatial
+        velocities xi of the coupled links: the wrench of the fluid on them is f - K xi, with K the sum over the slots of
+        G^T M G and f that of G^T M v_i, G mapping a spatial velocity to the velocity at the fluid particle. The
+        backward Euler step of the links, xi = xi* + Lambda (I_den + h (f - K xi)), is the dense system
+        (I + h Lambda K) xi = xi* + Lambda I_den + h Lambda f, solved per environment by Gaussian elimination (its
+        matrix is similar to a symmetric positive definite one). Returns the largest change of the coupled velocities
+        over envs, relative to their magnitude.
+        """
+        n_coupled = self.coupled_links_idx.shape[0]
+        n_coupled_6 = 6 * n_coupled
+        for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
+            self.coupled_visc_force[i_r, i_b] = 0.0
+            for j in range(6):
+                self.coupled_visc_stiffness[i_r, j, i_b] = 0.0
+
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                pos_i = self.particles_reordered[i_p, i_b].pos
+                vel_i = self.particles_reordered[i_p, i_b].vel
+                for k in range(N_BOUNDARY_SLOTS):
+                    i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
+                    if i_l != -1:
+                        i_c = self.links_coupled_idx[i_l]
+                        if i_c != -1:
+                            tensor = self.particles_boundary_slots[i_p, i_b, k].wall_tensor
+                            r = pos_i - self.links_root_com[i_l, i_b]
+                            # G = [-[r]x, I] maps (angular, linear) to the point velocity, G^T y = (r x y, y)
+                            cross_r = qd.Matrix([[0.0, -r[2], r[1]], [r[2], 0.0, -r[0]], [-r[1], r[0], 0.0]])
+                            force = tensor @ vel_i
+                            torque = r.cross(force)
+                            block_aa = -(cross_r @ tensor @ cross_r)
+                            block_al = cross_r @ tensor
+                            for a in qd.static(range(3)):
+                                self.coupled_visc_force[6 * i_c + a, i_b] += torque[a]
+                                self.coupled_visc_force[6 * i_c + 3 + a, i_b] += force[a]
+                                for b in qd.static(range(3)):
+                                    self.coupled_visc_stiffness[6 * i_c + a, b, i_b] += block_aa[a, b]
+                                    self.coupled_visc_stiffness[6 * i_c + a, 3 + b, i_b] += block_al[a, b]
+                                    self.coupled_visc_stiffness[6 * i_c + 3 + a, b, i_b] += block_al[b, a]
+                                    self.coupled_visc_stiffness[6 * i_c + 3 + a, 3 + b, i_b] += tensor[a, b]
+
+        max_change = gs.qd_float(0.0)
+        for i_b in range(self._B):
+            h = self._substep_dt
+            # system matrix and right-hand side, Lambda K being block-structured by the column link
+            for i_r in range(n_coupled_6):
+                rhs = self.coupled_vel_star[i_r, i_b]
+                for i_col in range(n_coupled_6):
+                    rhs += self.coupled_mobility[i_r, i_col, i_b] * (
+                        self.coupled_impulse_den[i_col, i_b] + h * self.coupled_visc_force[i_col, i_b]
+                    )
+                self.coupled_system[i_r, n_coupled_6, i_b] = rhs
+                for i_col in range(n_coupled_6):
+                    i_c_col = i_col // 6
+                    value = gs.qd_float(0.0)
+                    for j in range(6):
+                        value += (
+                            self.coupled_mobility[i_r, 6 * i_c_col + j, i_b]
+                            * self.coupled_visc_stiffness[6 * i_c_col + j, i_col % 6, i_b]
+                        )
+                    self.coupled_system[i_r, i_col, i_b] = h * value + qd.cast(i_r == i_col, gs.qd_float)
+            for i_k in range(n_coupled_6):
+                pivot = self.coupled_system[i_k, i_k, i_b]
+                for i_r in range(i_k + 1, n_coupled_6):
+                    ratio = self.coupled_system[i_r, i_k, i_b] / pivot
+                    for i_col in range(i_k, n_coupled_6 + 1):
+                        self.coupled_system[i_r, i_col, i_b] -= ratio * self.coupled_system[i_k, i_col, i_b]
+            vel_scale = gs.qd_float(0.0)
+            change = gs.qd_float(0.0)
+            for i_k_ in range(n_coupled_6):
+                i_k = n_coupled_6 - 1 - i_k_
+                value = self.coupled_system[i_k, n_coupled_6, i_b]
+                for i_col in range(i_k + 1, n_coupled_6):
+                    value -= self.coupled_system[i_k, i_col, i_b] * self.coupled_system[i_col, n_coupled_6, i_b]
+                value = value / self.coupled_system[i_k, i_k, i_b]
+                self.coupled_system[i_k, n_coupled_6, i_b] = value
+                change = qd.max(change, qd.abs(value - self.coupled_vel[i_k, i_b]))
+                vel_scale = qd.max(vel_scale, qd.abs(value))
+            for i_r in range(n_coupled_6):
+                self.coupled_vel[i_r, i_b] = self.coupled_system[i_r, n_coupled_6, i_b]
+            # viscous impulse h (f - K xi) on each link, with its own block of K
+            for i_r in range(n_coupled_6):
+                i_c = i_r // 6
+                value = self.coupled_visc_force[i_r, i_b]
+                for j in range(6):
+                    value -= self.coupled_visc_stiffness[i_r, j, i_b] * self.coupled_vel[6 * i_c + j, i_b]
+                self.coupled_impulse_visc[i_r, i_b] = h * value
+            self.envs_coupled_vel_change[i_b] = change / qd.max(vel_scale, gs.EPS)
+            qd.atomic_max(max_change, self.envs_coupled_vel_change[i_b])
+
+        for i_c, i_b in qd.ndrange(n_coupled, self._B):
+            self._func_set_coupled_links_vel(i_c, i_b)
+        return max_change
+
+    @qd.kernel
+    def _kernel_apply_coupled_impulse(
+        self,
+        dyn_state: array_class.DynState,
+        dyn_info: array_class.DynInfo,
+        rigid_info: array_class.RigidInfo,
+        rigid_config: qd.template(),
+    ):
+        """Add the net impulse of the fluid of the substep to the smooth force and acceleration of the rigid solver."""
+        n_coupled = self.coupled_links_idx.shape[0]
+        n_dofs = self.dofs_coupling_rhs.shape[0]
+        inv_dt = 1.0 / self._substep_dt
+        for i_b in range(self._B):
+            for i_d in range(n_dofs):
+                self.dofs_coupling_rhs[i_d, i_b] = 0.0
+            for i_c in range(n_coupled):
+                torque = qd.Vector.zero(gs.qd_float, 3)
+                force = qd.Vector.zero(gs.qd_float, 3)
+                for j in qd.static(range(3)):
+                    torque[j] = inv_dt * (
+                        self.coupled_impulse_div[6 * i_c + j, i_b]
+                        + self.coupled_impulse_visc[6 * i_c + j, i_b]
+                        + self.coupled_impulse_den[6 * i_c + j, i_b]
+                    )
+                    force[j] = inv_dt * (
+                        self.coupled_impulse_div[6 * i_c + 3 + j, i_b]
+                        + self.coupled_impulse_visc[6 * i_c + 3 + j, i_b]
+                        + self.coupled_impulse_den[6 * i_c + 3 + j, i_b]
+                    )
+                self._func_chain_add_wrench(
+                    i_c, i_b, torque, force, self.dofs_coupling_rhs, dyn_state, dyn_info, rigid_config
+                )
+            func_solve_mass_batch(
+                i_b, self.dofs_coupling_rhs, self.dofs_coupling_sol, dyn_state, rigid_info, rigid_config
+            )
+            for i_d in range(n_dofs):
+                dyn_state.dofs.force[i_d, i_b] += self.dofs_coupling_rhs[i_d, i_b]
+                dyn_state.dofs.qf_smooth[i_d, i_b] += self.dofs_coupling_rhs[i_d, i_b]
+                dyn_state.dofs.acc_smooth[i_d, i_b] += self.dofs_coupling_sol[i_d, i_b]
+
+    # ------------------------------------------------------------------------------------
     # ------------------------------------- utils ----------------------------------------
     # ------------------------------------------------------------------------------------
 
@@ -1571,60 +2011,92 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         for entity in self.entities[::-1]:
             entity.process_input_grad()
 
+    @property
+    def is_rigid_coupled(self):
+        """Whether the fluid stage of a substep runs inside the substep of the rigid solver (see rigid coupling)."""
+        return self.is_active and self._has_rigid_coupling
+
+    def substep_coupled_with_rigid(self, f):
+        """Run the fluid stage of a substep from the substep of the rigid solver, after its forward dynamics."""
+        self._run_fluid_stage(f)
+
     def substep_pre_coupling(self, f):
-        if self.is_active:
-            # f indexes the substep in the memory of the simulator, so the first substep of a step is counted globally.
-            is_step_start = self._sim.cur_substep_global % self._sim.substeps == 0
-            if is_step_start:
-                self._solve_stats = SPHSolveStats()
-            stats = self._solve_stats
-            stats.n_substeps += 1
+        if self.is_active and not self._has_rigid_coupling:
+            self._run_fluid_stage(f)
 
-            # The rigid solver runs its substep before this one, so the fluid sees the boundary at the end of the
-            # substep, with the velocity it reaches there.
-            if self._has_boundary:
-                self._kernel_update_boundary_particles(self.sim.rigid_solver.dyn_state.links)
-            self._kernel_reorder_particles(f)
-            self._kernel_compute_density_and_factor(f)
-            if not self._df_skip_div:
-                n_iters, residual = self._pressure_solve(is_divergence=True)
-                stats.n_divergence_iters += n_iters
-                stats.n_unconverged_divergence += residual > 1.0
-                stats.max_divergence_residual = max(stats.max_divergence_residual, residual)
-            self._kernel_compute_non_pressure_forces(f, self._sim.cur_t)
+    def _run_fluid_stage(self, f):
+        """Run the boundary update, the divergence solve, the explicit forces and the coupled viscosity and density
+        solves of a substep (SPH_SOLVER_DESIGN.md section 4), and the transfer of the fluid impulse to the coupled
+        links."""
+        # f indexes the substep in the memory of the simulator, so the first substep of a step is counted globally.
+        is_step_start = self._sim.cur_substep_global % self._sim.substeps == 0
+        if is_step_start:
+            self._solve_stats = SPHSolveStats()
+        stats = self._solve_stats
+        stats.n_substeps += 1
 
-            # Coupled viscosity and density solves, alternated until they agree (SPH_SOLVER_DESIGN.md section 5.2).
-            n_passes = 1 if not self._has_viscosity else self._max_coupling_iters
+        rigid_solver = self.sim.rigid_solver
+        if self._has_boundary:
+            self._kernel_update_boundary_particles(rigid_solver.dyn_state.links)
+        if self._has_rigid_coupling:
+            self._kernel_init_rigid_coupling(
+                rigid_solver.dyn_state, rigid_solver.dyn_info, rigid_solver.rigid_info, rigid_solver.rigid_config
+            )
+        self._kernel_reorder_particles(f)
+        self._kernel_compute_density_and_factor(f)
+        if not self._df_skip_div:
+            n_iters, residual = self._pressure_solve(is_divergence=True)
+            stats.n_divergence_iters += n_iters
+            stats.n_unconverged_divergence += residual > 1.0
+            stats.max_divergence_residual = max(stats.max_divergence_residual, residual)
+        self._kernel_compute_non_pressure_forces(f, self._sim.cur_t)
+        if self._has_rigid_coupling:
+            self._kernel_set_coupled_vel_star(rigid_solver.dyn_state, rigid_solver.dyn_info, rigid_solver.rigid_config)
+
+        # Coupled viscosity and density solves, alternated until they agree (SPH_SOLVER_DESIGN.md section 5.2).
+        n_passes = 1 if not self._has_viscosity else self._max_coupling_iters
+        if self._has_viscosity:
+            self._kernel_compute_viscosity_geometry()
+        for i_pass in range(n_passes):
+            rigid_change = 0.0
             if self._has_viscosity:
-                self._kernel_compute_viscosity_geometry()
-            for i_pass in range(n_passes):
-                if self._has_viscosity:
-                    n_iters, residual = self._viscosity_solve(is_first_pass=i_pass == 0)
-                    stats.n_viscosity_iters += n_iters
-                    stats.n_unconverged_viscosity += residual > 1.0
-                    stats.max_viscosity_residual = max(stats.max_viscosity_residual, residual)
-                    if i_pass > 0:
-                        self._kernel_remove_pressure_vel()
-                    self._kernel_store_coupling_pressure(i_pass == 0)
-                n_iters, residual = self._pressure_solve(is_divergence=False, keep_pressure=i_pass > 0)
-                stats.n_density_iters += n_iters
-                stats.n_unconverged_density += residual > 1.0
-                stats.max_density_residual = max(stats.max_density_residual, residual)
-                stats.n_coupling_passes += 1
-                if self._has_viscosity:
-                    coupling_residual = self._kernel_coupling_residual()
-                    gs.logger.debug(
-                        f"SPH coupling pass {i_pass}: viscosity {stats.n_viscosity_iters} iterations in total, density "
-                        f"residual {residual:.3g}, coupling residual {coupling_residual:.3g}"
-                    )
-                    if coupling_residual <= 1.0 or i_pass == n_passes - 1:
-                        stats.n_unconverged_coupling += coupling_residual > 1.0
-                        stats.max_coupling_residual = max(stats.max_coupling_residual, coupling_residual)
-                        break
-                    self._kernel_accelerate_coupling(i_pass)
+                n_iters, residual = self._viscosity_solve(is_first_pass=i_pass == 0)
+                stats.n_viscosity_iters += n_iters
+                stats.n_unconverged_viscosity += residual > 1.0
+                stats.max_viscosity_residual = max(stats.max_viscosity_residual, residual)
+                if self._has_rigid_coupling:
+                    rigid_change = self._kernel_solve_coupled_viscosity()
+                if i_pass > 0:
+                    self._kernel_remove_pressure_vel()
+                self._kernel_store_coupling_pressure(i_pass == 0)
+            if self._has_rigid_coupling:
+                self._kernel_set_coupled_vel_base(self._has_viscosity)
+            n_iters, residual = self._pressure_solve(is_divergence=False, keep_pressure=i_pass > 0)
+            stats.n_density_iters += n_iters
+            stats.n_unconverged_density += residual > 1.0
+            stats.max_density_residual = max(stats.max_density_residual, residual)
+            stats.n_coupling_passes += 1
+            if self._has_viscosity:
+                # The rigid velocities converge with the fluid ones: their change over the pass, relative to their
+                # magnitude, has the tolerance of the viscosity solve.
+                coupling_residual = max(self._kernel_coupling_residual(), rigid_change / self._visc_max_error)
+                gs.logger.debug(
+                    f"SPH coupling pass {i_pass}: viscosity {stats.n_viscosity_iters} iterations in total, density "
+                    f"residual {residual:.3g}, coupling residual {coupling_residual:.3g}"
+                )
+                if coupling_residual <= 1.0 or i_pass == n_passes - 1:
+                    stats.n_unconverged_coupling += coupling_residual > 1.0
+                    stats.max_coupling_residual = max(stats.max_coupling_residual, coupling_residual)
+                    break
+                self._kernel_accelerate_coupling(i_pass)
 
-            if self._has_boundary:
-                self._kernel_accumulate_boundary_load(is_step_start)
+        if self._has_rigid_coupling:
+            self._kernel_apply_coupled_impulse(
+                rigid_solver.dyn_state, rigid_solver.dyn_info, rigid_solver.rigid_info, rigid_solver.rigid_config
+            )
+        if self._has_boundary:
+            self._kernel_accumulate_boundary_load(is_step_start)
+            self._solve_stats.n_boundary_slot_overflows += int(qd_to_torch(self.envs_boundary_slot_overflows).sum())
 
     def substep_pre_coupling_grad(self, f):
         pass
