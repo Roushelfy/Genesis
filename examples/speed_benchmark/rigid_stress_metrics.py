@@ -42,6 +42,8 @@ COUNTERS = (
     "adaptive_rejected_contacts",
     "adaptive_overflow_replays",
     "adaptive_initial_affine_fits",
+    "adaptive_checker_fit_evaluation_sum",
+    "adaptive_checker_fit_evaluation_max",
 )
 
 
@@ -135,9 +137,14 @@ def kernel_recovery_work_metrics(
                     attempts = contact_state.admission.attempts[i_c, i_b][0]
                     reason = contact_state.admission.reason[i_c, i_b][0]
                     metrics_state.counters[21, i_b] += gs.qd_int(attempts > 0 or reason != 0)
-                    metrics_state.counters[22, i_b] += attempts
+                    checker_iterations = 0
                     for i_stage in qd.static(range(3)):
                         metrics_state.counters[23 + i_stage, i_b] += gs.qd_int(attempts > i_stage)
+                        if attempts > i_stage:
+                            metrics_state.counters[22, i_b] += gs.qd_int(
+                                contact_state.admission.stage_status[i_c, i_b][i_stage] == 0
+                            )
+                            checker_iterations += contact_state.admission.stage_checker_evaluations[i_c, i_b][i_stage]
                     metrics_state.counters[26, i_b] += gs.qd_int(attempts > 1)
                     metrics_state.counters[27, i_b] += gs.qd_int(reason != 0)
                     metrics_state.counters[29, i_b] += gs.qd_int(
@@ -145,6 +152,8 @@ def kernel_recovery_work_metrics(
                         and contact_state.admission.stage_status[i_c, i_b][0] == 0
                         and contact_state.admission.stage_evaluations[i_c, i_b][0] == 0
                     )
+                    metrics_state.counters[30, i_b] += checker_iterations
+                    metrics_state.counters[31, i_b] = qd.max(metrics_state.counters[31, i_b], checker_iterations)
         metrics_state.counters[10, i_b] += gs.qd_int(loaded)
         metrics_state.counters[11, i_b] += evaluations
         metrics_state.counters[12, i_b] = qd.max(metrics_state.counters[12, i_b], maximum_evaluations)
@@ -226,7 +235,7 @@ class RolloutMetrics:
                 "descent": "Height decreases by more than 0.001 m over one dt=0.01 step in the named controller window.",
                 "tail": "Per-environment recorded fit evaluations, sample counts, integration retries and elastic work. These are parallel work proxies, not individual GPU wall times.",
                 "history_prediction_hit": "The current load's history prediction passes the complete residual before recovery. Counted after the step, before the next controller reset; zero when history is disabled.",
-                "adaptive_routes": "Per-step source attempts/stage status and overflow flags are accumulated outside scene checkpoint/reset state. Counts cover the complete observed interval across resets. Fixed-rule and rigid runs report zero adaptive work.",
+                "adaptive_routes": "Per-step source attempts/stage status and overflow flags are accumulated outside scene checkpoint/reset state. Independent checker fits are counted only after a successful candidate fit. Their Newton evaluations are separate from candidate evaluations. Counts cover the complete observed interval across resets. Fixed-rule and rigid runs report zero adaptive work.",
                 "timing": "Both device collection kernels and the public position getter are inside each rollout step. Boundary exports are outside repeat timing.",
             },
             "totals": {
@@ -247,6 +256,8 @@ class RolloutMetrics:
             "elastic_corrections",
             "elastic_fallbacks",
             "invalid_stress_steps",
+            "adaptive_checker_fit_evaluation_sum",
+            "adaptive_checker_fit_evaluation_max",
         ):
             i = COUNTERS.index(name)
             result["work_percentiles"][name] = dict(
