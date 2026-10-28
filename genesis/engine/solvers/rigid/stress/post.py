@@ -58,6 +58,7 @@ def create_post_kernel():
         coalesced_residual: qd.template(),
         reuse_contact_moments: qd.template(),
         automatic_radius: qd.template(),
+        adaptive_pressure: qd.template(),
         constraint_state: array_class.ConstraintState,
         dyn_info: array_class.DynInfo,
         rigid_info: array_class.RigidInfo,
@@ -104,6 +105,7 @@ def create_post_kernel():
             coalesced_residual,
             reuse_contact_moments,
             automatic_radius,
+            adaptive_pressure,
         )
         func_step_2(dyn, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)
 

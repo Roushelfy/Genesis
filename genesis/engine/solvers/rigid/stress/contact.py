@@ -173,7 +173,7 @@ def func_patch_sample(
 @qd.func
 def func_contact_order(i_c: int, i_b: int, contacts: StressContactState, surface: StressSurfaceInfo):
     order = surface.gauss.shape[0]
-    if qd.static(contacts.admission.rule.shape[0] > 0):
+    if surface.pressure_rules.orders.shape[0] > 0:
         i_r = contacts.admission.rule[i_c, i_b][0]
         order = surface.pressure_rules.orders[i_r][0]
     return order
@@ -182,7 +182,7 @@ def func_contact_order(i_c: int, i_b: int, contacts: StressContactState, surface
 @qd.func
 def func_contact_gauss(i_q: int, i_c: int, i_b: int, contacts: StressContactState, surface: StressSurfaceInfo):
     node, weight = gs.qd_float(0.0), gs.qd_float(0.0)
-    if qd.static(contacts.admission.rule.shape[0] > 0):
+    if surface.pressure_rules.orders.shape[0] > 0:
         i_r = contacts.admission.rule[i_c, i_b][0]
         i_start = surface.pressure_rules.offsets[i_r][0]
         node = surface.pressure_rules.nodes[i_start + i_q][0]

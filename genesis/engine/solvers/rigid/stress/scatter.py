@@ -362,13 +362,14 @@ def func_scatter_faces(
     is_overflow = workspace.count[None] > workspace.tasks.shape[0]
     if is_overflow:
         workspace.overflow_calls[None] += 1
-    if qd.static(contacts.admission.rule.shape[0] > 0):
-        for i_pair in range(qd.select(is_overflow, contacts.active_count[None], 0)):
-            pair = contacts.active_pairs[i_pair]
-            i_b = pair[1]
-            qd.atomic_max(contacts.admission.overflow[i_b][0], 1)
-        for i_b in range(contacts.admission.counters.shape[0]):
-            contacts.admission.counters[i_b][7] += contacts.admission.overflow[i_b][0]
+    for i_pair in range(
+        qd.select(is_overflow and surface.pressure_rules.orders.shape[0] > 0, contacts.active_count[None], 0)
+    ):
+        pair = contacts.active_pairs[i_pair]
+        i_b = pair[1]
+        qd.atomic_max(contacts.admission.overflow[i_b][0], 1)
+    for i_b in range(contacts.admission.counters.shape[0]):
+        contacts.admission.counters[i_b][7] += contacts.admission.overflow[i_b][0]
     # The incomplete task buffer contributes no loads. Overflow starts from zero
     # and integrates every original contact/face/sample, without a host transfer.
     func_scatter_warp(contacts, state, info, surface, cached_bounds, is_overflow)

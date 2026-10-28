@@ -90,6 +90,7 @@ def func_pipeline(
     coalesced_residual: qd.template(),
     reuse_contact_moments: qd.template(),
     automatic_radius: qd.template(),
+    adaptive_pressure: qd.template(),
 ):
     if qd.static(first):
         func_begin_step(state)
@@ -108,7 +109,7 @@ def func_pipeline(
         automatic_radius,
     )
     func_anchor(epsilon, contacts, surface)
-    if qd.static(contacts.admission.rule.shape[0] > 0):
+    if qd.static(adaptive_pressure):
         func_adaptive_pressure(contacts, state, info, surface, scatter, cached_bounds, reuse_contact_moments)
     else:
         func_pack_contacts(contacts)
@@ -187,6 +188,7 @@ def kernel_pipeline(
     coalesced_residual: qd.template(),
     reuse_contact_moments: qd.template(),
     automatic_radius: qd.template(),
+    adaptive_pressure: qd.template(),
 ):
     func_pipeline(
         young,
@@ -224,4 +226,5 @@ def kernel_pipeline(
         coalesced_residual,
         reuse_contact_moments,
         automatic_radius,
+        adaptive_pressure,
     )

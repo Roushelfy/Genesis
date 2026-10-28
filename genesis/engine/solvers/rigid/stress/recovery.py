@@ -334,6 +334,7 @@ class RigidStressRecovery:
             entry.coalesced_residual,
             entry.reuse_contact_moments,
             entry.automatic_radius,
+            options.pressure_quadrature == "adaptive",
         )
 
     def recover_and_integrate(self, i_substep: int) -> None:
