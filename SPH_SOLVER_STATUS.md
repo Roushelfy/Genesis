@@ -161,6 +161,19 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
     later passes it converges as before (`articulation__kp_stir0`). The acceleration therefore applies to the first
     density solve of a substep, which stops at a tenth of the tolerance.
 
+16. Wall slip of fluid that is not pressed against the wall. The ghost columns of the wall viscosity start at the
+    surface, and the fluid nearest to it stands for the fluid down to half a particle spacing below it; a wider gap
+    between that edge and the surface is neither fluid nor ghost, and the wall transmits only part of the shear across
+    it. Offline, for a linear shear over a flat wall (dev/wall_flux.py, FluidBench `adapters/genesis/sph_validation/dev`),
+    the wall stress is 0.93, 0.51 and 0.21 of mu gamma with the first layer at 0.5, 0.75 and 1.0 particle sizes from the
+    surface. Under hydrostatic pressure the first layer rests at 0.42 particle sizes (`logs/wall_gap.log`), in the
+    falling column of the pipe case at 0.80 (`logs/pipe_gap.log`), where the centerline ran 58-75 % too fast. Each
+    boundary particle now records the distance of the nearest fluid particle in front of it, and its column fills the
+    gap beyond half a particle spacing with the same extrapolated velocity (0.93 of mu gamma at any gap offline): the
+    pipe centerline error drops from 0.58 to 0.17 at dx 2.5 mm and from 0.75 to 0.18 at 1.875 mm, the mode decay from
+    -23 % to -17 %, the spin-down from -11.9 % to -9.6 % (receipts `pipe__band_pipe_dx*`, `decay__band_decay_*`,
+    `spindown__band_spin_*`); water at rest, momentum, contact, state, plank and paddle unchanged (`*__band_*`).
+
 ## Measured validation (development snapshots, to be repeated on the committed revision)
 
 Full boundary gradient at a boundary spacing of 0.5 particle sizes, isotropic pressure off (receipts tagged `fe_*`), and

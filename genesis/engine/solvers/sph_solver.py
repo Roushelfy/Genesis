@@ -446,6 +446,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.boundary_particles_reordered = struct_boundary_particle_state.field(
                 shape=(self._n_boundary_particles, self._B), needs_grad=False, layout=qd.Layout.SOA
             )
+            # Distance from the surface of the nearest fluid particle in front of each boundary particle, in hashed
+            # (reordered) boundary order, over the substep (see _task_find_boundary_faces and _func_wall_ghost).
+            self.boundary_particles_fluid_gap = qd.field(gs.qd_float, shape=(self._n_boundary_particles, self._B))
 
     def init_ckpt(self):
         self._ckpt = dict()
@@ -874,6 +877,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
             dist_normal = x_ib.dot(normal)
             dist_lateral2 = x_ib.norm_sqr() - dist_normal**2
+            # the fluid nearest to the surface patch of the boundary particle, within half a particle spacing of its
+            # normal (see _func_wall_ghost)
+            if dist_normal > self._boundary_offset and dist_lateral2 < (0.5 * self._particle_size) ** 2:
+                qd.atomic_min(self.boundary_particles_fluid_gap[j, i_b], dist_normal - self._boundary_offset)
             if dist_lateral2 < (0.75 * self._boundary_spacing) ** 2 and qd.abs(dist_normal) < qd.abs(
                 self.particles_boundary_slots[i, i_b, i_s].clearance + self._boundary_offset
             ):
@@ -946,6 +953,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         if qd.static(self._has_boundary):
             for i_b in range(self._B):
                 self.envs_boundary_slot_overflows[i_b] = 0
+            for i_j, i_b in qd.ndrange(self._n_boundary_particles, self._B):
+                self.boundary_particles_fluid_gap[i_j, i_b] = self._support_radius
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
@@ -1518,7 +1527,15 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         normal = self.boundary_particles_reordered[j, i_b].normal
         surface_pos = self.boundary_particles_reordered[j, i_b].pos + self._boundary_offset * normal
         dist = (self.particles_reordered[i, i_b].pos - surface_pos).dot(normal)
-        depth = (i_q + 0.5) / 8.0 * self._support_radius
+        # The fluid nearest to the surface stands for the fluid down to half a particle spacing below it. A wider gap
+        # between that edge and the surface (fluid that is not pressed against the wall) is filled by the column as
+        # well, with the same extrapolated velocity, else the wall transmits only part of the shear stress across it.
+        gap = self.boundary_particles_fluid_gap[j, i_b]
+        band = gs.qd_float(0.0)
+        if gap < self._support_radius:
+            band = qd.max(gap - 0.5 * self._particle_size, 0.0)
+        length = self._support_radius + band
+        depth = -band + (i_q + 0.5) / 8.0 * length
         x_ig = self.particles_reordered[i, i_b].pos - (surface_pos - depth * normal)
         r2 = x_ig.norm_sqr()
         weight = gs.qd_float(0.0)
@@ -1527,7 +1544,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             # A fluid particle pressed against the wall gets the friction of a particle at a twentieth of the support
             # radius, which bounds the extrapolation factor.
             dist_eff = qd.max(dist, 0.05 * self._support_radius)
-            column_volume = self.boundary_particles_reordered[j, i_b].area * self._support_radius / 8.0
+            column_volume = self.boundary_particles_reordered[j, i_b].area * length / 8.0
             weight = (
                 column_volume * (-self.cubic_kernel_derivative(x_ig).dot(x_ig)) / (r2 + 0.01 * self._support_radius**2)
             )
