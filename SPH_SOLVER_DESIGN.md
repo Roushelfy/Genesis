@@ -100,6 +100,34 @@ conjugate gradient (CG) on the joint vector, preconditioned by the inverse 3x3 d
 
 The viscous impulse exchanged with the rigid unknowns is `P_visc = M_r (u - u*)` (the rigid row of the solved system).
 
+### 3.5 Revisions of the discrete model (M1-M3, see SPH_SOLVER_STATUS.md findings)
+
+The implementation departs from sections 3.1-3.4 where the measurements required it:
+
+- Boundary pressure (3.1, 3.2): per fluid particle and rigid link, the boundary gradient is
+  `g_iL = sum_b Psi_b (grad W_ib . n) n` with `n` the normal of the boundary particle, or, for the boundary particles of
+  the surface the fluid particle faces, their kernel-weighted mean normal. It replaces `sum_b Psi_b grad W_ib` in the
+  constraint, in the fluid pressure acceleration and in the link reaction. The reaction acts at the fluid particle, so
+  linear and angular momentum stay balanced.
+- Wall viscosity (3.3): instead of the pair form with the boundary particles, each boundary particle carries a column
+  of ghost fluid (8 midpoint points over the support behind the surface) whose velocity relative to the wall
+  extrapolates that of the fluid particle linearly, `-(s / d) (v_i - v_wall)` at depth `s`, `d` the distance of the
+  particle to the surface (at least 0.05 H). The wall tensor of particle `i` and link `L` is
+  `T_iL = P (sum_g 10 mu V0 V_g s_i(e_ig) (-W'(r_ig) r_ig) / (r_ig^2 + eta^2) (1 + s / d) e_ig e_ig^T) P`, projected on
+  the tangent plane `P` of each boundary particle, and the wall force on the fluid is `-T_iL (v_i - v_L(x_i))` with
+  the reaction on the link at `x_i`. `T_iL` is scaled so that a linear shear along the faced wall is reproduced exactly.
+- Directional correction (3.3): the pair coefficient is multiplied by `(s_i(e_ij) + s_j(e_ij)) / 2`, clamped at zero,
+  with `s_i` a combination of the 15 even spherical harmonics up to degree 4 solved per particle from the fourth moment
+  equations `sum_j w_ij s_i(e_ij) Y_k(e_ij) = 3 rhohat_i delta_k0` (ghost points included, Tikhonov term 1e-3). Near the
+  free surface (`rhohat_i` from 0.95 down to 0.85) it blends to the isotropic scale.
+- Rigid viscous exchange (3.4, 5.2): the link takes `h (f - K xi_f)`, the reaction of the impulse the fluid took at the
+  velocities `xi_f` it saw in its viscosity solve (exact momentum balance per pass); the implicit solution of
+  `(I + h Lambda K) xi = xi* + Lambda I_den + h Lambda f` corrects the link velocities the next pass sees.
+- Wall clearance guard (after stage 5): a fluid particle closer than `d / 4` to the surface it faces must not approach
+  it and recedes at a hundredth of its deficit per substep; the corrective impulse reacts on the link.
+- Readouts: `SPHSolver.get_viscous_dissipation` (energy `h v^T D v` per step, walls included) and, with
+  `SPHOptions.energy_audit`, the kinetic energy change of every stage in `SPHSolver.solve_stats`.
+
 ## 4. Substep stage order
 
 Positions `x^n`, `q^n`, velocities `v^n`, `u^n`. All stages read the positions at `n`.

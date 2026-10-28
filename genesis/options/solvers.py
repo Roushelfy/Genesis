@@ -794,6 +794,11 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         suffices for fluids about as viscous as water, while very viscous fluids under pressure need more, which cost
         time. A substep that reaches the limit is reported as unconverged. Only used by the default solver.
         Defaults to 30.
+    energy_audit : bool, optional
+        Whether to record the change of kinetic energy of the fluid caused by each stage of a substep (divergence solve,
+        explicit forces, coupled viscosity and density solves, wall clearance) in `SPHSolver.solve_stats`, to check the
+        energy balance of a scene. It costs one reduction over the particles per stage. Only used by the default solver.
+        Defaults to False.
     micropolar : bool, optional
         Whether to model the micro-rotation of the fluid particles, which restores the small-scale vortices that
         particle-based fluids damp out, yielding livelier splashes and swirls. Its strength is set per material by
@@ -832,6 +837,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_viscosity_error: PositiveFloat = 0.1 * 0.01
     max_viscosity_solver_iterations: PositiveInt = 100
     max_coupling_iterations: PositiveInt = 30
+    energy_audit: StrictBool = False
     micropolar: StrictBool = False
     boundary_offset: NonNegativeFloat | None = None
 
