@@ -47,11 +47,9 @@ def test_native_shell_public_lifecycle(tmp_path, output_mode, update_mode, metho
             mesh=asset,
             backend="shell",
             shell_loading=shell_loading,
-            pressure_profile="hertz" if shell_loading == "planar" else "dpr",
             method=method,
             output_mode=output_mode,
             update_mode=update_mode,
-            contact_radius=8e-5,
             quadrature=16,
         )
     )

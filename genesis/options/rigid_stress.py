@@ -30,23 +30,22 @@ class RigidStressOptions(Options):
     returns membrane, bending and transverse shear resultants. The default ``backend="volume"`` retains
     the existing P2 tetrahedral discretization and observations.
 
-    ``RigidStressOptions.dpr(mesh=...)`` selects Directional Patch Recovery:
-    finite tractions aligned with each supplied normal-plus-friction force.
+    The main constructor and ``RigidStressOptions.dpr(mesh=...)`` select Directional Patch Recovery:
+    finite Hertz-profile tractions with automatic radii, aligned with each supplied normal-plus-friction force.
     ``RigidStressOptions.scr(mesh=...)`` selects Surface-Constrained Recovery:
-    intrinsic surface support with the body-source-prior partition. These
-    constructors select complete load routes without changing any numerical
-    default. Other options can be passed as keywords. Use the explicit main
-    constructor when choosing a different partition or support variant.
+    intrinsic surface support with the body-source-prior partition, a manual radius and the ``"dpr"`` pressure profile.
+    Other options can be passed as keywords. Use the explicit main constructor when choosing a different partition
+    or support variant.
 
-    ``contact_radius`` declares the finite traction footprint in metres. A
-    larger footprint spreads the same contact wrench over more shell area;
-    choose it from the contact model rather than the elastic mesh resolution.
-    ``radius_model="hertz"`` instead estimates a circular radius from each current contact's normal force and the
-    mean relative surface curvature. It adds geometry lookup cost and is intended for smooth, compressive contacts;
-    sharp primitive edges and nonpositive relative curvature are unsupported. Meshes use their supplied smooth
-    normals, including signed concave curvature. Each supplied collision force gets its own estimate; this does not
-    infer a physical contact region from a manifold or establish thin-shell accuracy. No physical radius is enlarged
-    to accommodate the elastic mesh. The default ``"manual"`` retains the supplied radius and its setter.
+    ``contact_radius`` declares the finite traction footprint in metres when ``radius_model="manual"``. A larger
+    footprint spreads the same contact wrench over more shell area. Choose it from the contact model rather than
+    the elastic mesh resolution. The default ``radius_model="hertz"`` estimates a circular radius from each current
+    contact's normal force and the mean relative surface curvature. It adds geometry lookup cost and is intended
+    for smooth, compressive contacts. Sharp primitive edges and nonpositive relative curvature are unsupported.
+    Meshes use their supplied smooth normals, including signed concave curvature. Each supplied collision force
+    gets its own estimate. This does not infer a physical contact region from a manifold or establish thin-shell
+    accuracy. No physical radius is enlarged to accommodate the elastic mesh. Explicit ``"manual"`` retains the
+    supplied radius and its setter.
     ``box_edge_policy="planar"`` explicitly approximates a witnessed box edge or vertex by zero curvature when
     estimating radius. The other surface must still provide positive relative curvature. This finite-footprint
     surrogate preserves the sharp collision geometry and source force; it is not Hertz's sharp-edge solution.
@@ -54,11 +53,11 @@ class RigidStressOptions(Options):
     ``contact_modulus`` is the reduced contact modulus in Pa. If None, resolved based on the rigid-counterface
     assumption: ``young / (1 - poisson**2)``. Defaults to None. Supply the combined physical modulus when both
     contacting materials deform; it changes contact size without changing this link's FEM material.
-    ``pressure_profile="hertz"`` uses a compact square-root profile with the existing DPR force/moment fit and
-    tangential-force direction. On a planar centered disk this gives circular Hertz pressure with proportional
-    shear. Curved or truncated supports may require a nonconstant wrench correction. The default ``"dpr"`` keeps
-    the original Gaussian/taper profile, including when only the radius is estimated. Changing the profile changes
-    the load model and its quadrature error; neither choice introduces a friction-history solver.
+    The default ``pressure_profile="hertz"`` uses a compact square-root profile with the existing DPR force/moment
+    fit and tangential-force direction. On a planar centered disk this gives circular Hertz pressure with proportional
+    shear. Curved or truncated supports may require a nonconstant wrench correction. Explicit ``"dpr"`` keeps the
+    original Gaussian/taper profile, including when only the radius is estimated. Changing the profile changes the
+    load model and its quadrature error. Neither choice introduces a friction-history solver.
     ``quadrature`` controls surface integration cost and accuracy.
     ``pressure_quadrature="angle"`` samples each surface fan uniformly in angle
     to resolve small footprints near a long edge. It preserves the physical
@@ -72,7 +71,9 @@ class RigidStressOptions(Options):
     rejected. Boundary association obeys the declared projection limit and
     final force/moment checks. This declaration does not infer
     physical support or make sparse collision points resolved pressure data.
-    The default ``"patch"`` retains the manual finite-footprint baseline.
+    The default ``"patch"`` uses a finite footprint with the selected radius model and pressure profile.
+    Intrinsic contact and resolved transfer use ``radius_model="manual"`` and ``pressure_profile="dpr"`` when
+    these options are omitted. Explicit incompatible values are rejected.
     ``contact_model="intrinsic"`` preserves collision geom/pair witnesses and
     fits vector tractions in the local inward material Coulomb cones. The
     finite profile multiplies positive area weights by a Gaussian of width
@@ -233,9 +234,9 @@ class RigidStressOptions(Options):
     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
-    radius_model: Literal["manual", "hertz"] = "manual"
+    radius_model: Literal["manual", "hertz"] = "hertz"
     box_edge_policy: Literal["unsupported", "planar"] = "unsupported"
-    pressure_profile: Literal["dpr", "hertz"] = "dpr"
+    pressure_profile: Literal["dpr", "hertz"] = "hertz"
     contact_modulus: PositiveFloat | None = None
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
     load_transfer: Literal["patch", "resolved"] = "patch"
@@ -281,6 +282,12 @@ class RigidStressOptions(Options):
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"
 
+    def __init__(self, **data) -> None:
+        if data.get("contact_model", "pressure") == "intrinsic" or data.get("load_transfer", "patch") == "resolved":
+            data.setdefault("radius_model", "manual")
+            data.setdefault("pressure_profile", "dpr")
+        super().__init__(**data)
+
     @classmethod
     def dpr(cls, *, mesh: PathType, **options) -> Self:
         """Directional Patch Recovery, including the supplied tangential force."""
@@ -288,5 +295,5 @@ class RigidStressOptions(Options):
 
     @classmethod
     def scr(cls, *, mesh: PathType, **options) -> Self:
-        """Surface-Constrained Recovery with the complete body-source-prior route."""
+        """Surface-Constrained Recovery with manual-radius body-source-prior loading."""
         return cls(mesh=mesh, contact_model="intrinsic", intrinsic_load_partition="body_source_prior", **options)

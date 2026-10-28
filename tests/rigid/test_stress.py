@@ -44,6 +44,113 @@ from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
 from tests.utils.assertions import assert_allclose, assert_equal
 
 
+@pytest.mark.required
+@pytest.mark.parametrize("stress_backend", ("volume", "shell"))
+def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
+    mesh = tmp_path / "elastic.npz"
+    options = RigidStressOptions(
+        mesh=mesh,
+        backend=stress_backend,
+    )
+    assert options.contact_model == "pressure"
+    assert options.load_transfer == "patch"
+    assert options.radius_model == "hertz"
+    assert options.pressure_profile == "hertz"
+    assert options.shell_loading == "q4"
+    assert (
+        RigidStressOptions.dpr(
+            mesh=mesh,
+            backend=stress_backend,
+        ).model_dump()
+        == options.model_dump()
+    )
+    for radius_model in ("manual", "hertz"):
+        for pressure_profile in ("dpr", "hertz"):
+            options = RigidStressOptions.dpr(
+                mesh=mesh,
+                backend=stress_backend,
+                contact_radius=0.006,
+                radius_model=radius_model,
+                pressure_profile=pressure_profile,
+            )
+            assert options.radius_model == radius_model
+            assert options.pressure_profile == pressure_profile
+            assert_allclose(options.contact_radius, 0.006, atol=1e-15)
+            assert (
+                options.model_dump()
+                == RigidStressOptions(
+                    mesh=mesh,
+                    backend=stress_backend,
+                    contact_radius=0.006,
+                    radius_model=radius_model,
+                    pressure_profile=pressure_profile,
+                ).model_dump()
+            )
+    options = RigidStressOptions.scr(
+        mesh=mesh,
+        backend=stress_backend,
+        output_mode="full",
+        contact_radius=0.004,
+    )
+    assert options.contact_model == "intrinsic"
+    assert options.load_transfer == "patch"
+    assert options.radius_model == "manual"
+    assert options.pressure_profile == "dpr"
+    assert options.intrinsic_load_partition == "body_source_prior"
+    assert options.output_mode == "full"
+    assert_allclose(options.contact_radius, 0.004, atol=1e-15)
+    options = RigidStressOptions.scr(
+        mesh=mesh,
+        backend=stress_backend,
+        radius_model="manual",
+        pressure_profile="dpr",
+        contact_block_size=1,
+    )
+    assert options.contact_block_size == 1
+    options = RigidStressOptions(
+        mesh=mesh,
+        contact_model="intrinsic",
+    )
+    assert options.radius_model == "manual"
+    assert options.pressure_profile == "dpr"
+    options = RigidStressOptions.dpr(
+        mesh=mesh,
+        load_transfer="resolved",
+    )
+    assert options.radius_model == "manual"
+    assert options.pressure_profile == "dpr"
+    options = RigidStressOptions.scr(
+        mesh=mesh,
+        radius_model="hertz",
+        pressure_profile="hertz",
+    )
+    assert options.radius_model == "hertz"
+    assert options.pressure_profile == "hertz"
+    assert RigidStressOptions(mesh=mesh).backend == "volume"
+    for options in (
+        RigidStressOptions.scr(
+            mesh=mesh,
+            radius_model="hertz",
+            pressure_profile="hertz",
+        ),
+        RigidStressOptions.dpr(
+            mesh=mesh,
+            radius_model="hertz",
+            pressure_profile="hertz",
+            load_transfer="resolved",
+        ),
+    ):
+        scene = gs.Scene(
+            show_viewer=False,
+        )
+        entity = scene.add_entity(
+            morph=gs.morphs.Sphere(),
+        )
+        entity.base_link.configure_stress_recovery(options)
+        with pytest.raises(gs.GenesisException, match="Automatic radius and Hertz profiles require DPR patch transfer"):
+            scene.build()
+
+
 @qd.kernel(graph=True)
 def kernel_apex_contact_graph(
     epsilon: float,
@@ -182,6 +289,8 @@ def test_native_full_field_unbatched_shared_operator(tmp_path, show_viewer, upda
         == RigidStressOptions(
             mesh=mesh,
             output_mode="full",
+            radius_model="manual",
+            pressure_profile="dpr",
             contact_model="intrinsic",
             intrinsic_load_partition="body_source_prior",
         ).model_dump()
@@ -1009,14 +1118,17 @@ def test_native_rigid_lifecycle_and_partial_reset(
     link.configure_stress_recovery(
         RigidStressOptions(
             mesh=mesh,
-            tolerance=1e-7,
-            history_size=4 if output_mode == "max" and not fused_rigid_post else 0,
             output_mode=output_mode,
             update_mode=update_mode,
+            contact_radius=0.006,
+            radius_model="manual",
+            pressure_profile="dpr",
+            tolerance=1e-7,
+            history_size=4 if output_mode == "max" and not fused_rigid_post else 0,
             contact_wrench_reuse=True,
+            contact_moment_reuse=True,
             packed_block_size=512,
             coalesced_residual=True,
-            contact_moment_reuse=True,
             fused_rigid_post=fused_rigid_post,
         )
     )

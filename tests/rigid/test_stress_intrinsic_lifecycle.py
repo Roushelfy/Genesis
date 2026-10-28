@@ -39,12 +39,10 @@ def test_native_intrinsic_observations_partial_reset_and_checkpoint(show_viewer,
     )
     link = egg.base_link
     link.configure_stress_recovery(
-        gs.options.RigidStressOptions(
+        gs.options.RigidStressOptions.scr(
             mesh=assets / "elastic.npz",
             output_mode=output_mode,
-            contact_model="intrinsic",
             contact_block_size=1,
-            intrinsic_load_partition="body_source_prior",
         )
     )
     scene.build(n_envs=3)

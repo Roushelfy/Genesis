@@ -614,9 +614,9 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--public-default-stress", action="store_true")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
-    parser.add_argument("--radius-model", choices=("manual", "hertz"), default="manual")
-    parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default="dpr")
-    parser.add_argument("--quadrature", type=int, default=10)
+    parser.add_argument("--radius-model", choices=("manual", "hertz"), default=None)
+    parser.add_argument("--pressure-profile", choices=("dpr", "hertz"), default=None)
+    parser.add_argument("--quadrature", type=int, default=None)
     parser.add_argument("--box-edge-policy", choices=("unsupported", "planar"), default="unsupported")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
@@ -631,7 +631,9 @@ def main() -> None:
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
-    parser.add_argument("--cooperative-anchor", action="store_true")
+    anchor_group = parser.add_mutually_exclusive_group()
+    anchor_group.add_argument("--cooperative-anchor", action="store_const", const=True, default=None)
+    anchor_group.add_argument("--serial-anchor", dest="cooperative_anchor", action="store_const", const=False)
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-tractions", action="store_true")
     parser.add_argument("--cold-tractions", action="store_true", help="Start every intrinsic traction fit from zero.")
@@ -647,7 +649,7 @@ def main() -> None:
     parser.add_argument(
         "--scatter-tasks-per-env",
         type=int,
-        default=32,
+        default=None,
         help="Bound face-task workspace; overflow fully recomputes native scatter.",
     )
     parser.add_argument("--uncached-peak", action="store_true")
@@ -658,7 +660,7 @@ def main() -> None:
     parser.add_argument(
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
-    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default="edge")
+    parser.add_argument("--pressure-quadrature", choices=("edge", "angle"), default=None)
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
@@ -667,8 +669,8 @@ def main() -> None:
     parser.add_argument("--shell-gauge", choices=("translation", "legacy"), default="translation")
     parser.add_argument("--shell-loading", choices=("q4", "planar"), default="q4")
     parser.add_argument("--loading-subdivisions", type=int, choices=(4, 8, 16, 32), default=8)
-    parser.add_argument("--planar-integration", choices=("radial", "gauss"), default="radial")
-    parser.add_argument("--planar-query", choices=("cells", "blocks"), default="cells")
+    parser.add_argument("--planar-integration", choices=("radial", "gauss"), default=None)
+    parser.add_argument("--planar-query", choices=("cells", "blocks"), default=None)
     parser.add_argument("--factor-scaling", action="store_true")
     parser.add_argument("--factor-ordering", choices=("minimum_degree", "natural"), default="minimum_degree")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
@@ -760,12 +762,18 @@ def main() -> None:
         public_defaults=args.public_default_stress,
     )
     solver = workload.scene.rigid_solver
+    stress_options = workload.link.stress_options
+    planar = solver.stress_recovery.links[0].planar if workload.stress else None
     if workload.stress:
-        for entry in solver.stress_recovery.links:
-            entry.cooperative_anchor = args.cooperative_anchor
-    if workload.stress and args.shell_loading == "planar":
-        solver.stress_recovery.links[0].planar.exact_radial = args.planar_integration == "radial"
-        solver.stress_recovery.links[0].planar.hierarchical_query = args.planar_query == "blocks"
+        assert stress_options is not None
+        if args.cooperative_anchor is not None:
+            for entry in solver.stress_recovery.links:
+                entry.cooperative_anchor = args.cooperative_anchor
+    if planar is not None:
+        if args.planar_integration is not None:
+            planar.exact_radial = args.planar_integration == "radial"
+        if args.planar_query is not None:
+            planar.hierarchical_query = args.planar_query == "blocks"
     metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -797,7 +805,12 @@ def main() -> None:
                     difference = (action.to(dtype=torch.float64) - expected).abs().max().item()
                     policy_error_rad = max(policy_error_rad, 1e-4 * difference)
                     assert policy_error_rad < 1e-9
-            if tick == args.warmup - 1 and args.scope in ("profile", "recovery") and args.radius_model == "hertz":
+            if (
+                tick == args.warmup - 1
+                and args.scope in ("profile", "recovery")
+                and stress_options is not None
+                and stress_options.radius_model == "hertz"
+            ):
                 solver.update_forward_pos()
                 geometry = GeometryFrame(
                     np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True, copy=True)),
@@ -874,27 +887,38 @@ def main() -> None:
             "envs": args.envs,
             "level": args.level,
             "precision": "64",
-            "quadrature": args.quadrature,
-            "pressure_quadrature": args.pressure_quadrature,
-            "shell_loading": args.shell_loading,
-            "planar_integration": args.planar_integration if args.shell_loading == "planar" else None,
-            "planar_query_requested": args.planar_query if args.shell_loading == "planar" else None,
+            "quadrature": stress_options.quadrature if stress_options is not None else None,
+            "pressure_quadrature": stress_options.pressure_quadrature if stress_options is not None else None,
+            "stress_backend": stress_options.backend if stress_options is not None else None,
+            "shell_loading": stress_options.shell_loading if stress_options is not None else None,
+            "planar_integration": ("radial" if planar.exact_radial else "gauss") if planar is not None else None,
+            "planar_query_requested": args.planar_query if planar is not None else None,
             "effective_planar_query_modes": planar_query_execution_modes(workload),
-            "loading_subdivisions": args.loading_subdivisions,
+            "loading_subdivisions": stress_options.loading_subdivisions if stress_options is not None else None,
             "loading_integration_rule": "planar_sphere_sections_split_angle"
-            if args.shell_loading == "planar"
-            else "original_" + args.pressure_quadrature,
+            if planar is not None
+            else "original_" + stress_options.pressure_quadrature
+            if stress_options is not None
+            else None,
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,
             "seed": args.seed,
-            "load_model": f"intrinsic_surface_fan_q{args.quadrature}_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement_failed_wrench_fan_partition"
-            + ("_body_source_prior" if args.intrinsic_load_partition == "body_source_prior" else "")
-            if args.contact_model == "intrinsic"
-            else f"finite_pad_adaptive_q{args.quadrature}",
-            "contact_model": args.contact_model,
-            "radius_model": args.radius_model,
-            "pressure_profile": args.pressure_profile,
+            "load_model": (
+                f"intrinsic_surface_fan_q{stress_options.quadrature}_squared_coordinates_ports8_"
+                "adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement_"
+                "failed_wrench_fan_partition"
+                + ("_body_source_prior" if stress_options.intrinsic_load_partition == "body_source_prior" else "")
+                if stress_options.contact_model == "intrinsic"
+                else f"finite_patch_{stress_options.pressure_profile}_q{stress_options.quadrature}"
+            )
+            if stress_options is not None
+            else None,
+            "contact_model": stress_options.contact_model if stress_options is not None else None,
+            "radius_model": stress_options.radius_model if stress_options is not None else None,
+            "pressure_profile": stress_options.pressure_profile if stress_options is not None else None,
+            "box_edge_policy": stress_options.box_edge_policy if stress_options is not None else None,
+            "actual_stress_options": stress_options.model_dump(mode="json") if stress_options is not None else None,
             "public_default_stress": args.public_default_stress,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,
@@ -903,8 +927,10 @@ def main() -> None:
             "cooperative_tractions": not args.serial_tractions,
             "warm_start_tractions": not args.cold_tractions,
             "effective_contact_block_size": solver.stress_recovery.links[0].intrinsic.contacts.valid.shape[0]
-            if args.contact_model == "intrinsic" and workload.stress
-            else args.contact_block_size,
+            if workload.stress and stress_options.contact_model == "intrinsic"
+            else stress_options.contact_block_size
+            if stress_options is not None
+            else None,
             "egg_geometry": args.egg_geometry,
             "collision_method": args.collision_method,
             "contact_patch": args.contact_patch,
@@ -914,6 +940,7 @@ def main() -> None:
             if args.conditions is not None
             else None,
             "cooperative_solve": not args.serial_solve,
+            "cooperative_anchor": solver.stress_recovery.links[0].cooperative_anchor if workload.stress else None,
             "cooperative_anchor_requested": args.cooperative_anchor,
             "effective_anchor_modes": anchor_execution_modes(workload, staged=args.scope == "profile"),
             "cooperative_pressure": not args.serial_pressure,
@@ -939,7 +966,7 @@ def main() -> None:
             if solver.stress_recovery is not None
             else [],
             "face_parallel_scatter": not args.contact_warp_scatter,
-            "scatter_tasks_per_env": args.scatter_tasks_per_env,
+            "scatter_tasks_per_env": stress_options.scatter_tasks_per_env if stress_options is not None else None,
             "cached_peak": not args.uncached_peak,
             "cached_face_bounds": not args.uncached_face_bounds,
             "method": args.method,
