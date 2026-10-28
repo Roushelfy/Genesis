@@ -1,5 +1,26 @@
 # Working on native rigid stress recovery
 
+**Active user goal, 2026-10-28:** implement [automatic DPR fast path, defaults and examples](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md).
+Read [GOAL.md](GOAL.md) first. Diagnose volume edge/q16 failures, evaluate practical
+stress-error budgets and fit/load tolerances, and prefer a qualified cheap path
+with selective repair over global q128. This user goal explicitly permits
+evidence-backed changes to pressure-fit/load acceptance; older instructions to
+keep every such threshold unchanged do not prohibit this work. Preserve strict
+controls and do not weaken unrelated elasticity/material/lifecycle checks.
+
+Make automatic-radius + Hertz-pressure DPR the actual API/factory/workload/CLI
+default, preserving explicit manual/legacy and SCR alternatives. Volume remains
+the backend default; retain Q4 loading by default for shell and show the qualified
+planar recipe explicitly. Add and run simple 3D/shell, max/full and batched Franka
+examples; [the current examples](docs/RUNNING_AUTOMATIC_DPR.md) are explicit
+configurations pending that migration. Keep native production numerics in Quadrants,
+the mature load model, arbitrary contacts/friction and existing planar winners.
+Use focused low-model accuracy, actual profiles and matched full-path throughput.
+Avoid reopening unchanged prior experiments or turning this goal into a broad
+convergence/archival campaign. Standing preservation/storage policies still apply.
+
+## Previous completed planar goal
+
 **Completed user goal, 2026-10-27:** native [planar loading DPR](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md).
 Read [GOAL.md](GOAL.md), [the final report](docs/PLANAR_LOADING_RESULTS_20261027.md),
 [the execution ledger](docs/PLANAR_LOADING_PROGRESS_20261027.md) and

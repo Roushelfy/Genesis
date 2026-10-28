@@ -1,5 +1,11 @@
 # Run native rigid stress recovery
 
+**Current automatic-radius DPR usage:** see [3D/shell and Franka examples](RUNNING_AUTOMATIC_DPR.md).
+They explicitly choose Hertz because the current API still has manual-radius
+defaults. [The active follow-up](AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md)
+requires a qualified cheap/adaptive volume path and a consistent default migration.
+The intrinsic/source-prior commands below retain their historical scope.
+
 Install Genesis and its normal dependencies using the repository README.
 The example and benchmark use the native rigid solver without a research
 backend. The [API](NATIVE_API.md) defines configuration, max/full observations,

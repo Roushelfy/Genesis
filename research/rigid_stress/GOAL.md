@@ -1,5 +1,22 @@
-# Native rigid stress recovery: planar loading DPR optimization
+# Native rigid stress recovery: automatic DPR fast path and defaults
 
+**Active user goal, 2026-10-28:** follow [the fast-path/defaults goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md).
+Recover a qualified inexpensive volume path where practical, with application-oriented
+stress-error validation and selective refinement/fallback rather than globally
+paying for angle/q128. Diagnose the actual q16 pressure-fit failures separately
+from strict integration-reference thresholds; tolerance changes are authorized
+when measured stress accuracy and robustness justify them.
+
+Implement automatic-radius DPR defaults consistently in the API, factories,
+Franka workload and CLI/benchmark entrypoints, retain explicit legacy/strict
+overrides, and deliver tested 3D/shell max/full and small/batched examples.
+[Current explicit examples](docs/RUNNING_AUTOMATIC_DPR.md) select Hertz through the
+existing API; they do not claim that the migration is already implemented.
+Keep both physical backends and the qualified planar shell route. Production
+numerics stay in the rigid feature in Quadrants. This goal is open: source,
+validation and performance delivery are required, not documentation alone.
+
+## Previous delivery: planar loading DPR optimization
 **Completed, 2026-10-27:** the [native planar loading goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)
 has integrated code, independent accuracy/contact/lifecycle controls and a
 29-clause/14-family delivery ledger. Read [the measured report](docs/PLANAR_LOADING_RESULTS_20261027.md),

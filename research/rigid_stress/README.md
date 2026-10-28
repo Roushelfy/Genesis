@@ -9,6 +9,17 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: automatic DPR fast path, defaults and examples (2026-10-28)
+
+Follow [the new goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md): diagnose volume q16 failures, qualify cheaper
+integration/fit tolerances and selective repair against actual stress error,
+then implement automatic-radius DPR as the consistent API and example default.
+Retain explicit legacy/strict choices and the qualified planar shell path.
+This follow-up is open; the current API still defaults to manual radius.
+[3D and shell usage examples](docs/RUNNING_AUTOMATIC_DPR.md) explicitly configure
+Hertz until the migration is implemented and tested. The previous measured
+deliveries below retain their original scope.
+
 ## Delivered: planar loading DPR integration and optimization (2026-10-27)
 
 Native triangular loading retains original Q4 elasticity and adds no elastic
