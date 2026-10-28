@@ -177,9 +177,10 @@ class FrankaEgg:
                 defaults = gs.options.RigidStressOptions(
                     mesh=assets / "elastic.npz",
                     box_edge_policy=options.box_edge_policy,
+                    output_mode=options.output_mode,
                 )
                 if options != defaults:
-                    raise ValueError("Public-default stress permits only a box-edge policy override.")
+                    raise ValueError("Public-default stress permits only box-edge policy and output-mode overrides.")
                 options = defaults
             self.link.configure_stress_recovery(options)
         if stress:
