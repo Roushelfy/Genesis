@@ -164,6 +164,7 @@ def func_adaptive_face(
 
 @qd.func
 def func_adaptive_integrals(
+    i_pair: int,
     i_c: int,
     i_b: int,
     i_rule: int,
@@ -174,6 +175,8 @@ def func_adaptive_integrals(
     contacts: StressContactState,
     info: StressInfo,
     surface: StressSurfaceInfo,
+    workspace: StressScatterWorkspace,
+    cached_faces: bool,
     initial: bool,
     cooperative: qd.template(),
 ):
@@ -181,7 +184,15 @@ def func_adaptive_integrals(
     gradient = qd.Vector.zero(gs.qd_float, 3)
     objective = gs.qd_float(0.0)
     candidates, invalid = 0, 0
-    for i_f in range(surface.face_origin.shape[0]):
+    n_faces = surface.face_origin.shape[0]
+    i_task = -1
+    if cached_faces:
+        n_faces = workspace.source_heads[i_pair][1]
+        i_task = workspace.source_heads[i_pair][0]
+    for i_face in range(n_faces):
+        i_f = i_face
+        if cached_faces:
+            i_f = workspace.tasks[i_task][1]
         face_gram, face_gradient, face_objective, _nodal, _total, _moment, face_candidates, face_invalid = (
             func_adaptive_face(
                 i_f,
@@ -204,6 +215,8 @@ def func_adaptive_integrals(
         objective += face_objective
         candidates += face_candidates
         invalid += face_invalid
+        if cached_faces:
+            i_task = workspace.next_task[i_task][0]
     if not initial:
         gradient[0] -= 1.0
         objective += coefficient[0] - reference[0]
@@ -212,6 +225,7 @@ def func_adaptive_integrals(
 
 @qd.func
 def func_adaptive_fit(
+    i_pair: int,
     i_c: int,
     i_b: int,
     i_rule: int,
@@ -219,8 +233,28 @@ def func_adaptive_fit(
     contacts: StressContactState,
     info: StressInfo,
     surface: StressSurfaceInfo,
+    workspace: StressScatterWorkspace,
+    cached_faces: qd.template(),
     cooperative: qd.template(),
 ):
+    # The pool is an order-independent geometric superset for every rule and
+    # pressure coefficient. Validate ownership/completeness once per fit; the
+    # immutable chain is then reused by initialization and every Armijo trial.
+    cached = False
+    if qd.static(cached_faces):
+        cached = workspace.count[None] <= workspace.tasks.shape[0] and i_pair < workspace.source_heads.shape[0]
+        n_tasks, i_task = 0, -1
+        if cached:
+            n_tasks, i_task = workspace.source_heads[i_pair][1], workspace.source_heads[i_pair][0]
+            cached = n_tasks >= 0 and n_tasks <= surface.face_origin.shape[0]
+        for _entry in range(qd.select(cached, n_tasks, 0)):
+            if cached:
+                cached = i_task >= 0 and i_task < workspace.count[None]
+                if cached:
+                    task = workspace.tasks[i_task]
+                    cached = task[0] == i_pair and task[1] >= 0 and task[1] < surface.face_origin.shape[0]
+                    i_task = workspace.next_task[i_task][0]
+        cached = cached and i_task == -1
     coefficient = qd.Vector.zero(gs.qd_float, 3)
     weight_sum = gs.qd_float(1.0)
     status, candidates, invalid, iterations = 3, 0, 0, 0
@@ -236,6 +270,7 @@ def func_adaptive_fit(
         if line:
             candidate = coefficient - fraction * step
         gram, gradient, objective, sample_count, sample_invalid = func_adaptive_integrals(
+            i_pair,
             i_c,
             i_b,
             i_rule,
@@ -246,6 +281,8 @@ def func_adaptive_fit(
             contacts,
             info,
             surface,
+            workspace,
+            cached,
             i_evaluation == 0,
             cooperative,
         )
@@ -514,7 +551,17 @@ def func_adaptive_contact(
                     iterations = contacts.evaluations[i_c, i_b]
             if fit_current:
                 coefficient, weight_sum, status, candidates, invalid, iterations = func_adaptive_fit(
-                    i_c, i_b, selected_rule, i_lane, contacts, info, surface, cooperative
+                    i_pair,
+                    i_c,
+                    i_b,
+                    selected_rule,
+                    i_lane,
+                    contacts,
+                    info,
+                    surface,
+                    workspace,
+                    qd.static(prepared and reuse_moments),
+                    cooperative,
                 )
             if i_lane == 0:
                 qd.atomic_add(contacts.admission.counters[i_b][2 + i_stage], 1)
@@ -526,7 +573,19 @@ def func_adaptive_contact(
             reason = _FIT_FAILURE
             if status == 0 and invalid == 0:
                 checker_coefficient, _check_weight, check_status, _check_count, check_invalid, check_iterations = (
-                    func_adaptive_fit(i_c, i_b, i_stage, i_lane, contacts, info, surface, cooperative)
+                    func_adaptive_fit(
+                        i_pair,
+                        i_c,
+                        i_b,
+                        i_stage,
+                        i_lane,
+                        contacts,
+                        info,
+                        surface,
+                        workspace,
+                        qd.static(prepared and reuse_moments),
+                        cooperative,
+                    )
                 )
                 invalid += check_invalid
                 if check_status == 0 and check_invalid == 0:
