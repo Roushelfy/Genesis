@@ -39,9 +39,14 @@ class StressScatterWorkspace:
     load_moments: qd.Tensor
     affine_pressure: qd.Tensor
     refined_pressure: qd.Tensor
+    source_heads: qd.Tensor
+    next_task: qd.Tensor
+    load_difference: qd.Tensor
 
 
-def create_scatter_workspace(n_envs: int, tasks_per_env: int, reuse_moments: bool = False) -> StressScatterWorkspace:
+def create_scatter_workspace(
+    n_envs: int, tasks_per_env: int, reuse_moments: bool = False, adaptive: bool = False
+) -> StressScatterWorkspace:
     # Every task uses one warp. Bound the thread index as well as allocated storage.
     capacity = min(n_envs * tasks_per_env, 2147483647 // 32)
     workspace = StressScatterWorkspace(
@@ -55,6 +60,9 @@ def create_scatter_workspace(n_envs: int, tasks_per_env: int, reuse_moments: boo
         # placeholder keeps disabled caching compatible with that backend.
         affine_pressure=V(dtype=gs.qd_bool, shape=(max(1, capacity if reuse_moments else 0),)),
         refined_pressure=V(dtype=gs.qd_bool, shape=(max(1, capacity if reuse_moments else 0),)),
+        source_heads=V_VEC(2, dtype=gs.qd_int, shape=(capacity if adaptive else 0,)),
+        next_task=V_VEC(1, dtype=gs.qd_int, shape=(capacity if adaptive else 0,)),
+        load_difference=V_VEC(6, dtype=gs.qd_float, shape=(capacity if adaptive else 0,)),
     )
     workspace.count.fill(0)
     workspace.overflow_calls.fill(0)

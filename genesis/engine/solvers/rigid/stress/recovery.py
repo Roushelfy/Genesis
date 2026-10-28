@@ -185,6 +185,7 @@ class RigidStressRecovery:
                                 and gs.backend == gs.cuda
                                 else 0,
                                 reuse_contact_moments,
+                                adaptive=options.pressure_quadrature == "adaptive",
                             ),
                             options.model_copy(deep=True),
                             options.contact_wrench_reuse

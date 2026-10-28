@@ -174,7 +174,13 @@ def test_loading_options_defaults_and_overrides(tmp_path, stress_backend):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("cooperative", (False, True))
-def test_adaptive_pressure_wrench_release_and_partial_reset(nonconvex_material_mesh, tmp_path, cooperative):  # noqa: F811
+@pytest.mark.parametrize("tasks_per_env", (1, 32))
+def test_adaptive_pressure_wrench_release_and_partial_reset(
+    nonconvex_material_mesh,  # noqa: F811
+    tmp_path,
+    cooperative,
+    tasks_per_env,
+):
     vertices, tetrahedra, triangles, _shape = nonconvex_material_mesh
     mesh = tmp_path / "adaptive.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles)
@@ -201,7 +207,7 @@ def test_adaptive_pressure_wrench_release_and_partial_reset(nonconvex_material_m
         2, 2, 0.0003, cooperative=cooperative, cooperative_scatter=cooperative, hertz_profile=True, adaptive=True
     )
     reuse_moments = cooperative and gs.backend == gs.cuda
-    workspace = create_scatter_workspace(2, 1, reuse_moments=reuse_moments)
+    workspace = create_scatter_workspace(2, tasks_per_env, reuse_moments=reuse_moments, adaptive=True)
     state = model.create_state(2, "full")
     omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
     omega.fill(0)
@@ -238,6 +244,23 @@ def test_adaptive_pressure_wrench_release_and_partial_reset(nonconvex_material_m
         raw = qd_to_numpy(state.force, transpose=True)
         expected = forces.sum(axis=0)
         assert_equal(qd_to_numpy(contacts.status, transpose=True), 0)
+        admission = contacts.admission
+        attempts = qd_to_numpy(admission.attempts, transpose=True)[..., 0]
+        errors = qd_to_numpy(admission.errors, transpose=True)
+        assert (attempts[active.T] >= 1).all()
+        assert (errors[..., 3][active.T] <= 1e-3).all()
+        checker_status = qd_to_numpy(admission.stage_checker_status, transpose=True)
+        source_errors = qd_to_numpy(admission.stage_source_errors, transpose=True)
+        for i_b, i_c in np.argwhere(active.T):
+            stage = attempts[i_b, i_c] - 1
+            assert checker_status[i_b, i_c, stage] == 0
+            assert (source_errors[i_b, i_c, stage] <= 1e-8).all()
+        if reuse_moments and tasks_per_env == 32:
+            count = qd_to_numpy(workspace.count)
+            pair_count = qd_to_numpy(contacts.active_count)
+            heads = qd_to_numpy(workspace.source_heads, transpose=True)
+            assert count <= workspace.tasks.shape[0]
+            assert heads[:pair_count, 1].sum() == count
         assert_allclose(raw.sum(axis=1), expected, rtol=1e-8, atol=0.0)
         moment = np.cross(coordinates[None] - point, raw).sum(axis=1)
         force_norm = np.linalg.norm(expected, axis=1)

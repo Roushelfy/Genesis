@@ -34,6 +34,10 @@ class StressPressureAdmission:
     stage_status: qd.Tensor
     stage_reason: qd.Tensor
     stage_evaluations: qd.Tensor
+    checker_coefficient: qd.Tensor
+    stage_checker_status: qd.Tensor
+    stage_checker_evaluations: qd.Tensor
+    stage_source_errors: qd.Tensor
     counters: qd.Tensor
     overflow: qd.Tensor
 
@@ -115,6 +119,10 @@ def create_contacts(
             stage_status=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
             stage_reason=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
             stage_evaluations=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            checker_coefficient=V_VEC(3, dtype=gs.qd_float, shape=shape if adaptive else (0, 0)),
+            stage_checker_status=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            stage_checker_evaluations=V_VEC(3, dtype=gs.qd_int, shape=shape if adaptive else (0, 0)),
+            stage_source_errors=V_MAT(3, 4, dtype=gs.qd_float, shape=shape if adaptive else (0, 0)),
             counters=V_VEC(9, dtype=qd.i64, shape=(n_envs if adaptive else 0,)),
             overflow=V_VEC(1, dtype=gs.qd_int, shape=(n_envs if adaptive else 0,)),
         ),
@@ -134,6 +142,10 @@ def create_contacts(
         state.admission.stage_status.fill(0)
         state.admission.stage_reason.fill(0)
         state.admission.stage_evaluations.fill(0)
+        state.admission.checker_coefficient.fill(0)
+        state.admission.stage_checker_status.fill(0)
+        state.admission.stage_checker_evaluations.fill(0)
+        state.admission.stage_source_errors.fill(0)
         state.admission.counters.fill(0)
         state.admission.overflow.fill(0)
     return state

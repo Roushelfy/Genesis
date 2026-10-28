@@ -249,6 +249,15 @@ def planar_query_execution_modes(workload: FrankaEgg) -> list[str]:
     return modes
 
 
+def array_identity(value: np.ndarray) -> dict:
+    """Hash an array's declared type, shape and logical C-order values."""
+    return {
+        "shape": list(value.shape),
+        "dtype": value.dtype.str,
+        "sha256": hashlib.sha256(value.tobytes(order="C")).hexdigest(),
+    }
+
+
 def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | None = None) -> dict:
     """Check the independent recovery route before timing its frozen input."""
     solver = workload.scene.rigid_solver
@@ -258,6 +267,11 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
     original_point = qd_to_numpy(entry.contacts.position, transpose=True, copy=True)
     original_wrench_force = qd_to_numpy(entry.contacts.force, transpose=True, copy=True)
     original_radius = qd_to_numpy(entry.contacts.radius, transpose=True, copy=True)
+    original_context = (
+        qd_to_numpy(entry.omega, transpose=True, copy=True),
+        qd_to_numpy(entry.contacts.frame_position, transpose=True, copy=True),
+        qd_to_numpy(entry.contacts.frame_quaternion, transpose=True, copy=True),
+    )
     restore_frame(workload)
     if entry.automatic_radius is not None:
         assert geometry is not None
@@ -270,6 +284,30 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
     point = qd_to_numpy(entry.contacts.position, transpose=True)
     wrench_force = qd_to_numpy(entry.contacts.force, transpose=True)
     valid = qd_to_numpy(entry.contacts.valid, transpose=True)
+    context = (
+        qd_to_numpy(entry.omega, transpose=True),
+        qd_to_numpy(entry.contacts.frame_position, transpose=True),
+        qd_to_numpy(entry.contacts.frame_quaternion, transpose=True),
+    )
+    context_identity = {}
+    for name, before, after, relative in zip(
+        ("body_omega_rad_s", "frame_position_m", "frame_quaternion_wxyz"),
+        original_context,
+        context,
+        (1e-12, 0.0, 1e-12),
+    ):
+        np.testing.assert_allclose(after, before, rtol=relative, atol=1e-13)
+        context_identity[name] = {
+            "before": array_identity(before),
+            "after": array_identity(after),
+            "bitwise_equal": before.dtype == after.dtype
+            and before.shape == after.shape
+            and before.tobytes(order="C") == after.tobytes(order="C"),
+            "max_absolute_difference": float(np.max(np.abs(after - before), initial=0.0)),
+            "roundtrip_rtol": relative,
+            "roundtrip_atol": 1e-13,
+            "roundtrip_passed": True,
+        }
     np.testing.assert_allclose(point[valid], original_point[valid], rtol=0, atol=1e-13)
     np.testing.assert_allclose(wrench_force[valid], original_wrench_force[valid], rtol=1e-12, atol=1e-13)
     radius_difference = 0.0
@@ -364,6 +402,13 @@ def prepare_recovery_snapshot(workload: FrankaEgg, geometry: GeometryFrame | Non
         "normalized_force_error_max": float(force_error.max(initial=0)),
         "normalized_moment_error_max": float(moment_error.max(initial=0)),
         "complete_residual_max_N": float(residual.max()),
+        "mechanical_context_identity": context_identity,
+        "geometry_frame_identity": {
+            "position_m": array_identity(geometry.position),
+            "quaternion_wxyz": array_identity(geometry.quaternion),
+        }
+        if geometry is not None
+        else None,
         "physical_source_identity": {
             "scope": "Untimed current physical sources, sorted within each environment independently of contact slots. Anchors are recorded separately because the volume elastic surface is independent.",
             "columns": [

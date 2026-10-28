@@ -19,7 +19,7 @@ from .contact import (
     func_pressure_warp,
 )
 from .data import StressInfo, StressState
-from .scatter import StressScatterWorkspace, func_pressure_moments
+from .scatter import StressScatterWorkspace, func_prepare_scatter, func_pressure_moments
 from .surface import StressSurfaceInfo, func_surface_face_admitted
 
 _ADMISSION_TOLERANCE = 1e-3
@@ -30,7 +30,7 @@ _SOURCE_WRENCH = 8
 _NONFINITE = 16
 _MISSING_SUPPORT = 32
 _INVALID_SOURCE = 64
-_NORMALIZE_CHECK_MASS = False
+_ADMISSION_VERSION = 4
 
 
 @qd.func
@@ -286,71 +286,150 @@ def func_adaptive_fit(
 
 @qd.func
 def func_adaptive_check(
+    i_pair: int,
     i_c: int,
     i_b: int,
     i_rule: int,
     i_check: int,
     i_lane: int,
     coefficient: qd.types.vector(3),
+    check_coefficient: qd.types.vector(3),
     contacts: StressContactState,
     info: StressInfo,
     surface: StressSurfaceInfo,
+    workspace: StressScatterWorkspace,
+    prepared: qd.template(),
     cooperative: qd.template(),
 ):
-    """Compare fixed-coefficient original face loads before shared-node cancellation."""
+    """Compare independently fitted source loads after assembly on original P2 nodes."""
+    candidate_gradient = qd.Vector.zero(gs.qd_float, 3)
     check_gradient = qd.Vector.zero(gs.qd_float, 3)
     total = qd.Vector.zero(gs.qd_float, 3)
     moment = qd.Vector.zero(gs.qd_float, 3)
-    raw_error, normalized_error = gs.qd_float(0.0), gs.qd_float(0.0)
-    check_mass = gs.qd_float(0.0)
+    check_total = qd.Vector.zero(gs.qd_float, 3)
+    check_moment = qd.Vector.zero(gs.qd_float, 3)
+    face_error, node_error = gs.qd_float(0.0), gs.qd_float(0.0)
     invalid, missing = 0, 0
+    cached = False
+    if qd.static(prepared):
+        cached = workspace.count[None] <= workspace.tasks.shape[0] and i_pair < workspace.source_heads.shape[0]
+    n_tasks = surface.face_origin.shape[0]
+    if cached:
+        n_tasks = workspace.source_heads[i_pair][1]
+        cached = n_tasks >= 0 and n_tasks <= surface.face_origin.shape[0]
+    if not cached:
+        n_tasks = surface.face_origin.shape[0]
     for a in qd.static(range(3)):
         invalid += gs.qd_int(qd.math.isnan(coefficient[a]) or qd.math.isinf(coefficient[a]))
-    # The first pass finds one mass over the complete source. The second compares local weights.
-    for i_phase in range(2):
-        for i_f in range(surface.face_origin.shape[0]):
-            candidate_weights = qd.Vector.zero(gs.qd_float, 6)
-            candidate_count = 0
-            for i_pass in range(qd.select(i_phase == 0, 1, 2)):
-                i_current = qd.select(i_phase == 0 or i_pass == 1, i_check, i_rule)
-                _gram, face_gradient, _objective, nodal, face_total, face_moment, candidates, face_invalid = (
-                    func_adaptive_face(
-                        i_f,
-                        i_c,
-                        i_b,
-                        i_current,
-                        i_lane,
-                        coefficient,
-                        coefficient,
-                        1.0,
-                        contacts,
-                        info,
-                        surface,
-                        False,
-                        cooperative,
-                    )
+        invalid += gs.qd_int(qd.math.isnan(check_coefficient[a]) or qd.math.isinf(check_coefficient[a]))
+    i_task = -1
+    if cached:
+        i_task = workspace.source_heads[i_pair][0]
+    for i_face in range(n_tasks):
+        i_f = i_face
+        if cached:
+            if i_task < 0:
+                break
+            i_f = workspace.tasks[i_task][1]
+        candidate_weights = qd.Vector.zero(gs.qd_float, 6)
+        candidate_count = 0
+        difference = qd.Vector.zero(gs.qd_float, 6)
+        for i_pass in range(2):
+            i_current = qd.select(i_pass == 0, i_rule, i_check)
+            beta = coefficient
+            if i_pass == 1:
+                beta = check_coefficient
+            _gram, face_gradient, _objective, nodal, face_total, face_moment, candidates, face_invalid = (
+                func_adaptive_face(
+                    i_f, i_c, i_b, i_current, i_lane, beta, beta, 1.0, contacts, info, surface, False, cooperative
                 )
-                invalid += face_invalid
-                if i_phase == 0:
-                    check_gradient += face_gradient
-                elif i_pass == 0:
-                    candidate_weights = nodal
-                    candidate_count = candidates
-                    total += face_total
-                    moment += face_moment
-                else:
-                    missing += gs.qd_int(candidate_count > 0 and candidates == 0)
+            )
+            invalid += face_invalid
+            if i_pass == 0:
+                candidate_gradient += face_gradient
+                candidate_weights = nodal
+                candidate_count = candidates
+                total += face_total
+                moment += face_moment
+            else:
+                check_gradient += face_gradient
+                check_total += face_total
+                check_moment += face_moment
+                missing += gs.qd_int(candidate_count > 0 and candidates == 0)
+                difference = candidate_weights - nodal
+                for a in qd.static(range(6)):
+                    face_error += qd.abs(difference[a])
+        if cached:
+            if i_lane == 0:
+                workspace.load_difference[i_task] = difference
+            i_task = workspace.next_task[i_task][0]
+    if cached:
+        if qd.static(cooperative):
+            qd.simt.subgroup.sync()
+        if i_lane == 0:
+            # Canonical first occurrence is local to this stable source chain.
+            i_task = workspace.source_heads[i_pair][0]
+            for _entry in range(n_tasks):
+                if i_task >= 0:
+                    i_f = workspace.tasks[i_task][1]
                     for a in qd.static(range(6)):
-                        raw_error += qd.abs(candidate_weights[a] - nodal[a])
-                        normalized_error += qd.abs(
-                            candidate_weights[a] - nodal[a] / qd.select(check_mass > 0.0, check_mass, 1.0)
+                        node = info.surface_nodes[i_f, a]
+                        first = True
+                        value = gs.qd_float(0.0)
+                        i_other = workspace.source_heads[i_pair][0]
+                        before_current = True
+                        for _other_entry in range(n_tasks):
+                            if i_other >= 0:
+                                other_face = workspace.tasks[i_other][1]
+                                for b in qd.static(range(6)):
+                                    if info.surface_nodes[other_face, b] == node:
+                                        value += workspace.load_difference[i_other][b]
+                                        if (before_current and i_other != i_task) or (i_other == i_task and b < a):
+                                            first = False
+                                if i_other == i_task:
+                                    before_current = False
+                                i_other = workspace.next_task[i_other][0]
+                        if first:
+                            node_error += qd.abs(value)
+                    i_task = workspace.next_task[i_task][0]
+        if qd.static(cooperative):
+            node_error = qd.simt.subgroup.reduce_all_add(node_error)
+    else:
+        # Complete portable/overflow route: evaluate only faces incident to each
+        # original node. No truncated pool and no dense contact-by-node storage.
+        for node in range(info.vertices.shape[0]):
+            value = gs.qd_float(0.0)
+            for i_f in range(surface.face_origin.shape[0]):
+                local = -1
+                for a in qd.static(range(6)):
+                    if info.surface_nodes[i_f, a] == node:
+                        local = a
+                if local >= 0:
+                    for i_pass in range(2):
+                        i_current = qd.select(i_pass == 0, i_rule, i_check)
+                        beta = coefficient
+                        if i_pass == 1:
+                            beta = check_coefficient
+                        _gram, _gradient, _objective, nodal, _total, _moment, _count, _invalid = func_adaptive_face(
+                            i_f,
+                            i_c,
+                            i_b,
+                            i_current,
+                            i_lane,
+                            beta,
+                            beta,
+                            1.0,
+                            contacts,
+                            info,
+                            surface,
+                            False,
+                            cooperative,
                         )
-        if i_phase == 0:
-            check_mass = check_gradient[0]
+                        value += qd.select(i_pass == 0, 1.0, -1.0) * nodal[local]
+            node_error += qd.abs(value)
+    check_mass = check_gradient[0]
     target = qd.Vector([1.0, 0.0, 0.0])
-    raw_gradient = (check_gradient - target).norm()
-    normalized_gradient = (check_gradient / qd.select(check_mass > 0.0, check_mass, 1.0) - target).norm()
-    errors = qd.Vector([raw_gradient, raw_error, normalized_gradient, normalized_error])
+    errors = qd.Vector([(check_gradient - target).norm(), face_error, (candidate_gradient - target).norm(), node_error])
     for a in qd.static(range(4)):
         invalid += gs.qd_int(qd.math.isnan(errors[a]) or qd.math.isinf(errors[a]))
     invalid += gs.qd_int(qd.math.isnan(check_mass) or qd.math.isinf(check_mass))
@@ -358,21 +437,25 @@ def func_adaptive_check(
     force = contacts.force[i_c, i_b]
     force_error = (total - force).norm()
     moment_error = moment.norm()
+    checker_force_error = (check_total - force).norm()
+    checker_moment_error = check_moment.norm()
     reason = 0
-    i_error = 0
-    if qd.static(_NORMALIZE_CHECK_MASS):
-        i_error = 2
-    if errors[i_error] > _ADMISSION_TOLERANCE:
+    if errors[0] > _PRESSURE_FIT_TOLERANCE or errors[2] > _PRESSURE_FIT_TOLERANCE:
         reason |= _CHECK_GRADIENT
-    if errors[i_error + 1] > _ADMISSION_TOLERANCE:
+    if node_error > _ADMISSION_TOLERANCE:
         reason |= _CHECK_LOAD
     if force_error > 1e-8 * force.norm() or moment_error > 1e-8 * force.norm() * contacts.radius[i_c, i_b]:
+        reason |= _SOURCE_WRENCH
+    if (
+        checker_force_error > 1e-8 * force.norm()
+        or checker_moment_error > 1e-8 * force.norm() * contacts.radius[i_c, i_b]
+    ):
         reason |= _SOURCE_WRENCH
     if missing > 0:
         reason |= _MISSING_SUPPORT
     if invalid > 0:
         reason |= _NONFINITE
-    return reason, errors, check_mass, force_error, moment_error
+    return reason, errors, check_mass, force_error, moment_error, checker_force_error, checker_moment_error
 
 
 @qd.func
@@ -400,16 +483,23 @@ def func_adaptive_contact(
     errors = qd.Vector.zero(gs.qd_float, 4)
     check_mass = gs.qd_float(0.0)
     force_error, moment_error = gs.qd_float(0.0), gs.qd_float(0.0)
+    checker_coefficient = qd.Vector.zero(gs.qd_float, 3)
     attempts, selected_rule = 0, 1
     if i_lane == 0:
         qd.atomic_add(contacts.admission.counters[i_b][0], 1)
     # Each source owns its stage transitions. Accepted neighbors retain their fitted coefficient.
     for i_stage in range(3):
-        if reason != 0 and (reason & _NONFINITE) == 0:
+        if reason != 0:
             selected_rule = i_stage + 1
             attempts += 1
             invalid = 0
             candidates, iterations = 0, 0
+            check_status, check_iterations = 3, 0
+            checker_coefficient = qd.Vector.zero(gs.qd_float, 3)
+            errors = qd.Vector.zero(gs.qd_float, 4)
+            check_mass = gs.qd_float(0.0)
+            force_error, moment_error = gs.qd_float(0.0), gs.qd_float(0.0)
+            checker_force_error, checker_moment_error = gs.qd_float(0.0), gs.qd_float(0.0)
             fit_current = True
             if qd.static(prepared):
                 fit_current = i_stage > 0
@@ -426,21 +516,52 @@ def func_adaptive_contact(
                     contacts.evaluations[i_c, i_b] += iterations
                 if i_stage == 0 and status == 0 and iterations == 0:
                     qd.atomic_add(contacts.admission.counters[i_b][8], 1)
-            reason, errors, check_mass, force_error, moment_error = func_adaptive_check(
-                i_c, i_b, selected_rule, i_stage, i_lane, coefficient, contacts, info, surface, cooperative
-            )
-            if status != 0:
-                reason |= _FIT_FAILURE
+            reason = _FIT_FAILURE
+            if status == 0 and invalid == 0:
+                checker_coefficient, _check_weight, check_status, _check_count, check_invalid, check_iterations = (
+                    func_adaptive_fit(i_c, i_b, i_stage, i_lane, contacts, info, surface, cooperative)
+                )
+                invalid += check_invalid
+                if check_status == 0 and check_invalid == 0:
+                    reason, errors, check_mass, force_error, moment_error, checker_force_error, checker_moment_error = (
+                        func_adaptive_check(
+                            i_pair,
+                            i_c,
+                            i_b,
+                            selected_rule,
+                            i_stage,
+                            i_lane,
+                            coefficient,
+                            checker_coefficient,
+                            contacts,
+                            info,
+                            surface,
+                            workspace,
+                            prepared,
+                            cooperative,
+                        )
+                    )
+                if i_lane == 0:
+                    qd.atomic_add(contacts.admission.counters[i_b][1], 1)
             if invalid > 0:
                 reason |= _NONFINITE
             if i_lane == 0:
-                qd.atomic_add(contacts.admission.counters[i_b][1], 1)
                 for a in qd.static(range(4)):
                     contacts.admission.stage_errors[i_c, i_b][i_stage, a] = errors[a]
+                force_norm = contacts.force[i_c, i_b].norm()
+                radius = contacts.radius[i_c, i_b]
+                contacts.admission.stage_source_errors[i_c, i_b][i_stage, 0] = force_error / force_norm
+                contacts.admission.stage_source_errors[i_c, i_b][i_stage, 1] = moment_error / (force_norm * radius)
+                contacts.admission.stage_source_errors[i_c, i_b][i_stage, 2] = checker_force_error / force_norm
+                contacts.admission.stage_source_errors[i_c, i_b][i_stage, 3] = checker_moment_error / (
+                    force_norm * radius
+                )
                 contacts.admission.stage_mass[i_c, i_b][i_stage] = check_mass
                 contacts.admission.stage_status[i_c, i_b][i_stage] = status
+                contacts.admission.stage_checker_status[i_c, i_b][i_stage] = check_status
                 contacts.admission.stage_reason[i_c, i_b][i_stage] = reason
                 contacts.admission.stage_evaluations[i_c, i_b][i_stage] = iterations
+                contacts.admission.stage_checker_evaluations[i_c, i_b][i_stage] = check_iterations
     if i_lane == 0:
         contacts.coefficient[i_c, i_b] = coefficient
         contacts.weight_sum[i_c, i_b] = weight_sum
@@ -448,6 +569,7 @@ def func_adaptive_contact(
         contacts.admission.reason[i_c, i_b] = qd.Vector([reason])
         contacts.admission.errors[i_c, i_b] = errors
         contacts.admission.check_mass[i_c, i_b] = qd.Vector([check_mass])
+        contacts.admission.checker_coefficient[i_c, i_b] = checker_coefficient
         contacts.admission.attempts[i_c, i_b] = qd.Vector([attempts])
         contacts.force_error[i_c, i_b] = force_error
         contacts.moment_error[i_c, i_b] = moment_error
@@ -477,6 +599,10 @@ def func_adaptive_initialize(contacts: StressContactState):
         contacts.admission.stage_status[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
         contacts.admission.stage_reason[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
         contacts.admission.stage_evaluations[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
+        contacts.admission.checker_coefficient[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        contacts.admission.stage_checker_status[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
+        contacts.admission.stage_checker_evaluations[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
+        contacts.admission.stage_source_errors[i_c, i_b] = qd.Matrix.zero(gs.qd_float, 3, 4)
         if contacts.valid[i_c, i_b] and contacts.status[i_c, i_b] != 0:
             contacts.admission.reason[i_c, i_b] = qd.Vector([_INVALID_SOURCE])
             qd.atomic_add(contacts.admission.counters[i_b][0], 1)
@@ -501,8 +627,22 @@ def func_adaptive_pressure(
         func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
         func_pressure_warp(contacts, surface, True, workspace.refined_pressure, True)
     else:
+        func_prepare_scatter(contacts, state, info, surface, workspace, cached_bounds)
         func_pressure_warp(contacts, surface, True, contacts.valid, False)
     func_pressure_correct_warp(contacts, surface)
+    # All initial sources retain their pair identity even when their first fit
+    # fails. The complete task pool precedes stage transitions and final scatter.
+    cached = (
+        workspace.count[None] <= workspace.tasks.shape[0]
+        and contacts.active_count[None] <= workspace.source_heads.shape[0]
+    )
+    for i_pair in range(qd.select(cached, contacts.active_count[None], 0)):
+        workspace.source_heads[i_pair] = qd.Vector([-1, 0])
+    for i_task in range(qd.select(cached, workspace.count[None], 0)):
+        i_pair = workspace.tasks[i_task][0]
+        previous = qd.atomic_exchange(workspace.source_heads[i_pair][0], i_task)
+        qd.atomic_add(workspace.source_heads[i_pair][1], 1)
+        workspace.next_task[i_task] = qd.Vector([previous])
     qd.loop_config(block_dim=128)
     for i_thread in range(contacts.active_count[None] * 32):
         i_pair, i_lane = i_thread // 32, i_thread % 32
@@ -567,6 +707,10 @@ def kernel_reset_adaptive(envs_idx: qd.types.ndarray(), contacts: StressContactS
         contacts.admission.stage_status[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
         contacts.admission.stage_reason[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
         contacts.admission.stage_evaluations[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
+        contacts.admission.checker_coefficient[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        contacts.admission.stage_checker_status[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
+        contacts.admission.stage_checker_evaluations[i_c, i_b] = qd.Vector.zero(gs.qd_int, 3)
+        contacts.admission.stage_source_errors[i_c, i_b] = qd.Matrix.zero(gs.qd_float, 3, 4)
     for i_selected in range(envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
         contacts.admission.counters[i_b] = qd.Vector.zero(qd.i64, 9)
