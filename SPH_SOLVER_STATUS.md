@@ -193,6 +193,20 @@ full S1 run the density solve takes 47 iterations per substep at the FluidBench 
 0.05 %), 94, 114 and 170 at time steps x2, x4, x8 (records `@sphgoal-nl1-it100-dt*`); with the default cap of 10
 iterations those solves stop unconverged at the larger steps (`fe_coarse_dt8`: all 882 density solves).
 
+Uninstrumented timings of the committed revisions (FluidBench timing runs: S1 f2 R2, one environment, window 1-2 s of
+the stirring, three repeats, iteration cap 100 so that every solve converges; records
+`gs-dfsph__S1__f2@sphgoal-abl-<revision>-dt<x>` in FluidBench `results/index`):
+
+| Revision | RTF at dt 0.31 ms (x1) | wall per repeat (s) | RTF at dt 2.5 ms (x8) | wall per repeat (s) | density iterations per substep (x1 / x8) |
+| --- | --- | --- | --- | --- | --- |
+| 26832080b (model) | 0.0162 | 62.2, 66.2, 59.3 | 0.0438 | 23.0, 23.0, 23.2 | 47.9 / 165.6 |
+| cbc79cd98 neighbor lists | 0.0241 | 41.8, 43.1, 40.6 | 0.0735 | 13.6, 13.7, 13.7 | 51.0 / 165.2 |
+| 51e488d49 fused iteration | 0.0290 | 37.8, 34.7, 33.6 | 0.0818 | 12.2, 12.3, 12.5 | 47.8 / 165.5 |
+| 0ea1569d5 Chebyshev | 0.0412 | 24.5, 24.7, 24.3 | 0.156 | 6.4, 6.5, 6.5 | 19.5 / 67.9 |
+
+The target RTF of 0.5 is not reached: the fastest converged configuration runs at 0.156 (dt x8), and S1 is not
+accuracy-qualified at any time step (see the S1 table above).
+
 | Candidate (SPH_SOLVER_GOAL.md) | State | Evidence |
 | --- | --- | --- |
 | 1 boundary geometry per fluid particle and link | implemented: gradient, wall tensor and clearance per boundary slot, computed once per substep and read by every iteration | solver design (M2) |
