@@ -10,11 +10,19 @@ when measured stress accuracy and robustness justify them.
 Implement automatic-radius DPR defaults consistently in the API, factories,
 Franka workload and CLI/benchmark entrypoints, retain explicit legacy/strict
 overrides, and deliver tested 3D/shell max/full and small/batched examples.
-[Current explicit examples](docs/RUNNING_AUTOMATIC_DPR.md) select Hertz through the
-existing API; they do not claim that the migration is already implemented.
+[Current examples](docs/RUNNING_AUTOMATIC_DPR.md) use the public Hertz defaults
+and volume adaptive/q16 selection. Explicit shell planar/k32 retains Q4 elasticity.
 Keep both physical backends and the qualified planar shell route. Production
 numerics stay in the rigid feature in Quadrants. This goal is open: source,
 validation and performance delivery are required, not documentation alone.
+
+The frozen source `f0fd49a01b65c4ed0715dae18d8ff2d3d6878c0a` contains the default
+candidate and the repaired cooperative nonlinear fit. All12 frozen inputs and20
+CPU/CUDA loaded controls pass; the authored tip passes all four scheduling routes
+and lifecycle checks. Final-source full histories, public examples, profiles,
+memory and paired timing are tracked by the [execution record](docs/AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md).
+Keep earlier failed attempts and source-specific evidence; this is not a completed
+delivery or a reason to restart the original diagnosis.
 
 ## Previous delivery: planar loading DPR optimization
 **Completed, 2026-10-27:** the [native planar loading goal](docs/PLANAR_LOADING_DPR_NATIVE_GOAL_20261027.md)

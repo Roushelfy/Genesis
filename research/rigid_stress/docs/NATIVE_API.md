@@ -43,8 +43,12 @@ original independent load-error budget. Lower-degree failures of that strict
 intermediate comparison remain preserved. The active
 [fast-path study](AUTOMATIC_DPR_FAST_PATH_PROGRESS_20261028.md) separately evaluates
 complete tensor/global/loaded/remote stress budgets and selective admission.
-Its explicit `"adaptive"` prototype is pending numerical/runtime qualification;
-the ordinary integration default remains provisional `"edge"`. See the
+Ordinary volume Hertz patch loading now selects `"adaptive"` with initialq16.
+Independently fitted8/16/64 checks admit candidate16/64/128 rules; only unresolved
+contacts advance. Original fit, source-wrench and elastic-residual gates remain.
+Shell, manual-radius, legacy-profile and SCR contexts retain edge/q10. An explicit
+`quadrature` without a rule also retains fixed edge integration. Final default
+workflow and matched cost verification remain tracked by the active goal. See the
 [native candidate report](NATIVE_CANDIDATE_RESULTS_20261025.md) for accuracy,
 cost and the preserved failed configurations. This is a quadrature repair,
 not a change to the declared pressure model or its physical qualifications.

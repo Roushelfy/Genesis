@@ -12,8 +12,9 @@ Make automatic-radius + Hertz-pressure DPR the actual API/factory/workload/CLI
 default, preserving explicit manual/legacy and SCR alternatives. Volume remains
 the backend default; retain Q4 loading by default for shell and show the qualified
 planar recipe explicitly. Add and run simple 3D/shell, max/full and batched Franka
-examples; [the current examples](docs/RUNNING_AUTOMATIC_DPR.md) are explicit
-configurations pending that migration. Keep native production numerics in Quadrants,
+examples; [the current examples](docs/RUNNING_AUTOMATIC_DPR.md) use the implemented
+volume adaptive/q16 default and an explicit shell planar/k32 recipe. Finish their
+final-source verification and matched cost accounting. Keep native production numerics in Quadrants,
 the mature load model, arbitrary contacts/friction and existing planar winners.
 Use focused low-model accuracy, actual profiles and matched full-path throughput.
 Avoid reopening unchanged prior experiments or turning this goal into a broad
