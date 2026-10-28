@@ -53,6 +53,11 @@ class SPHSolveStats:
     max_density_residual: float = 0.0
     max_viscosity_residual: float = 0.0
     max_coupling_residual: float = 0.0
+    # repetitions of the fluid stage after the constraint solve of the rigid solver changed a coupled link (see
+    # SPHSolver.repeat_for_rigid_constraints), substeps where the cap stopped them, and the largest final disagreement
+    n_constraint_passes: int = 0
+    n_unconverged_constraint: int = 0
+    max_constraint_residual: float = 0.0
     # fluid particles near more rigid links than they cache, whose surplus links they ignore (see N_BOUNDARY_SLOTS)
     n_boundary_slot_overflows: int = 0
     # fluid particles whose clearance from a rigid surface the wall clearance guard restored (see
@@ -101,7 +106,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._visc_max_error = options.max_viscosity_error
         self._visc_max_iters = options.max_viscosity_solver_iterations
         self._max_coupling_iters = options.max_coupling_iterations
+        self._max_constraint_iters = options.max_constraint_iterations
+        self._max_constraint_error = options.max_constraint_error
+        self._n_constraint_passes = 0
         self._energy_audit = options.energy_audit
+        self._isotropic_pressure = options.isotropic_pressure
         # Whether any material has a viscosity, which enables the implicit viscosity solve. Resolved at build time.
         self._has_viscosity = False
         self._df_eps = 1e-5
@@ -110,9 +119,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
         self._particle_volume = options.particle_volume_factor * self._particle_size**3
 
-        # Boundary particles sampled on the surface of the rigid geoms. The spacing is the one of the regular triangle
-        # sampling of Akinci et al. 2012 boundaries, denser than the fluid so that the fluid cannot leak through.
-        self._boundary_spacing = 0.75 * self._particle_size
+        # Boundary particles sampled on the surface of the rigid geoms, on a regular triangle sampling denser than the
+        # fluid so that the fluid cannot leak through (Akinci et al. 2012). The tangential part of their pressure force
+        # acts as a roughness of the wall, which drops as the spacing shrinks from 0.75 to 0.5 particle sizes and
+        # little below (SPH_SOLVER_STATUS.md, finding 2).
+        self._boundary_spacing = 0.5 * self._particle_size
         # Upper bound on the number of boundary particles, which grows with the area of the simulation domain.
         self._max_n_boundary_particles = 5_000_000
         self._boundary_offset = options.boundary_offset
@@ -161,6 +172,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             density_norm=gs.qd_float,
             # number of neighbors within the support radius
             n_neighbors=gs.qd_int,
+            # directional correction of the pressure pair weights of the particle in the degree 2 spherical harmonics
+            # (see _kernel_compute_pressure_correction)
+            **(dict(pressure_correction=qd.types.vector(5, gs.qd_float)) if self._isotropic_pressure else {}),
         )
 
         # static material info
@@ -283,13 +297,6 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 # boundary particle it faces most closely, and that normal (see _task_compute_boundary_density_and_factor)
                 clearance=gs.qd_float,
                 clearance_normal=gs.qd_vec3,
-                # kernel gradient sum and kernel-weighted normal sum of the boundary particles of the faced surface
-                # (see _task_compute_boundary_density_and_factor)
-                face_grad=gs.qd_vec3,
-                face_normal_sum=gs.qd_vec3,
-                # response of the fluid pair dissipation of the particle to a unit shear along the clearance normal (see
-                # _kernel_compute_viscosity_geometry)
-                shear_response=gs.qd_float,
                 # impulse of the wall clearance guard on the link over the substep (see _kernel_enforce_wall_clearance)
                 clearance_impulse=gs.qd_vec3,
             )
@@ -336,6 +343,22 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             # disagreement between the coupled velocities the fluid saw in the last viscosity pass and their implicit
             # solution, relative to their magnitude
             self.envs_coupled_vel_change = qd.field(gs.qd_float, shape=(self._B,))
+            # velocity change of the coupled links by the constraint solve of the rigid solver, held as an external
+            # impulse by a repeated fluid stage, kept across substeps as the guess of the next one (see
+            # repeat_for_rigid_constraints), and the fluid impulse the stage put in the smooth force and acceleration of
+            # the dofs, which a repetition takes back
+            self.coupled_vel_constraint = qd.field(gs.qd_float, shape=(n_coupled_6, self._B))
+            self.dofs_fluid_force = qd.field(gs.qd_float, shape=(rigid_solver.n_dofs_, self._B))
+            self.dofs_fluid_acc = qd.field(gs.qd_float, shape=(rigid_solver.n_dofs_, self._B))
+            self.envs_constraint_residual = qd.field(gs.qd_float, shape=(self._B,))
+            # readouts at the start of the fluid stage, which a repetition restores
+            self.links_fluid_impulse_saved = qd.Vector.field(
+                3, dtype=gs.qd_float, shape=(rigid_solver.n_links, self._B)
+            )
+            self.links_fluid_angular_impulse_saved = qd.Vector.field(
+                3, dtype=gs.qd_float, shape=(rigid_solver.n_links, self._B)
+            )
+            self.envs_viscous_dissipation_saved = qd.field(gs.qd_float, shape=(self._B,))
             # right-hand side and solution of the solves with the rigid mass matrix
             self.dofs_coupling_rhs = qd.field(gs.qd_float, shape=(rigid_solver.n_dofs_, self._B))
             self.dofs_coupling_sol = qd.field(gs.qd_float, shape=(rigid_solver.n_dofs_, self._B))
@@ -805,28 +828,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
         i_s = self._func_find_boundary_slot(i, self.boundary_particles_reordered[j, i_b].link_idx, i_b)
         if i_s != -1:
-            # The wall only resists the motion of the fluid along its normal, as a smooth impermeable wall does: the
-            # kernel gradient is projected on the outward normal of the geom. The full gradient keeps a tangential part
-            # that varies as the fluid slides past the discrete samples, and acts as a roughness that drags the fluid
-            # along any wall. The boundary particles of the surface the fluid particle faces (see
-            # _task_find_boundary_faces), those whose normal is within 45 degrees of the faced one, project their
-            # summed gradient on their kernel-weighted mean normal, the normal of the surface under the fluid particle
-            # (see _kernel_compute_density_and_factor): on a curved surface the normals of single boundary particles
-            # spread over the kernel support, and projections on them keep a tangential part that the pressure weighs,
-            # a friction that grows with the depth. Boundary particles of other faces, around an edge or a corner,
-            # project on their own normal. The force along the projected gradient is not central, so its reaction
-            # applies to the link at the fluid particle (see _func_slot_wall_vel), which keeps linear and angular
-            # momentum balanced.
-            normal = self.boundary_particles_reordered[j, i_b].normal
-            grad_W = self.cubic_kernel_derivative(x_ib)
-            is_face = False
-            if self.particles_boundary_slots[i, i_b, i_s].clearance < self._support_radius:
-                is_face = normal.dot(self.particles_boundary_slots[i, i_b, i_s].clearance_normal) > 0.7
-            if is_face:
-                self.particles_boundary_slots[i, i_b, i_s].face_grad += V_b * grad_W
-                self.particles_boundary_slots[i, i_b, i_s].face_normal_sum += W_ib * normal
-            else:
-                self.particles_boundary_slots[i, i_b, i_s].grad += V_b * grad_W.dot(normal) * normal
+            # The full kernel gradient of the boundary particles is the gradient of the density they add, so the
+            # pressure force is the gradient of the compression energy and does no work on the fluid at rest. A wall
+            # force projected on the surface normal, which a smooth wall exerts, is not that gradient: the density of a
+            # fluid particle sliding past the discrete samples varies, the pressure solve answers it along the normal
+            # only, and water at rest heats up (SPH_SOLVER_STATUS.md, finding 2). The tangential part of the full
+            # gradient acts as a roughness instead, which the sampling spacing of the boundary sets.
+            self.particles_boundary_slots[i, i_b, i_s].grad += V_b * self.cubic_kernel_derivative(x_ib)
 
     @qd.func
     def _func_slot_wall_vel(self, i_p, i_b, k):
@@ -884,8 +892,6 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self.particles_boundary_slots[i_p, i_b, k].link_idx = -1
                         self.particles_boundary_slots[i_p, i_b, k].grad = qd.Vector.zero(gs.qd_float, 3)
                         self.particles_boundary_slots[i_p, i_b, k].clearance = self._support_radius
-                        self.particles_boundary_slots[i_p, i_b, k].face_grad = qd.Vector.zero(gs.qd_float, 3)
-                        self.particles_boundary_slots[i_p, i_b, k].face_normal_sum = qd.Vector.zero(gs.qd_float, 3)
                         self.particles_boundary_slots[i_p, i_b, k].clearance_impulse = qd.Vector.zero(gs.qd_float, 3)
                     self.sh_boundary.for_all_neighbors_of_pos(
                         i_p,
@@ -909,13 +915,6 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     )
                     if ret.n_overflows > 0:
                         self.envs_boundary_slot_overflows[i_b] += 1
-                    for k in range(N_BOUNDARY_SLOTS):
-                        normal_sum = self.particles_boundary_slots[i_p, i_b, k].face_normal_sum
-                        if normal_sum.norm_sqr() > 0.0:
-                            face_normal = normal_sum.normalized()
-                            self.particles_boundary_slots[i_p, i_b, k].grad += (
-                                self.particles_boundary_slots[i_p, i_b, k].face_grad.dot(face_normal) * face_normal
-                            )
                     # BWJ23 eq. (32): boundary particles carry no constraint of their own, so they only enter the
                     # gradient of the constraint of particle i, and not the sum of squared neighbor gradients.
                     for k in range(N_BOUNDARY_SLOTS):
@@ -953,6 +952,135 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.envs_n_active[i_b] += 1
 
     @qd.func
+    def _func_add_pressure_moment(self, x, weight, ret: qd.template()):
+        """Add a neighbor at x with the second moment weight to the moment equations of the pressure correction."""
+        basis = self._func_viscosity_basis(x / x.norm())
+        for a in qd.static(range(5)):
+            ret.rhs[a] -= weight * basis[a + 1]
+            for b in qd.static(range(5)):
+                ret.gram[a, b] += weight * basis[a + 1] * basis[b + 1]
+        ret.trace += weight
+
+    @qd.func
+    def _task_compute_pressure_moment(self, i, j, ret: qd.template(), i_b):
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        r2 = x_ij.norm_sqr()
+        if r2 > self._df_eps * self._support_radius**2:
+            i_m = self.particles_reordered[j, i_b].material
+            weight = self.materials[i_m].rest_volume * (-self.cubic_kernel_derivative(x_ij).dot(x_ij))
+            self._func_add_pressure_moment(x_ij, weight, ret)
+
+    @qd.func
+    def _task_compute_boundary_pressure_moment(self, i, j, ret: qd.template(), i_b):
+        x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+        r2 = x_ib.norm_sqr()
+        if r2 > self._df_eps * self._support_radius**2:
+            weight = self.boundary_particles_reordered[j, i_b].volume * (-self.cubic_kernel_derivative(x_ib).dot(x_ib))
+            self._func_add_pressure_moment(x_ib, weight, ret)
+
+    @qd.kernel
+    def _kernel_compute_pressure_correction(self):
+        """Make the pressure pair forces of every particle carry an isotropic stress.
+
+        The symmetric pair form of the pressure force, -m_i V_j (kappa_i + kappa_j) grad W_ij, gives each particle the
+        virial sum_j V_j (kappa_i + kappa_j) (-W'(r_ij) r_ij) e_ij e_ij^T, whose traceless part is the shear stress the
+        pressure carries. A shear flow under pressure distorts the arrangement of the neighbors, and the pressure then
+        carries a shear stress proportional to its value, a friction that is not in the equations: in a Taylor-Couette
+        flow at 300 Pa the pressure pairs carried twice the viscous stress. The pair weights are therefore multiplied by
+        the mean c_ij = 1 + (s_i(e_ij) + s_j(e_ij)) / 2 of directional corrections s_i in the five degree 2 spherical
+        harmonics, solved per particle so that the second moment sum_j w_ij (1 + s_i(e_ij)) e_ij e_ij^T, w_ij =
+        V_j (-W'(r_ij) r_ij), boundary particles included, is isotropic (Tikhonov term of a thousandth of the mean
+        diagonal). The weight is symmetric and the force stays along e_ij, so the pairs keep conserving linear and
+        angular momentum, and the corrected second moment also makes the pressure gradient consistent to first order.
+        The weight is bounded to [0.7, 1.3]: the bound only acts at edges and corners of rigid geoms, where large
+        corrections amplify the particle noise. The velocity constraint of the pressure solves (the density change rate
+        and the predicted source) takes the same weights, so that the pressure velocity change stays the orthogonal
+        projection in the norm of the masses, which never adds kinetic energy; with the weights in the force alone, the
+        projection is oblique and heats a fluid at rest.
+        At the free surface (normalized density from 0.95 down to 0.85) the correction fades out, since there the
+        anisotropy of the half neighborhood is that of the surface.
+        """
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                ret = qd.Struct(
+                    gram=qd.Matrix.zero(gs.qd_float, 5, 5),
+                    rhs=qd.Vector.zero(gs.qd_float, 5),
+                    trace=gs.qd_float(0.0),
+                )
+                self.sh.for_all_neighbors(
+                    i_p,
+                    self.particles_reordered.pos,
+                    self._support_radius,
+                    ret,
+                    self._task_compute_pressure_moment,
+                    i_b,
+                )
+                if qd.static(self._has_boundary):
+                    self.sh_boundary.for_all_neighbors_of_pos(
+                        i_p,
+                        self.particles_reordered[i_p, i_b].pos,
+                        -1,
+                        self.boundary_particles_reordered.pos,
+                        self._support_radius,
+                        ret,
+                        self._task_compute_boundary_pressure_moment,
+                        i_b,
+                    )
+                correction = qd.Vector.zero(gs.qd_float, 5)
+                blend = qd.min(qd.max((self.particles_reordered[i_p, i_b].density_norm - 0.85) / 0.1, 0.0), 1.0)
+                if blend > 0.0 and ret.trace > self._df_eps:
+                    gram = ret.gram + 1e-3 * ret.gram.trace() / 5.0 * qd.Matrix.identity(gs.qd_float, 5)
+                    correction = blend * self._func_solve_spd5(gram, ret.rhs)
+                self.particles_reordered[i_p, i_b].pressure_correction = correction
+
+    @qd.func
+    def _func_solve_spd5(self, mat, rhs):
+        """Solve the symmetric positive definite system mat x = rhs of size 5 by Cholesky factorization."""
+        lower = qd.Matrix.zero(gs.qd_float, 5, 5)
+        for c in qd.static(range(5)):
+            diag = mat[c, c]
+            for k in qd.static(range(c)):
+                diag -= lower[c, k] * lower[c, k]
+            diag = qd.sqrt(qd.max(diag, gs.EPS))
+            lower[c, c] = diag
+            for r in qd.static(range(c + 1, 5)):
+                value = mat[r, c]
+                for k in qd.static(range(c)):
+                    value -= lower[r, k] * lower[c, k]
+                lower[r, c] = value / diag
+        sol = qd.Vector.zero(gs.qd_float, 5)
+        for r in qd.static(range(5)):
+            value = rhs[r]
+            for k in qd.static(range(r)):
+                value -= lower[r, k] * sol[k]
+            sol[r] = value / lower[r, r]
+        for r_ in qd.static(range(5)):
+            r = qd.static(4 - r_)
+            value = sol[r]
+            for k in qd.static(range(r + 1, 5)):
+                value -= lower[k, r] * sol[k]
+            sol[r] = value / lower[r, r]
+        return sol
+
+    @qd.func
+    def _func_pressure_pair_weight(self, i, j, x_ij, i_b):
+        """Return the weight c_ij of the fluid pair (i, j) in the pressure force and in the velocity constraint of the
+        pressure solves (see _kernel_compute_pressure_correction), 1 without the isotropic pressure correction."""
+        weight = gs.qd_float(1.0)
+        if qd.static(self._isotropic_pressure):
+            r = x_ij.norm()
+            if r > 0.0:
+                basis = self._func_viscosity_basis(x_ij / r)
+                correction = (
+                    self.particles_reordered[i, i_b].pressure_correction
+                    + self.particles_reordered[j, i_b].pressure_correction
+                )
+                for k in qd.static(range(5)):
+                    weight += 0.5 * correction[k] * basis[k + 1]
+                weight = qd.min(qd.max(weight, 0.7), 1.3)
+        return weight
+
+    @qd.func
     def _func_pressure_density2_norm(self, i_p, i_b, is_divergence):
         res = self.particles_reordered[i_p, i_b].pressure_density2_norm_p
         if is_divergence:
@@ -967,7 +1095,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         p_sum = ret.p_rho2_i + density_ratio * self._func_pressure_density2_norm(j, i_b, ret.is_divergence)
         if qd.abs(p_sum) > self._df_eps:
             x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
-            ret.acc -= p_sum * self.materials[i_m_j].rest_volume * self.cubic_kernel_derivative(x_ij)
+            weight = self._func_pressure_pair_weight(i, j, x_ij, i_b)
+            ret.acc -= weight * p_sum * self.materials[i_m_j].rest_volume * self.cubic_kernel_derivative(x_ij)
 
     @qd.func
     def _func_compute_pressure_acc(self, i_p, i_b, is_divergence: qd.template()):
@@ -993,7 +1122,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         i_m = self.particles_reordered[j, i_b].material
         v_ij = self.particles_reordered[i, i_b].vel - self.particles_reordered[j, i_b].vel
         x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
-        ret += self.materials[i_m].rest_volume * v_ij.dot(self.cubic_kernel_derivative(x_ij))
+        weight = self._func_pressure_pair_weight(i, j, x_ij, i_b)
+        ret += weight * self.materials[i_m].rest_volume * v_ij.dot(self.cubic_kernel_derivative(x_ij))
 
     @qd.kernel
     def _kernel_init_pressure_solve(self, is_divergence: qd.template(), keep_pressure: bool):
@@ -1060,7 +1190,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         i_m = self.particles_reordered[j, i_b].material
         a_ij = self.particles_reordered[i, i_b].pressure_acc - self.particles_reordered[j, i_b].pressure_acc
         x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
-        ret += self.materials[i_m].rest_volume * a_ij.dot(self.cubic_kernel_derivative(x_ij))
+        weight = self._func_pressure_pair_weight(i, j, x_ij, i_b)
+        ret += weight * self.materials[i_m].rest_volume * a_ij.dot(self.cubic_kernel_derivative(x_ij))
 
     @qd.kernel
     def _kernel_pressure_solve_iteration(self, is_divergence: qd.template()) -> float:
@@ -1381,15 +1512,6 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             if self.particles_boundary_slots[i, i_b, k].link_idx == i_l:
                 self.particles_boundary_slots[i, i_b, k].wall_tensor += tensor
 
-    @qd.func
-    def _task_compute_wall_shear_response(self, i, j, ret: qd.template(), i_b):
-        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
-        k_ij = self._func_viscosity_pair_coefficient(i, j, x_ij, i_b)
-        r2 = x_ij.norm_sqr()
-        for k in qd.static(range(N_BOUNDARY_SLOTS)):
-            dist_normal = x_ij.dot(self.particles_boundary_slots[i, i_b, k].clearance_normal)
-            ret[k] -= k_ij * dist_normal * (r2 - dist_normal**2)
-
     @qd.kernel
     def _kernel_compute_viscosity_geometry(self):
         """Compute the directional correction of the viscosity operator and the wall viscosity tensors of every particle.
@@ -1413,15 +1535,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         3 rhohat_i / sum_j w_ij as rhohat_i drops from 0.95 to 0.85.
 
         The wall viscosity tensor of each boundary slot is the sum of the ghost column tensors of the link (see
-        _func_wall_viscosity_tensor), and the wall force on the particle is -M (v_i - v_wall(x_i)) per slot. The ghost
-        columns are a continuum, while the fluid neighbors of a particle near the wall sit on discrete layers, so the
-        two halves of its neighborhood do not cancel for a linear shear flow: on a cubic lattice the first layer feels
-        a spurious force of a fifth of the viscous stress gradient a unit of shear rate gives, against the shear. The
-        slot tensor is therefore scaled so that the operator is exact for a linear shear along the wall: with n the
-        normal of the surface the particle faces (see _task_compute_boundary_density_and_factor), d its distance and
-        P = I - n n^T, the wall force -M t d must cancel the response of the fluid pairs,
-        -sum_j k_ij (n . x_ij) P x_ij x_ij^T P t, in trace over the tangent directions t. The scale is bounded to
-        [0, 4], for particles with few fluid neighbors.
+        _func_wall_viscosity_tensor), and the wall force on the particle is -M (v_i - v_wall(x_i)) per slot.
         """
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
@@ -1478,28 +1592,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self._task_compute_boundary_viscosity_geometry,
                         i_b,
                     )
-                    shear_response = qd.Vector.zero(gs.qd_float, N_BOUNDARY_SLOTS)
-                    self.sh.for_all_neighbors(
-                        i_p,
-                        self.particles_reordered.pos,
-                        self._support_radius,
-                        shear_response,
-                        self._task_compute_wall_shear_response,
-                        i_b,
-                    )
                     wall_tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
                     for k in range(N_BOUNDARY_SLOTS):
-                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                            slot_tensor = self.particles_boundary_slots[i_p, i_b, k].wall_tensor
-                            clearance = self.particles_boundary_slots[i_p, i_b, k].clearance
-                            # A particle that faces no boundary particle of the link keeps the ghost tensor as is.
-                            if clearance < self._support_radius and slot_tensor.trace() > 0.0:
-                                dist_eff = qd.max(clearance, 0.05 * self._support_radius)
-                                consistency = shear_response[k] / (dist_eff * slot_tensor.trace())
-                                slot_tensor = qd.min(qd.max(consistency, 0.0), 4.0) * slot_tensor
-                            self.particles_boundary_slots[i_p, i_b, k].shear_response = shear_response[k]
-                            self.particles_boundary_slots[i_p, i_b, k].wall_tensor = slot_tensor
-                            wall_tensor += slot_tensor
+                        wall_tensor += self.particles_boundary_slots[i_p, i_b, k].wall_tensor
                     self.particles_viscosity[i_p, i_b].wall_tensor = wall_tensor
         else:
             for i_p, i_b in qd.ndrange(self._n_particles, self._B):
@@ -2107,14 +2202,19 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
     def _kernel_set_coupled_vel_star(
         self, dyn_state: array_class.DynState, dyn_info: array_class.DynInfo, rigid_config: qd.template()
     ):
-        """Set the coupled velocities to their value after the divergence impulse and the smooth acceleration."""
+        """Set the coupled velocities to their value after the divergence impulse, the smooth acceleration and the
+        velocity change of the constraints (see repeat_for_rigid_constraints)."""
         for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
             ang, lin = self._func_chain_spatial_vel(
                 i_c, i_b, dyn_state.dofs.acc_smooth, dyn_state, dyn_info, rigid_config
             )
             for k in qd.static(range(3)):
-                self.coupled_vel[6 * i_c + k, i_b] += self._substep_dt * ang[k]
-                self.coupled_vel[6 * i_c + 3 + k, i_b] += self._substep_dt * lin[k]
+                self.coupled_vel[6 * i_c + k, i_b] += (
+                    self._substep_dt * ang[k] + self.coupled_vel_constraint[6 * i_c + k, i_b]
+                )
+                self.coupled_vel[6 * i_c + 3 + k, i_b] += (
+                    self._substep_dt * lin[k] + self.coupled_vel_constraint[6 * i_c + 3 + k, i_b]
+                )
             for k in range(6):
                 self.coupled_vel_star[6 * i_c + k, i_b] = self.coupled_vel[6 * i_c + k, i_b]
             self._func_set_coupled_links_vel(i_c, i_b)
@@ -2330,9 +2430,77 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 i_b, self.dofs_coupling_rhs, self.dofs_coupling_sol, dyn_state, rigid_info, rigid_config
             )
             for i_d in range(n_dofs):
+                self.dofs_fluid_force[i_d, i_b] = self.dofs_coupling_rhs[i_d, i_b]
+                self.dofs_fluid_acc[i_d, i_b] = self.dofs_coupling_sol[i_d, i_b]
                 dyn_state.dofs.force[i_d, i_b] += self.dofs_coupling_rhs[i_d, i_b]
                 dyn_state.dofs.qf_smooth[i_d, i_b] += self.dofs_coupling_rhs[i_d, i_b]
                 dyn_state.dofs.acc_smooth[i_d, i_b] += self.dofs_coupling_sol[i_d, i_b]
+
+    @qd.kernel
+    def _kernel_constraint_velocity_change(
+        self, dyn_state: array_class.DynState, dyn_info: array_class.DynInfo, rigid_config: qd.template()
+    ) -> float:
+        """Take the velocity change of the coupled links by the constraint solve of the substep, h S (acc -
+        acc_smooth), as the external velocity change of a repeated fluid stage. Returns the largest change of it over
+        envs since the stage last ran, in the norm of _kernel_solve_coupled_viscosity, relative to the link
+        velocities, with a floor at the velocity gravity gives in a substep."""
+        n_coupled = self.coupled_links_idx.shape[0]
+        n_dofs = self.dofs_coupling_rhs.shape[0]
+        for i_d, i_b in qd.ndrange(n_dofs, self._B):
+            self.dofs_coupling_rhs[i_d, i_b] = dyn_state.dofs.acc[i_d, i_b] - dyn_state.dofs.acc_smooth[i_d, i_b]
+        for i_b in range(self._B):
+            self.envs_constraint_residual[i_b] = 0.0
+        for i_b in range(self._B):
+            change = gs.qd_float(0.0)
+            vel_scale = self._substep_dt * self._gravity[i_b].norm()
+            for i_c in range(n_coupled):
+                ang, lin = self._func_chain_spatial_vel(
+                    i_c, i_b, self.dofs_coupling_rhs, dyn_state, dyn_info, rigid_config
+                )
+                extent = self.coupled_links_extent[i_c]
+                ang_change = qd.Vector.zero(gs.qd_float, 3)
+                lin_change = qd.Vector.zero(gs.qd_float, 3)
+                ang_vel = qd.Vector.zero(gs.qd_float, 3)
+                lin_vel = qd.Vector.zero(gs.qd_float, 3)
+                for k in qd.static(range(3)):
+                    ang_change[k] = self._substep_dt * ang[k] - self.coupled_vel_constraint[6 * i_c + k, i_b]
+                    lin_change[k] = self._substep_dt * lin[k] - self.coupled_vel_constraint[6 * i_c + 3 + k, i_b]
+                    self.coupled_vel_constraint[6 * i_c + k, i_b] = self._substep_dt * ang[k]
+                    self.coupled_vel_constraint[6 * i_c + 3 + k, i_b] = self._substep_dt * lin[k]
+                    ang_vel[k] = self.coupled_vel[6 * i_c + k, i_b]
+                    lin_vel[k] = self.coupled_vel[6 * i_c + 3 + k, i_b]
+                change = qd.max(change, lin_change.norm() + extent * ang_change.norm())
+                vel_scale = qd.max(vel_scale, lin_vel.norm() + extent * ang_vel.norm())
+            self.envs_constraint_residual[i_b] = change / qd.max(vel_scale, gs.EPS)
+        max_residual = gs.qd_float(0.0)
+        for i_b in range(self._B):
+            qd.atomic_max(max_residual, self.envs_constraint_residual[i_b])
+        return max_residual
+
+    @qd.kernel
+    def _kernel_undo_coupled_impulse(self, dyn_state: array_class.DynState):
+        """Take back the fluid impulse the last fluid stage put in the smooth force and acceleration of the dofs."""
+        for i_d, i_b in qd.ndrange(self.dofs_fluid_force.shape[0], self._B):
+            dyn_state.dofs.force[i_d, i_b] -= self.dofs_fluid_force[i_d, i_b]
+            dyn_state.dofs.qf_smooth[i_d, i_b] -= self.dofs_fluid_force[i_d, i_b]
+            dyn_state.dofs.acc_smooth[i_d, i_b] -= self.dofs_fluid_acc[i_d, i_b]
+
+    @qd.kernel
+    def _kernel_save_readouts(self, is_restore: bool):
+        """Save the load and dissipation readouts at the start of a fluid stage, or restore them for a repetition."""
+        for i_l, i_b in qd.ndrange(self.links_fluid_impulse.shape[0], self._B):
+            if is_restore:
+                self.links_fluid_impulse[i_l, i_b] = self.links_fluid_impulse_saved[i_l, i_b]
+                self.links_fluid_angular_impulse[i_l, i_b] = self.links_fluid_angular_impulse_saved[i_l, i_b]
+            else:
+                self.links_fluid_impulse_saved[i_l, i_b] = self.links_fluid_impulse[i_l, i_b]
+                self.links_fluid_angular_impulse_saved[i_l, i_b] = self.links_fluid_angular_impulse[i_l, i_b]
+        if qd.static(self._has_viscosity):
+            for i_b in range(self._B):
+                if is_restore:
+                    self.envs_viscous_dissipation[i_b] = self.envs_viscous_dissipation_saved[i_b]
+                else:
+                    self.envs_viscous_dissipation_saved[i_b] = self.envs_viscous_dissipation[i_b]
 
     # ------------------------------------------------------------------------------------
     # ------------------------------------- utils ----------------------------------------
@@ -2416,22 +2584,54 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
     def substep_coupled_with_rigid(self, f):
         """Run the fluid stage of a substep from the substep of the rigid solver, after its forward dynamics."""
+        self._n_constraint_passes = 0
+        self._kernel_save_readouts(False)
         self._run_fluid_stage(f)
+
+    def repeat_for_rigid_constraints(self, f):
+        """Repeat the fluid stage of the substep if the constraint solve of the rigid solver changed the coupled links.
+
+        Called by the rigid solver after its constraint solve (SPH_SOLVER_DESIGN.md section 6). The constraint solve
+        changes the velocity of the coupled links by h S (acc - acc_smooth), which the fluid stage did not see. When it
+        differs from the change the stage held, by more than `max_constraint_error` of the link velocities, the fluid
+        impulse is taken back from the rigid solver, the readouts are restored and the stage runs again with that change
+        as an external velocity change of the links; the rigid solver then solves its constraints again. The change is
+        kept as the guess of the next substep, so a steady contact repeats nothing. Returns whether the stage ran again.
+        """
+        rigid_solver = self.sim.rigid_solver
+        stats = self._solve_stats
+        residual = self._kernel_constraint_velocity_change(
+            rigid_solver.dyn_state, rigid_solver.dyn_info, rigid_solver.rigid_config
+        )
+        if residual <= self._max_constraint_error:
+            stats.max_constraint_residual = max(stats.max_constraint_residual, residual)
+            return False
+        if self._n_constraint_passes >= self._max_constraint_iters:
+            stats.n_unconverged_constraint += 1
+            stats.max_constraint_residual = max(stats.max_constraint_residual, residual)
+            return False
+        self._n_constraint_passes += 1
+        stats.n_constraint_passes += 1
+        self._kernel_undo_coupled_impulse(rigid_solver.dyn_state)
+        self._kernel_save_readouts(True)
+        self._run_fluid_stage(f, is_repetition=True)
+        return True
 
     def substep_pre_coupling(self, f):
         if self.is_active and not self._has_rigid_coupling:
             self._run_fluid_stage(f)
 
-    def _run_fluid_stage(self, f):
+    def _run_fluid_stage(self, f, is_repetition=False):
         """Run the boundary update, the divergence solve, the explicit forces and the coupled viscosity and density
         solves of a substep (SPH_SOLVER_DESIGN.md section 4), and the transfer of the fluid impulse to the coupled
         links."""
         # f indexes the substep in the memory of the simulator, so the first substep of a step is counted globally.
         is_step_start = self._sim.cur_substep_global % self._sim.substeps == 0
-        if is_step_start:
+        if is_step_start and not is_repetition:
             self._solve_stats = SPHSolveStats()
         stats = self._solve_stats
-        stats.n_substeps += 1
+        if not is_repetition:
+            stats.n_substeps += 1
 
         rigid_solver = self.sim.rigid_solver
         if self._has_boundary:
@@ -2442,6 +2642,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             )
         self._kernel_reorder_particles(f)
         self._kernel_compute_density_and_factor(f)
+        if self._isotropic_pressure:
+            self._kernel_compute_pressure_correction()
         energy = self._kernel_kinetic_energy() if self._energy_audit else 0.0
         if not self._df_skip_div:
             n_iters, residual = self._pressure_solve(is_divergence=True)
@@ -2561,8 +2763,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         pass
 
     def set_state(self, f, state, envs_idx=None):
+        """Restore the particles, their warm starts and micro-rotations, and the constraint guess of the coupled links,
+        in the environments envs_idx (all by default), so that the simulation continues as from the saved state."""
         if self.is_active:
-            self._kernel_set_state(f, state.pos, state.vel, state.active)
+            envs_mask = torch.zeros((self._B,), dtype=gs.tc_int, device=gs.device)
+            envs_mask[self._scene._sanitize_envs_idx(envs_idx)] = 1
+            self._kernel_set_state(f, state.pos, state.vel, state.active, state.pressure, state.angular_vel, envs_mask)
+            if self._has_rigid_coupling:
+                self._kernel_set_coupled_vel_constraint(state.coupled_vel_constraint, envs_mask)
 
     @qd.kernel
     def _kernel_set_state(
@@ -2571,17 +2779,33 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         pos: qd.types.ndarray(),
         vel: qd.types.ndarray(),
         active: qd.types.ndarray(),
+        pressure: qd.types.ndarray(),
+        angular_vel: qd.types.ndarray(),
+        envs_mask: qd.types.ndarray(),
     ):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            for j in qd.static(range(3)):
-                self.particles[i_p, i_b].pos[j] = pos[i_b, i_p, j]
-                self.particles[i_p, i_b].vel[j] = vel[i_b, i_p, j]
-            self.particles[i_p, i_b].active = active[i_b, i_p]
+            if envs_mask[i_b]:
+                for j in qd.static(range(3)):
+                    self.particles[i_p, i_b].pos[j] = pos[i_b, i_p, j]
+                    self.particles[i_p, i_b].vel[j] = vel[i_b, i_p, j]
+                    if qd.static(self._micropolar):
+                        self.particles[i_p, i_b].angular_vel[j] = angular_vel[i_b, i_p, j]
+                self.particles[i_p, i_b].active = active[i_b, i_p]
+                self.particles[i_p, i_b].pressure_density2_norm_p = pressure[i_b, i_p, 0]
+                self.particles[i_p, i_b].pressure_density2_norm_d = pressure[i_b, i_p, 1]
+
+    @qd.kernel
+    def _kernel_set_coupled_vel_constraint(self, vel: qd.types.ndarray(), envs_mask: qd.types.ndarray()):
+        for i_r, i_b in qd.ndrange(self.coupled_vel_constraint.shape[0], self._B):
+            if envs_mask[i_b]:
+                self.coupled_vel_constraint[i_r, i_b] = vel[i_b, i_r]
 
     def get_state(self, f):
         if self.is_active:
             state = SPHSolverState(self.scene)
-            self._kernel_get_state(f, state.pos, state.vel, state.active)
+            self._kernel_get_state(f, state.pos, state.vel, state.active, state.pressure, state.angular_vel)
+            if self._has_rigid_coupling:
+                self._kernel_get_coupled_vel_constraint(state.coupled_vel_constraint)
         else:
             state = None
         return state
@@ -2593,12 +2817,28 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         pos: qd.types.ndarray(),
         vel: qd.types.ndarray(),
         active: qd.types.ndarray(),
+        pressure: qd.types.ndarray(),
+        angular_vel: qd.types.ndarray(),
     ):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             for j in qd.static(range(3)):
                 pos[i_b, i_p, j] = self.particles[i_p, i_b].pos[j]
                 vel[i_b, i_p, j] = self.particles[i_p, i_b].vel[j]
+                if qd.static(self._micropolar):
+                    angular_vel[i_b, i_p, j] = self.particles[i_p, i_b].angular_vel[j]
             active[i_b, i_p] = self.particles[i_p, i_b].active
+            pressure[i_b, i_p, 0] = self.particles[i_p, i_b].pressure_density2_norm_p
+            pressure[i_b, i_p, 1] = self.particles[i_p, i_b].pressure_density2_norm_d
+
+    @qd.kernel
+    def _kernel_get_coupled_vel_constraint(self, vel: qd.types.ndarray()):
+        for i_r, i_b in qd.ndrange(self.coupled_vel_constraint.shape[0], self._B):
+            vel[i_b, i_r] = self.coupled_vel_constraint[i_r, i_b]
+
+    @property
+    def n_coupled_dofs(self):
+        """Number of spatial velocity components of the coupled links (6 per link), 0 without coupled links."""
+        return 6 * len(self._coupled_links_idx) if self._has_rigid_coupling else 0
 
     def update_render_fields(self):
         self._kernel_update_render_fields(self.sim.cur_substep_local)

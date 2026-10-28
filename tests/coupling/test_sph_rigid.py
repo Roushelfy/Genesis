@@ -1,9 +1,12 @@
+import numpy as np
 import pytest
 import torch
 
 import genesis as gs
 import genesis.utils.geom as gu
-from genesis.utils.misc import qd_to_numpy
+from genesis.utils.misc import qd_to_numpy, tensor_to_array
+
+from ..utils.assertions import assert_allclose
 
 
 @pytest.mark.required
@@ -171,3 +174,127 @@ def test_coupling_force_wakes_hibernated_link(n_envs, show_viewer):
         scene.step()
     ball_z = ball.get_pos()[..., 2]
     assert (ball_z > 0.15).all(), f"Submerged ball must wake up and float, got z={ball_z}"
+
+
+@pytest.mark.required
+def test_fluid_link_momentum_exchange(show_viewer):
+    # A box thrown into a ball of viscous liquid at zero gravity: pressure and wall viscosity exchange equal and opposite
+    # impulses with the link, applied at the fluid particles, so the total linear and angular momentum stay constant.
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=2e-3,
+            substeps=4,
+            gravity=(0.0, 0.0, 0.0),
+        ),
+        sph_options=gs.options.SPHOptions(
+            particle_size=0.006,
+            particle_volume_factor=1.0,
+            lower_bound=(-0.5, -0.5, -0.5),
+            upper_bound=(0.5, 0.5, 0.5),
+        ),
+        show_viewer=show_viewer,
+    )
+    liquid = scene.add_entity(
+        morph=gs.morphs.Sphere(pos=(0.0, 0.0, 0.0), radius=0.04),
+        material=gs.materials.SPH.Liquid(sampler="regular", viscosity=1e-3, surface_tension=0.0),
+    )
+    box = scene.add_entity(
+        morph=gs.morphs.Box(pos=(-0.09, 0.015, 0.0), size=(0.03, 0.03, 0.03), euler=(0.0, 0.0, 20.0)),
+        material=gs.materials.Rigid(rho=600.0),
+    )
+    scene.build()
+    mass = scene.sph_solver.particle_volume * 1000.0
+    box_mass = float(box.links[0].get_mass())
+    box_inertia = box_mass * 0.03**2 / 6.0
+    box.set_dofs_velocity((0.3, 0.0, 0.0, 0.0, 0.0, 0.0))
+
+    def momenta():
+        pos = tensor_to_array(liquid.get_particles_pos()).astype(np.float64)
+        vel = tensor_to_array(liquid.get_particles_vel()).astype(np.float64)
+        com = tensor_to_array(box.get_pos()).astype(np.float64)
+        vel_box = tensor_to_array(box.get_vel()).astype(np.float64)
+        ang_box = tensor_to_array(box.get_ang()).astype(np.float64)
+        momentum = mass * vel.sum(axis=0) + box_mass * vel_box
+        angular = mass * np.cross(pos, vel).sum(axis=0) + box_mass * np.cross(com, vel_box) + box_inertia * ang_box
+        return momentum, angular, vel_box
+
+    momentum_0, angular_0, vel_box_0 = momenta()
+    for _ in range(150):
+        scene.step()
+    momentum, angular, vel_box = momenta()
+    # the impact took most of the box momentum
+    assert np.linalg.norm(vel_box) < 0.5 * np.linalg.norm(vel_box_0)
+    assert_allclose(momentum, momentum_0, atol=1e-4 * np.linalg.norm(momentum_0))
+    assert_allclose(angular, angular_0, atol=1e-3 * np.linalg.norm(angular_0))
+
+
+@pytest.mark.debug(False)  # Disable debug for speedup
+@pytest.mark.required
+@pytest.mark.parametrize("backend", [gs.gpu])
+def test_fluid_load_readout_is_link_impulse(show_viewer):
+    # A buoyant cube on a slide joint, held under water while the fluid settles, then released: the fluid load readout
+    # is the impulse the link received, so with the weight it accounts for the momentum change of the link.
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=2e-3,
+            substeps=4,
+        ),
+        rigid_options=gs.options.RigidOptions(
+            enable_collision=False,
+        ),
+        sph_options=gs.options.SPHOptions(
+            particle_size=0.01,
+            particle_volume_factor=1.0,
+            lower_bound=(-0.12, -0.12, -0.01),
+            upper_bound=(0.12, 0.12, 0.2),
+        ),
+        show_viewer=show_viewer,
+    )
+    scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.0, 0.0, -0.005), size=(0.24, 0.24, 0.01), fixed=True),
+    )
+    for x, y, sx, sy in (
+        (0.105, 0.0, 0.01, 0.2),
+        (-0.105, 0.0, 0.01, 0.2),
+        (0.0, 0.105, 0.2, 0.01),
+        (0.0, -0.105, 0.2, 0.01),
+    ):
+        scene.add_entity(morph=gs.morphs.Box(pos=(x, y, 0.06), size=(sx, sy, 0.12), fixed=True))
+    cube = scene.add_entity(
+        morph=gs.morphs.MJCF(
+            file="""
+                <mujoco>
+                    <worldbody>
+                        <body name="cube" pos="0 0 0.04">
+                            <joint name="slide" type="slide" axis="0 0 1"/>
+                            <geom type="box" size="0.02 0.02 0.02" density="300"/>
+                        </body>
+                    </worldbody>
+                </mujoco>
+            """,
+            default_armature=0.0,
+        ),
+    )
+    liquid = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.05), size=(0.19, 0.19, 0.1)),
+        material=gs.materials.SPH.Liquid(sampler="regular", viscosity=1e-6, surface_tension=0.0),
+    )
+    scene.build()
+    pos = liquid.get_particles_pos()
+    liquid.set_particles_active(~((pos - torch.tensor((0.0, 0.0, 0.04), device=gs.device)).abs() < 0.025).all(dim=1))
+    cube.set_dofs_kp((400.0,))
+    cube.set_dofs_kv((20.0,))
+    cube.control_dofs_position((0.0,))
+    for _ in range(150):
+        scene.step()
+    link = cube.get_link("cube")
+    mass = float(link.get_mass())
+    cube.control_dofs_force((0.0,))
+    vel_start = tensor_to_array(cube.get_dofs_velocity())[0]
+    loads = []
+    for _ in range(20):
+        scene.step()
+        loads.append(tensor_to_array(scene.sph_solver.get_links_fluid_wrench()[0])[link.idx, 2])
+    momentum_change = mass * (tensor_to_array(cube.get_dofs_velocity())[0] - vel_start)
+    assert_allclose(momentum_change, (np.sum(loads) - 20 * mass * 9.81) * scene.dt, rtol=1e-2)
+    assert np.mean(loads) > 0.5 * mass * 9.81

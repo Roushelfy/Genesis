@@ -16,8 +16,8 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
 | M0 equations, units, cases, acceptance, measurement boundaries | done: SPH_SOLVER_DESIGN.md; baseline measurements below |
 | M1 implicit interior and wall viscosity with analytic validation and load accounting | implemented; V2, V4, V5 measured, V1 and V3 open (see open items) |
 | M2 reaction readout and rigid stage integration | done: readout for fixed, prescribed and dynamic links, fluid stage inside the rigid substep |
-| M3 strong pressure-viscosity-rigid coupling | block iteration converged with momentum-exact exchange (V6); constraint consistency loop open |
-| M4 robustness campaigns | in progress (light link, leakage); thin wall, coarse, state open |
+| M3 strong pressure-viscosity-rigid coupling | block iteration converged with momentum-exact exchange (V6); constraint consistency loop implemented (`SPHOptions.max_constraint_iterations`, contact receipts) |
+| M4 robustness campaigns | in progress: light link, leakage guard, snapshot and selected-environment reset (V12 driver, warm starts in the state); thin wall and coarse cups open |
 | M5 optimization ablations | pending |
 | M6 FluidBench re-run and documentation | pending |
 
@@ -40,11 +40,18 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
 1. Explicit viscosity replaced by an implicit backward Euler solve (conjugate gradient, block-Jacobi preconditioner) of
    the Rayleigh dissipation of SPH_SOLVER_DESIGN.md section 3.3. The material `viscosity` is the kinematic viscosity
    (m^2/s), converted once to the dynamic viscosity.
-2. Boundary pressure of the fork (Akinci particles, full kernel gradient) acts as a rough wall: fluid in rigid rotation
-   at water viscosity inside a fixed cup lost 58 % of its angular momentum in 1 s (spin-down test, dx 5 mm), where the
-   physical spin-down takes tens of seconds. Projecting the boundary kernel gradient on the wall normal (smooth
-   impermeable wall, reaction at the fluid particle) keeps 100-102 % over 1 s. Development logs:
-   `logs/spin_down.log`, `logs/spin_down2.log`.
+2. Boundary pressure (Akinci particles, full kernel gradient) acts as a rough wall: fluid in rigid rotation at water
+   viscosity inside a fixed cup lost 58 % of its angular momentum in 1 s at the starting revision (spin-down test, dx
+   5 mm, boundary spacing 0.75 particle sizes), where the physical spin-down takes tens of seconds (`logs/spin_down.log`).
+   Projecting the boundary kernel gradient on the wall normal (a smooth impermeable wall) kept 100-102 % over 1 s
+   (`logs/spin_down2.log`), but the projected force is not the gradient of the density the boundary adds, so the
+   pressure solve feeds the density variation of fluid sliding past the samples back along the normal only: a closed
+   column of water at rest heated from 4.4e-4 to 8.9e-4 J of kinetic energy over 0.9 s (`logs/fg_cn_proj75.log`,
+   dev/closed_noise.py), where the full gradient lets it decay from 3.3e-4 to 1.3e-4 J (`logs/fg_cn_full50.log`,
+   `logs/fe_cn.log`). The projection is therefore not used. The roughness drops with denser boundary sampling: with the
+   isotropic pressure of finding 11, the rotating fluid kept 0.74, 0.86 and 0.88 of its angular momentum over 1 s at
+   spacings of 0.75, 0.5 and 0.35 particle sizes (`logs/fg_spin_full{75,50,35}.log`). The spacing is 0.5 particle
+   sizes; at it the fluid keeps 0.72 without the isotropic pressure (`logs/fe_spin_inviscid.log`).
 3. Wall viscosity: the pair form between fluid and a single layer of boundary particles is mostly normal to the wall,
    so its tangential friction is several times too weak and the fluid slips. It is replaced by ghost-fluid columns
    behind each boundary sample with linear extrapolation of the tangential velocity (second-order no-slip), projected on
@@ -56,11 +63,13 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
    solved from the moment equations with the wall ghosts included, brings both to 0.99 on the lattice and 0.97 +- 0.06
    on a shaken one. The pair weight is the mean of the corrections of both particles, clamped at zero, so the operator
    stays symmetric, positive semi-definite and central.
-5. Linear-shear consistency at walls. The ghost columns are a continuum and the fluid neighbors of a near-wall particle
-   sit on discrete layers, so a linear shear flow along a wall leaves a spurious force on the first layer (a fifth of the
-   viscous stress gradient of a unit shear on a cubic lattice). Each slot tensor is scaled so that the operator is exact
-   for a linear shear along the faced wall. Couette torque at dx 5 mm went from 15-35 % to 2-12 % above the reference
-   (receipts `couette__corr1_pbs_dx0.005`, `couette__g3_pbs_dx0.005`).
+5. Linear-shear consistency at walls (tried, removed). The ghost columns are a continuum and the fluid neighbors of a
+   near-wall particle sit on discrete layers, so a linear shear along a wall leaves a spurious force on the first layer
+   (a fifth of the viscous stress gradient of a unit shear on a cubic lattice, offline lattice computation). Scaling
+   each slot tensor to make the operator exact for a linear shear lowered the Couette torque, but that torque was
+   inflated by the pressure friction of finding 11; with the isotropic pressure the scaling leaves the torque 13 % low
+   and the spin-down 27 % slow, against 3-7 % and 17 % without it (receipts `couette__mxA_couette`, `couette__mxB_couette`,
+   `spindown__mx{A,B}_spin`), so it is not used.
 6. The viscosity-pressure agreement of a substep is solved by a block iteration whose density solves use a forcing term
    of 0.1 and whose pressure is extrapolated by Chebyshev semi-iteration on the spectrum bound [1 / L, 1]. At nu = 1e-2
    the passes contract by about 0.87 each (receipt `spindown__devhist_nu1e-2`, `worst_coupling_history`), slower than
@@ -86,33 +95,80 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
 10. A cube at half the density of water is unstable face down (a cube floats face down below 0.21 and tilts onto an edge
     between 0.21 and 0.79): once torques reach the box (finding 8), it tilts by about 45 degrees. The V8 case at density
     0.5 is a plank of aspect 2.
-11. Couette torque grows with the hydrostatic pressure: at dx 3.5 mm the torque on the deep layer is +4 %, +21 % and
-    +48 % above the reference at gravity 2, 9.81 and 20 m/s^2 (receipts `couette__mid3_g2_dx0.0035`,
-    `couette__g3_pbs_dx0.0035`, `couette__mid3_g20_dx0.0035`). Projecting the boundary pressure on a smooth surface
-    normal (kernel-weighted mean of the normals of the faced samples) does not change it (`couette__face2_g*`), and a
-    128-facet rotor gives the same as the 32-facet one (`couette__mid2_rot128_dx0.0035`). Open.
-12. Particle noise near the edges of a box immersed in fluid at rest (fixed or articulated paddle): the viscous
-    dissipation readout of a fluid at rest is 20 times that of the same cup without the box, concentrated at its edges
-    and corners. It drops with the unprojected boundary gradient (whose tangential roughness damps it), and does not
-    change with the density constraint alone unprojected. Open; it limits the V10 energy balance.
+11. Pressure friction. The Couette torque grew with the hydrostatic pressure: at dx 3.5 mm the torque on the deep layer
+    was +4 %, +21 % and +48 % above the reference at gravity 2, 9.81 and 20 m/s^2 (receipts
+    `couette__mid3_g2_dx0.0035`, `couette__g3_pbs_dx0.0035`, `couette__mid3_g20_dx0.0035`), and its excess was the same
+    2-3e-4 N m at nu = 3e-4, 1e-3 and 3e-3 (`couette__c1_nu*`): an additive, pressure-proportional shear stress. The
+    stress budget at mid gap (`logs/stress_g9.81.log`, dev/couette_stress.py) shows the cause: the symmetric pressure
+    pairs carried a shear stress of -2.3 Pa at a mean pressure of 330 Pa, twice the viscous stress, because a sheared
+    neighborhood is anisotropic and the pair form turns the pressure into a stress along the anisotropy. The wall
+    geometry was not involved (smooth-normal projection `couette__face2_g*`, 128-facet rotor
+    `couette__mid2_rot128_dx0.0035`, no wall guard `couette__tog4_noguard_*`: unchanged). Particle shifting reduced it
+    (`couette__shift*`) but broke angular momentum by 4e-3 to 1.4e-2 per second (`momentum__shift*_mom`) and lowered the
+    hydrostatic pressure, so it is not used. A symmetric directional correction of the pressure pair weights in the
+    degree 2 harmonics makes the pressure virial of every particle isotropic (central, momentum conserving): with it
+    the torque no longer depends on gravity (`couette__iso1_g20_dx0.0035`: within 4.5 % deep at g = 20), the momentum
+    balance is unchanged (`momentum__iso1_nu1e-3`), and with the full boundary gradient of finding 2 the Couette torque
+    is within 2-6 % at both depths (`couette__fgE_couette`) against 10-27 % and 26-48 % without it
+    (`couette__fe_couette_dx0.0035`). But the corrected force is not the gradient of the density estimate, and water at
+    rest heats: the closed column of finding 2 went from 2.3e-3 to 3.7e-3 J of kinetic energy over 0.9 s
+    (`logs/fg_cn_full50_iso.log`). The correction is therefore the option `SPHOptions.isotropic_pressure`, off by
+    default. In FluidBench S1 (water) the spin-down time is 2.0 s without it and 2.8 s with it (OpenFOAM 7.9 s; records
+    `gs-dfsph__S1__f2@sphgoal-fe`, `@sphgoal-fgE`).
+12. Particle noise near the edges of a box immersed in fluid at rest (fixed or articulated paddle): with the projected
+    boundary gradient, the viscous dissipation readout of a fluid at rest was 20 times that of the same cup without the
+    box, concentrated at its edges and corners, and the isotropic pressure tripled it (0.022 J and 0.059 J over 1.5 s,
+    receipts `articulation__mx{D,C}_stir0`). With the full boundary gradient of finding 2 it is 2.0e-4 J
+    (`articulation__fe_stir0`).
+13. Velocity noise under gravity. With the projected boundary gradient, a closed column at rest at nu = 1e-3
+    dissipated 1.6e-4 W per 0.3 kg whatever the warm start of the density solve or the substep (receipts
+    `decay__ws*_rest_g9.81`): the projection of finding 2 kept feeding the noise. With the full gradient the noise of
+    the column decays (rms speed 2.9 to 0.6 mm/s over 0.9 s, `logs/fi_cn_nu1e-3.log`). In FluidBench S1 the initial
+    lattice releases 2.5e-3 J as it compacts in the first control step (`timeseries.csv` of the S1 runs).
 
 ## Measured validation (development snapshots, to be repeated on the committed revision)
 
-| Case | Result | Receipt |
-| --- | --- | --- |
-| V2 Couette dx 5 / 3.5 / 2.5 mm, depth 0.05 m | torque within 2-9 %, 0.3-7 %, 1-7 % for t >= 0.1 s | `couette__g3_pbs_dx*` |
-| V2 Couette depth 0.08 m | 2-12 % at 5 mm, 16-25 % at 3.5 mm, 10-29 % at 2.5 mm (finding 11) | `couette__g3_pbs_dx*` |
-| V4 mode decay nu = 1e-3 | rate -39 %, -17 %, -13 % at dx 3.5, 2.5, 1.75 mm; dissipation readout 0.99 of the energy loss | `decay__face2_decay_nu1e-3_dx*` |
-| V5 spin-down nu = 1e-2, dx 5 mm | decay rate -11.6 % to -19 % (within 20 %) | `spindown__corr1_dx0.005_arm5e-4`, `spindown__g3_spin_arm5e-4` |
-| V5 light link (no armature) | stable, rotor stops within the first step like the reference | `spindown__g3_spin_arm0` |
-| V6 momentum, nu = 1e-3 and inviscid | 1.4e-5 / 7.6e-6 per s, 7e-7 / 7.9e-6 per s | `momentum__mid2_nu*` |
-| V10 hold (slide + hinge) | joint forces vs fluid readout within 1 %; vs Archimedes 8 % / 25 % | `articulation__g3_hold` |
-| V10 stir | joint torque vs fluid torque 1.4-3.5 %; energy balance open (finding 12) | `articulation__mid2_stir` |
+Full boundary gradient at a boundary spacing of 0.5 particle sizes, isotropic pressure off (receipts tagged `fe_*`), and
+the same with `isotropic_pressure=True` (`fi_iso_*`, `fgE_*`).
+
+| Case | Default | With isotropic pressure | Receipt |
+| --- | --- | --- | --- |
+| V2 Couette dx 3.5 mm, depth 0.05 / 0.08 m, t 0.05-1 s | torque +10-27 % / +26-48 % | 0.3-3.4 % / 2-10 % | `couette__fe_couette_dx0.0035`, `couette__fi_iso_couette_dx0.0035` |
+| V4 mode decay nu = 1e-3, dx 2.5 mm | rate -23 %, dissipation readout 0.995 of the energy loss | -23 % | `decay__fe_decay_nu1e-3_dx0.0025`, `decay__fgE_decay` |
+| V5 spin-down nu = 1e-2, dx 5 mm | decay rate -11.6 %, omega rms error 2.5 % | -17 %, 3.0 % | `spindown__fe_spin_arm5e-4`, `spindown__fi_iso_spin_arm5e-4` |
+| V6 momentum, nu = 1e-3 | 9.2e-6 / 9.0e-6 per s (limit 1e-4) | | `momentum__fe_mom_nu1e-3` |
+| V8 plank of density 500, dx 3.5 mm | draft -14 %, fluid load +2.6 % of the weight, tilt 0.5 deg | | `floating__fe_plank500_dx0.0035` |
+| Contact, sphere of density 2000 on the floor | fluid + contact = weight within 0.4 %, buoyancy -23 % (no fluid under the contact cap) | | `contact__fe_contact` |
+| V10 paddle at rest | dissipation 2.0e-4 J over 1.5 s | | `articulation__fe_stir0` |
+| Water at rest, closed column | kinetic energy decays (3.3e-4 to 1.3e-4 J in 0.9 s) | grows (2.3e-3 to 3.7e-3 J); at nu = 1e-3 held at 3 mm/s rms | `logs/fe_cn.log`, `logs/fg_cn_full50_iso.log`, `logs/fi_cn_iso_nu1e-3.log` |
+
+Earlier snapshots (projected boundary gradient, development record): V2 2-9 % at depth 0.05 m and dx 5 mm
+(`couette__g3_pbs_dx*`), V4 -39 %, -17 %, -13 % at dx 3.5, 2.5, 1.75 mm (`decay__face2_decay_nu1e-3_dx*`), V10 hold
+joint forces vs readout within 1 % (`articulation__g3_hold`), stir joint torque vs fluid torque 1.4-3.5 %
+(`articulation__mid2_stir`).
+
+FluidBench S1 (stirred water, f2, R2, 19172 particles; OpenFOAM spin-down time 7.86 s and steady angular momentum
+7.86e-4; the FluidBench usability bar asks for 30 % and 20 %):
+
+| Configuration | Status | tau_sd (s) | Lz steady | RTF (output run) |
+| --- | --- | --- | --- | --- |
+| default, dt 0.31 ms (52 substeps / 16 ms) | 0.1 % of the liquid left the domain at 4.4 s | 1.97 | 9.38e-4 | 0.033 |
+| default, dt x2 / x4 / x8 | ok | 1.73 / 1.66 / 1.66 | 9.09e-4 / 8.99e-4 / 8.86e-4 | 0.057 / 0.086 / 0.137 |
+| isotropic pressure, dt 0.31 ms | a particle reached 20 m/s at 0.16 s | 2.78 | 8.08e-4 | 0.026 |
+
+Records `gs-dfsph__S1__f2@sphgoal-fe*`, `@sphgoal-fgE` in FluidBench `results/index`. No configuration meets the
+spin-down bar: in water the spin-down is set by the numerical friction of the walls and of the pressure pairs, and by
+the particle noise.
 
 ## Open items
 
 - V1 (Stokes first problem) and V3 (pipe flow) drivers: the sliding-floor trough is limited by the closed-cavity return
   flow and the free-surface pressure resolution.
-- Findings 11 and 12.
-- V8 draft offset of about one particle spacing (receipts `floating__mid3_*`), convergence ladder.
-- Constraint consistency loop (SPH_SOLVER_DESIGN.md section 6), V9, V11, V12, M5, M6.
+- Pressure friction (finding 11) without heating: the isotropic pressure is accurate for viscous flows but heats water.
+- V4 decay deficit (-23 % at dx 2.5 mm), V8 draft offset (-14 %), buoyancy of a sphere resting on the floor (-23 %).
+- V12 acceptance: GPU atomics make two runs from the same state differ, so a restart is compared with a second replay
+  and with a restart without warm starts. In three runs the first step after a restart departed from the reference by
+  7.8e-5 and 4.4e-5 (second replay 8.0e-5 and 5.2e-5, no warm start 3.3e-3), and once by 2.5e-4 (second replay
+  3.8e-5, no warm start 1.9e-3); receipts `state__pt3_state_{a,b}`, `state__fe_state`. The criterion needs the
+  spread of the replays over several runs.
+- V9, V11, S1 spin-down accuracy, M5, M6.

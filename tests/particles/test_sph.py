@@ -8,9 +8,13 @@
 
 import pytest
 import numpy as np
+import torch
 
 import genesis as gs
-from genesis.utils.misc import qd_to_numpy
+from genesis.engine.states.solvers import SPHSolverState
+from genesis.utils.misc import qd_to_numpy, tensor_to_array
+
+from ..utils.assertions import assert_allclose
 
 
 def create_sph_scene(show_viewer, particle_size=0.01, pressure_solver="WCSPH"):
@@ -338,3 +342,107 @@ def test_pressure_carries_column_weight(show_viewer, pressure_solver):
     p_top = pressures[heights >= 0.3].mean()
     assert p_bottom > 1.5 * p_middle
     assert p_middle > 2.0 * p_top
+
+
+def create_viscous_ball(show_viewer, viscosity, n_envs=0, micropolar=False):
+    """A ball of viscous liquid at zero gravity, far from the bounds of the domain, for the default solver."""
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=2e-3,
+            substeps=4,
+            gravity=(0.0, 0.0, 0.0),
+        ),
+        sph_options=gs.options.SPHOptions(
+            particle_size=0.01,
+            particle_volume_factor=1.0,
+            lower_bound=(-0.5, -0.5, -0.5),
+            upper_bound=(0.5, 0.5, 0.5),
+            micropolar=micropolar,
+        ),
+        show_viewer=show_viewer,
+    )
+    liquid = scene.add_entity(
+        morph=gs.morphs.Sphere(
+            pos=(0.0, 0.0, 0.0),
+            radius=0.06,
+        ),
+        material=gs.materials.SPH.Liquid(
+            sampler="regular",
+            viscosity=viscosity,
+            surface_tension=0.0,
+        ),
+    )
+    scene.build(n_envs=n_envs)
+    return scene, liquid
+
+
+def get_momenta(liquid, mass):
+    pos = tensor_to_array(liquid.get_particles_pos()).astype(np.float64)
+    vel = tensor_to_array(liquid.get_particles_vel()).astype(np.float64)
+    return mass * vel.sum(axis=0), mass * np.cross(pos, vel).sum(axis=0), 0.5 * mass * (vel**2).sum()
+
+
+@pytest.mark.required
+def test_implicit_viscosity_conserves_momentum(show_viewer):
+    # The implicit viscosity is a sum of central pair forces, so a ball of liquid alone keeps its linear and angular
+    # momentum while the viscosity dissipates its shear, and its rigid rotation is a null mode of the dissipation.
+    scene, liquid = create_viscous_ball(show_viewer, viscosity=1e-2)
+    mass = scene.sph_solver.particle_volume * 1000.0
+    pos = liquid.get_particles_pos()
+    omega, shear = 5.0, 3.0
+    vel = torch.stack((-omega * pos[:, 1] + shear * pos[:, 2] + 0.1, omega * pos[:, 0], torch.zeros_like(pos[:, 0])), 1)
+    liquid.set_particles_vel(vel)
+    momentum_0, angular_0, energy_0 = get_momenta(liquid, mass)
+    for _ in range(50):
+        scene.step()
+    momentum, angular, energy = get_momenta(liquid, mass)
+    assert_allclose(momentum, momentum_0, atol=1e-4 * np.linalg.norm(momentum_0))
+    assert_allclose(angular, angular_0, atol=1e-3 * np.linalg.norm(angular_0))
+    assert energy < energy_0
+    assert scene.sph_solver.solve_stats.n_unconverged_viscosity == 0
+
+    # rigid rotation and translation dissipate nothing
+    scene.reset()
+    pos = liquid.get_particles_pos()
+    vel = torch.stack((-omega * pos[:, 1] + 0.1, omega * pos[:, 0], torch.zeros_like(pos[:, 0])), 1)
+    liquid.set_particles_vel(vel)
+    scene.step()
+    dissipation = float(scene.sph_solver.get_viscous_dissipation())
+    assert dissipation < 1e-3 * get_momenta(liquid, mass)[2]
+
+
+@pytest.mark.required
+def test_dfsph_state_restores_warm_starts(show_viewer):
+    # A restart from a saved state repeats the run up to the round-off of the GPU reductions, which a restart that lost
+    # the pressure warm starts does not.
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=2e-3, substeps=4),
+        sph_options=gs.options.SPHOptions(
+            particle_size=0.01,
+            particle_volume_factor=1.0,
+            lower_bound=(-0.2, -0.2, -0.01),
+            upper_bound=(0.2, 0.2, 0.3),
+        ),
+        show_viewer=show_viewer,
+    )
+    scene.add_entity(morph=gs.morphs.Plane())
+    liquid = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.05), size=(0.1, 0.1, 0.1)),
+        material=gs.materials.SPH.Liquid(sampler="regular", viscosity=1e-3, surface_tension=0.0),
+    )
+    scene.build(n_envs=2)
+    for _ in range(20):
+        scene.step()
+    saved = scene.get_state()
+    scene.step()
+    pos_reference = tensor_to_array(liquid.get_particles_pos())
+    scene.reset(saved, envs_idx=[1])
+    scene.reset(saved, envs_idx=[0])
+    scene.step()
+    restart_error = np.abs(tensor_to_array(liquid.get_particles_pos()) - pos_reference).max()
+    sph_state = next(state for state in saved.solvers_state if isinstance(state, SPHSolverState))
+    sph_state.pressure.zero_()
+    scene.reset(saved)
+    scene.step()
+    control_error = np.abs(tensor_to_array(liquid.get_particles_pos()) - pos_reference).max()
+    assert restart_error < 1e-2 * control_error

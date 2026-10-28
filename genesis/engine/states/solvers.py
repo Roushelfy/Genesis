@@ -208,11 +208,19 @@ class SPHSolverState:
             "requires_grad": scene.requires_grad,
             "scene": self._scene,
         }
-        self._pos = gs.zeros((scene.sim._B, scene.sim.sph_solver.n_particles, 3), **args)
-        self._vel = gs.zeros((self._scene.sim._B, scene.sim.sph_solver.n_particles, 3), **args)
-        args["dtype"] = gs.tc_bool
+        n_particles = scene.sim.sph_solver.n_particles
+        self._pos = gs.zeros((scene.sim._B, n_particles, 3), **args)
+        self._vel = gs.zeros((self._scene.sim._B, n_particles, 3), **args)
+        # Persistent state of the default solver, which the next substep reads: the pressures of the density and
+        # divergence solves (warm starts), the micro-rotation of the particles (zero without micropolar), and the
+        # velocity change of the coupled links by the rigid constraints (guess of the constraint repetition, see
+        # SPHSolver.repeat_for_rigid_constraints, empty without coupled links).
         args["requires_grad"] = False
-        self._active = gs.zeros((self._scene.sim._B, scene.sim.sph_solver.n_particles), **args)
+        self._pressure = gs.zeros((scene.sim._B, n_particles, 2), **args)
+        self._angular_vel = gs.zeros((scene.sim._B, n_particles, 3), **args)
+        self._coupled_vel_constraint = gs.zeros((scene.sim._B, scene.sim.sph_solver.n_coupled_dofs), **args)
+        args["dtype"] = gs.tc_bool
+        self._active = gs.zeros((self._scene.sim._B, n_particles), **args)
 
     @property
     def scene(self):
@@ -229,6 +237,18 @@ class SPHSolverState:
     @property
     def active(self):
         return self._active
+
+    @property
+    def pressure(self):
+        return self._pressure
+
+    @property
+    def angular_vel(self):
+        return self._angular_vel
+
+    @property
+    def coupled_vel_constraint(self):
+        return self._coupled_vel_constraint
 
 
 class PBDSolverState:

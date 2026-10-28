@@ -794,6 +794,22 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         suffices for fluids about as viscous as water, while very viscous fluids under pressure need more, which cost
         time. A substep that reaches the limit is reported as unconverged. Only used by the default solver.
         Defaults to 30.
+    max_constraint_iterations : int, optional
+        Maximum number of times the fluid stage of a substep is repeated after the constraint solve of the rigid solver
+        (contacts, joint limits, equalities) changed the velocity of a coupled link, holding that change as an external
+        impulse on the link, until the change agrees with the one the fluid saw. Only used by the default solver.
+        Defaults to 4.
+    max_constraint_error : float, optional
+        Tolerance of that agreement, as the change of the coupled link velocities between two repetitions relative to
+        their magnitude (the norm of the linear velocity plus the size of the link times the norm of the angular
+        velocity). Only used by the default solver. Defaults to 1%.
+    isotropic_pressure : bool, optional
+        Whether to correct the pressure pair weights of each particle so that its pressure pairs carry an isotropic
+        stress. Without it, a sheared particle arrangement under pressure carries a shear stress proportional to the
+        pressure, a spurious friction that raises the wall shear of viscous flows under a hydrostatic head. The
+        corrected force is not the gradient of the density estimate and heats a fluid at rest: at 1e-3 m^2/s the
+        viscosity holds the velocity noise at a few mm/s, at the viscosity of water it grows. Only used by the default
+        solver. Defaults to False.
     energy_audit : bool, optional
         Whether to record the change of kinetic energy of the fluid caused by each stage of a substep (divergence solve,
         explicit forces, coupled viscosity and density solves, wall clearance) in `SPHSolver.solve_stats`, to check the
@@ -837,6 +853,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_viscosity_error: PositiveFloat = 0.1 * 0.01
     max_viscosity_solver_iterations: PositiveInt = 100
     max_coupling_iterations: PositiveInt = 30
+    max_constraint_iterations: NonNegativeInt = 4
+    max_constraint_error: PositiveFloat = 0.01
+    isotropic_pressure: StrictBool = False
     energy_audit: StrictBool = False
     micropolar: StrictBool = False
     boundary_offset: NonNegativeFloat | None = None

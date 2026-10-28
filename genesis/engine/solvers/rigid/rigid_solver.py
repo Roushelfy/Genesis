@@ -1327,7 +1327,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
             )
             # The fluid of the SPH solver exchanges momentum with the coupled links within the substep: its impulse
             # joins the smooth force before the constraints are assembled and solved (see SPHSolver.is_rigid_coupled).
-            if isinstance(self.sim.sph_solver, SPHSolver) and self.sim.sph_solver.is_rigid_coupled:
+            is_sph_coupled = isinstance(self.sim.sph_solver, SPHSolver) and self.sim.sph_solver.is_rigid_coupled
+            if is_sph_coupled:
                 self.sim.sph_solver.substep_coupled_with_rigid(f)
             if self._enable_collision:
                 collider.detection()
@@ -1349,6 +1350,17 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     self.rigid_config,
                     constraint_solver._n_iterations,
                 )
+                # The constraints may change the velocity of the coupled links the fluid saw, in which case the fluid
+                # stage runs again with that change and the constraints are solved again (SPHSolver docs).
+                while is_sph_coupled and self.sim.sph_solver.repeat_for_rigid_constraints(f):
+                    func_solve_body(
+                        self.dyn_state,
+                        constraint_solver.constraint_state,
+                        self.dyn_info,
+                        self.rigid_info,
+                        self.rigid_config,
+                        constraint_solver._n_iterations,
+                    )
             kernel_substep_post(
                 self.dyn_state,
                 collider.collider_state,

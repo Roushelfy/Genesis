@@ -949,6 +949,11 @@ class SPHLegacySolver(GravityMixin, TimeBasedMixin, Solver):
     # ------------------------------------------------------------------------------------
 
     @property
+    def n_coupled_dofs(self):
+        """Number of spatial velocity components of coupled links, none for the legacy solver (see SPHSolverState)."""
+        return 0
+
+    @property
     def n_particles(self):
         if self.is_built:
             return self._n_particles
