@@ -26,6 +26,10 @@ from .base_solver import GravityMixin, Solver, TimeBasedMixin
 # Number of rigid links whose boundary a fluid particle caches (see init_particle_fields).
 N_BOUNDARY_SLOTS = 3
 
+# Number of fluid neighbors a particle lists for the solves of a substep (see _func_for_all_fluid_neighbors). A particle
+# at rest density has about 33 to 42 neighbors, depending on the volume factor; one with more searches the hash grid.
+N_LISTED_NEIGHBORS = 64
+
 # Number of even spherical harmonics up to degree 4 (1 + 5 + 9), the directional basis of the correction of the viscosity
 # operator (see _kernel_compute_viscosity_geometry).
 N_VISCOSITY_BASIS = 15
@@ -210,6 +214,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self.particles_render = struct_particle_state_render.field(
             shape=(self._n_particles, self._B), needs_grad=False, layout=qd.Layout.SOA
         )
+
+        # Fluid neighbors of every particle within the support radius, in hashed (reordered) order, listed by the density
+        # kernel of the substep for the later stages, whose positions do not change (see
+        # _func_for_all_fluid_neighbors). The neighbor rank comes first, so that the lists of consecutive particles lie
+        # side by side in memory.
+        self.particles_n_fluid_neighbors = qd.field(gs.qd_int, shape=(self._n_particles, self._B))
+        self.particles_fluid_neighbors = qd.field(gs.qd_int, shape=(N_LISTED_NEIGHBORS, self._n_particles, self._B))
 
         # Per-environment reductions of the DFSPH solver iterations.
         self.envs_n_active = qd.field(gs.qd_int, shape=(self._B,))
@@ -624,14 +635,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 ret = qd.Struct(acc=self._gravity[i_b], angular_acc=qd.Vector.zero(gs.qd_float, 3))
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    ret,
-                    self._task_compute_non_pressure_forces,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, ret, self._task_compute_non_pressure_forces, i_b)
 
                 for i_ff in qd.static(range(len(self._ffs))):
                     ret.acc += self._ffs[i_ff].get_acc(
@@ -857,7 +861,24 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         grad_p_j = -V_j * self.cubic_kernel_derivative(x_ij)
         ret.sum_grad_p_k += grad_p_j.norm_sqr()
         ret.grad_p_i -= grad_p_j
+        if ret.n_neighbors < N_LISTED_NEIGHBORS:
+            self.particles_fluid_neighbors[ret.n_neighbors, i, i_b] = j
         ret.n_neighbors += 1
+
+    @qd.func
+    def _func_for_all_fluid_neighbors(self, i_p, ret: qd.template(), task: qd.template(), i_b):
+        """Run task(i_p, j, ret, i_b) on every fluid neighbor j of particle i_p within the support radius.
+
+        Reads the list of the density kernel of the substep (_kernel_compute_density_and_factor), which holds the same
+        neighbors as a search of the hash grid as long as the positions have not changed since, and searches the grid
+        for a particle with more neighbors than a list holds.
+        """
+        n_neighbors = self.particles_n_fluid_neighbors[i_p, i_b]
+        if n_neighbors <= N_LISTED_NEIGHBORS:
+            for k in range(n_neighbors):
+                task(i_p, self.particles_fluid_neighbors[k, i_p, i_b], ret, i_b)
+        else:
+            self.sh.for_all_neighbors(i_p, self.particles_reordered.pos, self._support_radius, ret, task, i_b)
 
     @qd.kernel
     def _kernel_compute_density_and_factor(self, f: qd.i32):
@@ -886,6 +907,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     self._task_compute_density_and_factor,
                     i_b,
                 )
+                self.particles_n_fluid_neighbors[i_p, i_b] = ret.n_neighbors
 
                 if qd.static(self._has_boundary):
                     for k in range(N_BOUNDARY_SLOTS):
@@ -1007,14 +1029,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     rhs=qd.Vector.zero(gs.qd_float, 5),
                     trace=gs.qd_float(0.0),
                 )
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    ret,
-                    self._task_compute_pressure_moment,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, ret, self._task_compute_pressure_moment, i_b)
                 if qd.static(self._has_boundary):
                     self.sh_boundary.for_all_neighbors_of_pos(
                         i_p,
@@ -1105,9 +1120,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             p_rho2_i=self._func_pressure_density2_norm(i_p, i_b, is_divergence),
             is_divergence=is_divergence,
         )
-        self.sh.for_all_neighbors(
-            i_p, self.particles_reordered.pos, self._support_radius, ret, self._task_compute_pressure_acc, i_b
-        )
+        self._func_for_all_fluid_neighbors(i_p, ret, self._task_compute_pressure_acc, i_b)
 
         if qd.static(self._has_boundary):
             # BWJ23 eq. (33): a single term of the fluid particle pressure, with no pressure value at the boundary.
@@ -1136,14 +1149,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 density_change = gs.qd_float(0.0)
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    density_change,
-                    self._task_compute_density_change,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, density_change, self._task_compute_density_change, i_b)
 
                 if qd.static(self._has_boundary):
                     for k in range(N_BOUNDARY_SLOTS):
@@ -1232,14 +1238,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 predicted_source = gs.qd_float(0.0)
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    predicted_source,
-                    self._task_compute_predicted_source,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, predicted_source, self._task_compute_predicted_source, i_b)
 
                 if qd.static(self._has_boundary):
                     # BWJ23 eq. (34): the pressure acceleration of a boundary particle is the one of its link, zero for
@@ -1543,14 +1542,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     moment=gs.qd_float(0.0),
                     gram=qd.Matrix.zero(gs.qd_float, N_VISCOSITY_BASIS, N_VISCOSITY_BASIS),
                 )
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    ret,
-                    self._task_compute_viscosity_moment,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, ret, self._task_compute_viscosity_moment, i_b)
                 if qd.static(self._has_boundary):
                     self.sh_boundary.for_all_neighbors_of_pos(
                         i_p,
@@ -1672,9 +1664,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     rhs=mass * vel_rhs,
                     row_norm=gs.qd_float(0.0),
                 )
-                self.sh.for_all_neighbors(
-                    i_p, self.particles_reordered.pos, self._support_radius, ret, self._task_init_viscosity_solve, i_b
-                )
+                self._func_for_all_fluid_neighbors(i_p, ret, self._task_init_viscosity_solve, i_b)
                 # The wall acts on the particle alone (see _kernel_compute_viscosity_geometry), so it only adds to the
                 # diagonal block, and the wall velocity is known in the solve, so its part goes to the right-hand side.
                 wall_block = self._substep_dt * self.particles_viscosity[i_p, i_b].wall_tensor
@@ -1744,14 +1734,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 direction = self.particles_viscosity[i_p, i_b].direction
                 i_m = self.particles_reordered[i_p, i_b].material
                 image = self.materials[i_m].mass * direction
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    image,
-                    self._task_apply_viscosity_operator,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, image, self._task_apply_viscosity_operator, i_b)
                 if qd.static(self._has_boundary):
                     image += self._substep_dt * (self.particles_viscosity[i_p, i_b].wall_tensor @ direction)
                 self.particles_viscosity[i_p, i_b].direction_image = image
@@ -1838,13 +1821,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 residual = qd.Vector.zero(gs.qd_float, 3)
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    residual,
-                    self._task_apply_viscosity_operator_to_pressure_delta,
-                    i_b,
+                self._func_for_all_fluid_neighbors(
+                    i_p, residual, self._task_apply_viscosity_operator_to_pressure_delta, i_b
                 )
                 if qd.static(self._has_boundary):
                     residual += self._substep_dt * (
@@ -2000,14 +1978,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
                 power = gs.qd_float(0.0)
-                self.sh.for_all_neighbors(
-                    i_p,
-                    self.particles_reordered.pos,
-                    self._support_radius,
-                    power,
-                    self._task_compute_viscous_dissipation,
-                    i_b,
-                )
+                self._func_for_all_fluid_neighbors(i_p, power, self._task_compute_viscous_dissipation, i_b)
                 if qd.static(self._has_boundary):
                     for k in range(N_BOUNDARY_SLOTS):
                         if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:

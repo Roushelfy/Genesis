@@ -160,6 +160,33 @@ Records `gs-dfsph__S1__f2@sphgoal-fe*`, `@sphgoal-fgE` in FluidBench `results/in
 spin-down bar: in water the spin-down is set by the numerical friction of the walls and of the pressure pairs, and by
 the particle noise.
 
+## Performance (M5)
+
+Profiles of FluidBench S1 f2 R2 (19172 particles, 45280 boundary particles, one environment) with
+`adapters/genesis/tools/dfsph_profile.py`; receipts in FluidBench `results/profiles/sphgoal/`. Times are per substep of
+the plain (uninstrumented) windows, two windows each; `--kernel-profiler` adds the GPU time of every task.
+
+Where the time goes (`nl3_kp_dt1`, GPU time per substep at dt 0.31 ms): viscosity geometry 1.9 ms (its two boundary
+passes over the ghost columns, 0.95 ms each), one Jacobi iteration of the density solve 0.165 ms (two neighbor loops of
+67 and 40 us, the rest in small serial and coupled-link tasks of about 6 us each), density and factor 0.64 ms. Over a
+full S1 run the density solve takes 47 iterations per substep at the FluidBench tolerance (average density error
+0.05 %), 94, 114 and 170 at time steps x2, x4, x8 (records `@sphgoal-nl1-it100-dt*`); with the default cap of 10
+iterations those solves stop unconverged at the larger steps (`fe_coarse_dt8`: all 882 density solves).
+
+| Candidate (SPH_SOLVER_GOAL.md) | State | Evidence |
+| --- | --- | --- |
+| 1 boundary geometry per fluid particle and link | implemented: gradient, wall tensor and clearance per boundary slot, computed once per substep and read by every iteration | solver design (M2) |
+| 2 slot allocation of the hash grid | measured, not changed: reordering takes 0.07 ms per substep (1 %) | `fe_fine` |
+| 3 host readback in the iterations | proposed: one scalar per iteration, synchronization 16 us per call | `fe_fine` (`sync_s_per_call`) |
+| 4 static and moving boundary indexing | proposed: the boundary update takes 0.02 ms per substep | `nl3_kp_dt1` |
+| 5 cached neighbor indices | implemented, validated, measured: 9.0 to 6.6 ms per substep at dt x1, 12.8 to 8.9 ms at dt x8 (1.36x, 1.44x) | `fe_coarse_dt*`, `nl1_coarse_dt*`; equivalence `momentum__nl1_mom_nu1e-3`, `decay__nl1_decay_nu1e-3_dx0.0025`, `couette__nl1_couette_dx0.0035` |
+| 6 reorder and copy traffic | measured, not changed: under 2 % | `fe_fine` |
+| 7 preconditioner reuse | proposed | |
+| 8 block reductions | proposed: the per-particle error and link wrench atomics of an iteration | `nl3_kp_dt1` |
+| 9 independent stop of environments | proposed | |
+| 10 prescribed-boundary path | proposed | |
+| packed moment matrix of the viscosity correction | measured, not adopted: 1.99 to 1.93 ms | `nl2_fine_dt1` |
+
 ## Open items
 
 - V1 (Stokes first problem) and V3 (pipe flow) drivers: the sliding-floor trough is limited by the closed-cavity return
