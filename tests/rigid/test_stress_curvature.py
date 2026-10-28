@@ -20,7 +20,7 @@ def test_vertex_curvature_reproducible_area_average(asset_tmp_path):
     scene.add_entity(gs.morphs.Mesh(file=str(path), fixed=True))
     scene.build()
     geometry = scene.rigid_solver.dyn_info
-    curvature = StressCurvature(geometry, np.finfo(np.float64).eps).info
+    curvature = StressCurvature(geometry, float(np.finfo(np.float64).eps)).info
 
     def read(value):
         return qd_to_numpy(value, transpose=True, copy=True)
