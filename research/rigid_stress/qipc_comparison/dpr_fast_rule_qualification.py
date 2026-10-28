@@ -591,7 +591,7 @@ def recompute_admission(args, source_revision):
                         if loaded.any()
                         else None,
                         "raw_v1_reproduced_exact": bool(raw_match),
-                    "raw_reproduction_layout": "native_face_contact_batch_value",
+                        "raw_reproduction_layout": "native_face_contact_batch_value",
                         "raw_v1_environment_admitted": record["empirical_environment_admitted"],
                         "normalized_gradient_max_loaded": float(
                             scores["normalized_gradient_norm"][loaded].max(initial=0)
