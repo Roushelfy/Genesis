@@ -123,10 +123,15 @@ if IS_SLURM:
                             coordinates, weight, _position, shape, _face = func_contact_sample(
                                 start + i_q, i_c, i_b, first, second, contacts, surface
                             )
+                            raw_profile = coordinates.dot(contacts.coefficient[i_c, i_b])
                             is_finite = weight >= 0.0 and weight < float("inf")
+                            is_finite = is_finite and raw_profile > -float("inf") and raw_profile < float("inf")
+                            for a in qd.static(range(3)):
+                                is_finite = is_finite and coordinates[a] > -float("inf")
+                                is_finite = is_finite and coordinates[a] < float("inf")
                             stats[6] += gs.qd_float(not is_finite)
                             if is_finite and weight > 0.0:
-                                profile = qd.max(0.0, coordinates.dot(contacts.coefficient[i_c, i_b]))
+                                profile = qd.max(0.0, raw_profile)
                                 fraction = weight * profile
                                 load += fraction * shape
                                 gradient += fraction * coordinates
@@ -150,6 +155,7 @@ if IS_SLURM:
 class FrozenFrame:
     path: Path
     name: str
+    environment_indices: Any
     valid: Any
     position: Any
     force: Any
@@ -176,7 +182,7 @@ def finite_json(value):
     return value
 
 
-def load_frame(path, name, allow_conditional_zero_omega):
+def load_frame(path, name, allow_conditional_zero_omega, environments):
     with np.load(path, allow_pickle=False) as archive:
         saved = {key: archive[key] for key in archive.files}
     prefix = "contact_" if "contact_valid" in saved else ""
@@ -202,21 +208,27 @@ def load_frame(path, name, allow_conditional_zero_omega):
     omega = saved[omega_key] if is_complete else np.zeros((shape[0], 3))
     if omega.shape != (shape[0], 3) or not np.isfinite(omega).all():
         raise ValueError("Original body-frame omega must be finite[B,3].")
+    indices = list(range(shape[0])) if environments is None else environments
+    if not indices or len(set(indices)) != len(indices) or min(indices) < 0 or max(indices) >= shape[0]:
+        raise ValueError("Select unique existing environments and retain all their contact slots.")
+    frame_position = saved.get(prefix + "frame_position")
+    frame_quaternion = saved.get(prefix + "frame_quaternion")
     return FrozenFrame(
         path,
         name,
-        valid,
-        position,
-        saved[prefix + "force"],
-        saved[prefix + "normal"],
-        saved[prefix + "friction"],
-        saved[prefix + "radius"],
-        saved[prefix + "radius_status"],
-        saved[prefix + "center"],
-        saved[prefix + "anchor_face"],
-        omega,
-        saved.get(prefix + "frame_position"),
-        saved.get(prefix + "frame_quaternion"),
+        np.array(indices),
+        valid[indices],
+        position[indices],
+        saved[prefix + "force"][indices],
+        saved[prefix + "normal"][indices],
+        saved[prefix + "friction"][indices],
+        saved[prefix + "radius"][indices],
+        saved[prefix + "radius_status"][indices],
+        saved[prefix + "center"][indices],
+        saved[prefix + "anchor_face"][indices],
+        omega[indices],
+        frame_position[indices] if frame_position is not None else None,
+        frame_quaternion[indices] if frame_quaternion is not None else None,
         is_complete,
     )
 
@@ -396,6 +408,7 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
     source_passed = np.all((native["status"] == 0) | ~frame.valid, axis=1)
     source_passed &= np.all((force_error <= 1e-8) | ~loaded, axis=1)
     source_passed &= np.all((moment_error <= 1e-8) | ~loaded, axis=1)
+    source_passed &= np.all(np.isfinite(native["coefficient"]).all(axis=-1) | ~loaded, axis=1)
     residual = np.sqrt(arrays["residual_squared"])
     residual_budget = np.maximum(options.absolute_tolerance, options.tolerance * np.sqrt(arrays["rhs_squared"]))
     finite = np.ones(frame.valid.shape[0], dtype=bool)
@@ -431,6 +444,8 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
         )
         raise RuntimeError("The independent per-face P2 moment witness does not reconstruct the accepted native load.")
     empirical_contact = (local_l1 <= 1e-3) & (gradient_norm <= 1e-3) & (native["status"] == 0)
+    empirical_contact &= witness["face_statistics"][..., 6].sum(axis=2) == 0
+    empirical_contact &= independent["face_statistics"][..., 6].sum(axis=2) == 0
     empirical_environment = np.all(empirical_contact | ~loaded, axis=1) & eligible
     np.savez_compressed(
         directory / "admission.npz",
@@ -467,6 +482,17 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
         "independent_rule": "angle8" if degree != 8 else "angle16",
         "independent_gradient_norm": gradient_norm.tolist(),
         "local_P2_load_L1_discrepancy": local_l1.tolist(),
+        "moment_statistics_per_contact": witness["face_statistics"].sum(axis=2).tolist(),
+        "moment_statistics_columns": [
+            "raw_weight_sum",
+            "raw_weight_squared_sum",
+            "positive_weight_samples",
+            "positive_active_samples",
+            "pressure_mass_sum",
+            "pressure_mass_squared_sum",
+            "nonfinite_samples",
+            "analytic_sections",
+        ],
         "moment_reconstruction_relative": reconstruction_error.tolist(),
         "empirical_environment_admitted": empirical_environment.tolist(),
         "estimator_scope": "Same-coefficient independent-rule3-gradient and original six P2 shape moments; empirical1e-3 screens only. No high-order true-error bound or complete geometric admission certificate is claimed.",
@@ -479,6 +505,7 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archives", nargs="+", type=Path, required=True)
+    parser.add_argument("--envs", nargs="+", type=int)
     parser.add_argument("--mesh", type=Path, required=True)
     parser.add_argument("--budgets", type=Path, required=True)
     parser.add_argument("--rules", nargs="+", choices=RULES, default=RULES)
@@ -590,7 +617,7 @@ def main():
     reference_passed = True
     coarse_count = 0
     for index, archive in enumerate(args.archives):
-        frame = load_frame(archive, f"input{index:02d}-{archive.stem}", args.allow_conditional_zero_omega)
+        frame = load_frame(archive, f"input{index:02d}-{archive.stem}", args.allow_conditional_zero_omega, args.envs)
         directory = args.output / frame.name
         directory.mkdir()
         physical = {
@@ -742,6 +769,7 @@ def main():
                 "archived_material_binding": material_binding,
                 "archived_topology_binding": topology_binding,
                 "name": frame.name,
+                "original_environment_indices": frame.environment_indices.tolist(),
                 "whole_frame_qualification": frame.is_complete_mechanical_input,
                 "mechanical_scope": "Original archived body-frame omega retained."
                 if frame.is_complete_mechanical_input
