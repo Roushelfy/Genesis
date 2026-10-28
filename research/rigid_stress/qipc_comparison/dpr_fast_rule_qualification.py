@@ -302,6 +302,150 @@ def legacy_error(actual, expected):
     return difference / np.maximum(scale, 1e-30)
 
 
+def normalized_admission(native, checker):
+    """Compare per-face pressure measures after one checker mass normalization per source."""
+    first = checker["face_gradient"].sum(axis=2)
+    mass = first[..., 0]
+    is_valid = np.isfinite(mass) & (mass > 0)
+    is_valid &= checker["face_statistics"][..., 6].sum(axis=2) == 0
+    is_valid &= np.isfinite(checker["face_load_fractions"]).all(axis=(-2, -1))
+    is_valid &= np.isfinite(native["face_load_fractions"]).all(axis=(-2, -1))
+    denominator = np.where(is_valid, mass, 1.0)
+    normalized = checker["face_load_fractions"] / denominator[..., None, None]
+    gradient = first / denominator[..., None] - np.array([1.0, 0.0, 0.0])
+    difference = normalized - native["face_load_fractions"]
+    return {
+        "checker_total_pressure_mass": mass,
+        "checker_supported_finite": is_valid,
+        "normalized_face_load_fractions": normalized,
+        "normalized_gradient": gradient,
+        "normalized_gradient_norm": np.linalg.norm(gradient, axis=-1),
+        "normalized_P2_L1_discrepancy": np.abs(difference).sum(axis=(-2, -1)),
+    }
+
+
+def recompute_admission(args, source_revision):
+    """Evaluate both empirical methods from immutable exported moments without replaying mechanics."""
+    if args.admission_method is None:
+        raise ValueError("A predeclared estimator-method identity is required for the v2 postprocess.")
+    method = json.loads(args.admission_method.read_text())
+    if method["schema"] != "genesis.dpr-fast-empirical-admission-method.v2" or method["scores"]["thresholds"] != {
+        "P2_shape_L1_max": 0.001,
+        "centroid_gradient_norm_max": 0.001,
+    }:
+        raise ValueError("The postprocess requires the predeclared v2 formula and unchanged1e-3 thresholds.")
+    inputs = [file_id(path / "result.json") for path in args.recompute_admission]
+    result = {
+        "schema": "genesis.dpr-fast-admission-postprocess.v2",
+        "complete": False,
+        "passed": False,
+        "application_detector_validated": False,
+        "primary_timing": False,
+        "goal_complete": False,
+        "source_revision": source_revision,
+        "worker": file_id(Path(__file__)),
+        "method": file_id(args.admission_method),
+        "budgets": file_id(args.budgets),
+        "original_results": inputs,
+        "scope": "Slurm-only algebra on completed per-face moments. No physics replay, coefficient re-fit, source change or original result rewrite.",
+        "rows": [],
+    }
+    for directory in args.recompute_admission:
+        original = json.loads((directory / "result.json").read_text())
+        if original["complete"] is not True or original["passed"] is not True:
+            raise ValueError("Only completed trustworthy frozen-rule controls may be postprocessed.")
+        for case in original["rows"]:
+            case_rows = []
+            for record in case["rules"]:
+                identities = [record[key] for key in ("moment_witness", "admission", "contacts")]
+                if identities != [file_id(item["path"]) for item in identities]:
+                    raise ValueError("An exported moment/contact artifact differs from its terminal receipt.")
+                with np.load(record["moment_witness"]["path"], allow_pickle=False) as saved:
+                    native = {key: saved[key] for key in saved.files}
+                with np.load(record["admission"]["path"], allow_pickle=False) as saved:
+                    checker = {key[6:]: saved[key] for key in saved.files if key.startswith("check_")}
+                with np.load(record["contacts"]["path"], allow_pickle=False) as saved:
+                    loaded = saved["valid"] & (np.linalg.norm(saved["force"], axis=-1) > 1e-30)
+                    status = saved["status"]
+                scores = normalized_admission(native, checker)
+                is_admitted = scores["checker_supported_finite"] & (status == 0)
+                is_admitted &= scores["normalized_gradient_norm"] <= 1e-3
+                is_admitted &= scores["normalized_P2_L1_discrepancy"] <= 1e-3
+                environment_admitted = np.all(is_admitted | ~loaded, axis=1)
+                environment_admitted &= record["source_and_elastic_eligible_per_environment"]
+                admitted_list = environment_admitted.tolist()
+                raw_gradient = np.linalg.norm(checker["face_gradient"].sum(axis=2) - np.array([1.0, 0.0, 0.0]), axis=-1)
+                raw_L1 = np.abs(checker["face_load_fractions"] - native["face_load_fractions"]).sum(axis=(-2, -1))
+                raw_match = np.array_equal(raw_gradient, record["independent_gradient_norm"])
+                raw_match &= np.array_equal(raw_L1, record["local_P2_load_L1_discrepancy"])
+                if not raw_match:
+                    raise RuntimeError("The exported raw-v1 scores do not reproduce their original receipt.")
+                truth = record["application_passed_per_environment"]
+                output = args.output / f"{directory.name}-{case['name']}-{record['rule']}.npz"
+                np.savez_compressed(
+                    output,
+                    **scores,
+                    loaded=loaded,
+                    empirical_contact_admitted=is_admitted,
+                    empirical_environment_admitted=environment_admitted,
+                    original_raw_gradient_norm=raw_gradient,
+                    original_raw_P2_L1=raw_L1,
+                )
+                case_rows.append(
+                    {
+                        "rule": record["rule"],
+                        "source_artifacts": identities,
+                        "derived_scores": file_id(output),
+                        "loaded_contacts": int(loaded.sum()),
+                        "checker_mass_min_loaded": float(scores["checker_total_pressure_mass"][loaded].min())
+                        if loaded.any()
+                        else None,
+                        "checker_mass_max_loaded": float(scores["checker_total_pressure_mass"][loaded].max())
+                        if loaded.any()
+                        else None,
+                        "raw_v1_reproduced_exact": bool(raw_match),
+                        "raw_v1_environment_admitted": record["empirical_environment_admitted"],
+                        "normalized_gradient_max_loaded": float(
+                            scores["normalized_gradient_norm"][loaded].max(initial=0)
+                        ),
+                        "normalized_P2_L1_max_loaded": float(
+                            scores["normalized_P2_L1_discrepancy"][loaded].max(initial=0)
+                        ),
+                        "v2_environment_admitted": admitted_list,
+                        "application_passed_per_environment": truth,
+                        "legacy_passed_per_environment": record["legacy_passed_per_environment"],
+                        "false_accept_count": sum(
+                            admit and actual is False for admit, actual in zip(admitted_list, truth)
+                        ),
+                        "false_reject_count": sum(
+                            not admit and actual is True for admit, actual in zip(admitted_list, truth)
+                        ),
+                        "converged_but_application_inaccurate_count": record[
+                            "converged_but_application_inaccurate_count"
+                        ],
+                    }
+                )
+            result["rows"].append(
+                {
+                    "original_case": case["name"],
+                    "original_result": file_id(directory / "result.json"),
+                    "whole_frame_qualification": case["whole_frame_qualification"],
+                    "rules": case_rows,
+                }
+            )
+    result["original_results_unchanged"] = inputs == [
+        file_id(path / "result.json") for path in args.recompute_admission
+    ]
+    result["converged_bad_rule_detection_exercised"] = any(
+        row["converged_but_application_inaccurate_count"] for case in result["rows"] for row in case["rules"]
+    )
+    result["complete"] = True
+    result["passed"] = result["original_results_unchanged"]
+    write_json(args.output / "result.json", finite_json(result))
+    if not result["passed"]:
+        raise RuntimeError("An immutable original result changed during the postprocess.")
+
+
 def region_errors(actual, expected, weights, masks):
     rows = []
     actual_full, expected_full = actual["tensor_full9"], expected["tensor_full9"]
@@ -447,9 +591,15 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
     empirical_contact &= witness["face_statistics"][..., 6].sum(axis=2) == 0
     empirical_contact &= independent["face_statistics"][..., 6].sum(axis=2) == 0
     empirical_environment = np.all(empirical_contact | ~loaded, axis=1) & eligible
+    normalized = normalized_admission(witness, independent)
+    normalized_contact = normalized["checker_supported_finite"] & (native["status"] == 0)
+    normalized_contact &= normalized["normalized_gradient_norm"] <= 1e-3
+    normalized_contact &= normalized["normalized_P2_L1_discrepancy"] <= 1e-3
+    normalized_environment = np.all(normalized_contact | ~loaded, axis=1) & eligible
     np.savez_compressed(
         directory / "admission.npz",
         **{"check_" + key: value for key, value in independent.items()},
+        **{"v2_" + key: value for key, value in normalized.items()},
         local_face_P2_L1_discrepancy=local_l1,
         independent_gradient_norm=gradient_norm,
         native_gradient=gradient_native,
@@ -495,6 +645,10 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
         ],
         "moment_reconstruction_relative": reconstruction_error.tolist(),
         "empirical_environment_admitted": empirical_environment.tolist(),
+        "mass_normalized_v2_environment_admitted": normalized_environment.tolist(),
+        "mass_normalized_v2_gradient_norm": normalized["normalized_gradient_norm"].tolist(),
+        "mass_normalized_v2_P2_L1_discrepancy": normalized["normalized_P2_L1_discrepancy"].tolist(),
+        "independent_checker_total_mass": normalized["checker_total_pressure_mass"].tolist(),
         "estimator_scope": "Same-coefficient independent-rule3-gradient and original six P2 shape moments; empirical1e-3 screens only. No high-order true-error bound or complete geometric admission certificate is claimed.",
     }
     report["complete"] = True
@@ -504,9 +658,12 @@ def rule_fields(model, options, frame, rule, directory, tasks_per_env):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--archives", nargs="+", type=Path, required=True)
+    source_group = parser.add_mutually_exclusive_group(required=True)
+    source_group.add_argument("--archives", nargs="+", type=Path)
+    source_group.add_argument("--recompute-admission", nargs="+", type=Path)
+    parser.add_argument("--admission-method", type=Path)
     parser.add_argument("--envs", nargs="+", type=int)
-    parser.add_argument("--mesh", type=Path, required=True)
+    parser.add_argument("--mesh", type=Path)
     parser.add_argument("--budgets", type=Path, required=True)
     parser.add_argument("--rules", nargs="+", choices=RULES, default=RULES)
     parser.add_argument("--reference256", action="store_true")
@@ -522,7 +679,7 @@ def main():
     args = parser.parse_args()
     if not IS_SLURM:
         parser.error("Scientific execution requires Slurm rtx-mid/image1_26.")
-    if len(args.archives) > 12 or (args.reference256 and len(args.archives) > 6):
+    if args.archives is not None and (len(args.archives) > 12 or (args.reference256 and len(args.archives) > 6)):
         parser.error("Use at most12 frozen inputs and at most6 q256 reference checks.")
     if "angle128" not in args.rules or len(set(args.rules)) != len(args.rules) or args.tasks_per_env < 1:
         parser.error("Include the angle128 reference, unique rules and a positive workspace capacity.")
@@ -549,12 +706,17 @@ def main():
     }:
         raise ValueError("This checker implements the frozen reference-stability limits exactly.")
     args.output.mkdir(parents=True, exist_ok=False)
-    gs.init(backend=gs.cuda, precision="64", seed=510000, logging_level="warning")
     if Path(gs.__file__).resolve().parent.parent != args.git_source.resolve():
         raise RuntimeError("Imported Genesis is not the explicitly declared native source.")
     source_revision = subprocess.check_output(
         ["git", "-C", str(args.git_source), "rev-parse", "HEAD"], text=True
     ).strip()
+    if args.recompute_admission is not None:
+        recompute_admission(args, source_revision)
+        return
+    if args.mesh is None:
+        parser.error("Native frozen-rule replay requires --mesh.")
+    gs.init(backend=gs.cuda, precision="64", seed=510000, logging_level="warning")
     producer_files = [
         args.git_source / "genesis/engine/solvers/rigid/stress" / name
         for name in ("contact.py", "scatter.py", "surface.py", "model.py", "solve.py", "balance.py")
