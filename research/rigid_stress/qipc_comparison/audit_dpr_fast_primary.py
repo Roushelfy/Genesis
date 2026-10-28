@@ -57,7 +57,12 @@ def inspect_row(group, task, directory, source, revision):
     result = json.loads(result_path.read_text())
     if not result.get("complete"):
         return row
+    returncode_path = result_path.parent.parent / (task["name"] + ".returncode.txt")
+    if not returncode_path.is_file():
+        return row
     row.update(complete=True, result=file_id(result_path), wrapper_passed=result["passed"])
+    row["returncode"] = int(returncode_path.read_text().strip())
+    row["returncode_receipt"] = file_id(returncode_path)
     device = result["actual_device"] or {"uuid": "unavailable", "name": "unavailable"}
     row["gpu"] = device
     row["host"] = result["runtime"]["hostname"]
@@ -73,6 +78,8 @@ def inspect_row(group, task, directory, source, revision):
         "stdlib_before_driver": result["checks"]["stdlib_before_driver"],
         "device_available": result["checks"]["actual_cuda_device_available"] and row["driver"] is not None,
         "declared_final_source": argument(arguments, "--source-revision") == revision,
+        "captured_worker_exact": file_id(Path(result["worker"]["path"])) == result["worker"],
+        "terminal_returncode": row["returncode"] == (0 if result["passed"] else 1),
     }
     row["checks"] = checks
     if result["benchmark"] is None:
@@ -84,6 +91,25 @@ def inspect_row(group, task, directory, source, revision):
         error = result["driver_error"]
         row["failure"] = error
         row["failure_snapshot"] = failure
+        failed_options = (
+            [entry["options"] for entry in failure["entries"]] if failure and failure.get("available") else []
+        )
+        checks["actual_failed_route"] = bool(failed_options) and all(
+            options["backend"] == "volume"
+            and options["pressure_quadrature"] == "edge"
+            and options["quadrature"] == 16
+            and options["contact_model"] == "pressure"
+            and options["load_transfer"] == "patch"
+            and options["radius_model"] == "hertz"
+            and options["pressure_profile"] == "hertz"
+            and options["output_mode"] == output
+            and options["box_edge_policy"] == "planar"
+            for options in failed_options
+        )
+        checks["actual_failed_engine"] = error is not None and all(
+            str(source / relative) in error["traceback"]
+            for relative in ("examples/speed_benchmark/rigid_stress.py", "genesis/engine/solvers/rigid/rigid_solver.py")
+        )
         row["expected_retained_negative"] = bool(
             route == "volume_edge16_diagnostic"
             and error is not None
