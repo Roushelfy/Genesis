@@ -632,6 +632,7 @@ def main():
         "complete": False,
         "passed": False,
         "full_trajectory_qualified": False,
+        "bounded_history_qualified": False,
         "goal_complete": False,
         "primary_timing": False,
         "arguments": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
@@ -881,7 +882,7 @@ def main():
                         "application_regions_evaluated": False,
                         "application_regions_passed": False,
                         "legacy_parity_passed": False,
-                        "legacy_spatial_5mean_10worst_5peak_passed": False,
+                        "legacy_spatial_per_frame_5mean_10worst_5peak_diagnostic": False,
                         "invalid_environments": {
                             label: api.np.flatnonzero(~check["valid"]).tolist() for label, check in runtime.items()
                         },
@@ -1032,7 +1033,7 @@ def main():
                 "inputs_target_state_rigid_unchanged": bool(preserved),
                 "route_counters_accounted": bool(accounting),
                 "legacy_parity_passed": bool(legacy_parity.all()),
-                "legacy_spatial_5mean_10worst_5peak_passed": legacy_spatial,
+                "legacy_spatial_per_frame_5mean_10worst_5peak_diagnostic": legacy_spatial,
                 "legacy_strict_origin_diagnostic_passed": all(
                     check["strict_origin_diagnostic_passed"].all() for check in runtime.values()
                 ),
@@ -1212,14 +1213,39 @@ def main():
             "recontact_observed": bool(recontact_seen.any()),
             "automatic_partial_reset_observed": bool(reset_counts.sum() > 0),
         }
-        result["full_trajectory_qualified"] = bool(
+        result["bounded_history_qualified"] = bool(
             result["passed"] and args.steps >= 730 and all(result["history_coverage"].values())
+        )
+        result["full_trajectory_qualified"] = bool(
+            result["bounded_history_qualified"] and result["all_environments_complete_600_step_cycle"]
         )
         result["legacy_parity_passed"] = (
             all(row["legacy_parity_passed"] for row in result["rows"]) if result["rows"] else False
         )
-        result["legacy_spatial_5mean_10worst_5peak_passed"] = (
-            all(row["legacy_spatial_5mean_10worst_5peak_passed"] for row in result["rows"]) if result["rows"] else False
+        loaded_legacy_field = (
+            api.np.concatenate([row["legacy"][3, row["loaded"]] for row in history]) if history else api.np.empty(0)
+        )
+        loaded_legacy_peak = (
+            api.np.concatenate([row["legacy"][4, row["loaded"]] for row in history]) if history else api.np.empty(0)
+        )
+        legacy_spatial_applicable = bool(len(loaded_legacy_field))
+        legacy_spatial_mean = float(loaded_legacy_field.mean()) if legacy_spatial_applicable else None
+        legacy_spatial_worst = float(loaded_legacy_field.max()) if legacy_spatial_applicable else None
+        legacy_spatial_peak = float(loaded_legacy_peak.max()) if legacy_spatial_applicable else None
+        result["legacy_spatial_5mean_10worst_5peak"] = {
+            "applicability": "loaded_environment_frames" if legacy_spatial_applicable else "empty",
+            "loaded_environment_frames": len(loaded_legacy_field),
+            "stored6_field_mean": legacy_spatial_mean,
+            "stored6_field_worst": legacy_spatial_worst,
+            "peak_worst": legacy_spatial_peak,
+            "scope": "Unweighted stored6 relative field error averaged over all loaded environment/frame pairs; original5%mean/10%worst/5%peak. The stricter per-frame cross-environment mean remains a separate diagnostic. This is distinct from1e-6/1e-4 volume parity and new weighted full9 regional application budgets.",
+        }
+        result["legacy_spatial_5mean_10worst_5peak_passed"] = bool(
+            result["complete"]
+            and legacy_spatial_applicable
+            and legacy_spatial_mean <= 0.05
+            and legacy_spatial_worst <= 0.1
+            and legacy_spatial_peak <= 0.05
         )
         if policy is not None:
             _values, final_hash = _policy_state(api, policy)
@@ -1232,6 +1258,8 @@ def main():
             result["passed"] &= result["policy"]["every_audited_step_has_original_action"]
             result["full_trajectory_qualified"] &= result["policy"]["weights_unchanged"]
             result["full_trajectory_qualified"] &= result["policy"]["every_audited_step_has_original_action"]
+            result["bounded_history_qualified"] &= result["policy"]["weights_unchanged"]
+            result["bounded_history_qualified"] &= result["policy"]["every_audited_step_has_original_action"]
         _write(args.output / "result.json", result)
     if step_error is not None:
         raise step_error
