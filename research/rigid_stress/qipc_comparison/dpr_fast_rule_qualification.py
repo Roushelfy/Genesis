@@ -23,6 +23,7 @@ IS_SLURM = (
     and os.environ.get("GENESIS_IMAGE_VER") == "1_26"
 )
 RULES = ("edge16", "angle8", "angle16", "angle32", "angle64", "angle128")
+COARSE_RULES = ("edge4", "angle2")
 
 # Scientific imports and kernel registration occur only inside the allocated job.
 if IS_SLURM:
@@ -856,8 +857,10 @@ def main():
     parser.add_argument("--envs", nargs="+", type=int)
     parser.add_argument("--mesh", type=Path)
     parser.add_argument("--budgets", type=Path, required=True)
-    parser.add_argument("--rules", nargs="+", choices=RULES, default=RULES)
+    parser.add_argument("--rules", nargs="+", choices=(*RULES, *COARSE_RULES), default=RULES)
     parser.add_argument("--reference256", action="store_true")
+    parser.add_argument("--reference-run", type=Path)
+    parser.add_argument("--coarse-plan", type=Path)
     parser.add_argument("--coarse-controls", action="store_true")
     parser.add_argument("--allow-conditional-zero-omega", action="store_true")
     parser.add_argument("--corpus-role", choices=("diagnostic", "calibration", "holdout"), default="diagnostic")
@@ -872,8 +875,24 @@ def main():
         parser.error("Scientific execution requires Slurm rtx-mid/image1_26.")
     if args.archives is not None and (len(args.archives) > 12 or (args.reference256 and len(args.archives) > 6)):
         parser.error("Use at most12 frozen inputs and at most6 q256 reference checks.")
-    if "angle128" not in args.rules or len(set(args.rules)) != len(args.rules) or args.tasks_per_env < 1:
-        parser.error("Include the angle128 reference, unique rules and a positive workspace capacity.")
+    if len(set(args.rules)) != len(args.rules) or args.tasks_per_env < 1:
+        parser.error("Use unique rules and a positive workspace capacity.")
+    if args.reference_run is None and (
+        "angle128" not in args.rules or any(rule in COARSE_RULES for rule in args.rules)
+    ):
+        parser.error("Include angle128 for ordinary replay; authored coarse subsets require their frozen reference.")
+    if args.reference_run is not None and (
+        args.archives is None
+        or len(args.archives) != 1
+        or args.manual_control is not None
+        or args.coarse_plan is None
+        or tuple(args.rules) != COARSE_RULES
+        or args.reference256
+        or args.coarse_controls
+    ):
+        parser.error(
+            "Reference reuse requires one saved input, its coarse plan and only edge4 angle2; no new reference solve."
+        )
     if not args.output.resolve().is_relative_to(Path("/mnt/data/zhaofeng")):
         parser.error("Use a fresh explicit data-side output.")
     budget = json.loads(args.budgets.read_text())
@@ -929,6 +948,43 @@ def main():
         for name in ("contact.py", "scatter.py", "surface.py", "model.py", "solve.py", "balance.py")
     ]
     producer_identities = [file_id(path) for path in producer_files]
+    reused_result = None
+    reused_case = None
+    reused_identity = None
+    reused_artifacts = []
+    if args.reference_run is not None:
+        plan = json.loads(args.coarse_plan.read_text())
+        if (
+            plan["schema"] != "genesis.dpr-fast-bounded-coarse-controls.v2"
+            or plan["source_baseline"] != source_revision
+            or plan["rules"] != list(COARSE_RULES)
+            or plan["application_budgets"] != file_id(args.budgets)
+        ):
+            raise ValueError("Use the frozen coarse-v2 rules, source and application budgets.")
+        reused_identity = file_id(args.reference_run / "result.json")
+        planned = next((item for item in plan["reuse_references"] if item["reference_result"] == reused_identity), None)
+        if (
+            planned is None
+            or planned["mesh"] != file_id(args.mesh)
+            or planned["authored_input"] != file_id(args.archives[0])
+        ):
+            raise ValueError("The saved manual mesh/input/reference does not match its predeclared identity.")
+        reused_result = json.loads((args.reference_run / "result.json").read_text())
+        if (
+            reused_result["complete"] is not True
+            or reused_result["passed"] is not True
+            or reused_result["source_revision"] != source_revision
+            or reused_result["native_producers"] != producer_identities
+            or len(reused_result["rows"]) != 1
+        ):
+            raise ValueError("The reused reference must be terminal and have the exact native producer source.")
+        reused_case = reused_result["rows"][0]
+        if reused_case["reference256_stability"] != planned["q128_vs_q256_stability"]:
+            raise ValueError("The frozen q128/q256 stability receipt differs from the declared reference.")
+        reused_artifacts = [reused_identity, reused_result["model"], reused_case["physical_inputs"]]
+        reused_artifacts.extend(planned[key] for key in ("reference128", "reference256"))
+        if reused_artifacts != [file_id(item["path"]) for item in reused_artifacts]:
+            raise ValueError("An immutable reference artifact changed.")
     options = gs.options.RigidStressOptions.dpr(
         mesh=args.mesh,
         output_mode="full",
@@ -944,6 +1000,8 @@ def main():
         inverse_precision="64",
         history_size=0,
     )
+    if reused_result is not None and options.model_dump(mode="json") != reused_result["options"]:
+        raise ValueError("The complete declared model/material/pressure options differ from the frozen reference.")
     model = StressModel(options)
     if manual is not None:
         args.archives = [author_contacts(recipe, manual["base"], model, args.output)]
@@ -962,6 +1020,18 @@ def main():
         field.name: qd_to_numpy(vars(model.info)[field.name], transpose=False)
         for field in dataclasses.fields(model.info)
     }
+    if reused_result is not None:
+        with np.load(reused_result["model"]["path"], allow_pickle=False) as saved:
+            current = {**model_arrays, "sample_positions": sample_positions, "sample_weights": weights}
+            if set(saved.files) != set(current) or any(
+                saved[key].dtype != value.dtype
+                or saved[key].shape != value.shape
+                or saved[key].tobytes() != value.tobytes()
+                for key, value in current.items()
+            ):
+                raise ValueError(
+                    "The complete original volume model/K/sample mapping differs from the frozen reference."
+                )
     np.savez_compressed(
         args.output / "model.npz", **model_arrays, sample_positions=sample_positions, sample_weights=weights
     )
@@ -984,6 +1054,10 @@ def main():
         "options": options.model_dump(mode="json"),
         "corpus_role": args.corpus_role,
         "model": file_id(args.output / "model.npz"),
+        "reused_reference_result": reused_identity,
+        "coarse_subset_predeclaration": file_id(args.coarse_plan) if reused_result is not None else None,
+        "reference_solves_performed_here": reused_result is None,
+        "reused_model_arrays_exact": True if reused_result is not None else None,
         "rows": [],
         "scope": "Frozen original point/F/anchor/R/friction and omega; native production moment/scatter route, no rigid advance, no CPU-oracle injection. Wrapper passed indicates trustworthy completed controls, not that every tested candidate passed.",
     }
@@ -1001,6 +1075,15 @@ def main():
             and vars(frame)[field.name] is not None
         }
         np.savez_compressed(directory / "physical-inputs.npz", **physical)
+        if reused_case is not None:
+            with np.load(reused_case["physical_inputs"]["path"], allow_pickle=False) as saved:
+                if set(saved.files) != set(physical) or any(
+                    saved[key].dtype != value.dtype
+                    or saved[key].shape != value.shape
+                    or saved[key].tobytes() != value.tobytes()
+                    for key, value in physical.items()
+                ):
+                    raise ValueError("A coarse replay physical source/omega/pose differs from its saved reference.")
         material_binding = None
         archived_metadata = archive.with_suffix(".json")
         if not archived_metadata.is_file():
@@ -1035,6 +1118,8 @@ def main():
             coarse_count += len(rules) - len(args.rules) - int(args.reference256)
         records = [rule_fields(model, options, frame, rule, directory / rule, args.tasks_per_env) for rule in rules]
         record_map = {record["rule"]: record for record in records}
+        if reused_case is not None:
+            record_map["angle128"] = next(record for record in reused_case["rules"] if record["rule"] == "angle128")
         with np.load(record_map["angle128"]["fields"]["path"], allow_pickle=False) as saved:
             reference = {key: saved[key] for key in saved.files}
         loaded = frame.valid & (np.linalg.norm(frame.force, axis=-1) > 1e-30)
@@ -1043,42 +1128,46 @@ def main():
             delta = sample_positions[:, :, None, :] - frame.center[env, loaded[env]]
             region = (np.linalg.norm(delta, axis=-1) <= 2 * frame.radius[env, loaded[env]]).any(axis=-1)
             masks.append({"global": np.ones_like(region), "loaded": region, "remote": ~region})
-        cpu_rows = []
-        _matrix, free, modes, relief, factor = operator
-        for env in range(len(frame.valid)):
-            spin = frame.omega[env]
-            terms = np.r_[spin**2, spin[0] * spin[1], spin[0] * spin[2], spin[1] * spin[2]]
-            force = reference["nodal_force"][env].reshape(-1) + centrifugal @ terms
-            rhs = force - relief @ (modes.T @ force)
-            q = np.zeros_like(rhs)
-            q[free] = scipy.linalg.cho_solve(factor, rhs[free]) / options.young
-            sigma, vm = stress_field(model_gradients, elements, q, options.young, options.poisson)
-            q_error = float(
-                np.linalg.norm(q - reference["displacement"][env].reshape(-1)) / max(np.linalg.norm(q), 1e-30)
-            )
-            tensor_error = float(
-                np.linalg.norm(sigma - reference["stress_tensor"][env]) / max(np.linalg.norm(sigma), 1e-30)
-            )
-            cpu_rows.append(
-                {
-                    "environment": env,
-                    "q_relative": q_error,
-                    "tensor_relative": tensor_error,
-                    "passed": bool(q_error <= 1e-8 and tensor_error <= 1e-8),
-                }
-            )
-            np.savez_compressed(
-                directory / f"cpu-linear-control-env{env}.npz",
-                rhs=rhs,
-                displacement=q,
-                stress_tensor=sigma,
-                von_mises=vm,
-            )
-        reference_valid = [
-            native and cpu["passed"]
-            for native, cpu in zip(record_map["angle128"]["source_and_elastic_eligible_per_environment"], cpu_rows)
-        ]
-        stability = None
+        if reused_case is not None:
+            cpu_rows = reused_case["CPU_same_operator_linear_control"]
+            reference_valid = list(reused_case["reference_evaluable_per_environment"])
+        else:
+            cpu_rows = []
+            _matrix, free, modes, relief, factor = operator
+            for env in range(len(frame.valid)):
+                spin = frame.omega[env]
+                terms = np.r_[spin**2, spin[0] * spin[1], spin[0] * spin[2], spin[1] * spin[2]]
+                force = reference["nodal_force"][env].reshape(-1) + centrifugal @ terms
+                rhs = force - relief @ (modes.T @ force)
+                q = np.zeros_like(rhs)
+                q[free] = scipy.linalg.cho_solve(factor, rhs[free]) / options.young
+                sigma, vm = stress_field(model_gradients, elements, q, options.young, options.poisson)
+                q_error = float(
+                    np.linalg.norm(q - reference["displacement"][env].reshape(-1)) / max(np.linalg.norm(q), 1e-30)
+                )
+                tensor_error = float(
+                    np.linalg.norm(sigma - reference["stress_tensor"][env]) / max(np.linalg.norm(sigma), 1e-30)
+                )
+                cpu_rows.append(
+                    {
+                        "environment": env,
+                        "q_relative": q_error,
+                        "tensor_relative": tensor_error,
+                        "passed": bool(q_error <= 1e-8 and tensor_error <= 1e-8),
+                    }
+                )
+                np.savez_compressed(
+                    directory / f"cpu-linear-control-env{env}.npz",
+                    rhs=rhs,
+                    displacement=q,
+                    stress_tensor=sigma,
+                    von_mises=vm,
+                )
+            reference_valid = [
+                native and cpu["passed"]
+                for native, cpu in zip(record_map["angle128"]["source_and_elastic_eligible_per_environment"], cpu_rows)
+            ]
+        stability = reused_case["reference256_stability"] if reused_case is not None else None
         if args.reference256:
             with np.load(record_map["angle256"]["fields"]["path"], allow_pickle=False) as saved:
                 higher = {key: saved[key] for key in saved.files}
@@ -1119,12 +1208,34 @@ def main():
                 and all(values[env] < (1e-6 if key == "nodal_force" else 1e-4) for key, values in old_errors.items())
                 for env in range(len(frame.valid))
             ]
+            loaded_environments = loaded.any(axis=1)
+            spatial_old_passed = [
+                bool(
+                    reference_valid[env]
+                    and record["source_and_elastic_eligible_per_environment"][env]
+                    and old_errors["stress_tensor"][env] <= 0.1
+                    and old_errors["peak"][env] <= 0.05
+                )
+                for env in range(len(frame.valid))
+            ]
+            mean_error6 = (
+                float(np.array(old_errors["stress_tensor"])[loaded_environments].mean())
+                if loaded_environments.any()
+                else None
+            )
             record.update(
                 application_regions=metrics,
                 application_passed_per_environment=application,
                 truth_evaluable_per_environment=reference_valid,
                 legacy_errors=old_errors,
                 legacy_passed_per_environment=old_passed,
+                legacy_volume_parity_passed_per_environment=old_passed,
+                legacy_volume_parity_definition="Unchanged historical numerical parity: nodal load<1e-6; displacement, unweighted stored-six tensor and global VM peak<1e-4. Distinct from spatial application budgets.",
+                legacy_error6_definition="sqrt(sum over original tet/corner/stored6 of delta^2)/max(sqrt(sum reference^2),1e-30); no sample-volume weights; each stored shear counted once.",
+                original_spatial_worst10_peak5_passed_per_environment=spatial_old_passed,
+                original_spatial_loaded_mean_error6=mean_error6,
+                original_spatial_mean5_passed=mean_error6 is not None and mean_error6 <= 0.05,
+                original_spatial_budget_scope="Additional original spatial5/10/5 comparison on the same rule. The loaded mean here covers this frozen frame's environments; corpus/trajectory means require a separate complete aggregation. No original parity or new regional gate is replaced.",
                 false_accept_count=sum(
                     admit and truth is False
                     for admit, truth in zip(record["empirical_environment_admitted"], application)
@@ -1161,7 +1272,9 @@ def main():
                 "CPU_same_operator_linear_control": cpu_rows,
                 "reference256_stability": stability,
                 "reference_evaluable_per_environment": reference_valid,
-                "reference_stability_status": "checked_q128_vs_q256" if args.reference256 else "not_requested_here",
+                "reference_stability_status": "reused_checked_q128_vs_q256"
+                if reused_case is not None
+                else ("checked_q128_vs_q256" if args.reference256 else "not_requested_here"),
                 "rules": records,
             }
         )
@@ -1170,8 +1283,16 @@ def main():
         file_id(path) for path in [args.mesh, args.budgets, *args.archives]
     ]
     result["producer_files_unchanged"] = producer_identities == [file_id(path) for path in producer_files]
+    result["reused_reference_artifacts_unchanged"] = reused_artifacts == [
+        file_id(item["path"]) for item in reused_artifacts
+    ]
     result["complete"] = True
-    result["passed"] = bool(reference_passed and result["input_files_unchanged"] and result["producer_files_unchanged"])
+    result["passed"] = bool(
+        reference_passed
+        and result["input_files_unchanged"]
+        and result["producer_files_unchanged"]
+        and result["reused_reference_artifacts_unchanged"]
+    )
     result["all_rows_whole_frame_inputs"] = all(row["whole_frame_qualification"] for row in result["rows"])
     result["converged_bad_rule_detection_exercised"] = any(
         record["converged_but_application_inaccurate_count"] for row in result["rows"] for record in row["rules"]
