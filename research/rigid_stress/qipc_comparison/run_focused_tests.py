@@ -38,7 +38,7 @@ def main():
     write_json(
         args.output / "start.json",
         {
-            "identity": runtime_identity(),
+            "identity": runtime_identity(require_gpu_inventory=args.backend == "gpu"),
             "engine_import": gs.__file__,
             "tests": [file_id(path) for path in args.tests],
             "pytest_arguments": command,
