@@ -126,6 +126,26 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
     the column decays (rms speed 2.9 to 0.6 mm/s over 0.9 s, `logs/fi_cn_nu1e-3.log`). In FluidBench S1 the initial
     lattice releases 2.5e-3 J as it compacts in the first control step (`timeseries.csv` of the S1 runs).
 
+14. Particles ejected from the corner of the cup in FluidBench S1 at the FluidBench time step (dt 0.31 ms, 52
+    substeps per 16 ms control step): particles in the edge between the floor and the wall of the cup, 0.5 mm above
+    the floor and up to 1 mm past the wall surface, leave it at 3 to 14 m/s within a control step, some through the
+    wall, also after the stirrer has stopped (`logs/eject_trace.log`, dev/eject_trace.py). Particle speeds above 2 m/s
+    were recorded at 99 to 114 control steps over 10 s at dt x1, 43 at dt x2 and none at x4 and x8
+    (`timeseries.csv` of `@sphgoal-nl1-it100-dt*`, `@sphgoal-ch1-dt*`), which fits a position error at the edge that
+    the density solve corrects within one substep, at a speed that grows as the substep shrinks (not verified). The
+    wall clearance guard follows the nearest faced
+    surface of a link; guarding a second surface at concave edges made it worse (speeds up to 59 m/s, 3.2 % of the
+    liquid out of the domain, `@sphgoal-g2p-dt*`) and is not used. Open.
+15. Chebyshev acceleration of the density solve and the particle noise. Stopped at the FluidBench tolerance (average
+    density error 0.05 %), the accelerated solve leaves a closed column of water at rest with 2.9e-4 J of kinetic
+    energy after 1 s, where the plain solve leaves 1.3e-4 J; with the tolerance ten times tighter both leave 1.4e-4 J
+    (`logs/ch1_cn.log`, `logs/fe_cn.log`, `logs/kp_cheb_tight_cn.log`, `logs/kp_plain_tight_cn.log`): the plain
+    Jacobi iterate is already converged in this respect at the tolerance, the accelerated one is not. Accelerating the
+    density solves of the later coupling passes as well broke the viscosity-pressure coupling of a viscous scene (33
+    passes per substep and 3029 unconverged substeps against 9.5 and none, `articulation__ch1_stir0`); with plain
+    later passes it converges as before (`articulation__kp_stir0`). The acceleration therefore applies to the first
+    density solve of a substep, which stops at a tenth of the tolerance.
+
 ## Measured validation (development snapshots, to be repeated on the committed revision)
 
 Full boundary gradient at a boundary spacing of 0.5 particle sizes, isotropic pressure off (receipts tagged `fe_*`), and
@@ -182,10 +202,14 @@ iterations those solves stop unconverged at the larger steps (`fe_coarse_dt8`: a
 | 5 cached neighbor indices | implemented, validated, measured: 9.0 to 6.6 ms per substep at dt x1, 12.8 to 8.9 ms at dt x8 (1.36x, 1.44x) | `fe_coarse_dt*`, `nl1_coarse_dt*`; equivalence `momentum__nl1_mom_nu1e-3`, `decay__nl1_decay_nu1e-3_dx0.0025`, `couette__nl1_couette_dx0.0035` |
 | 6 reorder and copy traffic | measured, not changed: under 2 % | `fe_fine` |
 | 7 preconditioner reuse | proposed | |
-| 8 block reductions | proposed: the per-particle error and link wrench atomics of an iteration | `nl3_kp_dt1` |
+| 8 block reductions | implemented, measured: the link wrench accumulates in the pressure acceleration pass, and only particles with an error add it to their environment; the predicted-source task of an iteration went from 67 to 50 us, a substep at dt x8 from 31.1 to 28.6 ms (iteration cap 100) | `nl3_kp_dt1`, `it1_kp_dt1`, `nl3_it100_coarse_dt8`, `it1_it100_coarse_dt8` |
 | 9 independent stop of environments | proposed | |
 | 10 prescribed-boundary path | proposed | |
 | packed moment matrix of the viscosity correction | measured, not adopted: 1.99 to 1.93 ms | `nl2_fine_dt1` |
+| compile-time constants in the iteration kernel | implemented, measured: statements outside the loops of a kernel run as serial GPU tasks of 6-7 us; one fewer per iteration, 28.6 to 28.1 ms per substep at dt x8 | `it2_kp_dt1`, `it2_it100_coarse_dt8` |
+| Chebyshev semi-iterative density solves | implemented, validated, measured: bound 0.98 (best of 0.95 to 0.998 at every time step), on the density solves of the first two coupling passes, which work to a tenth of the tolerance (finding 15); 21.5, 56.1 and 69.3 iterations per substep at dt x1, x4, x8 against 51.1, 123.2 and 166.8, RTF 0.041, 0.099, 0.155 against 0.027, 0.048, 0.076, all solves converged; paddle at rest (nu = 1e-3) 57 s against 130 s with 6.9 coupling passes per substep and none unconverged | `ch3_dt*`, `cheb0_dt*`, `cheb*_dt*`; validation `*__ch3_*`, `logs/ch3_cn.log` |
+| warm start of the density solve at 0.75 or 1.0 of the last pressure instead of 0.5 | measured, not adopted: 45 to 41 and 35 iterations per substep at dt x1, but water at rest stays noisier (closed column kinetic energy 3.7e-4 to 2.6e-4 J over 0.9 s against 3.3e-4 to 1.3e-4 J) | `gs-dfsph__S1__f2@sphgoal-ws*`, `logs/ws1.0_cn.log` |
+| 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
 ## Open items
 

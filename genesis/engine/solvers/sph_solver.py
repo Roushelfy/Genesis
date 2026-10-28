@@ -102,6 +102,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._df_max_error_den = options.max_density_error
         self._df_max_div_iters = options.max_divergence_solver_iterations
         self._df_max_den_iters = options.max_density_solver_iterations
+        self._df_chebyshev_radius = options.pressure_chebyshev_radius
         self._df_min_div_iters = options.min_divergence_solver_iterations
         self._df_min_den_iters = options.min_density_solver_iterations
         self._df_skip_div = options.skip_divergence_solver
@@ -220,6 +221,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # _func_for_all_fluid_neighbors). The neighbor rank comes first, so that the lists of consecutive particles lie
         # side by side in memory.
         self.particles_n_fluid_neighbors = qd.field(gs.qd_int, shape=(self._n_particles, self._B))
+        # pressure of the previous iteration of the running divergence or density solve (see _pressure_solve)
+        self.particles_pressure_prev = qd.field(gs.qd_float, shape=(self._n_particles, self._B))
         self.particles_fluid_neighbors = qd.field(gs.qd_int, shape=(N_LISTED_NEIGHBORS, self._n_particles, self._B))
 
         # Per-environment reductions of the DFSPH solver iterations.
@@ -1200,9 +1203,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         ret += weight * self.materials[i_m].rest_volume * a_ij.dot(self.cubic_kernel_derivative(x_ij))
 
     @qd.kernel
-    def _kernel_pressure_solve_iteration(self, is_divergence: qd.template()) -> float:
+    def _kernel_pressure_solve_iteration(self, is_divergence: qd.template(), omega: float) -> float:
         """
         Run one Jacobi iteration of the divergence or density solve and return the worst average error over envs.
+
+        omega is the weight of the Chebyshev semi-iterative acceleration of the iteration (see _pressure_solve), 1 for a
+        plain Jacobi iteration.
 
         The error is the average density deviation (normalized by the rest density) for the density solve, and the
         average normalized density change rate for the divergence solve.
@@ -1258,9 +1264,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 residual = source - dt_pow * predicted_source
                 error = -qd.min(residual, 0.0)
 
-                p_rho2 = self._func_pressure_density2_norm(i_p, i_b, is_divergence)
+                p_rho2_cur = self._func_pressure_density2_norm(i_p, i_b, is_divergence)
                 factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
-                p_rho2 = qd.max(p_rho2 - 0.5 * residual * factor / dt_pow, 0.0)
+                p_rho2 = qd.max(p_rho2_cur - 0.5 * residual * factor / dt_pow, 0.0)
+                if omega != 1.0:
+                    p_rho2_prev = self.particles_pressure_prev[i_p, i_b]
+                    p_rho2 = qd.max(omega * (p_rho2 - p_rho2_prev) + p_rho2_prev, 0.0)
+                self.particles_pressure_prev[i_p, i_b] = p_rho2_cur
                 if qd.static(is_divergence):
                     self.particles_reordered[i_p, i_b].pressure_density2_norm_d = p_rho2
                     if self.particles_reordered[i_p, i_b].n_neighbors < self._df_min_div_neighbors:
@@ -1316,7 +1326,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
                 self._func_set_coupled_links_vel(i_c, i_b)
 
-    def _pressure_solve(self, is_divergence, keep_pressure=False):
+    def _pressure_solve(self, is_divergence, keep_pressure=False, accelerate=False):
         """
         Run the divergence solve or the density solve and apply the resulting pressure accelerations to velocities.
 
@@ -1325,7 +1335,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         warm start, which a later coupling pass of a substep does. Such a pass also has to reduce its starting error
         tenfold, since the coupling passes only converge while their density solves keep reducing their own error
         (inexact iteration with a forcing term of 0.1), down to a floor of a thousandth of the tolerance. Returns the
-        number of iterations and the final error over the tolerance (at most 1 once converged).
+        number of iterations and the final error over the tolerance (at most 1 once converged). accelerate runs a
+        density solve with Chebyshev acceleration (see below).
         """
         if is_divergence:
             n_iters_min, n_iters_max = self._df_min_div_iters, self._df_max_div_iters
@@ -1337,10 +1348,27 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
         self._kernel_init_pressure_solve(is_divergence, keep_pressure)
 
+        # Chebyshev semi-iterative acceleration of the Jacobi iteration (Wang 2015, "A chebyshev semi-iterative approach
+        # for accelerating projective and position-based dynamics"): iteration k + 1 moves the pressure to
+        # p_k-1 + omega_k+1 (jacobi(p_k) - p_k-1), with omega_1 = 1, omega_2 = 2 / (2 - r^2) and
+        # omega_k+1 = 4 / (4 - r^2 omega_k), r the bound on the spectral radius of the Jacobi iteration. The pressure
+        # stays clamped to be nonnegative and the fixed point does not change. It accelerates the density solve that
+        # starts a substep. Jacobi damps the particle-scale part of the error first, while the accelerated iterate
+        # keeps a share of it until the error is well below the tolerance on its average: stopped at the tolerance, it
+        # sustains velocity noise that the plain solve removes (water at rest in a closed cup, SPH_SOLVER_STATUS.md
+        # finding 15). An accelerated solve therefore works to a tenth of the tolerance. The divergence solve mostly
+        # takes a single iteration and is not accelerated.
+        is_accelerated = accelerate and not is_divergence and self._df_chebyshev_radius > 0.0
+        rho2 = self._df_chebyshev_radius**2 if is_accelerated else 0.0
+        if is_accelerated:
+            max_error *= 0.1
+        omega = 1.0
         n_iters, avg_error, is_converged = 0, 0.0, False
         target_error = max_error
         while (not is_converged or n_iters < n_iters_min) and n_iters < n_iters_max:
-            avg_error = self._kernel_pressure_solve_iteration(is_divergence)
+            if rho2 > 0.0 and n_iters > 0:
+                omega = 2.0 / (2.0 - rho2) if n_iters == 1 else 4.0 / (4.0 - rho2 * omega)
+            avg_error = self._kernel_pressure_solve_iteration(is_divergence, omega)
             if keep_pressure and n_iters == 0:
                 target_error = max(min(max_error, 0.1 * avg_error), 1e-3 * max_error)
             is_converged = avg_error <= target_error
@@ -1351,7 +1379,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         )
 
         self._kernel_apply_pressure_acc(is_divergence)
-        return n_iters, avg_error / max_error
+        return n_iters, avg_error / (10.0 * max_error if is_accelerated else max_error)
 
     # ------------------------------------------------------------------------------------
     # -------------------------------- implicit viscosity --------------------------------
@@ -2657,7 +2685,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self._kernel_store_coupling_pressure(i_pass == 0)
             if self._has_rigid_coupling:
                 self._kernel_set_coupled_vel_base(self._has_viscosity)
-            n_iters, residual = self._pressure_solve(is_divergence=False, keep_pressure=i_pass > 0)
+            # The density solves of the first two coupling passes are accelerated. A substep that needs more passes,
+            # under a strong viscosity-pressure coupling, continues with plain solves, since the coupling iteration,
+            # accelerated itself, may stall on accelerated density solves (SPH_SOLVER_STATUS.md finding 15).
+            n_iters, residual = self._pressure_solve(
+                is_divergence=False, keep_pressure=i_pass > 0, accelerate=i_pass < 2
+            )
             stats.n_density_iters += n_iters
             stats.n_unconverged_density += residual > 1.0
             stats.max_density_residual = max(stats.max_density_residual, residual)

@@ -778,6 +778,14 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         Whether to skip the DFSPH divergence solver, leaving incompressibility to the density solver alone. This
         saves time per substep, but the fluid becomes noisier and less stable, and the density solver may need more
         iterations to compensate. Only applies to the default (non-legacy) solver. Defaults to False.
+    pressure_chebyshev_radius : float, optional
+        Bound on the spectral radius of the Jacobi iteration of the DFSPH density solve, for the Chebyshev
+        semi-iterative acceleration (Wang 2015) of the density solves of the first two viscosity-pressure coupling
+        passes of each substep, in [0, 1); 0 runs plain Jacobi. An accelerated solve keeps the solution and works to a
+        tenth of `max_density_error`, since at the tolerance itself its iterate keeps more particle-scale error than
+        the plain one; it still takes several times fewer iterations on a stirred cup of water. 0.98 was the best bound
+        of 0.95 to 0.998 at every time step tried there; a bound too close to 1 slows the solve down again. Only
+        applies to the default (non-legacy) solver. Defaults to 0.98.
     warm_start : bool, optional
         Whether DFSPH starts each pressure solve from half the pressure of the previous substep. This reduces the
         number of solver iterations for fluid at rest or in slow motion, but it can carry pressure spikes from
@@ -856,6 +864,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_constraint_iterations: NonNegativeInt = 4
     max_constraint_error: PositiveFloat = 0.01
     isotropic_pressure: StrictBool = False
+    pressure_chebyshev_radius: NonNegativeFloat = 0.98
     energy_audit: StrictBool = False
     micropolar: StrictBool = False
     boundary_offset: NonNegativeFloat | None = None
@@ -882,6 +891,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
             gs.raise_exception("Pressure solver 'WCSPH' requires `use_legacy_solver=True`.")
 
         self._support_radius = 2 * self.particle_size
+
+        if self.pressure_chebyshev_radius >= 1.0:
+            gs.raise_exception("`pressure_chebyshev_radius` should be smaller than 1.")
 
         if self.boundary_offset is None:
             self.boundary_offset = 0.5 * self.particle_size
