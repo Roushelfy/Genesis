@@ -35,6 +35,52 @@ N_LISTED_NEIGHBORS = 64
 N_VISCOSITY_BASIS = 15
 
 
+def sample_reentrant_edges(verts, faces, offset, spacing, min_angle=math.radians(10.0)):
+    """Return the boundary samples (positions, normals, areas) that close the offset surface at the reentrant edges.
+
+    The boundary particles of a face are moved by the boundary offset into the geom along the normal of the face. At an
+    edge where the surface turns into the geom (the inner corner of a cup), the two moved faces stop short of each
+    other and leave a slot as wide as the offset, through which fluid can enter the geom. Each moved face is extended
+    to the line where the two moved planes meet, offset * tan(angle / 2) beyond the edge, with the angle between the
+    face normals, by rows of samples along the edge at the boundary spacing. Edges turning by less than min_angle (the
+    facets of a smooth curved surface) leave a negligible slot and are skipped.
+    """
+    mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=True)
+    pos, normals, areas = [], [], []
+    face_normals = mesh.face_normals
+    for (f_1, f_2), edge, is_convex in zip(mesh.face_adjacency, mesh.face_adjacency_edges, mesh.face_adjacency_convex):
+        if is_convex:
+            continue
+        cos_angle = float(np.clip(np.dot(face_normals[f_1], face_normals[f_2]), -1.0, 1.0))
+        angle = math.acos(cos_angle)
+        if angle < min_angle or angle > math.pi - min_angle:
+            continue
+        extension = offset * math.tan(0.5 * angle)
+        p_0, p_1 = mesh.vertices[edge[0]], mesh.vertices[edge[1]]
+        length = float(np.linalg.norm(p_1 - p_0))
+        if length <= 0.0:
+            continue
+        tangent = (p_1 - p_0) / length
+        n_along = max(math.ceil(length / spacing), 1)
+        n_across = max(math.ceil(extension / spacing), 1)
+        along = (np.arange(n_along) + 0.5) / n_along * length
+        across = np.arange(1, n_across + 1) / n_across * extension
+        for i_f in (f_1, f_2):
+            normal = face_normals[i_f]
+            # direction in the plane of the face, across the edge, away from the face
+            direction = np.cross(normal, tangent)
+            vertex_off_edge = [v for v in mesh.faces[i_f] if v not in edge][0]
+            if np.dot(mesh.vertices[vertex_off_edge] - p_0, direction) > 0.0:
+                direction = -direction
+            grid = p_0 + along[:, None, None] * tangent + across[None, :, None] * direction - offset * normal
+            pos.append(grid.reshape(-1, 3))
+            normals.append(np.tile(normal, (n_along * n_across, 1)))
+            areas.append(np.full(n_along * n_across, length / n_along * extension / n_across))
+    if not pos:
+        return np.zeros((0, 3)), np.zeros((0, 3)), np.zeros(0)
+    return np.concatenate(pos), np.concatenate(normals), np.concatenate(areas)
+
+
 @dataclass
 class SPHSolveStats:
     """Iteration counts and residuals of the solves of the SPH solver, summed over the substeps of the last step.
@@ -472,9 +518,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                             pos_local, normals_local = sample_mesh_point_cloud(
                                 verts, faces, n_points, n_candidates=16 * n_points, seed=0, return_normals=True
                             )
+                            areas_local = np.full(len(pos_local), area / n_points, dtype=gs.np_float)
                             if geom.type == gs.GEOM_TYPE.PLANE:
                                 normals_local = np.tile(surface_normal, (len(pos_local), 1))
                             pos_local = pos_local - self._boundary_offset * normals_local
+                            if geom.type != gs.GEOM_TYPE.PLANE and self._boundary_offset > 0.0:
+                                edge_pos, edge_normals, edge_areas = sample_reentrant_edges(
+                                    verts, faces, self._boundary_offset, self._boundary_spacing
+                                )
+                                pos_local = np.concatenate([pos_local, edge_pos])
+                                normals_local = np.concatenate([normals_local, edge_normals])
+                                areas_local = np.concatenate([areas_local, edge_areas]).astype(gs.np_float)
 
                             # A fixed link never moves, so the samples outside the boundary area can be dropped.
                             if link.is_fixed:
@@ -482,6 +536,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                                 is_inside = np.all((pos_world > area_lower) & (pos_world < area_upper), axis=1)
                                 pos_local = pos_local[is_inside]
                                 normals_local = normals_local[is_inside]
+                                areas_local = areas_local[is_inside]
 
                             if geom.active_envs_mask is None:
                                 active = np.ones((self._B, len(pos_local)), dtype=gs.np_int)
@@ -490,8 +545,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                                 active = np.tile(envs_active[:, None], (1, len(pos_local)))
                             boundaries_pos_local.append(pos_local)
                             boundaries_normal_local.append(normals_local)
-                            # each sample stands for an equal share of the surface of the geom
-                            boundaries_area.append(np.full(len(pos_local), area / n_points, dtype=gs.np_float))
+                            # share of the surface of the geom each sample stands for
+                            boundaries_area.append(areas_local)
                             boundaries_link_idx.append(np.full(len(pos_local), link.idx, dtype=gs.np_int))
                             boundaries_is_fixed.append(np.full(len(pos_local), link.is_fixed, dtype=gs.np_int))
                             boundaries_active.append(active)

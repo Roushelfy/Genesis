@@ -126,16 +126,31 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
     the column decays (rms speed 2.9 to 0.6 mm/s over 0.9 s, `logs/fi_cn_nu1e-3.log`). In FluidBench S1 the initial
     lattice releases 2.5e-3 J as it compacts in the first control step (`timeseries.csv` of the S1 runs).
 
-14. Particles ejected from the corner of the cup in FluidBench S1 at the FluidBench time step (dt 0.31 ms, 52
-    substeps per 16 ms control step): particles in the edge between the floor and the wall of the cup, 0.5 mm above
-    the floor and up to 1 mm past the wall surface, leave it at 3 to 14 m/s within a control step, some through the
-    wall, also after the stirrer has stopped (`logs/eject_trace.log`, dev/eject_trace.py). Particle speeds above 2 m/s
-    were recorded at 99 to 114 control steps over 10 s at dt x1, 43 at dt x2 and none at x4 and x8
-    (`timeseries.csv` of `@sphgoal-nl1-it100-dt*`, `@sphgoal-ch1-dt*`), which fits a position error at the edge that
-    the density solve corrects within one substep, at a speed that grows as the substep shrinks (not verified). The
-    wall clearance guard follows the nearest faced
-    surface of a link; guarding a second surface at concave edges made it worse (speeds up to 59 m/s, 3.2 % of the
-    liquid out of the domain, `@sphgoal-g2p-dt*`) and is not used. Open.
+14. Fluid trapped inside a thin wall. The cup of FluidBench S1-S3 has a 4 mm wall, and the FluidBench adapter sets
+    the boundary offset to 0.7 particle sizes, 1.885 mm at R2 and 2.64 mm at R1: the boundary particles of the inner
+    and outer faces of the wall lie 0.23 mm apart at R2 and cross at R1. A fluid particle that gets between them stays
+    trapped at up to 14 % above the rest density while its pressure grows, until the density solve expels it within
+    one substep at a speed that grows as the substep shrinks (substep trace `logs/eject_substep.log`,
+    dev/eject_substep.py: particle at r = 41.5 mm inside the wall, density 1.11 to 1.14, pressure rising tenfold,
+    expelled at 8 m/s). At the FluidBench time step (dt 0.31 ms) this flags S1, S2 and S3 at R2 as unstable (particle
+    speeds above ten times the characteristic speed, 0.1 % of the liquid out of the domain), and R1 diverges in all
+    three scenes, at the starting revision of the goal as well (`@sphgoal-final`, `@sphgoal-r1-26832080b`); at dt x4
+    and x8 the expulsions stay below 2 m/s (`timeseries.csv` of `@sphgoal-nl1-it100-dt*`). With the offset at 1.35 mm
+    (a third of the wall, 0.5 particle sizes at R2, the Genesis default) S1 at R2 runs without a flag at the FluidBench
+    time step (`@sphgoal-off0.00135-R2`), while 1.0 mm let 0.11 % of the liquid out and R1 at 1.35 mm 0.30 %
+    (`@sphgoal-off0.001-R2`, `@sphgoal-off0.00135-R1`). The goal runs of FluidBench use 1.35 mm, recorded in their
+    parameters. Guarding a second faced surface at concave edges (wall clearance guard) made it worse (speeds up to
+    59 m/s, `@sphgoal-g2p-dt*`) and is not used.
+    The boundary particles of each face were moved by the offset along the face normal while the face kept its extent,
+    so at a reentrant edge of a geom (the inner corner between the floor and the wall of a cup) the two moved faces
+    left an unsampled slot as wide as the offset. At R3 fluid entered the solid of the cup through it (substep trace
+    `logs/eject_substep_R3.log`: a particle at r = 42 mm and z = -1.4 mm, beyond both boundary layers, by 0.03 s) and
+    the run diverged at 0.24 s whatever the iteration cap and with or without the accelerated solve
+    (`@sphgoal-final` R3, `@sphgoal-r3-it1000`, `@sphgoal-r3-it1000-nocheb`). The boundary sampling now extends both
+    moved faces of every reentrant edge to the line where their planes meet (`sample_reentrant_edges`, test
+    `test_boundary_offset_closes_reentrant_edges`): S1 at R3 runs (2 s, `@sphgoal-re1-R3`), and S1 at R2 runs without
+    a flag at the FluidBench time step with the default offset of the adapter as well (`@sphgoal-re1-R2-off0.7ps`);
+    R1 at that time step still lets 0.27 % of the liquid out (`@sphgoal-re1-R1-off1.35`), at dt x4 it runs.
 15. Chebyshev acceleration of the density solve and the particle noise. Stopped at the FluidBench tolerance (average
     density error 0.05 %), the accelerated solve leaves a closed column of water at rest with 2.9e-4 J of kinetic
     energy after 1 s, where the plain solve leaves 1.3e-4 J; with the tolerance ten times tighter both leave 1.4e-4 J

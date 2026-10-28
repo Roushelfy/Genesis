@@ -446,3 +446,27 @@ def test_dfsph_state_restores_warm_starts(show_viewer):
     scene.step()
     control_error = np.abs(tensor_to_array(liquid.get_particles_pos()) - pos_reference).max()
     assert restart_error < 1e-2 * control_error
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("backend", [None])
+def test_boundary_offset_closes_reentrant_edges():
+    # A floor (normal +z) meeting a wall (normal -x) at a reentrant edge along y: the boundary particles of both faces
+    # move by the offset into the geom, and the samples of the edge extend each moved face to the line where the
+    # moved planes meet, at x = offset and z = -offset.
+    from genesis.engine.solvers.sph_solver import sample_reentrant_edges
+
+    verts = np.array(
+        [(-1.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), (-1.0, 1.0, 0.0), (0.0, 1.0, 1.0), (0.0, 0.0, 1.0)]
+    )
+    faces = np.array([(0, 1, 2), (0, 2, 3), (1, 5, 4), (1, 4, 2)])
+    offset, spacing = 0.1, 0.05
+    pos, normals, areas = sample_reentrant_edges(verts, faces, offset, spacing)
+    is_floor = normals[:, 2] > 0.5
+    is_wall = normals[:, 0] < -0.5
+    assert np.all(is_floor | is_wall) and is_floor.sum() == is_wall.sum() == 20 * 2
+    assert_allclose(pos[is_floor, 2], -offset, tol=1e-9)
+    assert_allclose(pos[is_wall, 0], offset, tol=1e-9)
+    assert_allclose(pos[is_floor, 0].max(), offset, tol=1e-9)
+    assert_allclose(pos[is_wall, 2].min(), -offset, tol=1e-9)
+    assert_allclose(areas.sum(), 2 * offset * 1.0, tol=1e-9)
