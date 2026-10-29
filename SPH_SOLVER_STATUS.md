@@ -22,7 +22,7 @@ section "Validation at cab47d96" below, and the run commands in
 | M0 equations, units, cases, acceptance, measurement boundaries | done: SPH_SOLVER_DESIGN.md (V12 acceptance revised for GPU round-off); baseline below |
 | M1 implicit interior and wall viscosity with analytic validation and load accounting | implemented and measured; the dissipation readout is 0.995-0.997 of the energy loss in every configuration. V5 passes in all three configurations, V2 with the isotropic pressure and density, V3 with the volume maps; V1 (floor torque) and V4 (decay rate 11.7-17.4 % off) fail in every configuration |
 | M2 reaction readout and rigid stage integration | done: readout for fixed, prescribed and dynamic links, fluid stage inside the rigid substep; readout equals the link impulse (`test_fluid_load_readout_is_link_impulse`); `get_links_fluid_wrench` feeds the FluidBench adapter |
-| M3 strong pressure-viscosity-rigid coupling | done for the default configuration: V6 drift 5.1e-6 / 7.6e-6 per s, contact balance within 0.9 %, stirring torque readout within 0.3 %. Not met: V10 held joints (readout 19 % / 31 % from the controller at the default, finding 24; 0.04 % / 0.09 % with `constraint_relaxation=0.25`, which caps the contact case instead) and V10 energy balance (-14.6 %); the isotropic options break V6 (1.2e-4 / 1.5e-4 per s) |
+| M3 strong pressure-viscosity-rigid coupling | done: V6 within 4e-6 per s in every configuration (finding 25), held joints agree with the fluid readout within 0.01 % / 0.08 % without repetitions (finding 26), stirring energy balance within 1.4 % (finding 28), resting sphere balance within 0.3 %, coupling converged in every substep of V4, V5 and V9 (finding 27), on daa41b6e and its development snapshots; the full validation on the committed revision is pending. The held plate load is 7.9 % from Archimedes at dx 3.5 mm (standoff of the first layer, resolution ladder pending) |
 | M4 robustness campaigns | partly: V12 passes on RTX PRO 6000 (default) and on H100 (both isotropic configurations), the default on H100 departs 1.4e-3 at the first replayed step (fails); V11 thin-wall cup fails (liquid crosses the 4 mm wall at R0 and R1 in both configurations run); V9 passes only with the isotropic pressure and density at dx 2.5 mm; the light box of V8 fails its draft in both configurations; S1 R1 leaks, S3 R1 and S2 R2 are unstable with the default configuration |
 | M5 optimization ablations | done for the implemented candidates (1, 5, 8, Chebyshev, fused iteration, compile-time constants); 2, 6 measured and not changed; 3, 4, 7, 9, 10 proposed only. RTF 0.5 not reached: final configurations 0.039 / 0.084 / 0.142 (default) and 0.032 / 0.097 / 0.139 (volume maps) at dt x1 / x4 / x8 on S1 R2, every solve converged; no configuration is accuracy-qualified on S1 |
 | M6 FluidBench re-run and documentation | done: S1-S3 at R1-R3 on cab47d96 in two configurations with analysis; usable: S2 R1 (both), S2 R2 (volume maps); S1 fails the spin-down time in every run (-54 % to -75 %), S3 the mixing index in every run; S2 R3 did not finish within 4 h; example `examples/coupling/sph_paddle.py`, option and readout docstrings; limitations below |
@@ -305,6 +305,76 @@ section "Validation at cab47d96" below, and the run commands in
     as the buoyancy of the sphere resting on the floor (24.5 % and 7.1 %). The stirring paddle, driven by velocity,
     reads its torque within 0.4 % in all variants.
 
+    Superseded by finding 26: the repetitions read a stale acceleration, and with it fixed the held joints agree
+    without any relaxation; the option was removed (a071c5e2).
+
+25. Momentum drift at the tolerance of the viscosity solve (V6). With the isotropic options the closed fluid-box
+    system drifted 1.2e-4 / 1.5e-4 per second (`momentum__v4i_mom`), the fluid ball alone with rotation 1.2e-4 per
+    second in angular momentum even by default (`momentum__m6_def_nobox_mom`). The isotropic pressure alone and the
+    isotropic options without viscosity keep it (`momentum__m5_isop_mom`, `momentum__m5_iso_nu0_mom`), and a tighter
+    viscosity tolerance (1e-5) cuts it to 4.7e-5 (`momentum__m6_iso_tightvisc_mom`): the viscous pair forces are
+    central, but a conjugate gradient solution stopped at its tolerance carries a net residual force and torque. A
+    rigid velocity correction after every viscosity solve, solving the 6x6 system of the mass and wall tensors for
+    that net residual (rigid motions are null modes of the pair operator), cancels it (22f43b2f): 3.5e-6 / 3.1e-6
+    default, 1.9e-6 / 3.3e-6 isotropic, 3.9e-6 / 4.3e-6 volume maps (`momentum__mproj_*`); the unit test
+    `test_implicit_viscosity_conserves_momentum` now checks 2e-5 at a viscosity tolerance of 5 %.
+
+26. Stale acceleration in the constraint repetitions (V10 hold). The repetition of the fluid stage after the rigid
+    constraint solve compared the change the stage held with h S (acc - acc_smooth), but the rigid solver copies the
+    solved acceleration from its constraint state to the dofs only after the repetitions: acc was the final
+    acceleration of the previous substep (trace `logs/hold_trace.log`, dev/hold_loop_trace.py: acc unchanged over
+    the repetitions of a substep while acc_smooth moves). Steady contacts barely change it, so the resting sphere
+    converged, while the held joints never could. Reading the constraint state (a071c5e2) makes the held plate agree
+    with its controllers within 0.01 % / 0.08 % without any repetition (`articulation__qacc_hold`), the resting
+    sphere balance within 0.3 % with a third of the repetitions (`contact__qacc_contact`).
+
+27. Convergence of the viscosity-pressure coupling. The coupling passes stopped at their cap of 30 in 377 of 420
+    substeps of V4 (zero gravity), half the substeps of V5 and many of V9 (`decay__v4_*`, `spindown__v4_*`,
+    `settling__v4_*`), so these receipts were not valid samples. Without gravity the disagreement oscillated between
+    9 and 17 times its tolerance while every density solve was converged: the pressure clamp switches particles
+    within the tolerance of the density solves, which resolve the velocity only to eta dx / h (eta their tolerance),
+    far above 0.1 % of the weak viscous impulse of a slow mode. Under a strong viscosity the Chebyshev acceleration
+    of the passes diverged once the response of the sphere broke its spectrum bound. The coupling now also counts as
+    converged once the pressure velocity changes by less than eta dx / h, and the acceleration restarts when a pass
+    raises the disagreement (daa41b6e): no capped substep remains in V4 at nu 1e-2, 1e-3, 1e-4, V5 and V9
+    (`*__coup2_*`), with the same accuracy (V4 16.5 / 17.4 / 25.3 %, V5 2.3 %, V9 -68 %).
+
+28. Stirring energy balance (V10). The driver took the kinetic energy of the paddle from the rigid mass matrix, which
+    holds h kv of the velocity controller after the implicit damping factorization (I + h kv for I), and read the
+    controller torque once per scene step, at the last of its substeps, while the torque of the spin-up changes
+    within the step. With the link inertia and one substep per step (same substep length) the balance closes within
+    1.1-1.4 % of the work (`articulation__ke2_s1sub_stir`, `articulation__qacc_stir`); the fluid balance alone, from
+    the torque readout, was within 1.4 % throughout.
+
+29. Hydrostatics (V7, `hydrostatic.py`). The fluid load on a fixed cup equals the weight of the fluid within 1e-4
+    in every configuration. The pressure of the particles (`get_particles_pressure`, 8cd31d27: rho_0 C_i kappa_i,
+    C_i the gradient scale of the arrangement, 1 in the bulk) follows rho g (H - z) in the bulk with a gradient of
+    1.009-1.02 rho g, within 4.2 % at dx 2.5 mm by default and 3.2-4.6 % with the volume maps (5.45 % at dx 3.5 mm by
+    default) (`hydrostatic__h4*`). Within a support radius of a wall the multiplier reaches 1.6 times the pressure:
+    the boundary force takes the particle's own multiplier alone (BWJ23), so these layers carry the wall load with a
+    larger multiplier, which also steepened the profile averaged over whole layers (1.05-1.16 rho g).
+
+30. Boundary sampling of large geoms. The greedy furthest point sampling of the boundary particles ran on the CPU over
+    16 candidates per sample, quadratic in the samples: the cup of the plank case at dx 1.75 mm (about 2e5 samples)
+    did not leave the build in 4 h. It runs on the GPU above 1e10 operations (14dc5bb6), with the same picks
+    (`dev/fps_check.py`: 4000 of 4000, 10 times faster), and the plank at dx 1.75 mm builds and runs in 4 min: draft
+    error 14.3, 8.8 and 4.9 % at dx 3.5, 2.5 and 1.75 mm (`floating__q2_plank500_dx0.00175`).
+
+31. Pressure friction, further attempts (finding 11). The friction does not depend on the solver tolerances: the
+    Couette torque errors stay at 12-45 % with a density tolerance from 5e-3 to 1e-4, a divergence tolerance of 1e-2
+    and no warm start (`couette__tol_*`). A density offset that holds the jumps of the isotropic density when its
+    weights are recomputed does not stop the heating of the isotropic pressure (closed column 4e-3 J after 1 s at a
+    relaxation time of 0.05 s) and lets the column collapse at 0.2 s and 1 s (`logs/ido1_cn_*.log`): the heating
+    comes from the linearization of the corrected density, whose weights depend on the pair directions, which the
+    central Jacobian of the solves omits. A Fickian particle shift with a rigid rotation restoring the angular
+    momentum heats water at rest (3.4e-3 and 4.7e-3 J at coefficients 0.1 and 0.2) and leaves the deep Couette layer
+    11-50 % off (`couette__sh3_*`); scaled by the rate of relative motion of the neighbors it brings the Couette
+    torques within 0.5-13.9 % (coefficient 300, `couette__sh4_300_*`), the V1 floor torque within 15 % and V4 to
+    13.6 %, but the particle noise of water at rest (3-8 cm/s rms) drives the same shift and heats it (9e-4 J,
+    `logs/sh5_*_cn.log`), and angular momentum drifts 1.2e-4 per second (`momentum__sh5_*`): not adopted. A kernel
+    support of 3 particle sizes (an experimental option) gave NaN constraint forces at the first step: the boundary
+    volumes, wall columns and slot sizes assume a support of 2 particle sizes.
+
 ## Validation at cab47d96 (final campaign)
 
 The validation receipts are tagged `v4_*`, `v4i_*` and `v4s_*` (FluidBench `results/sph_validation/`), with the full
@@ -465,12 +535,14 @@ Evidence is in the section "Validation at cab47d96" and in FluidBench `report/sp
 - Buoyancy. A sphere resting on the floor gets 24.5 % less buoyancy (default), 16.2 %
   (isotropic) and 7.1 % (volume maps). The held plate of V10 carries a fluid load 17-52 % from the Archimedes force.
   The light box of V8 floats 28-30 % off its draft.
-- V10: the held joints disagree with the readout by 19 % / 31 % by default (finding 24; the opt-in
-  `constraint_relaxation=0.25` fixes them at the cost of capped contact substeps). The stirring energy balance is
-  -14.6 %.
+- V10: fixed after the final campaign (findings 26, 28): the held joints agree with the readout within 0.1 % and the
+  stirring balance closes within 1.4 %; the held plate load is 7.9 % from the Archimedes force at dx 3.5 mm (bar 5 %).
 - V11 thin-wall cup: liquid crosses the 4 mm wall at R0 and R1 in both configurations run, and no run stays below the
   start-up speed of 0.05 m/s (V11 row above; the isotropic configuration was not run). The FluidBench runs therefore
   settle the liquid before t = 0, a deviation recorded in each run.
+- V7: the cup load matches the fluid weight within 1e-4, and the bulk pressure follows rho g (H - z) within 4.2 % at
+  dx 2.5 mm (5.45 % at 3.5 mm); within a support radius of a wall the pressure multiplier is not the pressure (finding
+  29), so the bar holds for the bulk only.
 - V12 on H100 with the default configuration: the first replayed step departs 1.4e-3, half the departure without warm
   starts (bar: a tenth). It passes on RTX PRO 6000 and with the isotropic configurations on H100.
 - V13 FluidBench: S1 is not usable in any run. The spin-down time is 54-75 % short (finding 21), and no particle
