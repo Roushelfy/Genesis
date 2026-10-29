@@ -402,6 +402,40 @@ section "Validation at cab47d96" below, and the run commands in
     particles below the free surface, whose concentration gradient points down, and heats too (2.6e-3 J,
     `logs/dsh1_*_cn.log`). No variant of the isotropic correction or of the shift is adopted.
 
+34. Coupling floor and the drift correction in practice (97aebd75). The floor of finding 27 at the full eta dx / h let
+    the stirred cup of V10 stop its coupling passes early enough to misread its viscous dissipation: balance -7.9 %
+    (`articulation__v5_stir_s1`) against -1.4 % before; at a tenth of it the balance is -1.0 to -1.8 % and V4 stays
+    converged with the same rate (`*__fl0.1_*`, `*__fl0.3_*`, `*__f2_*`). The drift correction took the density solver
+    cap (10 in the validation drivers) and stopped there in every substep of the floating cases; with its own cap of
+    50 it converges (plank draft 4.0 %, resting sphere balance 0.05 %, `*__f2p_*`; a warm start with Chebyshev
+    acceleration instead raised the noise of water at rest to 1e-3 J, `logs/d4_cn.log`). In FluidBench
+    (`sphgoal-v5p`, 47499e5c with the drift correction) it removes the leakage of S1 R2 and makes S2 R2 usable, with or
+    without the settling before t = 0, but the spin-down of S1 gets shorter (-77 % at R2, -86 % at R3, against -71 % and
+    -75 %), the mixing index of S3 moves away and the solve costs a third of the speed: it stays an option.
+
+## Validation at 47499e5c (v5)
+
+Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
+and density, `v5s` volume maps with them, `v5v` volume maps alone, `v5p` drift correction of the positions. The
+deciding receipt is the finest resolution where the design asks for it; a receipt with capped solves is no valid
+sample.
+
+| Case | v5 | v5i | v5s | v5v | v5p |
+| --- | --- | --- | --- | --- | --- |
+| V1 Stokes first problem | fail | fail (torque) | fail | fail | fail |
+| V2 Couette | fail | pass | fail | fail | fail |
+| V3 pipe | fail (17-18 %) | fail | pass | pass | fail |
+| V4 decay, nu 1e-2 / 1e-3 / 1e-4 / 1e-6 | fail (16.5-25 %, 1e-6 unmeasurable) | fail | fail | fail | fail (10.1-12.6 %) |
+| V5 spin-down | pass | pass | pass | pass | pass |
+| V6 momentum | pass | pass | pass | pass | pass |
+| V7 hydrostatics (bulk) | pass | fail | fail | pass | fail |
+| V8 plank / light box at dx 1.75 mm | pass / pass (4.9 / 9.7 %) | pass / fail | fail | fail | capped solves |
+| V9 settling sphere | fail | capped solves | fail | fail | fail |
+| V10 held plate at dx 2.5 mm | pass | fail | fail | fail | fail |
+| V10 stirring | fail at 47499e5c, pass at 97aebd75 (finding 34) | fail | fail | pass | pass |
+| V11 thin-wall cup | fail | not run | not run | fail | fail |
+| V12 state on RTX PRO 6000 | pass | fail | fail | fail | not run |
+
 ## Validation at cab47d96 (final campaign)
 
 The validation receipts are tagged `v4_*`, `v4i_*` and `v4s_*` (FluidBench `results/sph_validation/`), with the full
