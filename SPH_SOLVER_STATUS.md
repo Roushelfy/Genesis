@@ -413,6 +413,19 @@ section "Validation at cab47d96" below, and the run commands in
     without the settling before t = 0, but the spin-down of S1 gets shorter (-77 % at R2, -86 % at R3, against -71 % and
     -75 %), the mixing index of S3 moves away and the solve costs a third of the speed: it stays an option.
 
+35. Wall slip and the boundary offset (V3, V4). The pipe profile of V3 with boundary particles is the analytic one
+    shifted by a uniform slip of 11 mm/s at dx 2.5 mm, a slip length of 0.6 particle sizes (3 mm/s, 0.16 with the
+    volume maps; `pipe__v5_*`, `pipe__v5v_*`). The boundary offset sets it: the centerline error is 0.7 %, 17 % and
+    33 % at offsets of 0.25, 0.5 and 0.75 particle sizes, and the fluid leaks at 0 (`pipe__p1_off*`). A boundary
+    particle that finds no fluid particle within half a particle size of its normal starts its ghost column at the
+    surface and leaves the gap unfilled (about a fifth of them on a lattice); searching 0.75 particle sizes brings
+    the pipe to 13 % (`pipe__gap1_*`). The default offset of 0.25 particle sizes with that search (`*__v6o_*`) passes
+    V3 (2.7 / 3.4 %), brings V2 to 1-23 % and V4 to 11-17 %, but the standoff of the fluid that sets the wall slip also
+    sets the buoyancy: the plank draft goes to 29-48 %, the light box to 62-98 %, the held plate to 25-37 % from
+    Archimedes, the stirring balance to +40 % and the thin wall leaks more; not adopted. V4 converges with resolution
+    at the default offset (38.5, 17.4, 13.0 % at dx 3.5, 2.5, 1.75 mm, `decay__w1_*`, `decay__w2_*`). The wall
+    viscosity model must not depend on the standoff for the two to pass together: the open item.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
