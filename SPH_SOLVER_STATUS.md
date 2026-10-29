@@ -174,6 +174,36 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
     -23 % to -17 %, the spin-down from -11.9 % to -9.6 % (receipts `pipe__band_pipe_dx*`, `decay__band_decay_*`,
     `spindown__band_spin_*`); water at rest, momentum, contact, state, plank and paddle unchanged (`*__band_*`).
 
+17. Pressure friction acts as a static friction on a settling sphere (V9). At dx 3.5 mm and nu 1e-2 the sphere settles
+    at 0.0037 m/s against 0.0144 (-74 %), at dx 2.5 mm at 0.0013 (-91 %), and it decelerates instead of reaching a
+    terminal velocity; a coupling cap of 300 passes, which converges every substep, leaves it at -68 %
+    (`settling__v9c_*`). The shear stress that the pressure pairs carry in a sheared arrangement (finding 11) grows with
+    the pressure and opposes the sliding of the fluid along the sphere, like a friction. With the isotropic pressure
+    the sphere reaches a steady terminal velocity, -32 % at dx 3.5 mm and -29 % at dx 2.5 mm (`settling__v9d_*`,
+    `settling__ib_settle_*`), and the Couette torque errors drop from 13-48 % to 2-16 % (`couette__band2_*` against
+    `couette__ib2_*`, both with the free-surface height taken as a high quantile of the particle heights, which a
+    stranded particle no longer moves). The isotropic pressure still heats water at rest at low viscosity (finding 11).
+
+18. Volume maps (smooth wall, `SPHOptions(boundary_model="volume_map")`). The boundary density of a link is the
+    integral of the kernel over its solid (Koschier and Bender 2017), computed once at build time on a grid in link
+    frame by FFT convolution of the occupancy given by the signed distance of its geoms (`compute_volume_map`), and
+    its pressure force is the exact gradient of that density, so the wall is smooth and does no work on fluid at rest.
+    Water at rest in a closed column cools as with the boundary particles (kinetic energy 4.1e-4 to 1.3e-4 J over 1 s,
+    `logs/vm5_cn.log`). Inviscid fluid in rigid rotation in a cup (dx 5 mm, `dev/spin_down.py`) keeps after 1 s a
+    fraction of its angular momentum of 0.72 with the boundary particles (`logs/fe_spin_inviscid.log`), and with volume
+    maps: 0.26 with the volume interpolated trilinearly on cells of 1/4 particle size (`logs/vm3_spin0.log`). A
+    trilinear interpolation ripples from cell to cell along a surface not aligned with the grid, a roughness of second
+    order in the cell size. The map therefore stores the distance at which a half-space has the volume
+    (`volume_map_to_distance`), linear for a planar surface: interpolated trilinearly, the rotating fluid keeps 0.56,
+    0.87 and 0.973 on cells of 1/2, 1/4 and 1/8 particle size (`logs/vm4_spin0*.log`; offline, along a tilted plane,
+    the tangential gradient is 0.01-0.3 % of the normal one against 4-14 % for the trilinear volume,
+    `logs/vm4_ripple.log`), so the remaining loss presumably comes from the edge of the floor, where the distance
+    curves within the kernel support (not isolated).
+    Interpolated by a cubic B-spline, which reproduces linear fields exactly and has a smooth error elsewhere, it keeps
+    0.988 and 0.997 on cells of 1/2 and 1/4 particle size (`logs/vm5_spin0_c*.log`), the default being 1/4. The
+    boundary particles remain for the wall viscosity and the clearance guard, sampled on the surface itself; a thin
+    wall needs no offset, the fluid resting half a particle spacing from the surface.
+
 ## Measured validation (development snapshots, to be repeated on the committed revision)
 
 Full boundary gradient at a boundary spacing of 0.5 particle sizes, isotropic pressure off (receipts tagged `fe_*`), and
