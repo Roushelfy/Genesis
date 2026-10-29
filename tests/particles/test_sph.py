@@ -344,7 +344,7 @@ def test_pressure_carries_column_weight(show_viewer, pressure_solver):
     assert p_middle > 2.0 * p_top
 
 
-def create_viscous_ball(show_viewer, viscosity, n_envs=0, micropolar=False):
+def create_viscous_ball(show_viewer, viscosity, n_envs=0, micropolar=False, max_viscosity_error=1e-3):
     """A ball of viscous liquid at zero gravity, far from the bounds of the domain, for the default solver."""
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(
@@ -358,6 +358,7 @@ def create_viscous_ball(show_viewer, viscosity, n_envs=0, micropolar=False):
             lower_bound=(-0.5, -0.5, -0.5),
             upper_bound=(0.5, 0.5, 0.5),
             micropolar=micropolar,
+            max_viscosity_error=max_viscosity_error,
         ),
         show_viewer=show_viewer,
     )
@@ -385,8 +386,9 @@ def get_momenta(liquid, mass):
 @pytest.mark.required
 def test_implicit_viscosity_conserves_momentum(show_viewer):
     # The implicit viscosity is a sum of central pair forces, so a ball of liquid alone keeps its linear and angular
-    # momentum while the viscosity dissipates its shear, and its rigid rotation is a null mode of the dissipation.
-    scene, liquid = create_viscous_ball(show_viewer, viscosity=1e-2)
+    # momentum while the viscosity dissipates its shear, and its rigid rotation is a null mode of the dissipation. The
+    # rigid correction of the residual keeps this exact at a loose tolerance of the viscosity solve as well.
+    scene, liquid = create_viscous_ball(show_viewer, viscosity=1e-2, max_viscosity_error=0.05)
     mass = scene.sph_solver.particle_volume * 1000.0
     pos = liquid.get_particles_pos()
     omega, shear = 5.0, 3.0
@@ -396,8 +398,8 @@ def test_implicit_viscosity_conserves_momentum(show_viewer):
     for _ in range(50):
         scene.step()
     momentum, angular, energy = get_momenta(liquid, mass)
-    assert_allclose(momentum, momentum_0, atol=1e-4 * np.linalg.norm(momentum_0))
-    assert_allclose(angular, angular_0, atol=1e-3 * np.linalg.norm(angular_0))
+    assert_allclose(momentum, momentum_0, atol=2e-5 * np.linalg.norm(momentum_0))
+    assert_allclose(angular, angular_0, atol=2e-5 * np.linalg.norm(angular_0))
     assert energy < energy_0
     assert scene.sph_solver.solve_stats.n_unconverged_viscosity == 0
 

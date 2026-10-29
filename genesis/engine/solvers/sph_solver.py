@@ -101,7 +101,9 @@ def compute_volume_map(signed_distance, lower, cell_size, n_nodes, support_radiu
     phi_coarse = torch.as_tensor(signed_distance(points).reshape(tuple(n_coarse)), dtype=torch.float32)
     # coarse node k sits at fine node coarse * k
     phi = torch.nn.functional.interpolate(
-        phi_coarse[None, None], size=tuple(int(n) for n in coarse * (n_coarse - 1) + 1), mode="trilinear",
+        phi_coarse[None, None],
+        size=tuple(int(n) for n in coarse * (n_coarse - 1) + 1),
+        mode="trilinear",
         align_corners=True,
     )[0, 0, : n_nodes[0], : n_nodes[1], : n_nodes[2]].contiguous()
     # A signed distance changes by at most the distance between two points, so the interpolation error stays below the
@@ -440,6 +442,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 gravity_norm2=gs.qd_float,
             )
             self.envs_viscosity = struct_viscosity_env.field(shape=(self._B,), needs_grad=False, layout=qd.Layout.AOS)
+            # Rigid velocity correction that removes the net force and torque of the residual of the viscosity solve
+            # (see _kernel_project_viscosity_residual): mass and center of mass of the fluid, the 6x6 system of the
+            # correction, its right-hand side (net residual force and torque about the center) and its solution.
+            self.envs_viscosity_mass = qd.field(gs.qd_float, shape=(self._B,))
+            self.envs_viscosity_center = qd.Vector.field(3, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_viscosity_rigid_system = qd.Matrix.field(6, 6, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_viscosity_rigid_rhs = qd.Vector.field(6, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_viscosity_rigid_correction = qd.Vector.field(6, dtype=gs.qd_float, shape=(self._B,))
             # Kinetic energy the viscosity dissipates over the substeps of the current step, in J (see
             # _kernel_accumulate_viscous_dissipation).
             self.envs_viscous_dissipation = qd.field(gs.qd_float, shape=(self._B,))
@@ -2196,10 +2206,121 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             )
         return max_rel_residual
 
+    @qd.func
+    def _func_cross_matrix(self, y):
+        """Return the matrix Y of the cross product by y, Y v = y x v."""
+        return qd.Matrix([[0.0, -y[2], y[1]], [y[2], 0.0, -y[0]], [-y[1], y[0], 0.0]], dt=gs.qd_float)
+
+    @qd.kernel
+    def _kernel_project_viscosity_residual(self):
+        """Remove the net force and torque of the residual of the viscosity solve by a rigid velocity correction.
+
+        The viscous pair forces are central and opposite, so the exact solution of (M + h D + h W) v = M v_rhs + h W v_w
+        changes the momentum of the fluid by the wall impulse alone, -h W (v - v_w), whose reaction the links take. A
+        solve stopped at its tolerance leaves the residual r = rhs - A v, and the fluid gains sum_i r_i and
+        sum_i x_i x r_i on top, so that the momentum of a closed fluid-rigid system drifts at the order of the
+        tolerance. Rigid velocities a + w x (x_i - c) are null modes of D, so adding one changes the net residual by
+        -sum_i (m_i + h W_i) (a + w x (x_i - c)) only. The correction solving this 6x6 system for the net residual force
+        and torque about the center of mass c of the fluid leaves both at zero and changes the velocities at the order
+        of the tolerance.
+        """
+        for i_b in range(self._B):
+            self.envs_viscosity_mass[i_b] = 0.0
+            self.envs_viscosity_center[i_b] = qd.Vector.zero(gs.qd_float, 3)
+            self.envs_viscosity_rigid_system[i_b] = qd.Matrix.zero(gs.qd_float, 6, 6)
+            self.envs_viscosity_rigid_rhs[i_b] = qd.Vector.zero(gs.qd_float, 6)
+
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                self.envs_viscosity_mass[i_b] += mass
+                self.envs_viscosity_center[i_b] += mass * self.particles_reordered[i_p, i_b].pos
+
+        for i_b in range(self._B):
+            if self.envs_viscosity_mass[i_b] > 0.0:
+                self.envs_viscosity_center[i_b] /= self.envs_viscosity_mass[i_b]
+
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
+                    self.particles_viscosity[i_p, i_b].wall_tensor
+                )
+                arm = self._func_cross_matrix(self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b])
+                residual = self.particles_viscosity[i_p, i_b].residual
+                # J^T (M + h W) J and J^T r for the rigid velocity J (a, w) = a + w x y = a - Y w
+                coupling = -block @ arm
+                angular = arm @ coupling
+                system = qd.Matrix.zero(gs.qd_float, 6, 6)
+                for r in qd.static(range(3)):
+                    for c in qd.static(range(3)):
+                        system[r, c] = block[r, c]
+                        system[r, 3 + c] = coupling[r, c]
+                        system[3 + c, r] = coupling[r, c]
+                        system[3 + r, 3 + c] = angular[r, c]
+                torque = arm @ residual
+                self.envs_viscosity_rigid_system[i_b] += system
+                self.envs_viscosity_rigid_rhs[i_b] += qd.Vector(
+                    [residual[0], residual[1], residual[2], torque[0], torque[1], torque[2]], dt=gs.qd_float
+                )
+
+        for i_b in range(self._B):
+            correction = qd.Vector.zero(gs.qd_float, 6)
+            if self.envs_viscosity_mass[i_b] > 0.0:
+                system = self.envs_viscosity_rigid_system[i_b]
+                system += 1e-6 * system.trace() / 6.0 * qd.Matrix.identity(gs.qd_float, 6)
+                correction = self._func_solve_spd6(system, self.envs_viscosity_rigid_rhs[i_b])
+            self.envs_viscosity_rigid_correction[i_b] = correction
+
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                correction = self.envs_viscosity_rigid_correction[i_b]
+                arm = self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b]
+                linear = qd.Vector([correction[0], correction[1], correction[2]], dt=gs.qd_float)
+                angular = qd.Vector([correction[3], correction[4], correction[5]], dt=gs.qd_float)
+                dvel = linear + angular.cross(arm)
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
+                    self.particles_viscosity[i_p, i_b].wall_tensor
+                )
+                self.particles_reordered[i_p, i_b].vel += dvel
+                self.particles_viscosity[i_p, i_b].residual -= block @ dvel
+
+    @qd.func
+    def _func_solve_spd6(self, mat, rhs):
+        """Solve the symmetric positive definite system mat x = rhs of size 6 by Cholesky factorization."""
+        lower = qd.Matrix.zero(gs.qd_float, 6, 6)
+        for c in qd.static(range(6)):
+            diag = mat[c, c]
+            for k in qd.static(range(c)):
+                diag -= lower[c, k] * lower[c, k]
+            diag = qd.sqrt(qd.max(diag, gs.EPS))
+            lower[c, c] = diag
+            for r in qd.static(range(c + 1, 6)):
+                value = mat[r, c]
+                for k in qd.static(range(c)):
+                    value -= lower[r, k] * lower[c, k]
+                lower[r, c] = value / diag
+        sol = qd.Vector.zero(gs.qd_float, 6)
+        for r in qd.static(range(6)):
+            value = rhs[r]
+            for k in qd.static(range(r)):
+                value -= lower[r, k] * sol[k]
+            sol[r] = value / lower[r, r]
+        for r_ in qd.static(range(6)):
+            r = qd.static(5 - r_)
+            value = sol[r]
+            for k in qd.static(range(r + 1, 6)):
+                value -= lower[k, r] * sol[k]
+            sol[r] = value / lower[r, r]
+        return sol
+
     def _viscosity_solve(self, is_first_pass):
         """Solve the implicit viscosity of the substep from the current velocity, in place.
 
-        Returns the number of iterations and the final relative residual (at most 1 once converged).
+        The solve ends with a rigid velocity correction that cancels the net force and torque of its residual (see
+        _kernel_project_viscosity_residual). Returns the number of iterations and the final relative residual (at most
+        1 once converged).
         """
         self._kernel_init_viscosity_solve(is_first_pass)
         rel_residual = self._kernel_viscosity_residual()
@@ -2207,6 +2328,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         while rel_residual > 1.0 and n_iters < self._visc_max_iters:
             rel_residual = self._kernel_viscosity_solve_iteration()
             n_iters += 1
+        self._kernel_project_viscosity_residual()
         return n_iters, rel_residual
 
     @qd.func
