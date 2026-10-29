@@ -439,6 +439,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 # the gravity impulse, the scales of the tolerance of the viscosity-pressure agreement
                 viscous_norm2=gs.qd_float,
                 gravity_norm2=gs.qd_float,
+                # squared mass norm of the change of the pressure velocity by the last density solve, and the mass
+                delta_norm2=gs.qd_float,
+                mass=gs.qd_float,
             )
             self.envs_viscosity = struct_viscosity_env.field(shape=(self._B,), needs_grad=False, layout=qd.Layout.AOS)
             # Rigid velocity correction that removes the net force and torque of the residual of the viscosity solve
@@ -2344,10 +2347,16 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         A density solve that changed the pressure velocity by delta leaves the residual -h D delta in the viscosity
         system of the combined velocity (SPH_SOLVER_DESIGN.md section 5.2). It is measured relative to the larger of the
         viscous and the gravity impulses of the substep, with the floor of the viscosity solve, so the coupling has
-        converged once the result is at most 1.
+        converged once the result is at most 1. The density solves resolve the velocity only to eta dx / h, eta their
+        tolerance on the density error (a velocity error of that size moves the particles by eta dx over the substep),
+        so the coupling has converged as well once the mass-weighted rms of delta is at most that: without gravity and
+        with a weak viscous impulse, the disagreement would otherwise stall at the changes the pressure clamp makes
+        within the tolerance of the density solves.
         """
         for i_b in range(self._B):
             self.envs_viscosity[i_b].coupling_norm2 = 0.0
+            self.envs_viscosity[i_b].delta_norm2 = 0.0
+            self.envs_viscosity[i_b].mass = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
@@ -2363,14 +2372,22 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.envs_viscosity[i_b].coupling_norm2 += residual.dot(
                     self.particles_viscosity[i_p, i_b].precond_inv @ residual
                 )
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                self.envs_viscosity[i_b].delta_norm2 += (
+                    mass * self.particles_viscosity[i_p, i_b].pressure_vel_delta.norm_sqr()
+                )
+                self.envs_viscosity[i_b].mass += mass
 
         max_rel_residual = gs.qd_float(0.0)
         for i_b in range(self._B):
             impulse_norm2 = qd.max(self.envs_viscosity[i_b].viscous_norm2, self.envs_viscosity[i_b].gravity_norm2)
             tolerance2 = qd.max(self._visc_max_error**2 * impulse_norm2, 1e-12 * self.envs_viscosity[i_b].rhs_norm2)
-            qd.atomic_max(
-                max_rel_residual, qd.sqrt(self.envs_viscosity[i_b].coupling_norm2 / qd.max(tolerance2, 1e-30))
+            rel_residual = qd.sqrt(self.envs_viscosity[i_b].coupling_norm2 / qd.max(tolerance2, 1e-30))
+            vel_resolution = self._df_max_error_den * self._particle_size / self._substep_dt
+            rel_delta = qd.sqrt(
+                self.envs_viscosity[i_b].delta_norm2 / qd.max(self.envs_viscosity[i_b].mass * vel_resolution**2, 1e-30)
             )
+            qd.atomic_max(max_rel_residual, qd.min(rel_residual, rel_delta))
         return max_rel_residual
 
     @qd.kernel
@@ -2396,8 +2413,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         [1 / L, 1], where L bounds the eigenvalues of M^-1 A (Gershgorin disks of the viscosity system), since
         M / L <= A^-1 <= M^-1 in the ordering of symmetric matrices. Chebyshev semi-iteration on that interval converges
         at the rate (sqrt(L) - 1) / (sqrt(L) + 1) instead of 1 - 1 / L, and reduces to the plain iteration as L tends to
-        1 for weakly viscous fluids. i_pass is the index of the pass that just ran. The pressure is clamped to stay
-        nonnegative.
+        1 for weakly viscous fluids. i_pass counts the passes since the first one or the last restart. The pressure is
+        clamped to stay nonnegative.
         """
         for i_b in range(self._B):
             if i_pass == 0:
@@ -3177,6 +3194,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         if self._has_viscosity:
             self._kernel_compute_viscosity_geometry()
             stats.coupling_history.append([])
+        i_chebyshev, previous_coupling_residual = 0, math.inf
         for i_pass in range(n_passes):
             rigid_change = 0.0
             n_visc_iters = 0
@@ -3221,7 +3239,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     stats.n_unconverged_coupling += coupling_residual > 1.0
                     stats.max_coupling_residual = max(stats.max_coupling_residual, coupling_residual)
                     break
-                self._kernel_accelerate_coupling(i_pass)
+                # The Chebyshev acceleration assumes a fixed linear map, which the clamp of the pressure and the response
+                # of the coupled links may break; a pass that raises the disagreement restarts it from a plain step.
+                if i_pass > 0 and coupling_residual > previous_coupling_residual:
+                    i_chebyshev = 0
+                self._kernel_accelerate_coupling(i_chebyshev)
+                i_chebyshev += 1
+                previous_coupling_residual = coupling_residual
 
         if self._energy_audit:
             energy, energy_prev = self._kernel_kinetic_energy(), energy
