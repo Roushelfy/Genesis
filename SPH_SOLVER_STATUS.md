@@ -204,6 +204,66 @@ Hardware of record: NVIDIA RTX PRO 6000 Blackwell Server Edition (cluster partit
     boundary particles remain for the wall viscosity and the clearance guard, sampled on the surface itself; a thin
     wall needs no offset, the fluid resting half a particle spacing from the surface.
 
+    Validation with the volume maps (receipts `*__vm_*`, `*__vm6_*`, FluidBench): pipe centerline error 0.020 and
+    0.041 at dx 2.5 and 1.875 mm (V3 passes; 0.17 and 0.18 with the boundary particles), spin-down -3.6 % (-9.6 %),
+    sphere on the floor buoyancy -16 % (-22 %), momentum, state and plank load unchanged; but the Couette torque is
+    26-65 % high (13-48 %), the sliding-floor shear +59 % at nu 1e-2 and +129 % at 1e-3 (+32 % and +88 %) and the plank
+    draft +14 to +23 % (-14 %). Against the smooth wall the first fluid layer rests on the clearance guard, a quarter
+    particle size from the surface, 13 % sparser than against the boundary particles (0.42 particle size), with the
+    density at 1 in both (`logs/vm_wall_gap2.log`, `logs/pa_wall_gap2.log`): the wall pressure enters the force of a
+    particle by its own pressure alone (BWJ23), while the fluid above pushes with the pressures of both particles of a
+    pair, and the smooth wall, whose gradient at the surface is 0.69 per particle size against 0.86-1.0 for the
+    particles, supports the column only once the layer is that close. The volume maps remain an option.
+
+19. Wall column against fluid pressed closer than half a spacing. The ghost columns of the wall viscosity started at
+    the surface, while the fluid particle nearest to it stands for the fluid down to half a spacing below it: with the
+    first layer at a quarter spacing both stand for the fluid near the surface, and a linear shear transmits 1.34 of
+    mu gamma (offline, `dev/wall_flux2.py`; 1.11 at 0.4 spacing, the rest distance against the boundary particles). The
+    column now starts at that edge, below the surface when the fluid is closer (0.93 at any gap); with the boundary
+    particles the Couette torque errors drop from 13-48 % to 10-43 %, the other cases unchanged (receipts `*__sb_*`).
+
+20. Particle volume of the FluidBench liquid. The adapter samples the liquid on a lattice of spacing dx and sets the
+    particle size to dx / 0.8^(1/3), sized for a particle volume of 0.8 particle size^3, with a volume factor of 0.75:
+    each particle carries 0.9375 dx^3 of water, the lattice has a density of 0.941 (`logs/lattice_sum.log`), and the
+    liquid compacts by 6 % as it settles, the volume error of S1 (`|e_V|` 0.055-0.06 "from the first frame", the center
+    of mass of the liquid falling from 29.9 to 28.2 mm within 0.5 s). With the factor 0.8 the lattice has a density of
+    1.004 and the column erupts at the start (2.6 m/s, liquid over the rim, `@sphgoal-f08dev`, `@sphgoal-vmdev2`); a
+    particle size of dx with a factor of 1 puts the lattice at a density of 1.000 and conserves the declared mass of
+    water. A Cartesian lattice cut by the curved wall of the cup still starts some particles nearly touching it, and
+    the liquid at the wall below the free surface is thrown up at 0.6-0.8 m/s (`logs/fast_src.log`); FluidBench S1
+    leaves the liquid at rest for 0.5 s before stirring, so a quasi-static settling of 0.5 s before t = 0 (velocities
+    zeroed after every step, the adapter option `sph_relax_s`, recorded as a deviation of the run) removes the leakage.
+    S1 f2 R2 then has a volume error of 0.51 % (`@sphgoal-rx-pi`, dynamic settling) or 0.9 % (`@sphgoal-rx2-p`).
+
+21. Spin-down of S1. The adapter now reads the fluid load on the rod with `get_links_fluid_wrench`. While the fluid
+    spins down (6-8 s) the rod at rest takes 36 % of the loss of angular momentum with the boundary particles and the
+    isotropic pressure, 47-52 % with the volume maps; the rest goes to the cup wall, internal forces conserving the
+    angular momentum (`logs/s1_budget_rx*.log`). Per unit angular momentum each of the two takes 0.14-0.25 per second,
+    about the whole decay rate of the reference (0.17 per second, tau_sd = 5.8 s); a rough estimate of the drag of the
+    rod (flow speed from the mean angular velocity at the radius of the rod) gives a drag coefficient near 8 at a
+    Reynolds number of about 400, where about 1 is expected. The spin-down time stays 51-71 % short at R2 in every
+    configuration (`@sphgoal-rx2-*`); no particle method of FluidBench passes it (gs-dfsph, gs-mpm, gs-pbd, ch-sph and
+    fl-mpm all fail S1, only of-vof passes, `logs/s1_rows.log`).
+
+22. Isotropic density. With the isotropic pressure, the density that the pressure solves constrain can take the
+    corrected pair weights as well (`isotropic_density`), consistent with their velocity constraint and force. The
+    Couette torque error is then 0.1-9.3 % and the profile 1.5-2.7 % (V2 passes, `couette__id_*`), the settling sphere
+    -23 % at dx 3.5 mm (`settling__id_*`), and the new V1 case (finding 23) 3-10.3 % on the profile with the floor torque
+    within 10 % at dx 2.5 mm. It does not stop the heating of water at rest by the isotropic pressure (closed column at
+    nu 1e-6: kinetic energy 2.9e-3 J after 1 s, 3.6e-3 J without it, 1.3e-4 J and decaying without the isotropic
+    pressure, `logs/id_cn_*.log`). Relaxing the correction in time (`isotropic_pressure_relaxation` 0.2 and 0.05 per
+    substep) lowers the heating to 1.1e-3 and 5.0e-4 J but raises the Couette errors to 2-14 % and 5-20 %
+    (`logs/ir*_cn_*.log`, `couette__ir*`): the correction, recomputed from the arrangement, does work on the fluid.
+
+23. V1 case. The sliding-floor trough (`trough.py`) compares with a plane zero-flux shear flow that assumes the return
+    flow at once and no side walls; at nu 1e-2 the side wall layers span the trough, and the return flow waits for the
+    free surface to tilt (L / sqrt(g H) = 0.36 s), so its profile errors stay at 0.45-0.94 in every configuration.
+    `stokes1.py` realizes the first problem of Stokes of the design: a disk floor spun at once under a deep layer in a
+    fixed tube, without end walls, the profile u_theta / (Omega r) against erfc between 0.25 R and 0.6 R, and the floor
+    torque against an axisymmetric finite-difference solution that includes the corner with the tube wall (the
+    semi-infinite formula misses it). At dx 2.5 mm and nu 1e-4 the default configuration is 7.5-26 % off on the profile
+    and twice the torque; with the isotropic density 3-10.3 % and within 10 % (`stokes1__dev2_*`, `stokes1__id2_*`).
+
 ## Measured validation (development snapshots, to be repeated on the committed revision)
 
 Full boundary gradient at a boundary spacing of 0.5 particle sizes, isotropic pressure off (receipts tagged `fe_*`), and

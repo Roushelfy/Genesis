@@ -818,6 +818,13 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         corrected force is not the gradient of the density estimate and heats a fluid at rest: at 1e-3 m^2/s the
         viscosity holds the velocity noise at a few mm/s, at the viscosity of water it grows. Only used by the default
         solver. Defaults to False.
+    isotropic_pressure_relaxation : float, optional
+        Fraction by which the isotropic pressure correction of a particle moves toward its value for the current
+        arrangement at every substep, 1 to take that value. Only used by the default solver. Defaults to 1.
+    isotropic_density : bool, optional
+        With the isotropic pressure, whether the density that the pressure solves constrain takes the corrected pair
+        weights as well, consistently with the velocity constraint and the force of the pressure. Only used by the
+        default solver. Defaults to False.
     energy_audit : bool, optional
         Whether to record the change of kinetic energy of the fluid caused by each stage of a substep (divergence solve,
         explicit forces, coupled viscosity and density solves, wall clearance) in `SPHSolver.solve_stats`, to check the
@@ -879,6 +886,8 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_constraint_iterations: NonNegativeInt = 4
     max_constraint_error: PositiveFloat = 0.01
     isotropic_pressure: StrictBool = False
+    isotropic_density: StrictBool = False
+    isotropic_pressure_relaxation: PositiveFloat = 1.0
     pressure_chebyshev_radius: NonNegativeFloat = 0.98
     energy_audit: StrictBool = False
     micropolar: StrictBool = False

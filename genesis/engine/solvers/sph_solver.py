@@ -264,6 +264,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._n_constraint_passes = 0
         self._energy_audit = options.energy_audit
         self._isotropic_pressure = options.isotropic_pressure
+        self._isotropic_density = options.isotropic_density
+        self._isotropic_relaxation = options.isotropic_pressure_relaxation
         # Whether any material has a viscosity, which enables the implicit viscosity solve. Resolved at build time.
         self._has_viscosity = False
         self._df_eps = 1e-5
@@ -1386,7 +1388,34 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 if blend > 0.0 and ret.trace > self._df_eps:
                     gram = ret.gram + 1e-3 * ret.gram.trace() / 5.0 * qd.Matrix.identity(gs.qd_float, 5)
                     correction = blend * self._func_solve_spd5(gram, ret.rhs)
-                self.particles_reordered[i_p, i_b].pressure_correction = correction
+                # relaxation in time of the correction toward its value for the current arrangement
+                previous = self.particles_reordered[i_p, i_b].pressure_correction
+                self.particles_reordered[i_p, i_b].pressure_correction = previous + self._isotropic_relaxation * (
+                    correction - previous
+                )
+
+    @qd.func
+    def _task_compute_corrected_density(self, i, j, ret: qd.template(), i_b):
+        i_m = self.particles_reordered[j, i_b].material
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        weight = self._func_pressure_pair_weight(i, j, x_ij, i_b)
+        ret += (weight - 1.0) * self.materials[i_m].rest_volume * self.cubic_kernel(x_ij.norm())
+
+    @qd.kernel
+    def _kernel_compute_corrected_density(self):
+        """Weigh the fluid pairs of the density estimate by the isotropic pressure correction.
+
+        The pressure solves constrain the density whose gradient their velocity constraint and pressure force use, the
+        pair weights c_ij included (see _kernel_compute_pressure_correction), so that the density solve corrects the
+        density it measures: with the plain density, the pressure moves the particles along directions that do not
+        reduce its error as the solve predicts, and the solve keeps answering an error it does not see, which heats a
+        fluid at rest. The weights are frozen over the substep, as the kernel gradients are.
+        """
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                change = gs.qd_float(0.0)
+                self._func_for_all_fluid_neighbors(i_p, change, self._task_compute_corrected_density, i_b)
+                self.particles_reordered[i_p, i_b].density_norm += change
 
     @qd.func
     def _func_solve_spd5(self, mat, rhs):
@@ -2995,6 +3024,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._kernel_compute_density_and_factor(f)
         if self._isotropic_pressure:
             self._kernel_compute_pressure_correction()
+            if self._isotropic_density:
+                self._kernel_compute_corrected_density()
         energy = self._kernel_kinetic_energy() if self._energy_audit else 0.0
         if not self._df_skip_div:
             n_iters, residual = self._pressure_solve(is_divergence=True)
