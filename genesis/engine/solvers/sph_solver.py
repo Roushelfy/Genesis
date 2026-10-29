@@ -261,6 +261,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._max_coupling_iters = options.max_coupling_iterations
         self._max_constraint_iters = options.max_constraint_iterations
         self._max_constraint_error = options.max_constraint_error
+        self._constraint_relaxation = options.constraint_relaxation
         self._n_constraint_passes = 0
         self._energy_audit = options.energy_audit
         self._isotropic_pressure = options.isotropic_pressure
@@ -2845,8 +2846,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 for k in qd.static(range(3)):
                     ang_change[k] = self._substep_dt * ang[k] - self.coupled_vel_constraint[6 * i_c + k, i_b]
                     lin_change[k] = self._substep_dt * lin[k] - self.coupled_vel_constraint[6 * i_c + 3 + k, i_b]
-                    self.coupled_vel_constraint[6 * i_c + k, i_b] = self._substep_dt * ang[k]
-                    self.coupled_vel_constraint[6 * i_c + 3 + k, i_b] = self._substep_dt * lin[k]
+                    # the guess moves by a fraction of the change (under-relaxation of the fixed point)
+                    self.coupled_vel_constraint[6 * i_c + k, i_b] += self._constraint_relaxation * ang_change[k]
+                    self.coupled_vel_constraint[6 * i_c + 3 + k, i_b] += self._constraint_relaxation * lin_change[k]
                     ang_vel[k] = self.coupled_vel[6 * i_c + k, i_b]
                     lin_vel[k] = self.coupled_vel[6 * i_c + 3 + k, i_b]
                 change = qd.max(change, lin_change.norm() + extent * ang_change.norm())
