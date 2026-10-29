@@ -1,6 +1,7 @@
 import math
 from dataclasses import dataclass, field
 
+import igl
 import numpy as np
 import torch
 
@@ -79,6 +80,88 @@ def sample_reentrant_edges(verts, faces, offset, spacing, min_angle=math.radians
     if not pos:
         return np.zeros((0, 3)), np.zeros((0, 3)), np.zeros(0)
     return np.concatenate(pos), np.concatenate(normals), np.concatenate(areas)
+
+
+def compute_volume_map(signed_distance, lower, cell_size, n_nodes, support_radius):
+    """Return the boundary volume of a solid at the nodes of a grid, the integral of the smoothing kernel over it.
+
+    'signed_distance' maps points (N, 3) to their signed distance to the surface of the solid, negative inside. The grid
+    has 'n_nodes' nodes along each axis, spaced by 'cell_size' from 'lower'. The signed distance is evaluated on a grid
+    four times coarser and interpolated, then evaluated again at the nodes near the surface, where the interpolation may
+    get its sign wrong. The solid is the occupancy of the nodes, smoothed over one cell across the surface, convolved
+    with the cubic spline kernel by FFT. The kernel is normalized on the grid, so that the volume is 1 deep inside the
+    solid, as the fluid density of a particle surrounded by fluid (Koschier and Bender 2017, density maps).
+    """
+    n_nodes = np.asarray(n_nodes, dtype=np.int64)
+    lower = np.asarray(lower, dtype=np.float64)
+    coarse = 4
+    n_coarse = (n_nodes - 2) // coarse + 2
+    axes = [lower[i] + coarse * cell_size * np.arange(n_coarse[i]) for i in range(3)]
+    points = np.stack(np.meshgrid(*axes, indexing="ij"), axis=-1).reshape((-1, 3))
+    phi_coarse = torch.as_tensor(signed_distance(points).reshape(tuple(n_coarse)), dtype=torch.float32)
+    # coarse node k sits at fine node coarse * k
+    phi = torch.nn.functional.interpolate(
+        phi_coarse[None, None], size=tuple(int(n) for n in coarse * (n_coarse - 1) + 1), mode="trilinear",
+        align_corners=True,
+    )[0, 0, : n_nodes[0], : n_nodes[1], : n_nodes[2]].contiguous()
+    # A signed distance changes by at most the distance between two points, so the interpolation error stays below the
+    # diagonal of a coarse cell.
+    near = phi.abs() < math.sqrt(3.0) * coarse * cell_size
+    near_idx = near.nonzero().numpy()
+    if len(near_idx) > 0:
+        phi[near] = torch.as_tensor(signed_distance(lower + cell_size * near_idx), dtype=torch.float32)
+    occupancy = (0.5 - phi / cell_size).clamp(0.0, 1.0)
+
+    # kernel on the grid, its center at index 0 of a periodic array large enough that the solid does not wrap around
+    r_cells = math.ceil(support_radius / cell_size)
+    size = tuple(int(n) + 2 * r_cells for n in n_nodes)
+    offsets = np.arange(-r_cells, r_cells + 1) * cell_size
+    dist = np.linalg.norm(np.stack(np.meshgrid(offsets, offsets, offsets, indexing="ij"), axis=-1), axis=-1)
+    q = dist / support_radius
+    kernel = np.where(q <= 0.5, 6.0 * q**3 - 6.0 * q**2 + 1.0, np.where(q <= 1.0, 2.0 * (1.0 - q) ** 3, 0.0))
+    kernel /= kernel.sum()
+    kernel_periodic = torch.zeros(size, dtype=torch.float64)
+    idx = [torch.as_tensor(np.arange(-r_cells, r_cells + 1) % n) for n in size]
+    kernel_periodic[idx[0][:, None, None], idx[1][None, :, None], idx[2][None, None, :]] = torch.as_tensor(kernel)
+    occupancy_padded = torch.zeros(size, dtype=torch.float64)
+    occupancy_padded[r_cells:-r_cells, r_cells:-r_cells, r_cells:-r_cells] = occupancy
+    volume = torch.fft.irfftn(torch.fft.rfftn(occupancy_padded) * torch.fft.rfftn(kernel_periodic), s=size)
+    volume = volume[r_cells:-r_cells, r_cells:-r_cells, r_cells:-r_cells]
+    return volume.clamp(0.0, 1.0).numpy().astype(gs.np_float)
+
+
+def half_space_volume(dist, support_radius):
+    """Return the boundary volume of a half-space at a signed distance from its surface (negative inside).
+
+    Integral of the cubic spline kernel over the half-space, 16 times the integral of the plane integral of the kernel
+    (see SPHSolver.cubic_kernel_plane_integral) from |dist| to the support radius, mirrored as 1 minus it inside.
+    """
+    q = np.minimum(np.abs(dist) / support_radius, 1.0)
+
+    def p_outer(s):
+        return 0.1 * s - s**3 / 3.0 + 0.5 * s**4 - 0.3 * s**5 + 0.4 / 6.0 * s**6
+
+    def p_inner(s):
+        return 0.0875 * s - s**3 / 6.0 + 0.3 * s**5 - 0.2 * s**6
+
+    tail = np.where(
+        q > 0.5,
+        p_outer(1.0) - p_outer(q),
+        p_outer(1.0) - p_outer(0.5) + p_inner(0.5) - p_inner(q),
+    )
+    volume = 16.0 * tail
+    return np.where(dist >= 0.0, volume, 1.0 - volume)
+
+
+def volume_map_to_distance(volume, support_radius):
+    """Return the signed distance at which a half-space has the given boundary volume, within the support radius.
+
+    A volume map stores this distance rather than the volume (see SPHSolver._func_volume_map): the distance to a
+    planar surface is linear, which the trilinear interpolation of the grid reproduces exactly, where the interpolated
+    volume would ripple along a surface not aligned with the grid, a roughness of the wall.
+    """
+    dist = np.linspace(support_radius, -support_radius, 20001)
+    return np.interp(volume, half_space_volume(dist, support_radius), dist).astype(gs.np_float)
 
 
 @dataclass
@@ -177,7 +260,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._boundary_spacing = 0.5 * self._particle_size
         # Upper bound on the number of boundary particles, which grows with the area of the simulation domain.
         self._max_n_boundary_particles = 5_000_000
-        self._boundary_offset = options.boundary_offset
+        # Upper bound on the number of grid nodes of the volume maps.
+        self._max_n_volume_map_nodes = 200_000_000
+        # With volume maps (see compute_volume_map), the maps set how close the fluid comes to the surface, and the
+        # boundary particles, which carry the wall viscosity and the wall clearance, sit on the surface itself.
+        self._has_volume_maps = options.boundary_model == "volume_map"
+        self._volume_map_cell_size = options.volume_map_cell_size
+        self._boundary_offset = 0.0 if self._has_volume_maps else options.boundary_offset
         self._n_boundary_particles = 0
         self._has_boundary = False
         # Links with degrees of freedom that carry boundary particles, which exchange momentum with the fluid in both
@@ -345,6 +434,19 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.links_root_com = qd.Vector.field(3, dtype=gs.qd_float, shape=(n_links, self._B))
             self.links_vel = qd.Vector.field(3, dtype=gs.qd_float, shape=(n_links, self._B))
             self.links_ang = qd.Vector.field(3, dtype=gs.qd_float, shape=(n_links, self._B))
+            if self._has_volume_maps:
+                # Volume maps (see compute_volume_map), flattened one after another in C order, with the link frame
+                # position of their first node, their number of nodes along each axis and their first value, and the
+                # map of each link (-1 if none) with the pose of the link at the current substep.
+                n_maps = len(self._volume_maps)
+                n_values = sum(values.size for *_, values in self._volume_maps)
+                self.volume_maps_values = qd.field(gs.qd_float, shape=(n_values,))
+                self.volume_maps_lower = qd.Vector.field(3, dtype=gs.qd_float, shape=(n_maps,))
+                self.volume_maps_n_nodes = qd.Vector.field(3, dtype=gs.qd_int, shape=(n_maps,))
+                self.volume_maps_start = qd.field(gs.qd_int, shape=(n_maps,))
+                self.links_volume_map = qd.field(gs.qd_int, shape=(n_links,))
+                self.links_pos = qd.Vector.field(3, dtype=gs.qd_float, shape=(n_links, self._B))
+                self.links_quat = qd.Vector.field(4, dtype=gs.qd_float, shape=(n_links, self._B))
             # Boundary of every fluid particle, per rigid link near it, in hashed (reordered) particle order: the
             # gradient of its density constraint (see _kernel_compute_density_and_factor) and the wall viscosity tensor
             # (see _kernel_compute_viscosity_geometry). A slot holds the link index -1 when unused. The pressure and
@@ -472,6 +574,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             # Sample the boundary particles of the rigid geoms coupled with the fluid, in link frame.
             boundaries_pos_local, boundaries_link_idx, boundaries_is_fixed, boundaries_active = [], [], [], []
             boundaries_normal_local, boundaries_area = [], []
+            # signed distance functions of the geoms of each link, in link frame, for the volume maps
+            links_signed_distance = {}
             rigid_solver = self.sim.rigid_solver
             if isinstance(self._coupler, LegacyCoupler) and self._coupler.options.rigid_sph and rigid_solver.is_active:
                 # Fluid stays within the domain, so boundary particles further away than the support radius are
@@ -499,9 +603,18 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                                 verts = gu.inv_transform_by_trans_quat(verts, link_pos, link_quat)
                                 # The winding of the cut polygon is arbitrary, so its face normal may point inward.
                                 surface_normal = gu.transform_by_quat(geom.data[:3], geom.init_quat)
+                                links_signed_distance.setdefault(link.idx, []).append(
+                                    lambda x, p=geom.init_pos.copy(), n=surface_normal: (x - p) @ n
+                                )
                             else:
                                 verts = gu.transform_by_trans_quat(geom.init_verts, geom.init_pos, geom.init_quat)
                                 faces = geom.init_faces
+                                verts_f64 = np.asarray(verts, dtype=np.float64)
+                                links_signed_distance.setdefault(link.idx, []).append(
+                                    lambda x, v=verts_f64, f=np.asarray(faces): igl.signed_distance(
+                                        np.asarray(x, dtype=np.float64), v, f
+                                    )[0]
+                                )
                             if len(faces) == 0:
                                 continue
 
@@ -561,6 +674,38 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self._coupled_links_idx = np.unique(boundaries_link_idx_all[boundaries_is_fixed_all == 0])
             self._has_rigid_coupling = len(self._coupled_links_idx) > 0
             self._has_viscosity = any(entity.material.viscosity > 0.0 for entity in self.entities)
+
+            # Volume map of each link carrying boundary particles, over their bounding box widened by the support radius
+            self._volume_maps = []
+            if self._has_boundary and self._has_volume_maps:
+                pos_local_all = np.concatenate(boundaries_pos_local)
+                link_idx_all = np.concatenate(boundaries_link_idx)
+                cell_size = self._volume_map_cell_size
+                margin = self._support_radius + 2.0 * cell_size
+                n_nodes_total = 0
+                for i_l, link_signed_distance in links_signed_distance.items():
+                    pos_link = pos_local_all[link_idx_all == i_l]
+                    if len(pos_link) == 0:
+                        continue
+                    lower = pos_link.min(axis=0) - margin
+                    n_nodes = np.ceil((pos_link.max(axis=0) + margin - lower) / cell_size).astype(np.int64) + 1
+                    n_nodes_total += int(np.prod(n_nodes))
+                    if n_nodes_total > self._max_n_volume_map_nodes:
+                        gs.raise_exception(
+                            f"The SPH volume maps require more than {self._max_n_volume_map_nodes} grid nodes. Please "
+                            "tighten the SPH domain around the fluid, or raise `volume_map_cell_size`."
+                        )
+                    with gs.logger.timer(f"Computing the SPH volume map of link {i_l} on a grid of {n_nodes} nodes."):
+                        volume = compute_volume_map(
+                            lambda x, fs=link_signed_distance: np.min([f(x) for f in fs], axis=0),
+                            lower,
+                            cell_size,
+                            n_nodes,
+                            self._support_radius,
+                        )
+                        values = volume_map_to_distance(volume, self._support_radius)
+                    self._volume_maps.append((i_l, lower, n_nodes, values))
+            self._has_volume_maps = len(self._volume_maps) > 0
             if self._has_boundary:
                 gs.logger.info(f"SPH boundary sampled with ~<{self._n_boundary_particles}>~ particles.")
                 self.sh_boundary = gu.SpatialHasher(cell_size=self.sh.cell_size, grid_res=self.sh.grid_res)
@@ -580,6 +725,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     dtype=gs.np_float,
                 )
                 self._kernel_set_coupled_links(links_coupled_idx, self._coupled_links_idx, coupled_links_extent)
+
+            if self._has_volume_maps:
+                links_volume_map = np.full(rigid_solver.n_links, -1, dtype=gs.np_int)
+                starts = np.cumsum([0] + [values.size for *_, values in self._volume_maps])[:-1]
+                for i_vm, (i_l, *_) in enumerate(self._volume_maps):
+                    links_volume_map[i_l] = i_vm
+                self.links_volume_map.from_numpy(links_volume_map)
+                self.volume_maps_values.from_numpy(np.concatenate([values.ravel() for *_, values in self._volume_maps]))
+                self.volume_maps_lower.from_numpy(np.stack([m[1] for m in self._volume_maps]).astype(gs.np_float))
+                self.volume_maps_n_nodes.from_numpy(np.stack([m[2] for m in self._volume_maps]).astype(gs.np_int))
+                self.volume_maps_start.from_numpy(starts.astype(gs.np_int))
 
             for entity in self.entities:
                 entity._add_to_solver()
@@ -787,6 +943,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.links_root_com[i_l, i_b] = links_state.root_COM[i_l, i_b]
             self.links_vel[i_l, i_b] = links_state.cd_vel[i_l, i_b]
             self.links_ang[i_l, i_b] = links_state.cd_ang[i_l, i_b]
+            if qd.static(self._has_volume_maps):
+                self.links_pos[i_l, i_b] = links_state.pos[i_l, i_b]
+                self.links_quat[i_l, i_b] = links_state.quat[i_l, i_b]
 
         for i_bp, i_b in qd.ndrange(self._n_boundary_particles, self._B):
             if self.boundary_particles[i_bp, i_b].active:
@@ -889,21 +1048,97 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
     @qd.func
     def _task_compute_boundary_density_and_factor(self, i, j, ret: qd.template(), i_b):
-        V_b = self.boundary_particles_reordered[j, i_b].volume
-        x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
-        W_ib = self.cubic_kernel(x_ib.norm())
-        ret.density_norm += V_b * W_ib
         ret.n_neighbors += 1
+        i_l = self.boundary_particles_reordered[j, i_b].link_idx
+        has_map = False
+        if qd.static(self._has_volume_maps):
+            has_map = self.links_volume_map[i_l] != -1
+        if not has_map:
+            V_b = self.boundary_particles_reordered[j, i_b].volume
+            x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
+            ret.density_norm += V_b * self.cubic_kernel(x_ib.norm())
+            i_s = self._func_find_boundary_slot(i, i_l, i_b)
+            if i_s != -1:
+                # The full kernel gradient of the boundary particles is the gradient of the density they add, so the
+                # pressure force is the gradient of the compression energy and does no work on the fluid at rest. A
+                # wall force projected on the surface normal, which a smooth wall exerts, is not that gradient: the
+                # density of a fluid particle sliding past the discrete samples varies, the pressure solve answers it
+                # along the normal only, and water at rest heats up (SPH_SOLVER_STATUS.md, finding 2). The tangential
+                # part of the full gradient acts as a roughness instead, which the sampling spacing of the boundary
+                # sets. A volume map (see _func_volume_map) has neither defect.
+                self.particles_boundary_slots[i, i_b, i_s].grad += V_b * self.cubic_kernel_derivative(x_ib)
 
-        i_s = self._func_find_boundary_slot(i, self.boundary_particles_reordered[j, i_b].link_idx, i_b)
-        if i_s != -1:
-            # The full kernel gradient of the boundary particles is the gradient of the density they add, so the
-            # pressure force is the gradient of the compression energy and does no work on the fluid at rest. A wall
-            # force projected on the surface normal, which a smooth wall exerts, is not that gradient: the density of a
-            # fluid particle sliding past the discrete samples varies, the pressure solve answers it along the normal
-            # only, and water at rest heats up (SPH_SOLVER_STATUS.md, finding 2). The tangential part of the full
-            # gradient acts as a roughness instead, which the sampling spacing of the boundary sets.
-            self.particles_boundary_slots[i, i_b, i_s].grad += V_b * self.cubic_kernel_derivative(x_ib)
+    @qd.func
+    def _func_half_space_volume(self, dist):
+        """Return the boundary volume of a half-space at a signed distance from its surface (see half_space_volume)."""
+        q = qd.min(qd.abs(dist) / self._support_radius, 1.0)
+        tail = gs.qd_float(0.0)
+        if q > 0.5:
+            tail = 1.0 / 30.0 - (0.1 * q - q**3 / 3.0 + 0.5 * q**4 - 0.3 * q**5 + 0.4 / 6.0 * q**6)
+        else:
+            tail = 0.03125 - (0.0875 * q - q**3 / 6.0 + 0.3 * q**5 - 0.2 * q**6)
+        volume = 16.0 * tail
+        if dist < 0.0:
+            volume = 1.0 - volume
+        return volume
+
+    @qd.func
+    def _func_volume_map(self, i_vm, pos_local):
+        """Return the boundary volume of volume map i_vm at a point in link frame, and its gradient there.
+
+        The map holds at its nodes the distance d at which a half-space has the boundary volume of the solid (see
+        volume_map_to_distance), the control points of a uniform cubic B-spline. The spline reproduces the linear
+        distance to a planar surface exactly, whatever its orientation to the grid, and its error elsewhere (curved
+        surfaces, edges) varies smoothly, where a trilinear interpolation ripples from cell to cell: a roughness of the
+        wall, which slowed fluid in rigid rotation in a cup by 13 % per second at a cell of a quarter particle size
+        (SPH_SOLVER_STATUS.md). The volume is that of the half-space at the interpolated distance, and its gradient is
+        exact, so that the pressure force of the wall is the gradient of the density it adds. Zero outside the grid,
+        which extends a support radius and two cells beyond the surface.
+        """
+        volume = gs.qd_float(0.0)
+        grad = qd.Vector.zero(gs.qd_float, 3)
+        n_nodes = self.volume_maps_n_nodes[i_vm]
+        u = (pos_local - self.volume_maps_lower[i_vm]) / self._volume_map_cell_size
+        is_inside = True
+        for d in qd.static(range(3)):
+            if u[d] < 1.0 or u[d] > n_nodes[d] - 2:
+                is_inside = False
+        if is_inside:
+            # uniform cubic B-spline weights of the four nodes around the point along each axis, and their derivatives
+            idx = qd.Vector.zero(gs.qd_int, 3)
+            w = qd.Matrix.zero(gs.qd_float, 3, 4)
+            dw = qd.Matrix.zero(gs.qd_float, 3, 4)
+            for d in qd.static(range(3)):
+                idx[d] = qd.min(qd.cast(qd.floor(u[d]), gs.qd_int), n_nodes[d] - 3)
+                t = u[d] - idx[d]
+                w[d, 0] = (1.0 - t) ** 3 / 6.0
+                w[d, 1] = (3.0 * t**3 - 6.0 * t**2 + 4.0) / 6.0
+                w[d, 2] = (-3.0 * t**3 + 3.0 * t**2 + 3.0 * t + 1.0) / 6.0
+                w[d, 3] = t**3 / 6.0
+                dw[d, 0] = -0.5 * (1.0 - t) ** 2
+                dw[d, 1] = 1.5 * t**2 - 2.0 * t
+                dw[d, 2] = -1.5 * t**2 + t + 0.5
+                dw[d, 3] = 0.5 * t**2
+            start = self.volume_maps_start[i_vm]
+            dist = gs.qd_float(0.0)
+            grad_dist = qd.Vector.zero(gs.qd_float, 3)
+            for a0 in qd.static(range(4)):
+                for a1 in qd.static(range(4)):
+                    row = start + ((idx[0] + a0 - 1) * n_nodes[1] + idx[1] + a1 - 1) * n_nodes[2] + idx[2] - 1
+                    for a2 in qd.static(range(4)):
+                        value = self.volume_maps_values[row + a2]
+                        dist += w[0, a0] * w[1, a1] * w[2, a2] * value
+                        grad_dist += value * qd.Vector(
+                            [
+                                dw[0, a0] * w[1, a1] * w[2, a2],
+                                w[0, a0] * dw[1, a1] * w[2, a2],
+                                w[0, a0] * w[1, a1] * dw[2, a2],
+                            ]
+                        )
+            volume = self._func_half_space_volume(dist)
+            # the volume decreases away from the solid at the rate of the plane integral of the kernel
+            grad = -self.cubic_kernel_plane_integral(dist) / self._volume_map_cell_size * grad_dist
+        return volume, grad
 
     @qd.func
     def _func_slot_wall_vel(self, i_p, i_b, k):
@@ -1004,6 +1239,21 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     )
                     if ret.n_overflows > 0:
                         self.envs_boundary_slot_overflows[i_b] += 1
+                    if qd.static(self._has_volume_maps):
+                        for k in range(N_BOUNDARY_SLOTS):
+                            i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
+                            if i_l != -1:
+                                i_vm = self.links_volume_map[i_l]
+                                if i_vm != -1:
+                                    quat = self.links_quat[i_l, i_b]
+                                    pos_local = gu.qd_inv_transform_by_trans_quat(
+                                        self.particles_reordered[i_p, i_b].pos, self.links_pos[i_l, i_b], quat
+                                    )
+                                    volume, grad_local = self._func_volume_map(i_vm, pos_local)
+                                    ret.density_norm += volume
+                                    self.particles_boundary_slots[i_p, i_b, k].grad = gu.qd_transform_by_quat(
+                                        grad_local, quat
+                                    )
                     # BWJ23 eq. (32): boundary particles carry no constraint of their own, so they only enter the
                     # gradient of the constraint of particle i, and not the sum of squared neighbor gradients.
                     for k in range(N_BOUNDARY_SLOTS):

@@ -835,6 +835,17 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         smaller offset leaves a visible gap between fluid and geom, and fluid sampled flush against the geom starts
         compressed and gets pushed away. Keep the offset below half the thickness of the thinnest coupled geom, or its
         two faces cross each other. Only used by the default solver. Defaults to half the particle size.
+    boundary_model : str, optional
+        How the rigid geoms enter the density of the fluid. 'particles' sums the boundary particles sampled on their
+        surface (Akinci et al. 2012); the tangential part of their pressure force acts as a roughness of the wall, which
+        slows fluid sliding along it. 'volume_map' integrates the smoothing kernel over the solid of each link, sampled
+        once on a grid in link frame at build time (Koschier and Bender 2017): the wall is smooth, and its pressure
+        force is the gradient of the density it adds, so it does no work on fluid at rest. The geoms of a link must
+        enclose a volume (closed meshes, primitives or planes). The boundary particles are then sampled on the surface
+        itself (`boundary_offset` is not used) and still carry the wall viscosity and the wall clearance. Only used by
+        the default solver. Defaults to 'particles'.
+    volume_map_cell_size : float, optional
+        Spacing in meters of the grid of the volume maps. Defaults to a quarter of the particle size.
     """
 
     particle_size: PositiveFloat = 0.02
@@ -868,6 +879,8 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     energy_audit: StrictBool = False
     micropolar: StrictBool = False
     boundary_offset: NonNegativeFloat | None = None
+    boundary_model: Literal["particles", "volume_map"] = "particles"
+    volume_map_cell_size: PositiveFloat | None = None
 
     _support_radius: float = PrivateAttr(default=0.0)
     _hash_grid_res: np.ndarray = PrivateAttr(default=None)
@@ -897,6 +910,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
 
         if self.boundary_offset is None:
             self.boundary_offset = 0.5 * self.particle_size
+
+        if self.volume_map_cell_size is None:
+            self.volume_map_cell_size = 0.25 * self.particle_size
 
         if self.hash_grid_cell_size < self._support_radius:
             gs.raise_exception("`hash_grid_cell_size` should not be smaller than 2 * `particle_size`.")

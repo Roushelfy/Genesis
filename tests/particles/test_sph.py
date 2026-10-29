@@ -470,3 +470,30 @@ def test_boundary_offset_closes_reentrant_edges():
     assert_allclose(pos[is_floor, 0].max(), offset, tol=1e-9)
     assert_allclose(pos[is_wall, 2].min(), -offset, tol=1e-9)
     assert_allclose(areas.sum(), 2 * offset * 1.0, tol=1e-9)
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("backend", [None])
+def test_volume_map_of_half_space():
+    # The boundary volume of the half-space z < 0 is a function of the height alone, 1 deep inside, 0 a support radius
+    # above the surface, and the volumes at heights z and -z add up to the integral of the kernel, 1.
+    from genesis.engine.solvers.sph_solver import compute_volume_map, half_space_volume, volume_map_to_distance
+
+    support_radius, cell_size = 1.0, 0.125
+    # The grid spans a support radius on either side of its central column, and of the heights checked.
+    n_nodes = (17, 17, 49)
+    lower = np.array([-1.0, -1.0, -3.0])
+    volume = compute_volume_map(lambda x: x[:, 2], lower, cell_size, n_nodes, support_radius)
+    heights = lower[2] + cell_size * np.arange(n_nodes[2])
+    is_checked = np.abs(heights) <= 2.0
+    column, heights = volume[8, 8, is_checked], heights[is_checked]
+    assert_allclose(column[heights <= -support_radius], 1.0, tol=1e-6)
+    assert_allclose(column[heights >= support_radius], 0.0, tol=1e-6)
+    assert_allclose(column[heights == 0.0], 0.5, tol=1e-6)
+    assert_allclose(column + column[::-1], 1.0, tol=1e-6)
+    assert np.all(np.diff(column) <= 1e-6)
+    # against the closed form, within the discretization of the solid on the grid
+    assert_allclose(column, half_space_volume(heights, support_radius), tol=5e-3)
+    is_within = np.abs(heights) < support_radius
+    dist = volume_map_to_distance(half_space_volume(heights[is_within], support_radius), support_radius)
+    assert_allclose(dist, heights[is_within], tol=1e-4)
