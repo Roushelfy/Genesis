@@ -846,6 +846,10 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         the default solver. Defaults to 'particles'.
     volume_map_cell_size : float, optional
         Spacing in meters of the grid of the volume maps. Defaults to a quarter of the particle size.
+    volume_map_offset : float, optional
+        Distance in meters by which the solid of the volume maps is shrunk. Defaults to the distance that puts at rest
+        density a cubic lattice of fluid of particle volume `particle_volume_factor * particle_size**3` whose first
+        layer lies half a spacing from a planar surface, so that fluid sampled flush against a geom starts at rest.
     """
 
     particle_size: PositiveFloat = 0.02
@@ -881,6 +885,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     boundary_offset: NonNegativeFloat | None = None
     boundary_model: Literal["particles", "volume_map"] = "particles"
     volume_map_cell_size: PositiveFloat | None = None
+    volume_map_offset: NonNegativeFloat | None = None
 
     _support_radius: float = PrivateAttr(default=0.0)
     _hash_grid_res: np.ndarray = PrivateAttr(default=None)

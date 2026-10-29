@@ -153,6 +153,25 @@ def half_space_volume(dist, support_radius):
     return np.where(dist >= 0.0, volume, 1.0 - volume)
 
 
+def flush_lattice_volume_offset(particle_volume, support_radius):
+    """Return the distance by which to shrink the solid of a volume map so that fluid sampled flush starts at rest.
+
+    A cubic lattice of spacing V^(1/3), whose first layer lies half a spacing from a planar surface, has at its first
+    layer the density of its half lattice plus the boundary volume of the half-space shrunk by the returned distance,
+    which this distance makes 1.
+    """
+    spacing = particle_volume ** (1.0 / 3.0)
+    n = math.ceil(support_radius / spacing)
+    k = np.arange(-n, n + 1)
+    nodes = np.stack(np.meshgrid(k, k, np.arange(n + 1), indexing="ij"), axis=-1).reshape((-1, 3)) * spacing
+    q = np.linalg.norm(nodes, axis=-1) / support_radius
+    kernel = np.where(q <= 0.5, 6.0 * q**3 - 6.0 * q**2 + 1.0, np.where(q <= 1.0, 2.0 * (1.0 - q) ** 3, 0.0))
+    half_lattice = particle_volume * 8.0 / (np.pi * support_radius**3) * kernel.sum()
+    dist = np.linspace(support_radius, 0.0, 20001)
+    dist_rest = np.interp(1.0 - half_lattice, half_space_volume(dist, support_radius), dist)
+    return max(float(dist_rest) - 0.5 * spacing, 0.0)
+
+
 def volume_map_to_distance(volume, support_radius):
     """Return the signed distance at which a half-space has the given boundary volume, within the support radius.
 
@@ -266,6 +285,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # boundary particles, which carry the wall viscosity and the wall clearance, sit on the surface itself.
         self._has_volume_maps = options.boundary_model == "volume_map"
         self._volume_map_cell_size = options.volume_map_cell_size
+        self._volume_map_offset = options.volume_map_offset
         self._boundary_offset = 0.0 if self._has_volume_maps else options.boundary_offset
         self._n_boundary_particles = 0
         self._has_boundary = False
@@ -682,6 +702,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 link_idx_all = np.concatenate(boundaries_link_idx)
                 cell_size = self._volume_map_cell_size
                 margin = self._support_radius + 2.0 * cell_size
+                if self._volume_map_offset is None:
+                    self._volume_map_offset = flush_lattice_volume_offset(self._particle_volume, self._support_radius)
+                offset = self._volume_map_offset
                 n_nodes_total = 0
                 for i_l, link_signed_distance in links_signed_distance.items():
                     pos_link = pos_local_all[link_idx_all == i_l]
@@ -697,7 +720,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         )
                     with gs.logger.timer(f"Computing the SPH volume map of link {i_l} on a grid of {n_nodes} nodes."):
                         volume = compute_volume_map(
-                            lambda x, fs=link_signed_distance: np.min([f(x) for f in fs], axis=0),
+                            lambda x, fs=link_signed_distance: np.min([f(x) for f in fs], axis=0) + offset,
                             lower,
                             cell_size,
                             n_nodes,
@@ -1777,13 +1800,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         normal = self.boundary_particles_reordered[j, i_b].normal
         surface_pos = self.boundary_particles_reordered[j, i_b].pos + self._boundary_offset * normal
         dist = (self.particles_reordered[i, i_b].pos - surface_pos).dot(normal)
-        # The fluid nearest to the surface stands for the fluid down to half a particle spacing below it. A wider gap
-        # between that edge and the surface (fluid that is not pressed against the wall) is filled by the column as
-        # well, with the same extrapolated velocity, else the wall transmits only part of the shear stress across it.
+        # The fluid nearest to the surface stands for the fluid down to half a particle spacing below it, and the
+        # column starts at that edge. A wider gap between the edge and the surface (fluid that is not pressed against
+        # the wall) is filled by the column as well, with the same extrapolated velocity, else the wall transmits only
+        # part of the shear stress across it. A narrower one (fluid pressed closer than half a spacing, as against a
+        # volume map) starts the column below the surface, else the column and the fluid particles both stand for the
+        # fluid near the surface and the wall transmits too much (1.34 of mu gamma with the first layer at a quarter
+        # spacing, 0.93 with the column starting at the edge, offline lattice computation).
         gap = self.boundary_particles_fluid_gap[j, i_b]
         band = gs.qd_float(0.0)
         if gap < self._support_radius:
-            band = qd.max(gap - 0.5 * self._particle_size, 0.0)
+            band = gap - 0.5 * self._particle_size
         length = self._support_radius + band
         depth = -band + (i_q + 0.5) / 8.0 * length
         x_ig = self.particles_reordered[i, i_b].pos - (surface_pos - depth * normal)
