@@ -207,6 +207,11 @@ class SPHSolveStats:
     max_density_residual: float = 0.0
     max_viscosity_residual: float = 0.0
     max_coupling_residual: float = 0.0
+    # with SPHOptions(density_correction="position"), iterations of the drift correction of the positions, substeps
+    # where the cap stopped it, and its largest final error over the tolerance (see SPHSolver._drift_correction)
+    n_drift_iters: int = 0
+    n_unconverged_drift: int = 0
+    max_drift_residual: float = 0.0
     # repetitions of the fluid stage after the constraint solve of the rigid solver changed a coupled link (see
     # SPHSolver.repeat_for_rigid_constraints), substeps where the cap stopped them, and the largest final disagreement
     n_constraint_passes: int = 0
@@ -222,7 +227,8 @@ class SPHSolveStats:
     coupling_history: list = field(default_factory=list)
     # with SPHOptions.energy_audit, the change of kinetic energy of the fluid in J caused by each stage of the substeps,
     # summed over the substeps and environments: divergence solve, explicit forces (gravity, surface tension), coupled
-    # viscosity and density solves, wall clearance guard, and the domain bounds after advection
+    # viscosity and density solves, wall clearance guard, and the drift correction with the domain bounds after
+    # advection
     ke_change_divergence: float = 0.0
     ke_change_forces: float = 0.0
     ke_change_coupled: float = 0.0
@@ -268,6 +274,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._isotropic_pressure = options.isotropic_pressure
         self._isotropic_density = options.isotropic_density
         self._isotropic_relaxation = options.isotropic_pressure_relaxation
+        self._position_drift = options.density_correction == "position"
         # Whether any material has a viscosity, which enables the implicit viscosity solve. Resolved at build time.
         self._has_viscosity = False
         self._df_eps = 1e-5
@@ -387,6 +394,18 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # Per-environment reductions of the DFSPH solver iterations.
         self.envs_n_active = qd.field(gs.qd_int, shape=(self._B,))
         self.envs_solver_error = qd.field(gs.qd_float, shape=(self._B,))
+        if self._position_drift:
+            # Drift correction of the positions (see _drift_correction): pressure multiplier, its acceleration, the
+            # predicted density and the displacement of each particle; error, mass, center of mass, inertia and the
+            # angular momentum change of each environment
+            struct_drift = qd.types.struct(kappa=gs.qd_float, acc=gs.qd_vec3, density_adv=gs.qd_float, disp=gs.qd_vec3)
+            self.particles_drift = struct_drift.field(shape=(self._n_particles, self._B), layout=qd.Layout.SOA)
+            self.envs_drift_error = qd.field(gs.qd_float, shape=(self._B,))
+            self.envs_drift_count = qd.field(gs.qd_float, shape=(self._B,))
+            self.envs_drift_mass = qd.field(gs.qd_float, shape=(self._B,))
+            self.envs_drift_center = qd.Vector.field(3, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_drift_inertia = qd.Matrix.field(3, 3, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_drift_angular = qd.Vector.field(3, dtype=gs.qd_float, shape=(self._B,))
 
         if self._has_viscosity:
             # State of the implicit viscosity solve (M + h D) v = M v_rhs, by preconditioned conjugate gradient, in
@@ -931,6 +950,161 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 i_m = self.particles_reordered[i_p, i_b].material
                 energy += 0.5 * self.materials[i_m].mass * self.particles_reordered[i_p, i_b].vel.norm_sqr()
         return energy
+
+    @qd.func
+    def _task_drift_density_change(self, i, j, ret: qd.template(), i_b):
+        i_m = self.particles_reordered[j, i_b].material
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        v_ij = self.particles_reordered[i, i_b].vel - self.particles_reordered[j, i_b].vel
+        ret += self.materials[i_m].rest_volume * v_ij.dot(self.cubic_kernel_derivative(x_ij))
+
+    @qd.func
+    def _task_drift_acc(self, i, j, ret: qd.template(), i_b):
+        i_m = self.particles_reordered[j, i_b].material
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        kappa_sum = self.particles_drift[i, i_b].kappa + self.particles_drift[j, i_b].kappa
+        ret -= kappa_sum * self.materials[i_m].rest_volume * self.cubic_kernel_derivative(x_ij)
+
+    @qd.func
+    def _task_drift_source(self, i, j, ret: qd.template(), i_b):
+        i_m = self.particles_reordered[j, i_b].material
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        a_ij = self.particles_drift[i, i_b].acc - self.particles_drift[j, i_b].acc
+        ret += self.materials[i_m].rest_volume * a_ij.dot(self.cubic_kernel_derivative(x_ij))
+
+    @qd.kernel
+    def _kernel_drift_init(self):
+        """Predict the density of every particle at the end of the substep from its final velocity."""
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                change = gs.qd_float(0.0)
+                self._func_for_all_fluid_neighbors(i_p, change, self._task_drift_density_change, i_b)
+                if qd.static(self._has_boundary):
+                    for k in range(N_BOUNDARY_SLOTS):
+                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                            vel_rel = self.particles_reordered[i_p, i_b].vel - self._func_slot_wall_vel(i_p, i_b, k)
+                            change += vel_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
+                self.particles_drift[i_p, i_b].density_adv = (
+                    self.particles_reordered[i_p, i_b].density_norm + self._substep_dt * change
+                )
+                self.particles_drift[i_p, i_b].kappa = 0.0
+                self.particles_drift[i_p, i_b].acc = qd.Vector.zero(gs.qd_float, 3)
+
+    @qd.kernel
+    def _kernel_drift_acc(self):
+        """Compute the acceleration of the drift multipliers, the rigid surfaces held in place."""
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                acc = qd.Vector.zero(gs.qd_float, 3)
+                self._func_for_all_fluid_neighbors(i_p, acc, self._task_drift_acc, i_b)
+                if qd.static(self._has_boundary):
+                    for k in range(N_BOUNDARY_SLOTS):
+                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                            acc -= (
+                                self.particles_drift[i_p, i_b].kappa * self.particles_boundary_slots[i_p, i_b, k].grad
+                            )
+                self.particles_drift[i_p, i_b].acc = acc
+
+    @qd.kernel
+    def _kernel_drift_iteration(self) -> float:
+        """Run one Jacobi iteration of the drift correction and return the worst average error over envs."""
+        dt2 = qd.static(self._substep_dt**2)
+        for i_b in range(self._B):
+            self.envs_drift_error[i_b] = 0.0
+            self.envs_drift_count[i_b] = 0.0
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                source = gs.qd_float(0.0)
+                self._func_for_all_fluid_neighbors(i_p, source, self._task_drift_source, i_b)
+                if qd.static(self._has_boundary):
+                    for k in range(N_BOUNDARY_SLOTS):
+                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                            source += self.particles_drift[i_p, i_b].acc.dot(
+                                self.particles_boundary_slots[i_p, i_b, k].grad
+                            )
+                residual = 1.0 - self.particles_drift[i_p, i_b].density_adv - dt2 * source
+                factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
+                self.particles_drift[i_p, i_b].kappa = qd.max(
+                    self.particles_drift[i_p, i_b].kappa - 0.5 * residual * factor / dt2, 0.0
+                )
+                self.envs_drift_error[i_b] += -qd.min(residual, 0.0)
+                self.envs_drift_count[i_b] += 1.0
+        max_error = gs.qd_float(0.0)
+        for i_b in range(self._B):
+            qd.atomic_max(max_error, self.envs_drift_error[i_b] / qd.max(self.envs_drift_count[i_b], 1.0))
+        return max_error
+
+    @qd.kernel
+    def _kernel_drift_apply(self):
+        """Move the particles by the drift correction, keeping the angular momentum with a rigid rotation.
+
+        A displacement carries the velocity of a particle to a new position, which changes the angular momentum by
+        sum_i m_i dx_i x v_i; a rigid rotation w x (x_i - c) about the center of mass c of the fluid, with
+        I_c w = -sum_i m_i dx_i x v_i, cancels it. The linear momentum is unchanged.
+        """
+        for i_b in range(self._B):
+            self.envs_drift_mass[i_b] = 0.0
+            self.envs_drift_center[i_b] = qd.Vector.zero(gs.qd_float, 3)
+            self.envs_drift_inertia[i_b] = qd.Matrix.zero(gs.qd_float, 3, 3)
+            self.envs_drift_angular[i_b] = qd.Vector.zero(gs.qd_float, 3)
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                disp = self._substep_dt**2 * self.particles_drift[i_p, i_b].acc
+                self.particles_drift[i_p, i_b].disp = disp
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                self.envs_drift_mass[i_b] += mass
+                self.envs_drift_center[i_b] += mass * (self.particles_reordered[i_p, i_b].pos + disp)
+        for i_b in range(self._B):
+            if self.envs_drift_mass[i_b] > 0.0:
+                self.envs_drift_center[i_b] /= self.envs_drift_mass[i_b]
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                disp = self.particles_drift[i_p, i_b].disp
+                arm = self.particles_reordered[i_p, i_b].pos + disp - self.envs_drift_center[i_b]
+                self.envs_drift_angular[i_b] += mass * disp.cross(self.particles_reordered[i_p, i_b].vel)
+                self.envs_drift_inertia[i_b] += mass * (
+                    arm.norm_sqr() * qd.Matrix.identity(gs.qd_float, 3) - arm.outer_product(arm)
+                )
+        for i_b in range(self._B):
+            omega = qd.Vector.zero(gs.qd_float, 3)
+            if self.envs_drift_mass[i_b] > 0.0:
+                inertia = self.envs_drift_inertia[i_b]
+                inertia += 1e-6 * inertia.trace() * qd.Matrix.identity(gs.qd_float, 3)
+                omega = -(inertia.inverse() @ self.envs_drift_angular[i_b])
+            self.envs_drift_angular[i_b] = omega
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                disp = self.particles_drift[i_p, i_b].disp
+                arm = self.particles_reordered[i_p, i_b].pos + disp - self.envs_drift_center[i_b]
+                self.particles_reordered[i_p, i_b].vel += self.envs_drift_angular[i_b].cross(arm)
+                self.particles_reordered[i_p, i_b].pos += disp
+
+    def _drift_correction(self):
+        """Correct the compression of the predicted positions by moving the particles, without changing velocities.
+
+        With SPHOptions(density_correction="position"), the density solve of the coupled passes only removes the
+        compression the velocity would cause over the substep, and carries the pressure (the hydrostatic pressure and
+        the loads on the rigid links). The density error that remains (the error the solves leave and the second order
+        of the advection) is then corrected by a density solve of the same form, h^2 times whose acceleration moves the
+        particles, the rigid surfaces held in place. A correction of the positions changes neither the
+        momentum nor the kinetic energy, so the density error no longer turns into particle velocity, the particle noise
+        of water at rest. Its iterations stop at the tolerance of the density solve.
+        """
+        self._kernel_drift_init()
+        n_iters, error = 0, 0.0
+        while n_iters < self._df_max_den_iters:
+            self._kernel_drift_acc()
+            error = self._kernel_drift_iteration()
+            n_iters += 1
+            if error <= self._df_max_error_den and n_iters >= self._df_min_den_iters:
+                break
+        self._kernel_drift_acc()
+        self._kernel_drift_apply()
+        residual = error / self._df_max_error_den
+        self._solve_stats.n_drift_iters += n_iters
+        self._solve_stats.n_unconverged_drift += residual > 1.0
+        self._solve_stats.max_drift_residual = max(self._solve_stats.max_drift_residual, residual)
 
     @qd.kernel
     def _kernel_advect_position(self, f: qd.i32):
@@ -1558,7 +1732,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                             )
                     self.particles_reordered[i_p, i_b].pressure_density2_norm_d = p_rho2
                 else:
-                    density_adv = self.particles_reordered[i_p, i_b].density_norm + self._substep_dt * density_change
+                    density_now = self.particles_reordered[i_p, i_b].density_norm
+                    if qd.static(self._position_drift):
+                        # The positions take the correction of the compression error (see _drift_correction), so the
+                        # density solve of the coupled passes constrains the velocity alone: the predicted compression
+                        # from the rest density, or from the density of a particle below it (free surface).
+                        density_now = qd.min(density_now, 1.0)
+                    density_adv = density_now + self._substep_dt * density_change
                     self.particles_reordered[i_p, i_b].density_adv_norm = density_adv
 
                     p_rho2 = -qd.min(1.0 - density_adv, 0.0) * factor * inv_dt * inv_dt
@@ -3272,6 +3452,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
     def substep_post_coupling(self, f):
         if self.is_active:
             energy = self._kernel_kinetic_energy() if self._energy_audit else 0.0
+            if self._position_drift:
+                self._drift_correction()
             self._kernel_advect_position(f)
             if self._energy_audit:
                 self._solve_stats.ke_change_bounds += self._kernel_kinetic_energy() - energy

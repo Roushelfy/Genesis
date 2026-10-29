@@ -825,6 +825,13 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         With the isotropic pressure, whether the density that the pressure solves constrain takes the corrected pair
         weights as well, consistently with the velocity constraint and the force of the pressure. Only used by the
         default solver. Defaults to False.
+    density_correction : str, optional
+        How the density error of the particles is corrected. 'velocity' (DFSPH) lets the density solve change the
+        velocities so that the predicted density reaches the rest density, which also turns the error into particle
+        velocity, the particle noise of a fluid at rest. 'position' lets the density solve of the coupled passes remove
+        only the compression the velocity would cause, and moves the particles by a density solve of the remaining
+        compression after the coupled passes, without changing their velocities or momentum. Only used by the default
+        solver. Defaults to 'velocity'.
     energy_audit : bool, optional
         Whether to record the change of kinetic energy of the fluid caused by each stage of a substep (divergence solve,
         explicit forces, coupled viscosity and density solves, wall clearance) in `SPHSolver.solve_stats`, to check the
@@ -887,6 +894,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_constraint_error: PositiveFloat = 0.01
     isotropic_pressure: StrictBool = False
     isotropic_density: StrictBool = False
+    density_correction: Literal["velocity", "position"] = "velocity"
     isotropic_pressure_relaxation: PositiveFloat = 1.0
     pressure_chebyshev_radius: NonNegativeFloat = 0.98
     energy_audit: StrictBool = False

@@ -344,7 +344,9 @@ def test_pressure_carries_column_weight(show_viewer, pressure_solver):
     assert p_middle > 2.0 * p_top
 
 
-def create_viscous_ball(show_viewer, viscosity, n_envs=0, micropolar=False, max_viscosity_error=1e-3):
+def create_viscous_ball(
+    show_viewer, viscosity, n_envs=0, micropolar=False, max_viscosity_error=1e-3, density_correction="velocity"
+):
     """A ball of viscous liquid at zero gravity, far from the bounds of the domain, for the default solver."""
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(
@@ -359,6 +361,7 @@ def create_viscous_ball(show_viewer, viscosity, n_envs=0, micropolar=False, max_
             upper_bound=(0.5, 0.5, 0.5),
             micropolar=micropolar,
             max_viscosity_error=max_viscosity_error,
+            density_correction=density_correction,
         ),
         show_viewer=show_viewer,
     )
@@ -411,6 +414,24 @@ def test_implicit_viscosity_conserves_momentum(show_viewer):
     scene.step()
     dissipation = float(scene.sph_solver.get_viscous_dissipation())
     assert dissipation < 1e-3 * get_momenta(liquid, mass)[2]
+
+
+@pytest.mark.required
+def test_position_drift_correction_keeps_momentum(show_viewer):
+    # The drift correction moves the particles without changing their velocities, and a rigid rotation of the fluid
+    # restores the angular momentum the displacements change, so a ball of liquid keeps both momenta.
+    scene, liquid = create_viscous_ball(show_viewer, viscosity=1e-3, density_correction="position")
+    mass = scene.sph_solver.particle_volume * 1000.0
+    pos = liquid.get_particles_pos()
+    vel = torch.stack((-5.0 * pos[:, 1] + 3.0 * pos[:, 2] + 0.1, 5.0 * pos[:, 0], torch.zeros_like(pos[:, 0])), 1)
+    liquid.set_particles_vel(vel)
+    momentum_0, angular_0, _ = get_momenta(liquid, mass)
+    for _ in range(50):
+        scene.step()
+    momentum, angular, _ = get_momenta(liquid, mass)
+    assert_allclose(momentum, momentum_0, atol=2e-5 * np.linalg.norm(momentum_0))
+    assert_allclose(angular, angular_0, atol=2e-5 * np.linalg.norm(angular_0))
+    assert scene.sph_solver.solve_stats.n_unconverged_drift == 0
 
 
 @pytest.mark.required
