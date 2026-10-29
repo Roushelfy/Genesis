@@ -274,6 +274,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._isotropic_pressure = options.isotropic_pressure
         self._isotropic_density = options.isotropic_density
         self._isotropic_relaxation = options.isotropic_pressure_relaxation
+        self._wall_shear_consistency = options.wall_shear_consistency
         self._position_drift = options.density_correction == "position"
         self._max_drift_iters = options.max_drift_solver_iterations
         # Whether any material has a viscosity, which enables the implicit viscosity solve. Resolved at build time.
@@ -399,7 +400,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             # Drift correction of the positions (see _drift_correction): pressure multiplier, its acceleration, the
             # predicted density and the displacement of each particle; error, mass, center of mass, inertia and the
             # angular momentum change of each environment
-            struct_drift = qd.types.struct(kappa=gs.qd_float, acc=gs.qd_vec3, density_adv=gs.qd_float, disp=gs.qd_vec3)
+            struct_drift = qd.types.struct(
+                kappa=gs.qd_float, kappa_prev=gs.qd_float, acc=gs.qd_vec3, density_adv=gs.qd_float, disp=gs.qd_vec3
+            )
             self.particles_drift = struct_drift.field(shape=(self._n_particles, self._B), layout=qd.Layout.SOA)
             self.envs_drift_error = qd.field(gs.qd_float, shape=(self._B,))
             self.envs_drift_count = qd.field(gs.qd_float, shape=(self._B,))
@@ -989,6 +992,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     self.particles_reordered[i_p, i_b].density_norm + self._substep_dt * change
                 )
                 self.particles_drift[i_p, i_b].kappa = 0.0
+                self.particles_drift[i_p, i_b].kappa_prev = 0.0
                 self.particles_drift[i_p, i_b].acc = qd.Vector.zero(gs.qd_float, 3)
 
     @qd.kernel
@@ -1007,8 +1011,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.particles_drift[i_p, i_b].acc = acc
 
     @qd.kernel
-    def _kernel_drift_iteration(self) -> float:
-        """Run one Jacobi iteration of the drift correction and return the worst average error over envs."""
+    def _kernel_drift_iteration(self, omega: float) -> float:
+        """Run one Jacobi iteration of the drift correction and return the worst average error over envs.
+
+        omega is the weight of the Chebyshev semi-iterative acceleration (see _pressure_solve), 1 for a plain iteration.
+        """
         dt2 = qd.static(self._substep_dt**2)
         for i_b in range(self._B):
             self.envs_drift_error[i_b] = 0.0
@@ -1025,9 +1032,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                             )
                 residual = 1.0 - self.particles_drift[i_p, i_b].density_adv - dt2 * source
                 factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
-                self.particles_drift[i_p, i_b].kappa = qd.max(
-                    self.particles_drift[i_p, i_b].kappa - 0.5 * residual * factor / dt2, 0.0
-                )
+                kappa_cur = self.particles_drift[i_p, i_b].kappa
+                kappa = qd.max(kappa_cur - 0.5 * residual * factor / dt2, 0.0)
+                if omega != 1.0:
+                    kappa_prev = self.particles_drift[i_p, i_b].kappa_prev
+                    kappa = qd.max(omega * (kappa - kappa_prev) + kappa_prev, 0.0)
+                self.particles_drift[i_p, i_b].kappa_prev = kappa_cur
+                self.particles_drift[i_p, i_b].kappa = kappa
                 self.envs_drift_error[i_b] += -qd.min(residual, 0.0)
                 self.envs_drift_count[i_b] += 1.0
         max_error = gs.qd_float(0.0)
@@ -1094,10 +1105,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         `max_drift_solver_iterations`.
         """
         self._kernel_drift_init()
-        n_iters, error = 0, 0.0
+        rho2 = self._df_chebyshev_radius**2
+        n_iters, error, omega = 0, 0.0, 1.0
         while n_iters < self._max_drift_iters:
+            if rho2 > 0.0 and n_iters > 0:
+                omega = 2.0 / (2.0 - rho2) if n_iters == 1 else 4.0 / (4.0 - rho2 * omega)
             self._kernel_drift_acc()
-            error = self._kernel_drift_iteration()
+            error = self._kernel_drift_iteration(omega)
             n_iters += 1
             if error <= self._df_max_error_den and n_iters >= self._df_min_den_iters:
                 break
@@ -2115,6 +2129,60 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             if self.particles_boundary_slots[i, i_b, k].link_idx == i_l:
                 self.particles_boundary_slots[i, i_b, k].wall_tensor += tensor
 
+    @qd.func
+    def _task_wall_shear_moment(self, i, j, ret: qd.template(), i_b):
+        x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
+        k_ij = self._func_viscosity_pair_coefficient(i, j, x_ij, i_b)
+        x_n = x_ij.dot(ret.normal)
+        ret.moment += k_ij * x_n * (x_ij.dot(ret.tangent_1) ** 2 + x_ij.dot(ret.tangent_2) ** 2)
+        i_m = self.particles_reordered[j, i_b].material
+        ret.deficit += self.materials[i_m].rest_volume * self.cubic_kernel_derivative(x_ij)
+
+    @qd.func
+    def _func_wall_shear_scale(self, i_p, i_b, wall_tensor):
+        """Return the factor of the wall viscosity of particle i_p that makes its operator exact for a shear along the wall.
+
+        A linear shear u = gamma zeta t along a wall, zeta the distance from it and t a tangent, has no viscous force.
+        The fluid pairs of a particle near the wall, whose neighbors on the wall side are missing, leave the force
+        gamma sum_j k_ij (x_ij . n)(x_ij . t)^2 along t, and the wall must cancel it with its force gamma zeta t^T W t:
+        the factor is their ratio, averaged over two tangents, for the nearest wall of the particle, where the missing
+        neighbors lie behind that wall alone (the gradient of the kernel sum within 25 degrees of its normal; 1 in a
+        corner, where the test shear does not vanish on the other wall). A wall that transmits a linear shear exactly
+        does not slip, whatever the distance at which the fluid rests from it, which the boundary offset and the
+        pressure set. The factor is bounded to [0.25, 4].
+        """
+        scale = gs.qd_float(1.0)
+        k_near = -1
+        clearance = self._support_radius
+        for k in range(N_BOUNDARY_SLOTS):
+            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                if self.particles_boundary_slots[i_p, i_b, k].clearance < clearance:
+                    clearance = self.particles_boundary_slots[i_p, i_b, k].clearance
+                    k_near = k
+        if k_near != -1:
+            normal = self.particles_boundary_slots[i_p, i_b, k_near].clearance_normal
+            helper = qd.Vector([1.0, 0.0, 0.0], dt=gs.qd_float)
+            if qd.abs(normal[0]) > 0.9:
+                helper = qd.Vector([0.0, 1.0, 0.0], dt=gs.qd_float)
+            tangent_1 = normal.cross(helper).normalized()
+            tangent_2 = normal.cross(tangent_1)
+            ret = qd.Struct(
+                normal=normal,
+                tangent_1=tangent_1,
+                tangent_2=tangent_2,
+                moment=gs.qd_float(0.0),
+                deficit=qd.Vector.zero(gs.qd_float, 3),
+            )
+            self._func_for_all_fluid_neighbors(i_p, ret, self._task_wall_shear_moment, i_b)
+            zeta = qd.max(clearance, 0.05 * self._support_radius)
+            wall = zeta * (tangent_1.dot(wall_tensor @ tangent_1) + tangent_2.dot(wall_tensor @ tangent_2))
+            # the missing neighbors lie behind the nearest wall alone (not in a corner, where another wall of the link
+            # takes a part of them and the test shear does not vanish on it)
+            is_flat = ret.deficit.dot(normal) > 0.9 * ret.deficit.norm()
+            if wall > gs.EPS and ret.moment < 0.0 and is_flat:
+                scale = qd.min(qd.max(-ret.moment / wall, 0.25), 4.0)
+        return scale
+
     @qd.kernel
     def _kernel_compute_viscosity_geometry(self):
         """Compute the directional correction of the viscosity operator and the wall viscosity tensors of every particle.
@@ -2191,6 +2259,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     wall_tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
                     for k in range(N_BOUNDARY_SLOTS):
                         wall_tensor += self.particles_boundary_slots[i_p, i_b, k].wall_tensor
+                    if qd.static(self._wall_shear_consistency):
+                        scale = self._func_wall_shear_scale(i_p, i_b, wall_tensor)
+                        wall_tensor *= scale
+                        for k in range(N_BOUNDARY_SLOTS):
+                            self.particles_boundary_slots[i_p, i_b, k].wall_tensor *= scale
                     self.particles_viscosity[i_p, i_b].wall_tensor = wall_tensor
         else:
             for i_p, i_b in qd.ndrange(self._n_particles, self._B):

@@ -835,6 +835,10 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_drift_solver_iterations : int, optional
         Maximum number of iterations of the drift correction of the positions (density_correction='position'). A
         substep that reaches it is reported as unconverged. Only used by the default solver. Defaults to 50.
+    wall_shear_consistency : bool, optional
+        Whether to scale the wall viscosity of each fluid particle near a rigid surface so that the viscosity operator
+        is exact for a linear shear along the surface, which keeps the no-slip wall from slipping whatever the distance
+        at which the fluid rests from it. Only used by the default solver. Defaults to False.
     energy_audit : bool, optional
         Whether to record the change of kinetic energy of the fluid caused by each stage of a substep (divergence solve,
         explicit forces, coupled viscosity and density solves, wall clearance) in `SPHSolver.solve_stats`, to check the
@@ -897,6 +901,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_constraint_error: PositiveFloat = 0.01
     isotropic_pressure: StrictBool = False
     isotropic_density: StrictBool = False
+    wall_shear_consistency: StrictBool = False
     density_correction: Literal["velocity", "position"] = "velocity"
     max_drift_solver_iterations: PositiveInt = 50
     isotropic_pressure_relaxation: PositiveFloat = 1.0
