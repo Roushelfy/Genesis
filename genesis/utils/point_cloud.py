@@ -3,6 +3,7 @@ Furthest point sampling (FPS) on triangle mesh surfaces.
 """
 
 import numpy as np
+import torch
 import trimesh
 
 import genesis as gs
@@ -12,6 +13,24 @@ from .cache import MeshCache, get_fps_pc_cache_dir
 
 def get_fps_pc_cache(verts, faces, n_points: int, n_candidates: int, return_normals: bool, seed: int):
     return MeshCache(get_fps_pc_cache_dir(), "fps_pc", verts, faces, n_points, n_candidates, return_normals, seed)
+
+
+# Candidates times samples above which the greedy selection runs on the GPU: one pick scans every candidate, and the
+# loop on the CPU takes hours for the hundreds of thousands of boundary samples of a large geom at a fine resolution.
+_FPS_DEVICE_MIN_WORK = 10**10
+
+
+def _furthest_point_sample_indices_torch(points: np.ndarray, n_samples: int, first_idx: int) -> np.ndarray:
+    """Greedy furthest point selection on the device, with the steps of the CPU loop and no host synchronization."""
+    pts = torch.as_tensor(points, dtype=torch.float32, device=gs.device)
+    selected = torch.empty((n_samples,), dtype=torch.long, device=gs.device)
+    selected[0] = first_idx
+    min_dist_sq = torch.sum((pts - pts[first_idx]) ** 2, dim=1)
+    for k in range(1, n_samples):
+        next_idx = torch.argmax(min_dist_sq)
+        selected[k] = next_idx
+        torch.minimum(min_dist_sq, torch.sum((pts - pts[next_idx]) ** 2, dim=1), out=min_dist_sq)
+    return selected.cpu().numpy().astype(np.int32)
 
 
 def _furthest_point_sample_impl(
@@ -31,15 +50,18 @@ def _furthest_point_sample_impl(
 
     first_idx = int(rng.integers(0, n)) if rng is not None else 0
 
-    selected = np.empty((n_samples,), dtype=np.int32)
-    selected[0] = first_idx
-    min_dist_sq = np.sum((points - points[first_idx]) ** 2, axis=1)
+    if n * n_samples > _FPS_DEVICE_MIN_WORK and gs.device is not None and gs.device.type == "cuda":
+        selected = _furthest_point_sample_indices_torch(points, n_samples, first_idx)
+    else:
+        selected = np.empty((n_samples,), dtype=np.int32)
+        selected[0] = first_idx
+        min_dist_sq = np.sum((points - points[first_idx]) ** 2, axis=1)
 
-    for k in range(1, n_samples):
-        next_idx = int(np.argmax(min_dist_sq))
-        selected[k] = next_idx
-        d2 = np.sum((points - points[next_idx]) ** 2, axis=1)
-        min_dist_sq = np.minimum(min_dist_sq, d2)
+        for k in range(1, n_samples):
+            next_idx = int(np.argmax(min_dist_sq))
+            selected[k] = next_idx
+            d2 = np.sum((points - points[next_idx]) ** 2, axis=1)
+            min_dist_sq = np.minimum(min_dist_sq, d2)
 
     out_pts = points[selected].astype(gs.np_float, copy=False)
     if return_indices:
