@@ -375,6 +375,33 @@ section "Validation at cab47d96" below, and the run commands in
     support of 3 particle sizes (an experimental option) gave NaN constraint forces at the first step: the boundary
     volumes, wall columns and slot sizes assume a support of 2 particle sizes.
 
+32. Density drift corrected by the positions (`SPHOptions(density_correction="position")`, 3f654034). In DFSPH the
+    density solve answers the density error with a velocity, and the error it leaves, the second order of the
+    advection and the jumps of the arrangement turn into particle velocity: water at rest keeps 3-5 cm/s rms for
+    seconds (finding 13; the same at density and divergence tolerances of 1e-5, `logs/n5_*.log`, so the solver
+    tolerance does not set it). With the option the density solve of the coupled passes only removes the compression
+    the velocity would cause (from the rest density, or from the density of a free-surface particle below it), and
+    carries the pressure, and a density solve of the same form after the coupled passes moves the particles by h^2
+    times its acceleration, the rigid surfaces held in place, with a rigid rotation restoring the angular momentum
+    the displacements change. Water at rest: kinetic energy 1.2e-5 J after 1 s and decaying, against 1.4e-4 J
+    (`logs/drift1_cn.log`, `logs/n5_def.log`); V4 at nu 1e-3: 10.1 % against 17.4 %; V11 R1 from rest: 2 particles
+    through the wall and 0.7 m/s against 4607 and 6.0 m/s; V6 8e-6 per s; V7 bulk 6.9 % against 4.2 % at dx 2.5 mm;
+    the Couette torque keeps its pressure friction (11-39 %, `*__drift1_*`). Correcting both signs of the error
+    inside the fluid, which a displacement may since it exerts no force, heats water at rest instead (6.8e-4 J,
+    `logs/drift2p_cn.log`): only compression is corrected.
+
+33. The isotropic pressure with a velocity-level projection. With the drift taken by the positions, the density solve
+    of the coupled passes is a projection of the velocity, which with the weights of the isotropic pressure in both
+    its constraint and its force is orthogonal in the norm of the masses and cannot add kinetic energy; it removes
+    the pressure friction (Couette 0.3-8 % at both depths, profile 3.9 %, `couette__proj2i_*`, `couette__drift3_*`).
+    But a velocity without weighted divergence still changes the plain density, so the drift correction keeps
+    working against it: correcting compression alone, the column expands by 7 % and gravity turns the lifted
+    potential energy into motion (1.3e-3 J after 1 s, `logs/proj2i_cn.log`); with the weighted density and weighted
+    drift (`logs/drift3_cn.log`, 1.5e-3 J, 1932 of 2000 drift solves at their cap) or both signs corrected
+    (`logs/drift2pi_cn.log`, 5.9e-3 J) it heats as well. A particle shift on top of the drift correction lifts the
+    particles below the free surface, whose concentration gradient points down, and heats too (2.6e-3 J,
+    `logs/dsh1_*_cn.log`). No variant of the isotropic correction or of the shift is adopted.
+
 ## Validation at cab47d96 (final campaign)
 
 The validation receipts are tagged `v4_*`, `v4i_*` and `v4s_*` (FluidBench `results/sph_validation/`), with the full
