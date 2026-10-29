@@ -263,7 +263,6 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._max_coupling_iters = options.max_coupling_iterations
         self._max_constraint_iters = options.max_constraint_iterations
         self._max_constraint_error = options.max_constraint_error
-        self._constraint_relaxation = options.constraint_relaxation
         self._n_constraint_passes = 0
         self._energy_audit = options.energy_audit
         self._isotropic_pressure = options.isotropic_pressure
@@ -2941,16 +2940,21 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
     @qd.kernel
     def _kernel_constraint_velocity_change(
-        self, dyn_state: array_class.DynState, dyn_info: array_class.DynInfo, rigid_config: qd.template()
+        self,
+        dyn_state: array_class.DynState,
+        constraint_state: array_class.ConstraintState,
+        dyn_info: array_class.DynInfo,
+        rigid_config: qd.template(),
     ) -> float:
-        """Take the velocity change of the coupled links by the constraint solve of the substep, h S (acc -
-        acc_smooth), as the external velocity change of a repeated fluid stage. Returns the largest change of it over
-        envs since the stage last ran, in the norm of _kernel_solve_coupled_viscosity, relative to the link
-        velocities, with a floor at the velocity gravity gives in a substep."""
+        """Take the velocity change of the coupled links by the constraint solve of the substep, h S (qacc -
+        acc_smooth), as the external velocity change of a repeated fluid stage. qacc is the acceleration the constraint
+        solver just found, which the rigid solver copies to the dofs only after the repetitions. Returns the largest
+        change of it over envs since the stage last ran, in the norm of _kernel_solve_coupled_viscosity, relative to
+        the link velocities, with a floor at the velocity gravity gives in a substep."""
         n_coupled = self.coupled_links_idx.shape[0]
         n_dofs = self.dofs_coupling_rhs.shape[0]
         for i_d, i_b in qd.ndrange(n_dofs, self._B):
-            self.dofs_coupling_rhs[i_d, i_b] = dyn_state.dofs.acc[i_d, i_b] - dyn_state.dofs.acc_smooth[i_d, i_b]
+            self.dofs_coupling_rhs[i_d, i_b] = constraint_state.qacc[i_d, i_b] - dyn_state.dofs.acc_smooth[i_d, i_b]
         for i_b in range(self._B):
             self.envs_constraint_residual[i_b] = 0.0
         for i_b in range(self._B):
@@ -2968,9 +2972,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 for k in qd.static(range(3)):
                     ang_change[k] = self._substep_dt * ang[k] - self.coupled_vel_constraint[6 * i_c + k, i_b]
                     lin_change[k] = self._substep_dt * lin[k] - self.coupled_vel_constraint[6 * i_c + 3 + k, i_b]
-                    # the guess moves by a fraction of the change (under-relaxation of the fixed point)
-                    self.coupled_vel_constraint[6 * i_c + k, i_b] += self._constraint_relaxation * ang_change[k]
-                    self.coupled_vel_constraint[6 * i_c + 3 + k, i_b] += self._constraint_relaxation * lin_change[k]
+                    self.coupled_vel_constraint[6 * i_c + k, i_b] = self._substep_dt * ang[k]
+                    self.coupled_vel_constraint[6 * i_c + 3 + k, i_b] = self._substep_dt * lin[k]
                     ang_vel[k] = self.coupled_vel[6 * i_c + k, i_b]
                     lin_vel[k] = self.coupled_vel[6 * i_c + 3 + k, i_b]
                 change = qd.max(change, lin_change.norm() + extent * ang_change.norm())
@@ -3096,7 +3099,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         """Repeat the fluid stage of the substep if the constraint solve of the rigid solver changed the coupled links.
 
         Called by the rigid solver after its constraint solve (SPH_SOLVER_DESIGN.md section 6). The constraint solve
-        changes the velocity of the coupled links by h S (acc - acc_smooth), which the fluid stage did not see. When it
+        changes the velocity of the coupled links by h S (qacc - acc_smooth), which the fluid stage did not see. When it
         differs from the change the stage held, by more than `max_constraint_error` of the link velocities, the fluid
         impulse is taken back from the rigid solver, the readouts are restored and the stage runs again with that change
         as an external velocity change of the links; the rigid solver then solves its constraints again. The change is
@@ -3105,7 +3108,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         rigid_solver = self.sim.rigid_solver
         stats = self._solve_stats
         residual = self._kernel_constraint_velocity_change(
-            rigid_solver.dyn_state, rigid_solver.dyn_info, rigid_solver.rigid_config
+            rigid_solver.dyn_state,
+            rigid_solver.constraint_solver.constraint_state,
+            rigid_solver.dyn_info,
+            rigid_solver.rigid_config,
         )
         if residual <= self._max_constraint_error:
             stats.max_constraint_residual = max(stats.max_constraint_residual, residual)

@@ -811,13 +811,6 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         Tolerance of that agreement, as the change of the coupled link velocities between two repetitions relative to
         their magnitude (the norm of the linear velocity plus the size of the link times the norm of the angular
         velocity). Only used by the default solver. Defaults to 1%.
-    constraint_relaxation : float, optional
-        Fraction of its change by which the velocity change of the coupled links that a repeated fluid stage holds
-        moves toward the one the last constraint solve gave (under-relaxation of the fixed point between the fluid stage
-        and the constraint solve). For joints held by stiff position controllers, whose damping the rigid solver makes
-        implicit, the repetitions oscillate at 1 and the fluid load no longer matches the controller; 0.25 makes them
-        agree, at the cost of more repetitions where the fixed point converges at 1 (contacts). Only used by the
-        default solver. Defaults to 1.
     isotropic_pressure : bool, optional
         Whether to correct the pressure pair weights of each particle so that its pressure pairs carry an isotropic
         stress. Without it, a sheared particle arrangement under pressure carries a shear stress proportional to the
@@ -892,7 +885,6 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     max_coupling_iterations: PositiveInt = 30
     max_constraint_iterations: NonNegativeInt = 4
     max_constraint_error: PositiveFloat = 0.01
-    constraint_relaxation: PositiveFloat = 1.0
     isotropic_pressure: StrictBool = False
     isotropic_density: StrictBool = False
     isotropic_pressure_relaxation: PositiveFloat = 1.0
