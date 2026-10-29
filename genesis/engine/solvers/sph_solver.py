@@ -275,6 +275,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         self._isotropic_density = options.isotropic_density
         self._isotropic_relaxation = options.isotropic_pressure_relaxation
         self._position_drift = options.density_correction == "position"
+        self._max_drift_iters = options.max_drift_solver_iterations
         # Whether any material has a viscosity, which enables the implicit viscosity solve. Resolved at build time.
         self._has_viscosity = False
         self._df_eps = 1e-5
@@ -1089,11 +1090,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         of the advection) is then corrected by a density solve of the same form, h^2 times whose acceleration moves the
         particles, the rigid surfaces held in place. A correction of the positions changes neither the
         momentum nor the kinetic energy, so the density error no longer turns into particle velocity, the particle noise
-        of water at rest. Its iterations stop at the tolerance of the density solve.
+        of water at rest. Its iterations stop at the tolerance of the density solve, within
+        `max_drift_solver_iterations`.
         """
         self._kernel_drift_init()
         n_iters, error = 0, 0.0
-        while n_iters < self._df_max_den_iters:
+        while n_iters < self._max_drift_iters:
             self._kernel_drift_acc()
             error = self._kernel_drift_iteration()
             n_iters += 1
@@ -2529,9 +2531,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         viscous and the gravity impulses of the substep, with the floor of the viscosity solve, so the coupling has
         converged once the result is at most 1. The density solves resolve the velocity only to eta dx / h, eta their
         tolerance on the density error (a velocity error of that size moves the particles by eta dx over the substep),
-        so the coupling has converged as well once the mass-weighted rms of delta is at most that: without gravity and
-        with a weak viscous impulse, the disagreement would otherwise stall at the changes the pressure clamp makes
-        within the tolerance of the density solves.
+        and those of the later passes reduce their error tenfold (see _pressure_solve), so the coupling has converged
+        as well once the mass-weighted rms of delta is at most a tenth of it: without gravity and with a weak viscous
+        impulse, the disagreement would otherwise stall at the changes the pressure clamp makes within the tolerance of
+        the density solves. The full eta dx / h let a stirred cup stop its passes early enough to misread its viscous
+        dissipation by 12 %.
         """
         for i_b in range(self._B):
             self.envs_viscosity[i_b].coupling_norm2 = 0.0
@@ -2563,7 +2567,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             impulse_norm2 = qd.max(self.envs_viscosity[i_b].viscous_norm2, self.envs_viscosity[i_b].gravity_norm2)
             tolerance2 = qd.max(self._visc_max_error**2 * impulse_norm2, 1e-12 * self.envs_viscosity[i_b].rhs_norm2)
             rel_residual = qd.sqrt(self.envs_viscosity[i_b].coupling_norm2 / qd.max(tolerance2, 1e-30))
-            vel_resolution = self._df_max_error_den * self._particle_size / self._substep_dt
+            vel_resolution = 0.1 * self._df_max_error_den * self._particle_size / self._substep_dt
             rel_delta = qd.sqrt(
                 self.envs_viscosity[i_b].delta_norm2 / qd.max(self.envs_viscosity[i_b].mass * vel_resolution**2, 1e-30)
             )

@@ -832,6 +832,9 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
         only the compression the velocity would cause, and moves the particles by a density solve of the remaining
         compression after the coupled passes, without changing their velocities or momentum. Only used by the default
         solver. Defaults to 'velocity'.
+    max_drift_solver_iterations : int, optional
+        Maximum number of iterations of the drift correction of the positions (density_correction='position'). A
+        substep that reaches it is reported as unconverged. Only used by the default solver. Defaults to 50.
     energy_audit : bool, optional
         Whether to record the change of kinetic energy of the fluid caused by each stage of a substep (divergence solve,
         explicit forces, coupled viscosity and density solves, wall clearance) in `SPHSolver.solve_stats`, to check the
@@ -895,6 +898,7 @@ class SPHOptions(GravityMixin, TimeBasedMixin):
     isotropic_pressure: StrictBool = False
     isotropic_density: StrictBool = False
     density_correction: Literal["velocity", "position"] = "velocity"
+    max_drift_solver_iterations: PositiveInt = 50
     isotropic_pressure_relaxation: PositiveFloat = 1.0
     pressure_chebyshev_radius: NonNegativeFloat = 0.98
     energy_audit: StrictBool = False
