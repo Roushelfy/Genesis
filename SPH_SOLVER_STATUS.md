@@ -463,23 +463,23 @@ section "Validation at cab47d96" below, and the run commands in
     data directory `worktrees/dev-pred*/final.diff`). The solves would find the increment of the pressure over a
     substep, while the total pressure of the last substep acts through a predictor with the gradient corrected by L_i,
     the inverse of the moment sum_j V_j grad W_ij (x_j - x_i)^T (Bonet and Lok 1999), whose pair force carries no shear
-    stress whatever the arrangement. Water at rest in the closed column keeps 1e-5 J of kinetic energy without it; every
-    variant heats it 100-400 times. (1) Predictor before the divergence solve, plain solves (`*__pred1_*`,
-    `*__pred2_*`): V9 settles within 9 %, V2 passes (torque 2-9 %, profile 5.6 %), V1 holds its profile within 2-7 %
-    (torque 0.97 / 0.84 of the reference), V6 1.2e-5 per s with the torque of the corrected pairs cancelled by a rigid
-    rotation, but the column reaches 4.0e-3 J (the stages the audit covers lose 2.7e-2 J over the run, so the predictor
-    gives it), the stirring balance is -62 %, the liquid of the floating plank leaves the cup and the held plate ends in
-    NaN; with the full increment carried over and a bilateral error, 31289 density solves stop at their cap. (2) The
-    solves with the same corrected gradient and its adjoint L_i grad W_ij in their velocity constraint, and the Jacobi
-    diagonal from the corrected gradients (`*__pred4_*`, `*__pred4p_*` with the drift correction): the projection is
-    then orthogonal and the predictor only a warm start, V9 within 2.6-5.2 %, V2 passes (torque up to 12 %, profile 3.5
-    %), but the column still reaches 2.4-4.6e-3 J: the density solve constrains the summation density, whose rate is the
-    plain divergence, and the corrected constraint leaves an error it keeps answering (+2.9e-2 J in the density stage);
-    the stirring balance is -62 % with the drift correction and the scenes with kinematic or held links end in NaN in
-    their first step. (3) The predictor after the divergence solve, with gravity, and plain solves (`*__pred5_*`,
-    `*__pred6_*` with the update relaxed by half): the total pressure, the sum of the increments, drifts without bound
-    along modes the corrected force hardly feels (the cup load of V7 at 1850 and 930 times the weight of the fluid). Not
-    adopted.
+    stress whatever the arrangement. Water at rest in the closed column (nu 1e-6) keeps 1.3e-4 J of kinetic energy after
+    1 s without it, and decaying (`logs/wd0_cn.log` with the wall shear consistency: 1.4e-4 J); every variant reaches
+    0.8-4.6e-3 J and grows. (1) Predictor before the divergence solve, plain solves (`*__pred1_*`, `*__pred2_*`): V9
+    settles within 9 %, V2 passes (torque 2-9 %, profile 5.6 %), V1 holds its profile within 2-7 % (torque 0.97 / 0.84
+    of the reference), V6 1.2e-5 per s with the torque of the corrected pairs cancelled by a rigid rotation, but the
+    column reaches 4.0e-3 J (the stages the audit covers lose 2.7e-2 J over the run, so the predictor gives it), the
+    stirring balance is -62 %, the liquid of the floating plank leaves the cup and the held plate ends in NaN; with the
+    full increment carried over and a bilateral error, 31289 density solves stop at their cap. (2) The solves with the
+    same corrected gradient and its adjoint L_i grad W_ij in their velocity constraint, and the Jacobi diagonal from the
+    corrected gradients (`*__pred4_*`, `*__pred4p_*` with the drift correction): the projection is then orthogonal and
+    the predictor only a warm start, V9 within 2.6-5.2 %, V2 passes (torque up to 12 %, profile 3.5 %), but the column
+    still reaches 2.4-4.6e-3 J: the density solve constrains the summation density, whose rate is the plain divergence,
+    and the corrected constraint leaves an error it keeps answering (+2.9e-2 J in the density stage); the stirring
+    balance is -62 % with the drift correction and the scenes with kinematic or held links end in NaN in their first
+    step. (3) The predictor after the divergence solve, with gravity, and plain solves (`*__pred5_*`, `*__pred6_*` with
+    the update relaxed by half): the total pressure, the sum of the increments, drifts without bound along modes the
+    corrected force hardly feels (the cup load of V7 at 1850 and 930 times the weight of the fluid). Not adopted.
 
 41. Particle shift with a free-surface projection (development snapshot, diff in `worktrees/dev-sh2/final.diff`). The
     rate-scaled Fickian shift of finding 33 with, in addition, only the part along the free surface kept for a particle
@@ -487,10 +487,11 @@ section "Validation at cab47d96" below, and the run commands in
     wall shear consistency and the drift correction of the positions (`*__sh2a100_*`, `*__sh2a300_*`, A = 100 and 300).
     It reduces the pressure friction: V2 torque 4-12 % and profile 2.1 % at A = 100 (5-32 % and 15 % without it,
     `couette__v6wp_*`), the plank draft 0.8 %. But water at rest takes 1.5e-3 J within 0.2 s and keeps it
-    (`logs/sh2a*_cn.log`, rms speed 0.11 m/s, against 1e-5 J), the stirring balance is -15 times the work, the settling
-    sphere falls 16 times too fast, V1 does not improve (profile 5-17 %, torque 1.07-1.39 of the reference), the held
-    plate ends in NaN and 16-17 particles cross the thin wall of V11 R1. The shift moves every particle by up to a tenth
-    of its size per substep at the rate of the particle noise, which then feeds itself. Not adopted.
+    (`logs/sh2a*_cn.log`, rms speed 0.11 m/s, against 1.4e-4 J and decaying without the shift), the stirring balance is
+    -15 times the work, the settling sphere falls 16 times too fast, V1 does not improve (profile 5-17 %, torque
+    1.07-1.39 of the reference), the held plate ends in NaN and 16-17 particles cross the thin wall of V11 R1. The shift
+    moves every particle by up to a tenth of its size per substep at the rate of the particle noise, which then feeds
+    itself. Not adopted.
 
 42. Pressure readout (18efcc66). `get_particles_pressure` returned rho_0 C_i kappa_i, whose boundary samples count as
     pairs of two equal multipliers, while the boundary force takes the multiplier of the fluid particle alone: 1.65
