@@ -459,6 +459,28 @@ section "Validation at cab47d96" below, and the run commands in
     shear consistency and the drift correction. The modal projection removes the noise from the amplitude, so the excess
     is a damping of the mode by the solver, below the resolution of these runs.
 
+40. A pressure predictor against the pressure friction (finding 11; development snapshots, not committed, diffs in the
+    data directory `worktrees/dev-pred*/final.diff`). The solves would find the increment of the pressure over a
+    substep, while the total pressure of the last substep acts through a predictor with the gradient corrected by L_i,
+    the inverse of the moment sum_j V_j grad W_ij (x_j - x_i)^T (Bonet and Lok 1999), whose pair force carries no shear
+    stress whatever the arrangement. Water at rest in the closed column keeps 1e-5 J of kinetic energy without it; every
+    variant heats it 100-400 times. (1) Predictor before the divergence solve, plain solves (`*__pred1_*`,
+    `*__pred2_*`): V9 settles within 9 %, V2 passes (torque 2-9 %, profile 5.6 %), V1 holds its profile within 2-7 %
+    (torque 0.97 / 0.84 of the reference), V6 1.2e-5 per s with the torque of the corrected pairs cancelled by a rigid
+    rotation, but the column reaches 4.0e-3 J (the stages the audit covers lose 2.7e-2 J over the run, so the predictor
+    gives it), the stirring balance is -62 %, the liquid of the floating plank leaves the cup and the held plate ends in
+    NaN; with the full increment carried over and a bilateral error, 31289 density solves stop at their cap. (2) The
+    solves with the same corrected gradient and its adjoint L_i grad W_ij in their velocity constraint, and the Jacobi
+    diagonal from the corrected gradients (`*__pred4_*`, `*__pred4p_*` with the drift correction): the projection is
+    then orthogonal and the predictor only a warm start, V9 within 2.6-5.2 %, V2 passes (torque up to 12 %, profile 3.5
+    %), but the column still reaches 2.4-4.6e-3 J: the density solve constrains the summation density, whose rate is the
+    plain divergence, and the corrected constraint leaves an error it keeps answering (+2.9e-2 J in the density stage);
+    the stirring balance is -62 % with the drift correction and the scenes with kinematic or held links end in NaN in
+    their first step. (3) The predictor after the divergence solve, with gravity, and plain solves (`*__pred5_*`,
+    `*__pred6_*` with the update relaxed by half): the total pressure, the sum of the increments, drifts without bound
+    along modes the corrected force hardly feels (the cup load of V7 at 1850 and 930 times the weight of the fluid). Not
+    adopted.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
