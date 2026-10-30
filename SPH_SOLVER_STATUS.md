@@ -426,40 +426,38 @@ section "Validation at cab47d96" below, and the run commands in
     at the default offset (38.5, 17.4, 13.0 % at dx 3.5, 2.5, 1.75 mm, `decay__w1_*`, `decay__w2_*`). The wall
     viscosity model must not depend on the standoff for the two to pass together: the open item.
 
-36. Wall shear consistency (`SPHOptions(wall_shear_consistency=True)`, ce44ba1a). The wall tensor of each fluid
-    particle near a flat wall is scaled so that the viscosity operator is exact for a linear shear along the wall,
-    whatever the standoff of the particle (corners keep the plain tensor, the scale is bounded to [0.25, 4]). With
-    boundary particles at the default offset (`*__v6w_*`) it passes V3 (centerline 1.0 / 1.6 % at dx 2.5 / 1.875 mm,
-    17-18 % before), keeps V5-V7 and V10 (stirring -2.1 %, held plate 4.3-4.9 % from Archimedes) and V8 at dx 1.75 mm (plank
-    5.0 %, light box 9.3 %; 8.8 / 18.5 % at dx 2.5 mm), but leaves V4 at 15-27 % and V1, V2 and V9 failing (pressure friction,
-    finding 11); V12 on the RTX PRO 6000 failed its envelope bar (first replayed step 2.5e-4, two replays
-    2.4e-4, `state__v6w_state_rtx`). With the drift
-    correction of the positions as well (`*__v6wp_*`) V4 passes at nu 1e-2, 1e-3 and 1e-4 (modal rate 8.2, 5.9,
-    9.6 %), V11 R1 keeps every particle in the cup (largest speed 0.15-0.2 m/s), V8 passes at dx 1.75 and 2.5 mm
-    (plank 0.3 / 4.7 %, light box 1.5 / 6.1 %), but V7 (bulk pressure 6.6 %) and the
-    held plate (5.4-6.0 % from Archimedes) fail. An option; the default is unchanged.
+36. Wall shear consistency (`SPHOptions(wall_shear_consistency=True)`, ce44ba1a). The wall tensor of each fluid particle
+    near a flat wall is scaled so that the viscosity operator is exact for a linear shear along the wall, whatever the
+    standoff of the particle (corners keep the plain tensor, the scale is bounded to [0.25, 4]). With boundary particles
+    at the default offset (`*__v6w_*`) it passes V3 (centerline 1.0 / 1.6 % at dx 2.5 / 1.875 mm, 17-18 % before), keeps
+    V5-V7 and V10 (stirring -2.1 %, held plate 4.3-4.9 % from Archimedes) and V8 at dx 1.75 mm (plank 5.0 %, light box
+    9.3 %; 8.8 / 18.5 % at dx 2.5 mm), but leaves V4 at 15-27 % and V1, V2 and V9 failing (pressure friction, finding
+    11); V12 on the RTX PRO 6000 failed its envelope bar (first replayed step 2.5e-4, two replays 2.4e-4,
+    `state__v6w_state_rtx`). With the drift correction of the positions as well (`*__v6wp_*`) V4 passes at nu 1e-2, 1e-3
+    and 1e-4 (modal rate 8.2, 5.9, 9.6 %), V11 R1 keeps every particle in the cup (largest speed 0.15-0.2 m/s), V8
+    passes at dx 1.75 and 2.5 mm (plank 0.3 / 4.7 %, light box 1.5 / 6.1 %), but V7 (bulk pressure 6.6 %) and the held
+    plate (5.4-6.0 % from Archimedes) fail. An option; the default is unchanged.
 
 37. Volume maps with the wall shear consistency (`*__v6vw_*`, `*__v6vwp_*`, ce44ba1a). The wall shear scaling on the
     volume maps passes V3 (3.0 / 4.3 %), V5, V6, V7 bulk and V12 on both GPUs, but the floating bodies sit too high
-    (plank 13-22 %, light box 29-52 %), V9 settles 60-70 % too slowly, the torque of V2 is off by 20-60 % and V4
-    by 14-28 % at nu 1e-2 to 1e-4. Not
-    adopted.
+    (plank 13-22 %, light box 29-52 %), V9 settles 60-70 % too slowly, the torque of V2 is off by 20-60 % and V4 by
+    14-28 % at nu 1e-2 to 1e-4. Not adopted.
 
-38. Thin-wall start (V11). The FluidBench lattice of the liquid fills the cup to its inner radius: the outer column
-    of S1 at R1 sits 0.09 mm from the inner wall, 1.4 mm from the boundary particles behind it
-    (`logs/twprobe_R1.log`), so that the first control step from the lattice throws the liquid up at 6 m/s (rms 2 m/s)
-    and over the 4 mm wall. With the drift correction of the positions the overlap is taken by the positions: no
-    particle crosses at R1 (`*__v6wp_thin_R1_*`), and the largest speed is 0.15-0.2 m/s; a probe with ce44ba1a
-    (`logs/twprobe_R1_p.log`, 0.63 m/s at 64 ms) finds the fastest particles after 0.1 s in the bottom layer of the
-    liquid, which settles 0.8 mm toward the floor, and an rms speed of 0.03 m/s. At R0 (dx 5 mm wider than the wall) 19 particles cross. The bar of 0.05 m/s from rest is
-    below the speed of the particle noise of water at rest at these resolutions (largest speed 0.03-0.08 m/s in the
-    closed column, whatever the solver tolerances, `logs/noise_nu1e-3*.log`).
+38. Thin-wall start (V11). The FluidBench lattice of the liquid fills the cup to its inner radius: the outer column of
+    S1 at R1 sits 0.09 mm from the inner wall, 1.4 mm from the boundary particles behind it (`logs/twprobe_R1.log`), so
+    that the first control step from the lattice throws the liquid up at 6 m/s (rms 2 m/s) and over the 4 mm wall. With
+    the drift correction of the positions the overlap is taken by the positions: no particle crosses at R1
+    (`*__v6wp_thin_R1_*`), and the largest speed is 0.15-0.2 m/s; a probe with ce44ba1a (`logs/twprobe_R1_p.log`, 0.63
+    m/s at 64 ms) finds the fastest particles after 0.1 s in the bottom layer of the liquid, which settles 0.8 mm toward
+    the floor, and an rms speed of 0.03 m/s. At R0 (dx 5 mm wider than the wall) 19 particles cross. The bar of 0.05 m/s
+    from rest is below the speed of the particle noise of water at rest at these resolutions (largest speed 0.03-0.08
+    m/s in the closed column, whatever the solver tolerances, `logs/noise_nu1e-3*.log`).
 
 39. Mode decay at nu 1e-6 (V4). The numerical dissipation of the particle noise exceeds the physical one: the modal
     amplitude decays about three times faster than the analytic rate (`decay__v6wm_decay_nu1e-6_*` 2.08,
     `decay__v6wpm_decay_nu1e-6_*` 2.00 relative error) at dx 2.5 mm, against 6-10 % at nu 1e-4 to 1e-2 with the wall
-    shear consistency and the drift correction. The modal projection removes the noise from the amplitude, so the
-    excess is a damping of the mode by the solver, below the resolution of these runs.
+    shear consistency and the drift correction. The modal projection removes the noise from the amplitude, so the excess
+    is a damping of the mode by the solver, below the resolution of these runs.
 
 ## Validation at 47499e5c (v5)
 
