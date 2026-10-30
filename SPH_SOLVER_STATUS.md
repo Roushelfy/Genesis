@@ -16,8 +16,9 @@ The owner prioritizes thick-wall engineering delivery and permits moderate accur
 the V11 start-up gate are deferred. The dated scope update in [SPH_SOLVER_GOAL.md](SPH_SOLVER_GOAL.md) defines the
 current engineering targets and the subsequent higher-fidelity research stage.
 
-The measurements below retain their original configurations and strict verdicts. A unified committed thick-wall campaign
-under the staged targets is pending. The primary baseline uses symmetric pressure, wall shear consistency and
+The measurements below retain their original configurations and strict verdicts. The unified thick-wall campaign on
+Genesis 745b4613 is recorded in findings 50-53 (velocity baseline adopted, drift correction measured beside it and not
+adopted). The primary baseline uses symmetric pressure, wall shear consistency and
 `density_correction="velocity"` with the dissipative clearance guard. The extra position-level density drift solve is
 disabled in this baseline and evaluated separately in a matched on/off comparison. Conservation, energy balance, solver
 convergence and the complete two-way/implicit-viscosity feature set remain required.
@@ -615,6 +616,50 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     and the wall; the bar of 0.05 m/s is not met. Boundary particles sampled at 0.35 and 0.25 particle sizes instead of
     0.5 (development snapshot, `worktrees/dev-bs1/final.diff`) do not lower it (0.077-0.128 m/s, `thinwall__bs*`), so
     the roughness of the sampled wall is not what sets it.
+
+50. Stage A replay on the frozen thick-wall candidate (Genesis 745b4613, the dissipative clearance guard of fe8d9100;
+    FluidBench receipts `*__sa0_*` for the velocity baseline, `wall_shear_consistency=True,
+    density_correction="velocity"`, and `*__sa_*` for the same with `density_correction="position"`, all validation
+    containers with walls of 10 mm or 3 dx; report `report/sph_goal.md`, sections "Acceptance" and "Stage A verdict").
+    Against the staged targets the velocity baseline passes V3 (centerline 1.0 / 1.6 %), V5, V6 (4.3e-6 / 7.1e-6 per s),
+    V7 bulk (3.6 % at dx 2.5 mm, load 3e-5), V8 at the finest resolution (plank 4.8 %, light box 8.9 %), V10 (held plate
+    4.3-8.6 % from Archimedes, readout within 3.0 %, stirring balance -0.49 %), and the thick cup at rest once settled
+    (rms 0.0065-0.013 m/s, no crossing). It fails V1 (profile up to 32 %, floor torque 0.88-1.92 of the reference at dx
+    1.75 mm), V2 (torque up to 37 %), V9 (51-66 % slow, 370 capped solves), V4 at nu 1e-4 (26.6 %; 14.5 / 18.9 % at 1e-2
+    / 1e-3 pass the staged 20 %), and V12 on both GPUs, whose envelope, the largest departure of a single particle over
+    the run, reaches 0.36 after a selected reset against 0.002 between two replays. With the drift correction the same
+    replay passes V4 within the staged 20 % (10.6, 8.4, 11.7 % at nu 1e-2, 1e-3, 1e-4), V12 on both GPUs and the thick
+    cup at rest from every wall-clear start, and fails V1, V2 and V9 alike. The original lattice of the spec, kept as a
+    control, starts inside the wall standoff and pushes particles into the thick wall (70-4177 past its middle).
+
+51. Drift correction outside the cup (FluidBench `sphgoal-dk-*`, `sphgoal-dev-*`, `sphgoal-dj-*`; diffs in
+    `worktrees/dev-dj/final.diff`). With `density_correction="position"` the solver ends in NaN in every FluidBench
+    scene with a box tank, still water included (T01 at R0 and R1, the dam break T02, the floating cube T08a, the dam
+    break against a free cube T07a, the settling sphere T08c), and in S1 at dt x8, with or without thick walls; the
+    velocity baseline runs all of them. A trace of the drift displacements in T01 (`logs/nanprobe_T01.log`) shows no
+    displacement above a tenth of a particle size for 50 substeps, then a growing number of particles at rest density
+    with displacements at that size (456 at substep 100, 6682 at 350): the drift multipliers grow without a density
+    error to answer. Building the tank as one watertight mesh instead of five boxes (`sph_box_mesh`), clamping the
+    displacement to a tenth of a particle size, and a plain Jacobi iteration instead of the Chebyshev acceleration do
+    not stop it. The drift correction is therefore not adopted; the velocity baseline is the Stage A candidate (owner
+    update of 2026-10-30), and the drift correction stays an option measured beside it.
+
+52. Thick-wall FluidBench runs of the velocity baseline (`sphgoal-sb`, Genesis 745b4613 code; walls and bottoms of 3 dx
+    grown outward, `wall_overrides`, with the inner volume, the liquid and the motions unchanged; wall-clear lattice
+    with the bottom layer at dx/2, `sph_gap_align`; single-mesh tanks; 0.5 s settling before t = 0; matched
+    drift-correction runs `sphgoal-sa`). Usable by the FluidBench bar: S2 at R1 and R2 (onset 0.37 / 0.053 degrees, no
+    leakage), the dam break with a free cube T07a, the spring plate T07b and the floating cube T08a at R1 and R2. The
+    settling sphere T08c runs but 339 of its viscosity-pressure couplings stop at the cap of 30 passes. S1 (water, Stage
+    B) misses L_z by 23 % and the spin-down time by 65 % at R2, and its volume drifts 1.3 % (bar 1 %); the original
+    geometry and lattice (`sphgoal-sb-orig`) leak. The drift correction gives S1 a volume error of 0.6 % but ends T07a,
+    T08a and T08c in NaN.
+
+53. Speed of the velocity baseline on thick-wall S1 R2 (RTX PRO 6000, profiles `sb_prof_dt*` in the data directory,
+    every solve converged): RTF 0.035 at the FluidBench time step, 0.079 at dt x4, 0.123 at dt x8 (57 density, 12
+    divergence iterations per substep), NaN at dt x12. At dt x8 a substep takes 22 ms: density solve 9.0 ms (0.16 ms per
+    Jacobi iteration), viscosity solve 4.8 ms, divergence solve 1.9 ms, density and factor 1.6 ms, viscosity geometry
+    1.5 ms, clearance guard 0.6 ms, rigid collision 0.4 ms. With the drift correction the same runs take 11-28 % longer
+    (RTF 0.027 and 0.062-0.071 at dt x1 and x4) and are unstable at dt x8. RTF 0.5 needs 4 times the speed of dt x8.
 
 ## Validation at 47499e5c (v5)
 
