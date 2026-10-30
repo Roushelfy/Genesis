@@ -520,6 +520,15 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     the cup wall, which puts the top layer of V7 1 cm above the liquid, and 5 (14) particles cross the thin wall of V11
     R1. Not adopted as the default; the trade between the two families is in the section below.
 
+45. Continuity of the corrected density across weight updates (development snapshot, diff in
+    `worktrees/dev-dc1/final.diff`). With the isotropic density, an update of the pair weights changes the constrained
+    density with no motion; an offset per particle took that change and decayed over tau (`*__dc1_*` relaxation 1 and
+    tau 0.05 s, `*__dc2_*` relaxation 1 and 0.3 s, `*__dc3_*` relaxation 0.2 and 0.3 s, with the wall shear
+    consistency). The offset lets the constrained density leave the arrangement: water at rest reaches 4e-3 J at tau
+    0.05 s and ends in NaN at 0.3 s, the Couette runs with relaxation 1 end in NaN, the plank draft is 24-74 % off, the
+    held plate 10-15 % from the Archimedes force, and the stirring balance stays at -1.4 to -2.0 times the work. Not
+    adopted.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
