@@ -525,6 +525,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             )
             self.envs_boundary_slot_overflows = qd.field(gs.qd_int, shape=(self._B,))
             self.envs_clearance_corrections = qd.field(gs.qd_int, shape=(self._B,))
+            # mass, center of mass, inertia about it and angular momentum change of the position recovery of the wall
+            # clearance guard, then the angular velocity of its rigid correction (see _kernel_enforce_wall_clearance)
+            self.envs_clearance_mass = qd.field(gs.qd_float, shape=(self._B,))
+            self.envs_clearance_center = qd.Vector.field(3, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_clearance_inertia = qd.Matrix.field(3, 3, dtype=gs.qd_float, shape=(self._B,))
+            self.envs_clearance_angular = qd.Vector.field(3, dtype=gs.qd_float, shape=(self._B,))
 
         if self._has_rigid_coupling:
             # Rigid side of the coupling, in the space of the spatial velocities of the coupled links (angular then
@@ -2800,13 +2806,21 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         Hitting a wall, it can cross their layer and get trapped inside the geom. The guard runs after the pressure and
         viscosity solves, as a unilateral velocity constraint with a soft position recovery: a particle closer to the
         surface of a link than the clearance (along the normal of the boundary particle it faces, see
-        _task_compute_boundary_density_and_factor) must not approach it, and recedes at a hundredth of its clearance
-        deficit per substep, slowly enough to add next to no kinetic energy. The reaction of the corrective impulse acts on the link at the fluid particle, so momentum stays
-        balanced, and enters its load readout and, for a coupled link, its impulse of the substep. Particles at their
-        resting distance of about half a spacing are not affected.
+        _task_compute_boundary_density_and_factor) must not approach it, and is moved away by a hundredth of its
+        clearance deficit per substep. The recovery moves the position, not the velocity: the velocity constraint only
+        removes kinetic energy, while an outward recovery velocity kicked the particles of the first layer that rest
+        closer than the clearance at every substep, which kept water at rest in a cup moving (SPH_SOLVER_STATUS.md
+        finding 48). The reaction of the corrective impulse acts on the link at the fluid particle, so momentum stays
+        balanced, and enters its load readout and, for a coupled link, its impulse of the substep. Carrying the
+        velocities to the recovered positions changes the angular momentum of the fluid by sum_i m_i dx_i x v_i, which
+        a rigid rotation of the fluid about its center of mass cancels.
         """
         for i_b in range(self._B):
             self.envs_clearance_corrections[i_b] = 0
+            self.envs_clearance_mass[i_b] = 0.0
+            self.envs_clearance_center[i_b] = qd.Vector.zero(gs.qd_float, 3)
+            self.envs_clearance_inertia[i_b] = qd.Matrix.zero(gs.qd_float, 3, 3)
+            self.envs_clearance_angular[i_b] = qd.Vector.zero(gs.qd_float, 3)
         clearance_min = 0.25 * self._particle_size
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
@@ -2820,12 +2834,43 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         vel_rel = self.particles_reordered[i_p, i_b].vel - self._func_slot_wall_vel(i_p, i_b, k)
                         dvel = gs.qd_float(0.0)
                         if clearance < clearance_min:
-                            recovery = 0.01 * (clearance_min - clearance) / self._substep_dt
-                            dvel = recovery - vel_rel.dot(normal)
+                            shift = 0.01 * (clearance_min - clearance) * normal
+                            self.particles_reordered[i_p, i_b].pos += shift
+                            self.envs_clearance_angular[i_b] += mass * shift.cross(
+                                self.particles_reordered[i_p, i_b].vel
+                            )
+                            dvel = -vel_rel.dot(normal)
                         if dvel > 0.0:
                             self.particles_reordered[i_p, i_b].vel += dvel * normal
                             self.particles_boundary_slots[i_p, i_b, k].clearance_impulse = -mass * dvel * normal
                             self.envs_clearance_corrections[i_b] += 1
+
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                self.envs_clearance_mass[i_b] += mass
+                self.envs_clearance_center[i_b] += mass * self.particles_reordered[i_p, i_b].pos
+        for i_b in range(self._B):
+            if self.envs_clearance_mass[i_b] > 0.0:
+                self.envs_clearance_center[i_b] /= self.envs_clearance_mass[i_b]
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                arm = self.particles_reordered[i_p, i_b].pos - self.envs_clearance_center[i_b]
+                self.envs_clearance_inertia[i_b] += mass * (
+                    arm.norm_sqr() * qd.Matrix.identity(gs.qd_float, 3) - arm.outer_product(arm)
+                )
+        for i_b in range(self._B):
+            omega = qd.Vector.zero(gs.qd_float, 3)
+            if self.envs_clearance_mass[i_b] > 0.0:
+                inertia = self.envs_clearance_inertia[i_b]
+                inertia += 1e-6 * inertia.trace() * qd.Matrix.identity(gs.qd_float, 3)
+                omega = -(inertia.inverse() @ self.envs_clearance_angular[i_b])
+            self.envs_clearance_angular[i_b] = omega
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                arm = self.particles_reordered[i_p, i_b].pos - self.envs_clearance_center[i_b]
+                self.particles_reordered[i_p, i_b].vel += self.envs_clearance_angular[i_b].cross(arm)
 
         if qd.static(self._has_rigid_coupling):
             for i_p, i_b in qd.ndrange(self._n_particles, self._B):
