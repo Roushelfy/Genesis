@@ -3840,8 +3840,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         kappa_j = self.particles_reordered[j, i_b].pressure_density2_norm_p
         if qd.static(not self._df_skip_div):
             kappa_j += self.particles_reordered[j, i_b].pressure_density2_norm_d
+        weight = self._func_pressure_pair_weight(i, j, x_ij, i_b)
         ret.virial += (
             0.5
+            * weight
             * (ret.kappa_i + kappa_j)
             * self.materials[i_m].rest_volume
             * (-self.cubic_kernel_derivative(x_ij).dot(x_ij))
@@ -3891,8 +3893,8 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         of a linear pressure field scaled by C_i = -sum_j V_j grad W_ij . x_ij / 3, the boundary samples included: 1
         in the bulk to within a percent, less where neighbors are missing, at the free surface. The returned pressure
         is the virial of the pair forces on the particle (Irving and Kirkwood), half of each pair to each of its two
-        particles: rho_0 / 3 sum_j V_j (kappa_i + kappa_j) / 2 (-grad W_ij . x_ij), which is rho_0 C_i kappa_i in a
-        uniform field. Within a support radius of a rigid surface, the boundary force of a particle takes its own
+        particles: rho_0 / 3 sum_j V_j c_ij (kappa_i + kappa_j) / 2 (-grad W_ij . x_ij), c_ij the pair weight of the
+        isotropic pressure (1 without it), which is rho_0 C_i kappa_i in a uniform field. Within a support radius of a rigid surface, the boundary force of a particle takes its own
         multiplier alone (Bender et al. 2023), half the force of a pair of equal multipliers, so that a boundary sample
         adds rho_0 / 3 V_b kappa_i / 2 (-grad W_ib . x_ib); with the full kappa_i the readout exceeded the hydrostatic
         pressure by 1.6 times at a floor (SPH_SOLVER_STATUS.md finding 29).
