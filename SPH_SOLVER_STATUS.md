@@ -481,6 +481,33 @@ section "Validation at cab47d96" below, and the run commands in
     along modes the corrected force hardly feels (the cup load of V7 at 1850 and 930 times the weight of the fluid). Not
     adopted.
 
+41. Particle shift with a free-surface projection (development snapshot, diff in `worktrees/dev-sh2/final.diff`). The
+    rate-scaled Fickian shift of finding 33 with, in addition, only the part along the free surface kept for a particle
+    with a free-surface neighbor (normal from the kernel sum of its fluid neighbors, Sun et al. 2017), on top of the
+    wall shear consistency and the drift correction of the positions (`*__sh2a100_*`, `*__sh2a300_*`, A = 100 and 300).
+    It reduces the pressure friction: V2 torque 4-12 % and profile 2.1 % at A = 100 (5-32 % and 15 % without it,
+    `couette__v6wp_*`), the plank draft 0.8 %. But water at rest takes 1.5e-3 J within 0.2 s and keeps it
+    (`logs/sh2a*_cn.log`, rms speed 0.11 m/s, against 1e-5 J), the stirring balance is -15 times the work, the settling
+    sphere falls 16 times too fast, V1 does not improve (profile 5-17 %, torque 1.07-1.39 of the reference), the held
+    plate ends in NaN and 16-17 particles cross the thin wall of V11 R1. The shift moves every particle by up to a tenth
+    of its size per substep at the rate of the particle noise, which then feeds itself. Not adopted.
+
+42. Pressure readout (18efcc66). `get_particles_pressure` returned rho_0 C_i kappa_i, whose boundary samples count as
+    pairs of two equal multipliers, while the boundary force takes the multiplier of the fluid particle alone: 1.65
+    times the hydrostatic pressure in the layer on the floor of V7 and 5-9 % above it within a support radius of the
+    side wall (`hydrostatic__v6w_*`). The virial of the pair forces, half of each pair to each particle and the boundary
+    samples at half weight, reads 1.24 times in the floor layer and 2-5 % above it elsewhere; the bulk metric of V7
+    (above the floor layers, away from the side wall) goes from 4.2 to 3.7 % at dx 2.5 mm with the default solver and
+    with the wall shear consistency, from 6.6 to 5.6 % with the drift correction as well (`hydrostatic__rd1*`). The
+    layer below the top one reads 8 % low; the bar on every layer below the top one is still not met.
+
+43. Wendland C2 kernel (development snapshot, diff in `worktrees/dev-wd1/final.diff`). The kernel shape changes how the
+    pair forces answer a distorted arrangement, so the Wendland C2 kernel with the same support radius was tried with
+    the wall shear consistency (`*__wd1_*`; its sum on the particle lattice is 1.034, so the liquid starts compressed by
+    3.4 %). The pressure friction does not go down: V2 torque 8-58 % against 9-38 % with the cubic spline
+    (`couette__v6w_*`), V9 66 % against 66 %, V1 profile 11-24 %; the momentum drifts by 1.1e-3 per s (V6), the stirring
+    balance is +62 %, the held plate ends in NaN and the liquid of the plank leaves the cup. Not adopted.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
