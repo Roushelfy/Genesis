@@ -673,6 +673,19 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     round-off can trigger, would explain the departure of 9.2e-4 at the first step; this is not verified. Open: a V12
     bar on the distribution of departures rather than the single largest one, or repeated runs.
 
+55. Speed of the velocity baseline in the timing runs (FluidBench `sphgoal-sbt-*`, thick-wall S1 f2 R2 at dt x8 on the
+    RTX PRO 6000, every solve converged, three repeats). RTF 0.123 for one environment (8.2 s per simulated second, 89
+    density iterations per substep), 0.104 at dt x6. Batches of independent environments (`env_time_shift` 0.25 s) run
+    0.33 and 0.35 environment-seconds per second with 4 and 16 environments (RTF per environment 0.082 and 0.022): the
+    iterations follow the worst environment (112 per substep with 16). Loosening the density tolerance from 0.05 % to
+    0.1 and 0.2 % cuts the density iterations by 6 and 17 % but leaves the RTF at 0.122-0.124, and storing the viscosity
+    pair coefficient of every listed pair once per substep for the viscosity solves, their iterations and the coupling
+    residual (development snapshot, `worktrees/dev-vc/final.diff`; identical momentum, decay and Couette results,
+    `*__vc_*`) leaves it at 0.123 (viscosity solve 4.74 against 4.80 ms per substep). The arithmetic of the pairs does
+    not set the speed at 19172 particles: the GPU time goes to the launches, the host synchronization of every iteration
+    (16 us) and the serial tasks of the statements outside the parallel loops of each kernel (about 6 us each, a third
+    of a Jacobi iteration, finding in section "Performance (M5)"). Not adopted.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
