@@ -509,6 +509,18 @@ section "Validation at cab47d96" below, and the run commands in
     (`couette__v6w_*`), V9 66 % against 66 %, V1 profile 11-24 %; the momentum drifts by 1.1e-3 per s (V6), the stirring
     balance is +62 %, the held plate ends in NaN and the liquid of the plank leaves the cup. Not adopted.
 
+44. Wall shear consistency with the isotropic pressure and density (`*__wi_*`, and `*__wip_*` with the drift correction
+    of the positions; Genesis 59ed5a81, isotropic_pressure_relaxation 0.2). It removes the pressure friction where it
+    matters most: V9 settles within 0.3 % at dx 2.5 mm and 9.9 % at 3.5 mm (the run at dx 1.75 mm ends in NaN in the
+    rigid solver), V2 passes (torque within 10 %, profile 2.7 %), the V1 profile is within 2-8 % at every resolution,
+    and V8 passes at dx 2.5 mm (plank 6.0 %, light box 5.5 %). But the floor torque of V1 is 0.56-0.86 of the reference
+    (finding 23), the pressure does work: water at rest keeps 1.2e-3 J (1.6e-3 J and growing with the drift correction)
+    against 1.4e-4 J and decaying without it, and the stirring balance of V10 is -4.9 times the work (-2.5 with the
+    drift correction); the held plate is 16 % (11 %) from the Archimedes force, V5 decays 23 % (22 %) slow against 17 %
+    without the isotropic pressure, V4 is 13.5-26 % off (8.6-11.9 % with the drift correction), a few particles climb
+    the cup wall, which puts the top layer of V7 1 cm above the liquid, and 5 (14) particles cross the thin wall of V11
+    R1. Not adopted as the default; the trade between the two families is in the section below.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -673,39 +685,45 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | warm start of the density solve at 0.75 or 1.0 of the last pressure instead of 0.5 | measured, not adopted: 45 to 41 and 35 iterations per substep at dt x1, but water at rest stays noisier (closed column kinetic energy 3.7e-4 to 2.6e-4 J over 0.9 s against 3.3e-4 to 1.3e-4 J) | `gs-dfsph__S1__f2@sphgoal-ws*`, `logs/ws1.0_cn.log` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
-## Remaining limitations (failing acceptance criteria at cab47d96)
+## Remaining limitations (failing acceptance criteria at 76f37038)
 
-The goal is not met. These are the acceptance criteria that fail on the committed revision, with the achieved values.
-Evidence is in the section "Validation at cab47d96" and in FluidBench `report/sph_goal.md`.
+The goal is not met. These are the acceptance criteria that fail on the committed revision, with the best values of the
+configurations measured since the final campaign (FluidBench `report/sph_goal.md`, section "Acceptance by case and
+configuration"; tags `v6w`: wall shear consistency, `v6wp`: with the drift correction of the positions as well, `wi` /
+`wip`: with the isotropic pressure and density in addition, findings 36-44). Two families of configurations bound what
+the solver reaches:
 
-- Wall shear. The no-slip wall of the default configuration transmits the shear unevenly, and no configuration passes
-  all of V1-V4:
-  - Default, pressure friction (finding 11): the Couette torque is 12-45 % high (V2) and the floor torque of the
-    Stokes first problem 1.4-2.6 times the reference (V1).
-  - Isotropic pressure and density: they remove the pressure friction (V2 passes; V1 profile within 9 % at dx 2.5 mm),
-    but heat the liquid (V10 stirring balance -878 %) and break V6 (1.2e-4 per s).
-  - Volume maps: they pass V3 (4.4-5.0 %) but miss V1, V2 and the V8 draft.
-  - V4 decays 11.7-17.4 % slow in every configuration.
-- V9 settling sphere: 56-90 % slow with the default configuration, where pressure friction acts as a static friction
-  (finding 17), and 97-99 % fast with the volume maps. With the isotropic configuration it is within its bar at dx
-  2.5 mm (18.5 %) but not at 3.5 mm (23 %).
-- Buoyancy. A sphere resting on the floor gets 24.5 % less buoyancy (default), 16.2 %
-  (isotropic) and 7.1 % (volume maps). The held plate of V10 carries a fluid load 17-52 % from the Archimedes force.
-  The light box of V8 floats 28-30 % off its draft.
-- V10: fixed after the final campaign (findings 26, 28): the held joints agree with the readout within 0.1 % and the
-  stirring balance closes within 1.4 %; the held plate load is 7.9 % from the Archimedes force at dx 3.5 mm (bar 5 %).
-- V11 thin-wall cup: liquid crosses the 4 mm wall at R0 and R1 in both configurations run, and no run stays below the
-  start-up speed of 0.05 m/s (V11 row above; the isotropic configuration was not run). The FluidBench runs therefore
-  settle the liquid before t = 0, a deviation recorded in each run.
-- V7: the cup load matches the fluid weight within 1e-4, and the bulk pressure follows rho g (H - z) within 4.2 % at
-  dx 2.5 mm (5.45 % at 3.5 mm); within a support radius of a wall the pressure multiplier is not the pressure (finding
-  29), so the bar holds for the bulk only.
-- V12 on H100 with the default configuration: the first replayed step departs 1.4e-3, half the departure without warm
-  starts (bar: a tenth). It passes on RTX PRO 6000 and with the isotropic configurations on H100.
-- V13 FluidBench: S1 is not usable in any run. The spin-down time is 54-75 % short (finding 21), and no particle
-  method of FluidBench passes it. With the volume maps at R3, S1 meets the volume, leakage and L_z bars. S3 misses
-  the mixing index everywhere. S2 is usable at R1 (both configurations) and at R2 (volume maps). The default
-  configuration is unstable in S2 R2 and S3 R1. The S2 R3 runs did not finish within the 4 h job limit.
-- Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at
-  dt x8 for the default configuration, and 0.032 and 0.139 with the volume maps, against the 0.5 target. Since S1 is
-  not accuracy-qualified, there is no accuracy-qualified speed to report.
+- With the symmetric pressure pairs (`v6w`, `v6wp`) the solver conserves energy and momentum (V6, the V10 stirring
+  balance within 2.1 %, water at rest decaying from 1.4e-4 J) and passes V3, V5, V6, V7 (bulk, `v6w`), V8 at dx 2.5 mm
+  (`v6wp`), V10 (held plate within 4.9 % with `v6w`) and V12, but the pressure pairs carry a shear stress in proportion
+  to the pressure (finding 11): V9 settles 50-66 % slow, the V2 torque is 5-38 % off, and the V1 profile 9-32 %.
+- With the isotropic pressure (`wi`, `wip`) the friction is gone (V2 and V9 pass, the V1 profile within 8 %), but the
+  corrected pairs do work on the fluid (V10 stirring balance -2.5 to -4.9 times the work, water at rest at 1.2-1.6e-3
+  J), and V5, V10 and V11 fail.
+
+No variant tried against the friction keeps the energy (findings 31, 33, 40, 41, 43).
+
+- V1 Stokes first problem: no configuration meets the torque bar of 15 % (1.23-1.91 times the reference with `v6w`,
+  0.56-0.86 with `wi`); the profile passes with `wi` only.
+- V2 Taylor-Couette: passes with `wi` / `wip` only.
+- V4 mode decay: within 10 % at nu 1e-2, 1e-3 and 1e-4 with `v6wp` only (8.2, 5.9, 9.6 %); at nu 1e-6 the mode decays
+  2.0-3.2 times faster than the analytic rate in every configuration (finding 39).
+- V7 hydrostatics: the cup load matches the weight within 1e-4 and the bulk pressure follows rho g (H - z) within 3.7 %
+  at dx 2.5 mm with the virial readout (finding 42; 5.6 % at 3.5 mm); the layer on the floor reads 24 % high and the one
+  below the top layer 8 % low, so the bar on every layer below the top one fails.
+- V8: the light box passes at dx 2.5 mm with `v6wp` and `wi` (6.1 %, 5.5 %), not with `v6w` (18.5 %); at dx 3.5 mm no
+  configuration is within 10 %.
+- V9 settling sphere: passes with `wi` / `wip` (0.3-12 %), fails with the symmetric pairs (50-66 %); the run of `wi` at
+  dx 1.75 mm ends in NaN in the rigid solver.
+- V10: the held plate and the stirring balance pass with `v6w` and fail with the isotropic pressure.
+- V11 thin-wall cup: with the drift correction no particle crosses at R1, but the largest start-up speed is 0.15-0.2
+  m/s, above the 0.05 m/s bar and at the level of the particle noise of water at rest (finding 38); at R0 (dx 5 mm wider
+  than the wall) 19 particles cross.
+- V12: passes with `v6wp` on both GPUs; `v6w` failed its envelope once on the RTX PRO 6000 (2.5e-4 against two replays
+  of 2.4e-4).
+- V13 FluidBench: S1 is not usable in any configuration (spin-down time 54-86 % short, finding 21 and the V4 dissipation
+  at nu 1e-6); S2 is usable at R2 with `v6w`; S3 misses the mixing index.
+- Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at dt x8
+  for the default configuration (section "Performance (M5)"), against the 0.5 target. SPH_SOLVER_DESIGN.md section 10
+  calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and V4 fail in every configuration,
+  so there is no accuracy-qualified speed to report.
