@@ -29,8 +29,12 @@ convergence and the complete two-way/implicit-viscosity feature set remain requi
   DFSPH working branch before using it as the destination.
 - Requirement: synchronize solver changes with their tests, examples and documentation after each coherent milestone,
   using the workflow in [SPH_SOLVER_GOAL.md](SPH_SOLVER_GOAL.md).
-- Current state: workflow requirement recorded. A synchronization pull request and destination integration are pending.
-  This documentation update does not establish that implementation changes have reached the collaborator repository.
+- 2026-10-30, integrated: with the owner's approval, `entropylost/genesis-world:main` was fast-forwarded from `92c78327`
+  (the starting revision of this work) to the source head `3c2dc83e` by a direct push, without a pull request: 49
+  commits, the solver, its options and readouts, `tests/coupling/test_sph_rigid.py`, `examples/coupling/sph_paddle.py`
+  and the design, goal and status documents. The destination holds exactly the source commits, so the validation
+  recorded here applies to it unchanged (FluidBench evidence at `c5da1747`). Later milestones are synchronized the same
+  way, each recorded here with its source and destination heads.
 
 ## Milestones
 
