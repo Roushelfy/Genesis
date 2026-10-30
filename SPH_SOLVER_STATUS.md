@@ -661,6 +661,18 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     1.5 ms, clearance guard 0.6 ms, rigid collision 0.4 ms. With the drift correction the same runs take 11-28 % longer
     (RTF 0.027 and 0.062-0.071 at dt x1 and x4) and are unstable at dt x8. RTF 0.5 needs 4 times the speed of dt x8.
 
+54. State restore of the velocity baseline (V12; FluidBench `state__sa0*`, `state__sa0d_*`, `state__sa0e_*` with rms
+    departures and two more restarts in the receipt). Without the drift correction the verdict of V12 changes from run
+    to run: the envelope bar failed in three of four runs and the first replayed step departed by 9.2e-4 once (a third
+    of the departure without warm starts), while every run with the drift correction passes (`state__sa*`,
+    `state__sad_*`, `state__sae_*`). No state is missing: a full reset after the perturbation of one environment and
+    selected resets without it depart from the reference by rms 1.3e-4 and 3.9e-4 over the run, within the band of two
+    plain restarts (2.2e-4 to 2.3e-3). Without the drift correction the particle velocities amplify the round-off of the
+    GPU reductions faster, and the largest departure of a single particle, which the envelope bar takes, varies by an
+    order of magnitude between equivalent pairs of runs. An extra iteration of a solve that sits at its tolerance, which
+    round-off can trigger, would explain the departure of 9.2e-4 at the first step; this is not verified. Open: a V12
+    bar on the distribution of departures rather than the single largest one, or repeated runs.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
