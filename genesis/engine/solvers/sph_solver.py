@@ -3834,15 +3834,28 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         return force, torque
 
     @qd.func
-    def _task_gradient_scale(self, i, j, ret: qd.template(), i_b):
+    def _task_pressure_virial(self, i, j, ret: qd.template(), i_b):
         i_m = self.particles_reordered[j, i_b].material
         x_ij = self.particles_reordered[i, i_b].pos - self.particles_reordered[j, i_b].pos
-        ret += self.materials[i_m].rest_volume * (-self.cubic_kernel_derivative(x_ij).dot(x_ij))
+        kappa_j = self.particles_reordered[j, i_b].pressure_density2_norm_p
+        if qd.static(not self._df_skip_div):
+            kappa_j += self.particles_reordered[j, i_b].pressure_density2_norm_d
+        ret.virial += (
+            0.5
+            * (ret.kappa_i + kappa_j)
+            * self.materials[i_m].rest_volume
+            * (-self.cubic_kernel_derivative(x_ij).dot(x_ij))
+        )
 
     @qd.func
-    def _task_gradient_scale_boundary(self, i, j, ret: qd.template(), i_b):
+    def _task_pressure_virial_boundary(self, i, j, ret: qd.template(), i_b):
         x_ib = self.particles_reordered[i, i_b].pos - self.boundary_particles_reordered[j, i_b].pos
-        ret += self.boundary_particles_reordered[j, i_b].volume * (-self.cubic_kernel_derivative(x_ib).dot(x_ib))
+        ret.virial += (
+            0.5
+            * ret.kappa_i
+            * self.boundary_particles_reordered[j, i_b].volume
+            * (-self.cubic_kernel_derivative(x_ib).dot(x_ib))
+        )
 
     @qd.kernel
     def _kernel_get_particles_pressure(self, pressure: qd.types.ndarray()):
@@ -3850,8 +3863,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             value = gs.qd_float(0.0)
             if self.particles[i_p, i_b].active:
                 i_r = self.particles[i_p, i_b].reordered_idx
-                scale = gs.qd_float(0.0)
-                self._func_for_all_fluid_neighbors(i_r, scale, self._task_gradient_scale, i_b)
+                kappa = self.particles_reordered[i_r, i_b].pressure_density2_norm_p
+                if qd.static(not self._df_skip_div):
+                    kappa += self.particles_reordered[i_r, i_b].pressure_density2_norm_d
+                scale = qd.Struct(virial=gs.qd_float(0.0), kappa_i=kappa)
+                self._func_for_all_fluid_neighbors(i_r, scale, self._task_pressure_virial, i_b)
                 if qd.static(self._has_boundary):
                     self.sh_boundary.for_all_neighbors_of_pos(
                         i_r,
@@ -3860,14 +3876,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self.boundary_particles_reordered.pos,
                         self._support_radius,
                         scale,
-                        self._task_gradient_scale_boundary,
+                        self._task_pressure_virial_boundary,
                         i_b,
                     )
-                kappa = self.particles_reordered[i_r, i_b].pressure_density2_norm_p
-                if qd.static(not self._df_skip_div):
-                    kappa += self.particles_reordered[i_r, i_b].pressure_density2_norm_d
                 i_m = self.particles_reordered[i_r, i_b].material
-                value = self.materials[i_m].rest_density * scale / 3.0 * kappa
+                value = self.materials[i_m].rest_density * scale.virial / 3.0
             pressure[i_b, i_p] = value
 
     def get_particles_pressure(self, envs_idx=None):
@@ -3876,11 +3889,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         The pressure solves give each particle a multiplier kappa_i (the pressure over the rest density, of the density
         and the divergence solves), whose pair force -m_i sum_j V_j (kappa_i + kappa_j) grad W_ij takes the gradient
         of a linear pressure field scaled by C_i = -sum_j V_j grad W_ij . x_ij / 3, the boundary samples included: 1
-        in the bulk to within a percent, less where neighbors are missing, at the free surface. The pressure field whose
-        exact gradient the forces represent is therefore rho_0 C_i kappa_i, which is what is returned. Within a support
-        radius of a rigid surface, the boundary force of a particle takes its own multiplier alone (Bender et al.
-        2023), so that the returned value there exceeds the pressure, by up to 1.6 times at a floor under hydrostatic
-        pressure.
+        in the bulk to within a percent, less where neighbors are missing, at the free surface. The returned pressure
+        is the virial of the pair forces on the particle (Irving and Kirkwood), half of each pair to each of its two
+        particles: rho_0 / 3 sum_j V_j (kappa_i + kappa_j) / 2 (-grad W_ij . x_ij), which is rho_0 C_i kappa_i in a
+        uniform field. Within a support radius of a rigid surface, the boundary force of a particle takes its own
+        multiplier alone (Bender et al. 2023), half the force of a pair of equal multipliers, so that a boundary sample
+        adds rho_0 / 3 V_b kappa_i / 2 (-grad W_ib . x_ib); with the full kappa_i the readout exceeded the hydrostatic
+        pressure by 1.6 times at a floor (SPH_SOLVER_STATUS.md finding 29).
         The tensor has shape (n_envs, n_particles) in the particle order of the solver, without the leading dimension
         for a scene that is not batched; inactive particles get zero.
         """
