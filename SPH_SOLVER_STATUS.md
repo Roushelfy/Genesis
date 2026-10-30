@@ -546,6 +546,21 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     point in every pressure iteration, about twice the cost of an iteration, against an RTF already 3.5 times short of
     the target. Not implemented in the solver.
 
+47. Thin-wall start with the liquid sampled clear of the walls (V11; FluidBench `thinwall.py --gap`,
+    `dev/thinwall_probe.py`). The leakage of V11 comes from the lattice of the spec, whose outer column starts 0.09 mm
+    (R1) and 0.47 mm (R0) from the inner wall, inside the particle size from the boundary particles. Sampled as for a
+    ghost-volume boundary (the same number of particles none closer than dx/2 to the cup, the free surface raised to
+    keep the mass, `fluidbench.scene.sample_with_gap`), with the wall shear consistency and the drift correction of the
+    positions on 8be1077b, no particle crosses the 4 mm wall or leaves the domain at R0 or R1, from the lattice or
+    settled 0.5-5 s (`thinwall__twgp_*`; 19 crossed at R0 before, `thinwall__v6wp_*`). Without the drift correction one
+    particle crosses at R1 and the start-up speeds reach 1-1.8 m/s (`thinwall__twg_*`); volume maps leak through the
+    thin wall in every run (8-1329 particles, `thinwall__twvg*`). The start-up speed bar still fails: after release the
+    rms speed of the liquid grows from 0.002-0.004 m/s to 0.008-0.011 m/s within a second whatever the settling time,
+    and particles of the layer against the wall and the floor oscillate along it with a period of about 25 ms at up to
+    0.14-0.17 m/s (traced substep by substep in `logs/twprobe4_R1.log`), above the 0.05 m/s bar. Water (nu 1e-6) damps a
+    parcel of the particle size against the wall at about nu / dx^2 = 0.08 per s, so the oscillation, excited again and
+    again, persists.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -741,9 +756,9 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
 - V9 settling sphere: passes with `wi` / `wip` (0.3-12 %), fails with the symmetric pairs (50-66 %); the run of `wi` at
   dx 1.75 mm ends in NaN in the rigid solver.
 - V10: the held plate and the stirring balance pass with `v6w` and fail with the isotropic pressure.
-- V11 thin-wall cup: with the drift correction no particle crosses at R1, but the largest start-up speed is 0.15-0.2
-  m/s, above the 0.05 m/s bar and at the level of the particle noise of water at rest (finding 38); at R0 (dx 5 mm wider
-  than the wall) 19 particles cross.
+- V11 thin-wall cup: with the liquid sampled clear of the walls and the drift correction, no particle crosses at R0 or
+  R1 (finding 47); the largest start-up speed is 0.14-0.17 m/s, above the 0.05 m/s bar, from oscillations of the wall
+  layer that the particle noise of water at rest keeps exciting.
 - V12: passes with `v6wp` on both GPUs; `v6w` failed its envelope once on the RTX PRO 6000 (2.5e-4 against two replays
   of 2.4e-4).
 - V13 FluidBench: S1 is not usable in any configuration (spin-down time 54-86 % short, finding 21 and the V4 dissipation
