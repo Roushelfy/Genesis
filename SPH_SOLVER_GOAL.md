@@ -4,7 +4,7 @@ Branch: `fluidbench/sph-solver`
 Repository: https://github.com/Roushelfy/Genesis
 Owner requirements confirmed: 2026-10-27
 Starting revision: `92c783279a9d6d8882bf06dce540c07fdf2a38a6`
-Status: specification recorded. Implementation and acceptance measurements remain pending.
+Status: implementation in progress. Current delivery scope and acceptance are defined in the dated update below.
 
 ## Objective
 
@@ -15,6 +15,59 @@ latency and batched throughput while preserving the accepted physical model and 
 Implicit viscosity is a required part of the final implementation. Pressure and viscous stresses both exchange linear and
 angular momentum with rigid links. A diagnostic implementation that applies fluid impulses after an otherwise independent
 rigid step is an intermediate milestone. Final acceptance requires the coupled fluid and rigid residuals to converge.
+
+## Current scope and staged acceptance (owner update, 2026-10-30)
+
+The owner prioritizes a useful, stable and fast thick-wall solver and permits moderate engineering accuracy targets.
+This section governs the current delivery stage wherever the original full research acceptance below is stricter.
+The original criteria and historical pass/fail results remain visible for comparison.
+
+### Stage A: thick-wall engineering solver
+
+- Use thick watertight containers and obstacles. Defer V11 thin-wall penetration and thin-wall/coarse-grid geometry fixes
+  from the current critical path. Reopen them after the thick-wall physics and performance campaign.
+- Keep the inner fluid domain, liquid mass and prescribed motion fixed when thickening a container outward. Record the
+  wall thickness relative to particle spacing and kernel support. Choose and validate a sufficient thickness for each
+  resolution rather than assuming thickness alone guarantees stable boundaries. Record changed inertia for dynamic links.
+- Keep implicit interior and wall viscosity, two-way pressure and viscous coupling, joint/contact feedback, fluid load
+  readout and state/reset support as required features.
+- Use the symmetric pressure configuration with wall shear consistency as the initial candidate. Evaluate position-level
+  density drift correction and the dissipative clearance guard together on a single committed revision. Adopt the final
+  option set from the coupled tests, rather than combining passing numbers from different snapshots.
+- Keep force and torque balance, momentum conservation, dissipative behavior, absence of non-finite or growing numerical
+  instabilities, and converged accepted samples as required checks. Retain the 5% driven energy-balance and load-readout
+  bars and the 1e-4 per second closed-system momentum bar.
+- As provisional engineering targets, use 20% for velocity profiles, bulk pressure, draft and viscous decay observables,
+  and 30% for transient wall torque or drag. Publish the original tighter verdict beside this staged verdict. These
+  bands apply only to cases with a valid, resolved reference and never override conservation or energy checks.
+- First qualify the thick-wall cases at nu = 1e-4 to 1e-2 m^2/s. Continue measuring water at nu around 1e-6, report its
+  excess numerical damping and its S1/S3 errors, and keep accurate water dynamics as the next research stage. Changing
+  a water case to a more viscous liquid creates a separate experiment.
+- Allow a documented settling procedure and wall-clear initial sampling. Measure rest-state RMS velocity and energy,
+  distinguish isolated particle maxima from sustained growth, and report the original initialization as a control.
+  The original thin-wall 0.05 m/s maximum-velocity gate is deferred with V11.
+- Run full-horizon stirring, floating/free-link interaction, a constrained link and pouring in the thick-wall geometry.
+  Preserve the original FluidBench geometry results. Use separately converged references for materially changed cases.
+- Profile and optimize this complete feature set now. Report the accuracy-speed tradeoff over time steps and tolerances.
+  RTF >= 0.5 remains the performance target and RTF >= 1 the stretch target. Report engineering usability and measured
+  speed separately while that target remains unmet.
+
+### Stage B: higher fidelity and broader geometry
+
+Retain the original research goals for accurate water spin-down and mixing, tighter wall stress and pressure accuracy,
+thin-wall handling and broader viscosity/resolution coverage. Stage B failures are documented limitations of Stage A,
+rather than reasons to spend the current optimization budget on thin-wall repair.
+
+### Immediate work queue
+
+1. Freeze one committed thick-wall candidate and its public example/configuration.
+2. Replay the coupled momentum, energy, load, state and viscosity cases on it. Include a free dynamic link and joint/contact
+   feedback, and confirm every accepted sample's pressure, viscosity, drift and constraint residuals.
+3. Run thick-wall S1/S2 and the representative dynamic-link cases through the full horizon. Record rest noise, leakage,
+   volume, loads, damping and reference errors under both the original and staged targets.
+4. Profile that same configuration and pursue the remaining measured acceleration opportunities. Rank them by end-to-end
+   benefit. Benchmark single environments and independent batches at matched feature sets.
+5. Record Stage A delivery and its limitations before returning to the stricter Stage B research cases.
 
 ## Required behavior
 
