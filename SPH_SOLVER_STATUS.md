@@ -561,6 +561,21 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     parcel of the particle size against the wall at about nu / dx^2 = 0.08 per s, so the oscillation, excited again and
     again, persists.
 
+48. Energy of the wall clearance guard (fe8d9100). The guard of `_kernel_enforce_wall_clearance` gave a particle closer
+    than a quarter of a particle size to a rigid surface an outward recovery velocity. Particles of the first layer rest
+    that close in a cup, so the guard kicked them at every substep: water settled in the thin-wall cup of V11 (gap
+    sampling, wall shear consistency, drift correction) took 5.2e-4 J per s from the guard, 4049 corrections per s, the
+    only stage that added energy (`thinwall__twgpa_*`), and the wall layer oscillated at up to 0.16 m/s. The recovery
+    now moves the position by the same hundredth of the deficit per substep, the velocity constraint only removes the
+    approaching velocity, and a rigid rotation of the fluid cancels the angular momentum the recovery would change (V6
+    drift 3.1e-6 / 7.3e-6 per s, against 8.5e-5 without the rotation, `momentum__cl3w*`, `momentum__cl1w*`). The guard
+    then removes 4e-5 J per s; the stirring balance is -0.4 to -0.6 %, the held plate 4.5-5.1 % from the Archimedes
+    force, the plank 4.8 % and the light box 9.6 % with the drift correction (`*__cl1wp_*`, `*__cl3wp_*`). In V11 no
+    particle crosses at R0 or R1, and the largest start-up speed goes from 0.14 / 0.16 m/s to 0.083 / 0.10 m/s (R0 / R1,
+    settled 1.5 s); with the density tolerance at 0.02 % instead of 0.05 % the net gain of the gravity and density
+    stages drops from 4.3e-4 to 0.7-1.1e-4 J per s and the largest speed to 0.074 / 0.075 m/s (`thinwall__cl2t*`), still
+    above the bar of 0.05 m/s.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -757,8 +772,7 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
   dx 1.75 mm ends in NaN in the rigid solver.
 - V10: the held plate and the stirring balance pass with `v6w` and fail with the isotropic pressure.
 - V11 thin-wall cup: with the liquid sampled clear of the walls and the drift correction, no particle crosses at R0 or
-  R1 (finding 47); the largest start-up speed is 0.14-0.17 m/s, above the 0.05 m/s bar, from oscillations of the wall
-  layer that the particle noise of water at rest keeps exciting.
+  R1 (findings 47, 48); the largest start-up speed is 0.074-0.10 m/s, above the 0.05 m/s bar.
 - V12: passes with `v6wp` on both GPUs; `v6w` failed its envelope once on the RTX PRO 6000 (2.5e-4 against two replays
   of 2.4e-4).
 - V13 FluidBench: S1 is not usable in any configuration (spin-down time 54-86 % short, finding 21 and the V4 dissipation
