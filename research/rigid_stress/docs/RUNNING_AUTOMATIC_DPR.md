@@ -1,5 +1,55 @@
 # 自动半径＋DPR 使用范例
 
+## 默认 egg、自定义 mesh 与应力着色
+
+`franka_egg_automatic_stress.py` 复用现有 Franka 抓取场景。现在省略 `--viewer` 时默认选择
+`output_mode="max"`，定期输出 Pa 单位的最大应力；加 `--viewer` 后自动选择 `"full"`，在鸡蛋或
+自定义刚体的未变形边界上显示 von Mises 应力颜色。仍可显式选择无 viewer 的 full 输出。
+
+```bash
+# 默认空壳 egg，只有最大应力输出；--envs 可增加并行环境。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --envs 64
+
+# 同一空壳 egg，显示应力场；也可添加 --backend shell。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --viewer
+
+# 闭合表面网格：首次运行生成实心体积弹性网格并缓存，之后复用。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --mesh model.obj --viewer
+
+# 毫米制 STL 转为米；也可以省略 --viewer，只输出最大应力。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --mesh model.stl --scale 0.001 --viewer
+
+# 空腔、薄壁等物体使用已经准备好的匹配弹性网格。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress \
+  --mesh collision.obj --stress-mesh elastic.npz --viewer
+```
+
+通用表面加载使用 Trimesh 支持的格式，如 OBJ/STL/PLY/GLB；自动四面体化需要一个闭合、方向一致的
+实心区域，不会从外表面猜测壁厚或内部空腔。默认 egg 始终复用原空壳资产，不会重新填成实心。
+`--mesh volume.npz` 可直接从体积资产提取碰撞边界。自定义 shell 则需要碰撞表面与
+`--backend shell --stress-mesh midsurface.npz`，中面必须含 Q4 connectivity，可用 `--thickness`
+指定米制壁厚。表面与弹性 NPZ 必须属于同一 authored frame；预处理对二者一起缩放并移到共同包围盒
+中心，保留彼此的几何配准。模型朝向不变。自定义刚体的质量、质心和惯性从弹性材料边界导出并写入
+缓存 URDF；薄壳包含内外侧和开口边缘的壁厚封边，不会按外包络的实心体积估计惯性。默认 egg 仍
+使用其原始 URDF 惯性。`--cache-dir` 可指定缓存位置；否则遵循 Genesis 的
+`GS_CACHE_FILE_PATH` / XDG 缓存目录。`--max-volume` 控制新四面体的最大体积，单位 m³。
+
+viewer 显示单个环境，headless 支持批量。蓝色表示零应力，红色表示颜色范围上限；默认上限跟随本次
+运行已经观察到的全域峰值递增，具体 Pa 数值会打印。使用 `--color-max 1000000` 可固定为 0–1 MPa，
+便于比较不同帧。3D 颜色取自每个边界三角形所属四面体的角点，不跨单元平滑；shell 每个面使用该侧
+四个 Gauss 点的最大值。内部热点不一定在可见表面，终端报告仍是全域最大值。这个显示不产生弹性
+变形，也不改变刚体碰撞形状。默认材料为 E=10 GPa、ν=0.3、ρ=2000 kg/m³。
+
+现有抓取轨迹不是任意物体的自动抓取规划器。网格尺寸、朝向和抓取部位需要适合 Panda 的开口与工作
+空间；高模应先准备合适的低模弹性资产，以控制构造和恢复开销。原生接触半径、载荷及弹性求解的
+适用范围和拒绝检查仍然有效。
+
+没有 GPU 时可添加 `--device cpu`。本次新增入口已在 CPU 上检查默认 egg 的 130 步非零应力输出、
+自定义 STL 的 30 步加载流程，以及软件 EGL viewer 的 volume/full 30 步与 shell/full 10 步着色调用；
+另检查了 volume 在第 130 步的实际渲染画面。网格缓存、比例缩放、边界归属、壳内外侧和颜色范围有
+独立测试。本次没有 GPU 或完整 730 步抓取的新增性能结论。下文此前的
+性能与 viewer 资格仍属于其各自冻结版本。
+
 普通 Options 和 `.dpr()` 默认选择 pressure/patch/Hertz 半径/Hertz 压力轮廓。体积加载默认采用 adaptive/q16，仅对未通过独立积分检查的接触升级至 q64、q128。薄壳仍默认 Q4 加载；下面显式选择已验证的 planar/k32 配方。公共示例、完整历史及三组配对计时均已完成，精度、速度和显存取舍见[结果报告](AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md)。
 
 在仓库根目录使用已安装 Genesis／Quadrants 的环境。集群上遵循 [运行位置说明](RUNNING.md)，在计算节点执行；下面不涉及 Slurm 或缓存配置。所有 stress 配置在 `scene.build()` 之前完成。

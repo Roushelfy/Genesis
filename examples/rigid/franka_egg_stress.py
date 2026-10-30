@@ -71,6 +71,9 @@ class FrankaEgg:
         factor_scaling: bool = False,
         factor_ordering: str = "minimum_degree",
         stress_options: gs.options.RigidStressOptions | None = None,
+        rigid_mesh: gs.morphs.Mesh | gs.morphs.URDF | None = None,
+        stress_visualization: bool = False,
+        viewer_options: gs.options.ViewerOptions | None = None,
     ):
         if stress_options is not None and not stress:
             raise ValueError("Explicit stress_options require stress=True.")
@@ -98,6 +101,7 @@ class FrankaEgg:
                 use_gjk_collision=use_gjk_collision,
                 enable_contact_patch=enable_contact_patch,
             ),
+            viewer_options=viewer_options,
             profiling_options=gs.options.ProfilingOptions(show_FPS=False),
             show_viewer=viewer,
         )
@@ -108,17 +112,27 @@ class FrankaEgg:
         if egg_geometry not in ("urdf", "mesh64"):
             raise ValueError("egg_geometry must be 'urdf' or 'mesh64'.")
         self.egg_geometry = egg_geometry
-        self.egg = self.scene.add_entity(
-            gs.morphs.URDF(
-                file=assets / "egg_shell.urdf",
-                pos=(0.65, 0, 0.031),
-                align=False,
-                convexify=True,
-                decimate=False,
-                preserve_mesh_precision=egg_geometry == "mesh64",
-            ),
-            material=gs.materials.Rigid(friction=0.6),
-        )
+        if rigid_mesh is None:
+            self.egg = self.scene.add_entity(
+                gs.morphs.URDF(
+                    file=assets / "egg_shell.urdf",
+                    pos=(0.65, 0, 0.031),
+                    visualization=not stress_visualization,
+                    align=False,
+                    convexify=True,
+                    decimate=False,
+                    preserve_mesh_precision=egg_geometry == "mesh64",
+                ),
+                material=gs.materials.Rigid(friction=0.6),
+            )
+        else:
+            self.egg = self.scene.add_entity(
+                morph=rigid_mesh,
+                material=gs.materials.Rigid(
+                    rho=stress_options.density if stress_options is not None else 2000.0,
+                    friction=0.6,
+                ),
+            )
         self.link = self.egg.base_link
         if stress_options is not None:
             self.link.configure_stress_recovery(stress_options)
@@ -210,8 +224,10 @@ class FrankaEgg:
                 self.slide_joints = torch.as_tensor(bank["slide_joints"][case_ids], device=gs.device)
                 self.delays = bank["delays"][case_ids]
         else:
-            positions = np.tile([0.65, 0.0, 0.031], (n_envs, 1))
-            quaternions = np.tile([1.0, 0.0, 0.0, 0.0], (n_envs, 1))
+            position = (0.65, 0.0, 0.031) if rigid_mesh is None else rigid_mesh.pos
+            positions = np.tile(position, (n_envs, 1))
+            quaternion = (1.0, 0.0, 0.0, 0.0) if rigid_mesh is None else rigid_mesh.quat
+            quaternions = np.tile(quaternion, (n_envs, 1))
             radii = np.full(n_envs, 0.006)
             friction = np.ones(n_envs)
         if varied and conditions is None:
@@ -233,7 +249,10 @@ class FrankaEgg:
         self.hand = self.robot.get_link("hand")
         orientation = torch.tensor([0, 1, 0, 0], dtype=gs.tc_float, device=gs.device).repeat(n_envs, 1)
         pickup = self.initial_position.clone()
-        pickup[:, 2] = 0.135
+        if rigid_mesh is None:
+            pickup[:, 2] = 0.135
+        else:
+            pickup[:, 2] += 0.104
         raised = pickup.clone()
         raised[:, 2] += 0.12
         slide = raised.clone()
