@@ -586,7 +586,9 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     the lattice and settled 1.5 s, R0 and R1, turned 0 and 10 degrees, with the divergence tolerance at 0.1 and 0.02 %,
     no particle crosses the wall or leaves the domain. The largest speed of the settled runs over 1 s is 0.062 m/s at R0
     and 0.106 m/s at R1 (0.039 / 0.082 m/s in the first 0.1 s), from single particles of the first layer at the floor
-    and the wall; the bar of 0.05 m/s is not met.
+    and the wall; the bar of 0.05 m/s is not met. Boundary particles sampled at 0.35 and 0.25 particle sizes instead of
+    0.5 (development snapshot, `worktrees/dev-bs1/final.diff`) do not lower it (0.077-0.128 m/s, `thinwall__bs*`), so
+    the roughness of the sampled wall is not what sets it.
 
 ## Validation at 47499e5c (v5)
 
