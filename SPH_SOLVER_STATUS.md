@@ -17,9 +17,20 @@ the V11 start-up gate are deferred. The dated scope update in [SPH_SOLVER_GOAL.m
 current engineering targets and the subsequent higher-fidelity research stage.
 
 The measurements below retain their original configurations and strict verdicts. A unified committed thick-wall campaign
-under the staged targets is pending. The initial candidate uses symmetric pressure, wall shear consistency and, subject
-to replay validation, position-level drift correction with the dissipative clearance guard. Conservation, energy balance,
-solver convergence and the complete two-way/implicit-viscosity feature set remain required.
+under the staged targets is pending. The primary baseline uses symmetric pressure, wall shear consistency and
+`density_correction="velocity"` with the dissipative clearance guard. The extra position-level density drift solve is
+disabled in this baseline and evaluated separately in a matched on/off comparison. Conservation, energy balance, solver
+convergence and the complete two-way/implicit-viscosity feature set remain required.
+
+## Collaborator synchronization
+
+- Source: `Roushelfy/Genesis:fluidbench/sph-solver`.
+- Collaborator: `entropylost/genesis-world`. Default integration branch: `main`. Record any explicitly designated
+  DFSPH working branch before using it as the destination.
+- Requirement: synchronize solver changes with their tests, examples and documentation after each coherent milestone,
+  using the workflow in [SPH_SOLVER_GOAL.md](SPH_SOLVER_GOAL.md).
+- Current state: workflow requirement recorded. A synchronization pull request and destination integration are pending.
+  This documentation update does not establish that implementation changes have reached the collaborator repository.
 
 ## Milestones
 

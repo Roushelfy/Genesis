@@ -31,9 +31,14 @@ The original criteria and historical pass/fail results remain visible for compar
   resolution rather than assuming thickness alone guarantees stable boundaries. Record changed inertia for dynamic links.
 - Keep implicit interior and wall viscosity, two-way pressure and viscous coupling, joint/contact feedback, fluid load
   readout and state/reset support as required features.
-- Use the symmetric pressure configuration with wall shear consistency as the initial candidate. Evaluate position-level
-  density drift correction and the dissipative clearance guard together on a single committed revision. Adopt the final
-  option set from the coupled tests, rather than combining passing numbers from different snapshots.
+- Use symmetric pressure with wall shear consistency and `density_correction="velocity"` as the primary thick-wall
+  performance baseline. This keeps the standard DFSPH density correction and disables the extra position-level drift
+  solve. Preserve implicit viscosity, two-way coupling and the dissipative wall clearance guard.
+- Compare `density_correction="position"` separately on the same committed revision, scene, initialization, time step,
+  material properties and tolerances. Report its density/volume error, rest noise, loads, damping, energy, iterations,
+  memory and end-to-end cost. Select it only when a measured robustness or accuracy gain justifies the cost.
+- Keep wall clearance recovery distinct from density drift correction. Restore state and validate coupling and
+  conservation for each variant. Adopt a final option set from unified tests rather than different snapshots.
 - Keep force and torque balance, momentum conservation, dissipative behavior, absence of non-finite or growing numerical
   instabilities, and converged accepted samples as required checks. Retain the 5% driven energy-balance and load-readout
   bars and the 1e-4 per second closed-system momentum bar.
@@ -60,7 +65,7 @@ rather than reasons to spend the current optimization budget on thin-wall repair
 
 ### Immediate work queue
 
-1. Freeze one committed thick-wall candidate and its public example/configuration.
+1. Freeze the thick-wall candidate with position-level drift correction disabled and its public example/configuration.
 2. Replay the coupled momentum, energy, load, state and viscosity cases on it. Include a free dynamic link and joint/contact
    feedback, and confirm every accepted sample's pressure, viscosity, drift and constraint residuals.
 3. Run thick-wall S1/S2 and the representative dynamic-link cases through the full horizon. Record rest noise, leakage,
@@ -224,6 +229,32 @@ All items start pending. Each completed milestone needs a commit, runnable comma
 
 Completion means all required physics, stability and optimization evidence is present. A stable animation, an explicit
 fallback, a pressure-only reaction force, a viscosity-only solve or a fast one-way configuration is insufficient.
+
+## Synchronization with the collaborator repository (owner requirement, 2026-10-30)
+
+Development branch: https://github.com/Roushelfy/Genesis/tree/fluidbench/sph-solver
+Collaborator repository: https://github.com/entropylost/genesis-world
+Default integration target: `entropylost/genesis-world:main`, which contains the DFSPH starting implementation.
+Use a collaborator-designated DFSPH branch instead when that destination is explicitly recorded. The separate
+`ipbf-sph-solver` branch is a different work stream and is not the default destination.
+
+- Synchronize each coherent solver feature, correctness fix, performance change and delivery milestone with the
+  collaborator repository. Include the associated tests, public examples, option/readout documentation, design,
+  development goal and implementation status. Keep large raw evidence in FluidBench and link its exact revisions.
+- Before synchronization, fetch the current destination and preserve changes made in either repository. Resolve shared
+  solver changes by merging or porting the relevant commits. Preserve unrelated collaborator work.
+- Deliver through a pull request from `Roushelfy:fluidbench/sph-solver` to the recorded destination branch, or update the
+  existing synchronization pull request. A collaborator-managed working branch is also acceptable when explicitly
+  designated. Record the source head, destination branch/head, included commits, validation and pull request URL.
+- Track submitted and integrated states separately. A local push alone establishes development progress. Submitted
+  means the destination pull request contains the intended changes. Integrated means those changes are present in the
+  destination branch, including equivalent commits when squashed or cherry-picked.
+- Record synchronization status in `SPH_SOLVER_STATUS.md` at every milestone and identify pending changes or conflicts.
+  Keep implementation and validation moving while repository permissions or destination integration remain pending.
+- Re-run the affected checks after conflict resolution and verify the published destination or pull request diff.
+  Synchronization preserves the same physical model, defaults and numerical acceptance as the validated source.
+- Current action records this workflow requirement. Opening a synchronization pull request and integrating the existing
+  solver changes remain pending until performed and verified.
 
 ## Evidence locations
 
