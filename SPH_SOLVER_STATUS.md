@@ -529,6 +529,23 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     held plate 10-15 % from the Archimedes force, and the stirring balance stays at -1.4 to -2.0 times the work. Not
     adopted.
 
+46. Shear sensitivity of the constrained density (lattice study, FluidBench
+    `adapters/genesis/sph_validation/dev/shear_density_check.py` and `affine_density_check.py`). The pressure friction
+    is the response of the constrained density to a shear of the neighborhood: on a lattice sheared by gamma, the
+    derivative of the kernel sum under a further pure shear is 1.1e-3, 2.2e-3 and 3.5e-3 at gamma 0.05, 0.1 and 0.2
+    (zero only for the unsheared lattice), so the pressure carries a shear stress rho_0 kappa times that. The isotropic
+    correction does not remove it from the density: with the weights frozen the derivative is 1.5e-3, 2.8e-3 and 4.2e-3,
+    and with the weights recomputed, as an exact (conservative) gradient would need, 1.9e-3, 3.4e-3 and 4.5e-3. The
+    option escapes the friction only because its force drops the derivative of the weights, which is what makes it do
+    work (findings 22, 44, 45); a conservative isotropic pressure would keep the friction. A density that no isochoric
+    affine map of the neighborhood changes would have neither: the kernel sum in a unimodular metric, the inverse square
+    root of the second moment of the neighbors in that same metric. On the lattice its shear derivative is 6.0e-4 at
+    gamma 0.1 and 5.9e-5 at 0.2, with the per-particle fixed point still unconverged after 40 iterations (contraction
+    about 0.83 per iteration); it reads compression and non-affine displacements as the kernel sum does, but at a free
+    surface the metric collapses (0.32 for a half neighborhood against 0.85). Its exact gradient goes through the fixed
+    point in every pressure iteration, about twice the cost of an iteration, against an RTF already 3.5 times short of
+    the target. Not implemented in the solver.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
