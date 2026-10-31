@@ -22,11 +22,14 @@ def surface_recipe(name: str, level: int = 0) -> trimesh.Trimesh:
         return stress_mesh_asset.load_surface(
             Path(stress_mesh_asset.__file__).parent / "assets/hollow_egg/level1/egg_outer.obj"
         )
-    if name in ("egg", "neck"):
+    if name in ("egg", "neck", "round", "dome"):
         surface = trimesh.creation.icosphere(subdivisions=level, radius=1.0)
         if name == "neck":
             surface.vertices[:, :2] *= (0.35 + 0.65 * surface.vertices[:, 2] ** 2)[:, None]
-        surface.vertices *= [0.021, 0.016, 0.03]
+        if name == "dome":
+            surface.update_faces(surface.triangles_center[:, 2] < 0.01)
+            surface.remove_unreferenced_vertices()
+        surface.vertices *= [0.025, 0.025, 0.03] if name == "round" else [0.021, 0.016, 0.03]
         return surface
     if name == "u":
         path = np.array([[-0.02, 0.02], [-0.02, -0.02], [0, -0.03], [0.02, -0.02], [0.02, 0.02]])

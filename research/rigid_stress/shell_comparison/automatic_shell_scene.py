@@ -27,11 +27,12 @@ from research.rigid_stress.shell_comparison.automatic_shell_geometry import surf
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--shape", choices=("egg", "grasp", "neck", "u", "plate"), default="grasp")
+    parser.add_argument("--shape", choices=("egg", "grasp", "round", "neck", "u", "plate"), default="grasp")
     parser.add_argument("--mesh-mode", choices=("automatic", "explicit", "authored"), default="automatic")
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--warmup", type=int, default=130)
+    parser.add_argument("--substeps", type=int, default=1)
     parser.add_argument("--steps", type=int, default=30)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--profile", action="store_true")
@@ -105,6 +106,7 @@ def main() -> None:
     started = time.perf_counter()
     workload = FrankaEgg(
         n_envs=args.envs,
+        substeps=args.substeps,
         stress_options=options,
         rigid_mesh=rigid_mesh,
         seed=510000,
@@ -127,11 +129,32 @@ def main() -> None:
                 np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True)),
                 np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True)),
             )
-        workload.step()
+        try:
+            workload.step()
+        except gs.GenesisException as error:
+            write_json(args.output / "failure.json", {"step": tick + 1, "error": str(error)})
+            arrays = {
+                item.name: qd_to_numpy(item.value, transpose=True)
+                for item in solver.stress_recovery.data
+                if item.kind != DataKind.CONFIG
+                and math.prod(item.value.shape) > 0
+                and any(
+                    word in item.name
+                    for word in ("contacts", "sources", "hertz", "radius", "curvature", "stress.0.state.")
+                )
+            }
+            for item in solver.collider.data:
+                if item.kind != DataKind.CONFIG and math.prod(item.value.shape) > 0:
+                    arrays[item.name] = qd_to_numpy(item.value, transpose=True)
+            arrays["geom_position"] = qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True)
+            arrays["geom_quaternion"] = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True)
+            np.savez_compressed(args.output / "failure-state.npz", **arrays)
+            raise
     qd.sync()
     results["acceptance_before"] = _checks(_api(), workload)
     assert results["acceptance_before"]["passed"] and results["acceptance_before"]["loaded_contacts"] > 0
     results["snapshot"] = prepare_recovery_snapshot(workload, geometry)
+    results["warmup_peak_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
     np.savez_compressed(
         args.output / "contacts.npz",
         valid=qd_to_numpy(entry.contacts.valid, transpose=True),

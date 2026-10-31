@@ -233,3 +233,23 @@ def test_stress_boundary_colors_and_material_sides(tmp_path):
     assert_equal(colored.visual.vertex_colors[:6, :3], [20, 10, 70])
     assert_equal(colored.visual.vertex_colors[6:12, :3], [240, 40, 20])
     assert_equal(colored.visual.vertex_colors[12:, :3], [140, 140, 140])
+
+
+def test_automatic_shell_preserves_a_hole(tmp_path):
+    # A square annulus must retain its central opening after capping both boundary loops.
+    vertices = (
+        np.array(
+            [[-2, -2, 0], [2, -2, 0], [2, 2, 0], [-2, 2, 0], [-1, -1, 0], [1, -1, 0], [1, 1, 0], [-1, 1, 0]],
+            dtype=float,
+        )
+        * 0.01
+    )
+    quads = np.array([[0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]])
+    triangles = quads[:, [[0, 1, 2], [0, 2, 3]]].reshape((-1, 3))
+    source = tmp_path / "annulus.obj"
+    trimesh.Trimesh(vertices=vertices, faces=triangles, process=False).export(source, digits=17)
+    prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+    field = StressFieldSurface(prepared.elastic, "shell")
+    assert field.material_mesh.is_volume
+    assert_equal(field.material_mesh.euler_number, 0)
+    assert_allclose(field.material_mesh.volume, (0.04**2 - 0.02**2) * 0.0005, atol=1e-14)

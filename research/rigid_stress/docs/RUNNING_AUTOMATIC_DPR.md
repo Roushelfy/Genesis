@@ -1,12 +1,40 @@
 # 自动半径＋DPR 使用范例
 
-## 下一阶段：表面自动转换为薄壳（待实现，2026-10-31）
+## 表面自动转换为薄壳（2026-10-31）
 
-[新目标](AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md)要求支持直接指定
-`--backend shell --mesh model.obj --thickness 0.0005`，自动生成并缓存兼容的 Q4 壳资产，
-再运行现有自动半径＋DPR。输入表面作为中面，厚度由用户提供；覆盖闭合、开口及非凸薄壳，
-检查转换质量、数值一致性和吞吐。**该命令尚未实现**，当前自定义 shell 仍需下文的
-`--stress-mesh`。以下说明记录当前已交付用法。
+选择 `--backend shell --mesh model.obj --thickness 0.0005` 可自动生成并缓存 Q4 壳资产，
+再调用原生自动半径＋DPR。输入表面明确作为**中面**；`--scale` 把输入坐标转换为米，
+`--thickness` 始终是米，不再乘以 `--scale`。把实体的外表面指定为中面，会改成薄壳物理模型，
+不会推断实体的内部空腔或真实中面。当前验证进展见[记录](AUTOMATIC_SURFACE_TO_SHELL_PROGRESS_20261031.md)。
+
+```bash
+# 具有实际厚度的闭合或开口中面；有可用显示环境时着色。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress \
+  --backend shell --mesh model.obj --thickness 0.0005 --viewer
+
+# 毫米制 STL，中面坐标转为米，厚度仍为 0.5 mm；批量只输出最大值。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress \
+  --backend shell --mesh model.stl --scale 0.001 --thickness 0.0005 --envs 64
+
+# 原有 authored egg 无需转换；volume 仍是省略 --backend 时的默认。
+QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress --backend shell --viewer
+```
+
+转换将每个输入三角形划分成三个共形 Q4，新增边中点和面中心，不移动原中面、不进行平滑或近邻焊接。
+STL 重复顶点只在坐标完全相等时合并。F 个三角形生成 3F 个 Q4、V+E+F 个节点及 6(V+E+F) 个弹性自由度。
+建议从数十至数百个质量良好的三角形开始；这不是减面工具，密集逆矩阵的构造／存储仍随自由度快速增长。
+闭合／开口、可定向、连通的非凸曲面可转换，孔和边界会保留；退化、重复、非流形、自交、不可定向、
+不连通组件及厚度偏移后相交或倒置的输入会明确拒绝。尖锐折线不会被圆角化，过厚或过急折叠仍可能被拒绝。
+
+自定义壳的碰撞面是两侧偏移面与开口封边组成的材料边界，禁用凸包化、减面和补洞包覆；质量、质心与惯性
+从该边界计算。无需人为填实空腔。厚度、缩放、源几何（包括外部 glTF buffers）、转换配方参与缓存身份，
+`--cache-dir` 可显式指定项目数据目录；缓存只用于一次构造，不在每个环境或时间步重复转换。
+在本集群运行前应把 `GS_CACHE_FILE_PATH`、`--cache-dir` 和日志路径设在项目 data 目录或私有节点临时目录，
+参见 [DATA_LOCATION.md](../../../DATA_LOCATION.md)。
+
+转换成功并不保证每种接触都能使用 Hertz 半径。现有曲率、压力拟合、力／力矩和弹性残差检查仍生效；
+平面与平面的零相对曲率、凹面或未被支持的边缘接触可能被拒绝。也不自动生成适合任意形状的抓取轨迹。
+Q4 同网格解的一致性与空间精度是不同检查；壳面内应力不等于三维接触峰值，锐边峰值仍依赖采样和离散。
 
 ## 默认 egg、自定义 mesh 与应力着色
 
@@ -34,9 +62,9 @@ QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress \
 
 通用表面加载使用 Trimesh 支持的格式，如 OBJ/STL/PLY/GLB；自动四面体化需要一个闭合、方向一致的
 实心区域，不会从外表面猜测壁厚或内部空腔。默认 egg 始终复用原空壳资产，不会重新填成实心。
-`--mesh volume.npz` 可直接从体积资产提取碰撞边界。自定义 shell 则需要碰撞表面与
-`--backend shell --stress-mesh midsurface.npz`，中面必须含 Q4 connectivity，可用 `--thickness`
-指定米制壁厚。表面与弹性 NPZ 必须属于同一 authored frame；预处理对二者一起缩放并移到共同包围盒
+`--mesh volume.npz` 可直接从体积资产提取碰撞边界。自定义 shell 可自动转换，也可用
+`--backend shell --mesh midsurface.npz` 直接重载 Q4 资产，或通过 `--stress-mesh midsurface.npz` 显式指定匹配资产。
+中面 NPZ 必须含 Q4 connectivity，可用 `--thickness` 指定米制壁厚。表面与弹性 NPZ 必须属于同一 authored frame；预处理对二者一起缩放并移到共同包围盒
 中心，保留彼此的几何配准。模型朝向不变。自定义刚体的质量、质心和惯性从弹性材料边界导出并写入
 缓存 URDF；薄壳包含内外侧和开口边缘的壁厚封边，不会按外包络的实心体积估计惯性。默认 egg 仍
 使用其原始 URDF 惯性。`--cache-dir` 可指定缓存位置；否则遵循 Genesis 的
@@ -45,17 +73,17 @@ QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress \
 viewer 显示单个环境，headless 支持批量。蓝色表示零应力，红色表示颜色范围上限；默认上限跟随本次
 运行已经观察到的全域峰值递增，具体 Pa 数值会打印。使用 `--color-max 1000000` 可固定为 0–1 MPa，
 便于比较不同帧。3D 颜色取自每个边界三角形所属四面体的角点，不跨单元平滑；shell 每个面使用该侧
-四个 Gauss 点的最大值。内部热点不一定在可见表面，终端报告仍是全域最大值。这个显示不产生弹性
+四个 Gauss 点的最大值。开口厚度封边显示为灰色，表示这里没有独立的三维封边应力采样。内部热点不一定在可见表面，终端报告仍是全域最大值。这个显示不产生弹性
 变形，也不改变刚体碰撞形状。默认材料为 E=10 GPa、ν=0.3、ρ=2000 kg/m³。
 
 现有抓取轨迹不是任意物体的自动抓取规划器。网格尺寸、朝向和抓取部位需要适合 Panda 的开口与工作
 空间；高模应先准备合适的低模弹性资产，以控制构造和恢复开销。原生接触半径、载荷及弹性求解的
 适用范围和拒绝检查仍然有效。
 
-没有 GPU 时可添加 `--device cpu`。本次新增入口已在 CPU 上检查默认 egg 的 130 步非零应力输出、
+没有 GPU 时可添加 `--device cpu`。此前 `aa5a7d093` 入口在 CPU 上检查默认 egg 的 130 步非零应力输出、
 自定义 STL 的 30 步加载流程，以及软件 EGL viewer 的 volume/full 30 步与 shell/full 10 步着色调用；
 另检查了 volume 在第 130 步的实际渲染画面。网格缓存、比例缩放、边界归属、壳内外侧和颜色范围有
-独立测试。本次没有 GPU 或完整 730 步抓取的新增性能结论。下文此前的
+独立测试。该阶段没有 GPU 或完整 730 步抓取的新增性能结论。October 31 自动壳转换的新增验证与性能记录另见上方进展。下文此前的
 性能与 viewer 资格仍属于其各自冻结版本。
 
 普通 Options 和 `.dpr()` 默认选择 pressure/patch/Hertz 半径/Hertz 压力轮廓。体积加载默认采用 adaptive/q16，仅对未通过独立积分检查的接触升级至 q64、q128。薄壳仍默认 Q4 加载；下面显式选择已验证的 planar/k32 配方。公共示例、完整历史及三组配对计时均已完成，精度、速度和显存取舍见[结果报告](AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md)。
