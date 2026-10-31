@@ -929,6 +929,18 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     (0.008 m/s before) and a largest speed of 0.22 m/s, the particle-scale noise of finding 15. All four kept the other
     checks (momentum, decay, Couette, stirring balance -0.75 to -1.07 %, held joints, unit tests).
 
+69. The iterations of the pressure solves as a CUDA graph, measured and not adopted (development snapshot `dev-gr` on
+    4f781e61, diff `worktrees/dev-gr/final.diff`; FluidBench `sphgoal-grt-n1`, profiles `gr_*`, receipts `*__gr_*`). The
+    iterations of a solve ran inside `qd.graph.do_while` of a `@qd.kernel(graph=True)`, as the constraint solver of the
+    rigid solver does: the iteration count, the Chebyshev weight and the convergence test on the GPU, the error read
+    every fourth iteration on the GPU, one host read of the iteration count per solve. Every check kept its value
+    (momentum drift 4.0e-6 and 6.4e-6 per s, mode decay 0.189, Couette profile 0.139, stirring balance -1.0 %, held
+    joints within 0.4 %, thick-wall rest largest speed 0.049 m/s, unit tests as in finding 57), but the speed did not
+    change: RTF 0.275 at R2 (0.282 without) and 0.427-0.440 at R1 (0.408-0.425). The host launches and synchronizations
+    were not the cost; the GPU tasks themselves are, each at a floor of 6-8 us (finding 68), which a graph does not
+    shorten. RTF 0.5 at R2 therefore needs fewer GPU tasks per substep or fewer iterations, and the one measured way to
+    fewer iterations raises the rest noise (finding 68).
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
