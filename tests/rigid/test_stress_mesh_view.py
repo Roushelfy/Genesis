@@ -1,3 +1,4 @@
+import json
 import xml.etree.ElementTree as ET
 
 import numpy as np
@@ -139,6 +140,53 @@ def test_automatic_shell_rejects_invalid_geometry(tmp_path, kind, diagnostic):
     surface.export(source)
     with pytest.raises(ValueError, match=diagnostic):
         prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache", thickness=thickness)
+
+
+def test_automatic_shell_preserves_gaps_and_rejects_crossing_ribbons(tmp_path):
+    plate = trimesh.Trimesh(vertices=[[0, 0, 0], [0.04, 0, 0], [0, 0.03, 0]], faces=[[0, 1, 2]], process=False)
+    other = plate.copy()
+    other.apply_translation([0, 0, 1e-10])
+    source = tmp_path / "close-sheets.obj"
+    trimesh.util.concatenate((plate, other)).export(source, digits=17)
+    with pytest.raises(ValueError, match="disconnected"):
+        prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+    path = np.array([[-0.02, -0.02], [0.02, 0.02], [-0.02, 0.02], [0.02, -0.02]])
+    vertices = np.zeros((4, 2, 3))
+    vertices[:, :, 0] = path[:, :1]
+    vertices[:, :, 1] = [-0.01, 0.01]
+    vertices[:, :, 2] = path[:, 1:]
+    triangles = np.array([[0, 2, 3], [0, 3, 1], [2, 4, 5], [2, 5, 3], [4, 6, 7], [4, 7, 5]])
+    crossing = tmp_path / "crossing.obj"
+    trimesh.Trimesh(vertices=vertices.reshape((-1, 3)), faces=triangles, process=False).export(crossing)
+    with pytest.raises(ValueError, match="self-intersects"):
+        prepare_stress_mesh(crossing, None, "shell", 1.0, None, tmp_path / "cache")
+
+
+def test_automatic_shell_cache_tracks_external_geometry_buffers(tmp_path):
+    surface = trimesh.creation.icosphere(subdivisions=0, radius=0.03)
+    exported = trimesh.exchange.gltf.export_gltf(trimesh.Scene(surface))
+    for name, content in exported.items():
+        (tmp_path / name).write_bytes(content)
+    source = tmp_path / "model.gltf"
+    prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+    document = json.loads(source.read_bytes())
+    accessor = document["accessors"][document["meshes"][0]["primitives"][0]["attributes"]["POSITION"]]
+    view = document["bufferViews"][accessor["bufferView"]]
+    buffer = tmp_path / document["buffers"][view["buffer"]]["uri"]
+    payload = bytearray(buffer.read_bytes())
+    assert accessor["componentType"] == 5126 and accessor["type"] == "VEC3"
+    coordinates = np.frombuffer(
+        payload,
+        dtype="<f4",
+        count=3 * accessor["count"],
+        offset=view.get("byteOffset", 0) + accessor.get("byteOffset", 0),
+    ).reshape((-1, 3))
+    coordinates[:, 0] *= 1.2
+    buffer.write_bytes(payload)
+    changed = prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+    assert changed.elastic != prepared.elastic
+    with np.load(prepared.elastic) as before, np.load(changed.elastic) as after:
+        assert_allclose(np.ptp(after["vertices"], axis=0) / np.ptp(before["vertices"], axis=0), [1.2, 1, 1], atol=1e-6)
 
 
 def test_stress_boundary_colors_and_material_sides(tmp_path):
