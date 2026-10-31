@@ -31,6 +31,8 @@ N_BOUNDARY_SLOTS = 3
 # at rest density has about 33 to 42 neighbors, depending on the volume factor; one with more searches the hash grid.
 N_LISTED_NEIGHBORS = 64
 N_LISTED_BOUNDARY_NEIGHBORS = 48
+# threads that share the fluid neighbors of a particle in the iterations of the pressure solves
+N_NEIGHBOR_SHARES = 4
 # particles summed serially by one thread before its atomic add to a per-environment accumulator: the atomic adds of
 # every particle to the same few addresses serialize on the GPU (a 6x6 system per particle took 1.6 ms for 19k particles)
 REDUCTION_CHUNK = 64
@@ -396,6 +398,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # pressure of the previous iteration of the running divergence or density solve (see _pressure_solve)
         self.particles_pressure_prev = qd.field(gs.qd_float, shape=(self._n_particles, self._B))
         self.particles_fluid_neighbors = qd.field(gs.qd_int, shape=(N_LISTED_NEIGHBORS, self._n_particles, self._B))
+        # partial sums of the shares of the neighbors of a particle in the iterations of the pressure solves (see
+        # _kernel_pressure_solve_iteration)
+        self.particles_acc_shares = qd.Vector.field(
+            3, dtype=gs.qd_float, shape=(N_NEIGHBOR_SHARES, self._n_particles, self._B)
+        )
+        self.particles_source_shares = qd.field(gs.qd_float, shape=(N_NEIGHBOR_SHARES, self._n_particles, self._B))
 
         # Per-environment reductions of the DFSPH solver iterations.
         self.envs_n_active = qd.field(gs.qd_int, shape=(self._B,))
@@ -1453,6 +1461,18 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 i_b,
             )
 
+    @qd.func
+    def _func_for_fluid_neighbor_share(self, i_p, i_s, ret: qd.template(), task: qd.template(), i_b):
+        """Run task(i_p, j, ret, i_b) on share i_s of the fluid neighbors of particle i_p: the listed neighbors
+        i_s, i_s + N_NEIGHBOR_SHARES, ..., or for a particle with more neighbors than a list holds, all of them (from
+        the hash grid) in share 0 and none in the others."""
+        n_neighbors = self.particles_n_fluid_neighbors[i_p, i_b]
+        if n_neighbors <= N_LISTED_NEIGHBORS:
+            for m in range((n_neighbors - i_s + N_NEIGHBOR_SHARES - 1) // N_NEIGHBOR_SHARES):
+                task(i_p, self.particles_fluid_neighbors[i_s + m * N_NEIGHBOR_SHARES, i_p, i_b], ret, i_b)
+        elif i_s == 0:
+            self.sh.for_all_neighbors(i_p, self.particles_reordered.pos, self._support_radius, ret, task, i_b)
+
     @qd.kernel
     def _kernel_compute_density_and_factor(self, f: qd.i32):
         for i_b in range(self._B):
@@ -1828,21 +1848,45 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # of a kernel run as serial tasks of their own.
         dt_pow = qd.static(self._substep_dt if is_divergence else self._substep_dt**2)
 
-        # The error of the environment is reset by its first thread of this loop, which does not read it, instead of in
-        # a loop of its own, which would run as a task of its own (about 7 us per iteration). The wrenches of the
-        # coupled links are reset at the start of the solve (see _kernel_init_pressure_solve) and at the end of every
-        # iteration, after the response of the links has read them.
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if i_p == 0:
+        # With 19172 particles a loop over the particles runs as a single wave of threads on a large GPU, and lasts as
+        # long as the slowest thread walks its neighbors. The two neighbor loops of the iteration therefore split the
+        # neighbors of each particle among N_NEIGHBOR_SHARES threads, whose partial sums a loop over the particles adds
+        # in a fixed order, so that the result does not depend on the order of the threads. The error of the
+        # environment is reset by the first thread of the first loop, which does not read it, instead of in a loop of
+        # its own, which would run as a task of its own (about 7 us per iteration). The wrenches of the coupled links
+        # are reset at the start of the solve (see _kernel_init_pressure_solve) and at the end of every iteration,
+        # after the response of the links has read them.
+        for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
+            if i_s == 0 and i_p == 0:
                 self.envs_solver_error[i_b] = 0.0
             if self.particles_reordered[i_p, i_b].active:
-                self._func_compute_pressure_acc(i_p, i_b, is_divergence)
-                if qd.static(self._has_rigid_coupling):
-                    # Reaction of the boundary pressure of the iteration on the coupled links (SPH_SOLVER_DESIGN.md
-                    # section 5.1)
-                    i_m = self.particles_reordered[i_p, i_b].material
-                    mass_kappa = self.materials[i_m].mass * self._func_pressure_density2_norm(i_p, i_b, is_divergence)
-                    self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
+                ret = qd.Struct(
+                    acc=qd.Vector.zero(gs.qd_float, 3),
+                    p_rho2_i=self._func_pressure_density2_norm(i_p, i_b, is_divergence),
+                    is_divergence=is_divergence,
+                )
+                self._func_for_fluid_neighbor_share(i_p, i_s, ret, self._task_compute_pressure_acc, i_b)
+                if i_s == 0:
+                    if qd.static(self._has_boundary):
+                        # BWJ23 eq. (33): a single term of the fluid particle pressure, with no pressure value at the
+                        # boundary.
+                        for k in range(N_BOUNDARY_SLOTS):
+                            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                                ret.acc -= ret.p_rho2_i * self.particles_boundary_slots[i_p, i_b, k].grad
+                    if qd.static(self._has_rigid_coupling):
+                        # Reaction of the boundary pressure of the iteration on the coupled links (SPH_SOLVER_DESIGN.md
+                        # section 5.1)
+                        i_m = self.particles_reordered[i_p, i_b].material
+                        mass_kappa = self.materials[i_m].mass * ret.p_rho2_i
+                        self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
+                self.particles_acc_shares[i_s, i_p, i_b] = ret.acc
+
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                acc = qd.Vector.zero(gs.qd_float, 3)
+                for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
+                    acc += self.particles_acc_shares[i_s, i_p, i_b]
+                self.particles_reordered[i_p, i_b].pressure_acc = acc
 
         if qd.static(self._has_rigid_coupling):
             # Response of the coupled links to that reaction
@@ -1852,25 +1896,33 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     acc += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
                 self.coupled_acc[i_r, i_b] = acc
 
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+        for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
             if qd.static(self._has_rigid_coupling):
-                if i_p == 0:
+                if i_s == 0 and i_p == 0:
                     for i_r in range(qd.static(self._n_wrench_rows)):
                         self.coupled_wrench[i_r, i_b] = 0.0
             if self.particles_reordered[i_p, i_b].active:
                 predicted_source = gs.qd_float(0.0)
-                self._func_for_all_fluid_neighbors(i_p, predicted_source, self._task_compute_predicted_source, i_b)
+                self._func_for_fluid_neighbor_share(
+                    i_p, i_s, predicted_source, self._task_compute_predicted_source, i_b
+                )
+                if i_s == 0:
+                    if qd.static(self._has_boundary):
+                        # BWJ23 eq. (34): the pressure acceleration of a boundary particle is the one of its link, zero
+                        # for a link that is not coupled.
+                        for k in range(N_BOUNDARY_SLOTS):
+                            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                                acc_rel = self.particles_reordered[i_p, i_b].pressure_acc
+                                if qd.static(self._has_rigid_coupling):
+                                    acc_rel -= self._func_coupled_point_acc(i_p, i_b, k)
+                                predicted_source += acc_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
+                self.particles_source_shares[i_s, i_p, i_b] = predicted_source
 
-                if qd.static(self._has_boundary):
-                    # BWJ23 eq. (34): the pressure acceleration of a boundary particle is the one of its link, zero for
-                    # a link that is not coupled.
-                    for k in range(N_BOUNDARY_SLOTS):
-                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                            acc_rel = self.particles_reordered[i_p, i_b].pressure_acc
-                            if qd.static(self._has_rigid_coupling):
-                                acc_rel -= self._func_coupled_point_acc(i_p, i_b, k)
-                            predicted_source += acc_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
-
+        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            if self.particles_reordered[i_p, i_b].active:
+                predicted_source = gs.qd_float(0.0)
+                for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
+                    predicted_source += self.particles_source_shares[i_s, i_p, i_b]
                 self.particles_reordered[i_p, i_b].predicted_source = predicted_source
 
                 source = -self.particles_reordered[i_p, i_b].density_adv_norm

@@ -769,6 +769,18 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     step. Timing runs (one environment, RTF): R1 0.077 / 0.191 / 0.302, R2 0.049 / 0.117 / 0.172, R3 0.017 / 0.039 /
     0.072 at dt x1 / x4 / x8, against the 0.5 target.
 
+61. Shared neighbor loops in the pressure iterations (FluidBench `sphgoal-gpt-n1`, thick-wall S1 f2 R2 at dt x8, three
+    repeats; profile `gp_kp_dt8`; receipts `*__gp_*`). The two neighbor loops of every divergence and density iteration
+    split the listed neighbors of each particle among 4 threads, whose partial sums a loop over the particles adds in a
+    fixed order (the result stays independent of the thread order). With 19172 particles a loop over the particles is a
+    single wave of threads that lasts as long as its slowest thread: the pressure acceleration loop went from 35.8 to
+    21.8 us and the predicted source loop from 52.5 to 39.4 us, the update now a loop of its own of 16.0 us. RTF 0.180
+    to 0.195 (walls 5.22, 5.17, 5.15 s). Equivalence against `*__bl_*`: momentum drift 4.5e-6 and 7.9e-6 per s, mode
+    decay error 0.189, Couette torques and profile within the spread of repeated runs (profile 0.142), stirring balance
+    -0.63 %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms 0.0080 m/s against 0.0080-0.0088 m/s in
+    the four earlier runs, its largest speed 0.117 m/s in a single one of 62 steps (0.071-0.106 m/s in the earlier
+    runs); the unit tests as in finding 57.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -935,6 +947,7 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | error of the pressure solves read every fourth iteration | implemented, validated, measured: RTF 0.153 to 0.174 (finding 57) | `sphgoal-ect-n1`, `ec_kp_dt8`; equivalence `*__ec_*` |
 | kernel task of the iteration resets folded into its loops, upper triangle of the viscosity Gram matrix | implemented, validated, measured: RTF 0.174 to 0.177 (finding 59) | `sphgoal-mot-n1`, `mo_kp_dt8`; equivalence `*__mo_*` |
 | boundary neighbor lists | implemented, validated, measured: RTF 0.177 to 0.180; the boundary kernels are bound by their slowest thread, not the search (finding 59) | `sphgoal-blt-n1`, `bl_kp_dt8`, `df_kp_dt8`; equivalence `*__bl_*` |
+| neighbors of a particle shared among 4 threads in the pressure iterations | implemented, validated, measured: RTF 0.180 to 0.195 (finding 61) | `sphgoal-gpt-n1`, `gp_kp_dt8`; equivalence `*__gp_*` |
 | warm start of the viscosity-pressure coupling | measured, not adopted: RTF 0.206 with the full warm start of the density solve, which breaks the stirring balance and the rest noise; 0.167 without it (finding 58) | `sphgoal-cw*t-n1`, `*__cw*_*` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
@@ -978,6 +991,6 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
   at nu 1e-6); S2 is usable at R2 with `v6w`; S3 misses the mixing index.
 - Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at dt x8
   for the default configuration (section "Performance (M5)"), against the 0.5 target. The Stage A velocity baseline on
-  thick walls runs at 0.180 at dt x8 (findings 55, 57-60); dt x12 is unstable, and a floating link fails at dt x4.
+  thick walls runs at 0.195 at dt x8 (findings 55, 57-61); dt x12 is unstable, and a floating link fails at dt x4.
   SPH_SOLVER_DESIGN.md section 10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and
   V4 fail in every configuration, so there is no accuracy-qualified speed to report.
