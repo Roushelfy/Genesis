@@ -548,6 +548,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 gs.qd_int, shape=(N_LISTED_BOUNDARY_NEIGHBORS, self._n_particles, self._B)
             )
             self.particles_n_boundary_neighbors = qd.field(gs.qd_int, shape=(self._n_particles, self._B))
+            # wall viscosity tensors of the boundary slots summed over a share of the boundary neighbors of a particle
+            # (see _kernel_compute_viscosity_geometry)
+            self.particles_wall_tensor_shares = qd.Matrix.field(
+                3, 3, dtype=gs.qd_float, shape=(N_NEIGHBOR_SHARES, self._n_particles, self._B, N_BOUNDARY_SLOTS)
+            )
             self.envs_clearance_corrections = qd.field(gs.qd_int, shape=(self._B,))
             # mass, center of mass, inertia about it and angular momentum change of the position recovery of the wall
             # clearance guard, then the angular velocity of its rigid correction (see _kernel_enforce_wall_clearance)
@@ -1468,6 +1473,26 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             )
 
     @qd.func
+    def _func_for_boundary_neighbor_share(self, i_p, i_s, ret: qd.template(), task: qd.template(), i_b):
+        """Run task(i_p, j, ret, i_b) on share i_s of the boundary neighbors of fluid particle i_p, as
+        _func_for_fluid_neighbor_share does for the fluid neighbors."""
+        n_neighbors = self.particles_n_boundary_neighbors[i_p, i_b]
+        if n_neighbors <= N_LISTED_BOUNDARY_NEIGHBORS:
+            for m in range((n_neighbors - i_s + N_NEIGHBOR_SHARES - 1) // N_NEIGHBOR_SHARES):
+                task(i_p, self.particles_boundary_neighbors[i_s + m * N_NEIGHBOR_SHARES, i_p, i_b], ret, i_b)
+        elif i_s == 0:
+            self.sh_boundary.for_all_neighbors_of_pos(
+                i_p,
+                self.particles_reordered[i_p, i_b].pos,
+                -1,
+                self.boundary_particles_reordered.pos,
+                self._support_radius,
+                ret,
+                task,
+                i_b,
+            )
+
+    @qd.func
     def _func_for_fluid_neighbor_share(self, i_p, i_s, ret: qd.template(), task: qd.template(), i_b):
         """Run task(i_p, j, ret, i_b) on share i_s of the fluid neighbors of particle i_p: the listed neighbors
         i_s, i_s + N_NEIGHBOR_SHARES, ..., or for a particle with more neighbors than a list holds, all of them (from
@@ -1884,20 +1909,22 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
                 self.particles_acc_shares[i_s, i_p, i_b] = ret.acc
 
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                acc = qd.Vector.zero(gs.qd_float, 3)
-                for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
-                    acc += self.particles_acc_shares[i_s, i_p, i_b]
-                self.particles_reordered[i_p, i_b].pressure_acc = acc
-
-        if qd.static(self._has_rigid_coupling):
-            # Response of the coupled links to that reaction
-            for i_r, i_b in qd.ndrange(qd.static(self._n_wrench_rows), self._B):
-                acc = gs.qd_float(0.0)
-                for i_col in range(qd.static(self._n_wrench_rows)):
-                    acc += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
-                self.coupled_acc[i_r, i_b] = acc
+        # The response of the coupled links to that reaction runs in the first threads of the loop that adds the
+        # shares, which also follows the loop of the reaction, instead of in a loop of its own (about 7 us per
+        # iteration).
+        for i_p, i_b in qd.ndrange(qd.static(max(self._n_particles, self._n_wrench_rows)), self._B):
+            if qd.static(self._has_rigid_coupling):
+                if i_p < qd.static(self._n_wrench_rows):
+                    acc_row = gs.qd_float(0.0)
+                    for i_col in range(qd.static(self._n_wrench_rows)):
+                        acc_row += self.coupled_mobility[i_p, i_col, i_b] * self.coupled_wrench[i_col, i_b]
+                    self.coupled_acc[i_p, i_b] = acc_row
+            if i_p < self._n_particles:
+                if self.particles_reordered[i_p, i_b].active:
+                    acc = qd.Vector.zero(gs.qd_float, 3)
+                    for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
+                        acc += self.particles_acc_shares[i_s, i_p, i_b]
+                    self.particles_reordered[i_p, i_b].pressure_acc = acc
 
         for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
             if qd.static(self._has_rigid_coupling):
@@ -2264,9 +2291,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
     def _task_compute_boundary_viscosity_geometry(self, i, j, ret: qd.template(), i_b):
         tensor = self._func_wall_viscosity_tensor(i, j, i_b)
         i_l = self.boundary_particles_reordered[j, i_b].link_idx
-        for k in range(N_BOUNDARY_SLOTS):
+        # ret stacks the tensors of the slots, rows 3 k to 3 k + 2 for slot k
+        for k in qd.static(range(N_BOUNDARY_SLOTS)):
             if self.particles_boundary_slots[i, i_b, k].link_idx == i_l:
-                self.particles_boundary_slots[i, i_b, k].wall_tensor += tensor
+                for a in qd.static(range(3)):
+                    for b in qd.static(range(3)):
+                        ret[3 * k + a, b] += tensor[a, b]
 
     @qd.func
     def _task_wall_shear_moment(self, i, j, ret: qd.template(), i_b):
@@ -2374,17 +2404,31 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.particles_viscosity[i_p, i_b].viscosity_correction = correction
 
         if qd.static(self._has_boundary):
+            # The boundary neighbors of a particle, each with the 8 ghost points of its wall column, are shared among
+            # N_NEIGHBOR_SHARES threads (see _kernel_pressure_solve_iteration), whose slot tensors a loop over the
+            # particles adds in a fixed order.
+            for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
+                if self.particles_reordered[i_p, i_b].active:
+                    tensors = qd.Matrix.zero(gs.qd_float, 3 * N_BOUNDARY_SLOTS, 3)
+                    self._func_for_boundary_neighbor_share(
+                        i_p, i_s, tensors, self._task_compute_boundary_viscosity_geometry, i_b
+                    )
+                    for k in qd.static(range(N_BOUNDARY_SLOTS)):
+                        tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
+                        for a in qd.static(range(3)):
+                            for b in qd.static(range(3)):
+                                tensor[a, b] = tensors[3 * k + a, b]
+                        self.particles_wall_tensor_shares[i_s, i_p, i_b, k] = tensor
+
             for i_p, i_b in qd.ndrange(self._n_particles, self._B):
                 if self.particles_reordered[i_p, i_b].active:
-                    for k in range(N_BOUNDARY_SLOTS):
-                        self.particles_boundary_slots[i_p, i_b, k].wall_tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
-                    dummy = gs.qd_float(0.0)
-                    self._func_for_all_boundary_neighbors(
-                        i_p, dummy, self._task_compute_boundary_viscosity_geometry, i_b
-                    )
                     wall_tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
-                    for k in range(N_BOUNDARY_SLOTS):
-                        wall_tensor += self.particles_boundary_slots[i_p, i_b, k].wall_tensor
+                    for k in qd.static(range(N_BOUNDARY_SLOTS)):
+                        slot_tensor = qd.Matrix.zero(gs.qd_float, 3, 3)
+                        for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
+                            slot_tensor += self.particles_wall_tensor_shares[i_s, i_p, i_b, k]
+                        self.particles_boundary_slots[i_p, i_b, k].wall_tensor = slot_tensor
+                        wall_tensor += slot_tensor
                     if qd.static(self._wall_shear_consistency):
                         scale = self._func_wall_shear_scale(i_p, i_b, wall_tensor)
                         wall_tensor *= scale

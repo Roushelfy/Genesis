@@ -765,9 +765,10 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     0.36 to 0.42, -65.5 to -68.1 %, 0.88 to 0.31 %. The water dynamics, not the time step, set the S1 verdict. S2
     pouring is usable at every time step at R1 and R2 with the same onset and transfer as at dt x1 (output RTF 0.043 to
     0.193 at R1, 0.026 to 0.091 at R2). The floating box T07a is usable at dt x1 and ends in NaN at dt x4 (45
-    unconverged solves; the run at dt x8 had not ended when this was recorded): dynamic links need the FluidBench time
-    step. Timing runs (one environment, RTF): R1 0.077 / 0.191 / 0.302, R2 0.049 / 0.117 / 0.172, R3 0.017 / 0.039 /
-    0.072 at dt x1 / x4 / x8, against the 0.5 target.
+    unconverged solves); the run at dt x8 slowed to 0.4 frames per second and was stopped by its time limit of 3 h
+    without a record (Slurm job 767085): dynamic links need the FluidBench time step. Timing runs (one environment,
+    RTF): R1 0.077 / 0.191 / 0.302, R2 0.049 / 0.117 / 0.172, R3 0.017 / 0.039 / 0.072 at dt x1 / x4 / x8, against the
+    0.5 target.
 
 61. Shared neighbor loops in the pressure iterations (FluidBench `sphgoal-gpt-n1`, thick-wall S1 f2 R2 at dt x8, three
     repeats; profile `gp_kp_dt8`; receipts `*__gp_*`). The two neighbor loops of every divergence and density iteration
@@ -806,6 +807,17 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     thick-wall rest at R1 rms 0.0082 m/s and largest speed 0.054 m/s; the unit tests as in finding 57. Eight instead of
     four threads per particle in the neighbor loops of the pressure iterations (finding 61) gave RTF 0.227 with the same
     checks (rest rms 0.0077 m/s): not adopted.
+
+64. Two more task reductions (FluidBench `sphgoal-rft-n1`, `sphgoal-vgt-n1`, `sphgoal-cbt-n1`, thick-wall S1 f2 R2 at dt
+    x8, three repeats; receipts `*__rf_*`, `*__vg_*`, `*__cb_*`). The response of the coupled links in the pressure
+    iterations runs in the first threads of the loop that adds the shares of the pressure accelerations instead of a
+    loop of its own (RTF 0.246 to 0.248), and the wall viscosity tensors of the viscosity geometry share the listed
+    boundary neighbors of a particle among 4 threads as the pressure iterations do (finding 61), their slot tensors
+    added in a fixed order (RTF 0.252). Both together: RTF 0.254 (walls 3.98, 3.95, 3.97 s). Equivalence of the
+    combination against `*__vr_*`: momentum drift 4.3e-6 and 7.2e-6 per s, mode decay error 0.189, stirring balance
+    -0.68 %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms 0.0080 m/s and largest speed 0.050 m/s,
+    Couette torques as before and profile error 0.153 (0.137-0.147 in the eleven earlier runs since finding 57, 0.144
+    and 0.145 for each change alone); the unit tests as in finding 57.
 
 ## Validation at 47499e5c (v5)
 
@@ -977,6 +989,7 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | error of the pressure iterations summed in chunks when read | implemented, validated, measured: RTF 0.195 to 0.232 (finding 62) | `sphgoal-ert-n1`, `er_kp_dt8`; equivalence `*__er_*` |
 | sums of the viscosity solve, coupling residual and dissipation readout in chunks | implemented, validated, measured: RTF 0.232 to 0.246 (finding 63) | `sphgoal-vrt-n1`; equivalence `*__vr_*` |
 | 8 instead of 4 threads per particle in the pressure iterations | measured, not adopted: RTF 0.227 (finding 63) | `sphgoal-g8t-n1`, `*__g8_*` |
+| link response folded into the share loop; wall tensors over shared boundary neighbors | implemented, validated, measured: RTF 0.246 to 0.254 (finding 64) | `sphgoal-rft-n1`, `sphgoal-vgt-n1`, `sphgoal-cbt-n1`; equivalence `*__rf_*`, `*__vg_*`, `*__cb_*` |
 | warm start of the viscosity-pressure coupling | measured, not adopted: RTF 0.206 with the full warm start of the density solve, which breaks the stirring balance and the rest noise; 0.167 without it (finding 58) | `sphgoal-cw*t-n1`, `*__cw*_*` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
@@ -1020,6 +1033,6 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
   at nu 1e-6); S2 is usable at R2 with `v6w`; S3 misses the mixing index.
 - Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at dt x8
   for the default configuration (section "Performance (M5)"), against the 0.5 target. The Stage A velocity baseline on
-  thick walls runs at 0.246 at dt x8 (findings 55, 57-63); dt x12 is unstable, and a floating link fails at dt x4.
+  thick walls runs at 0.254 at dt x8 (findings 55, 57-64); dt x12 is unstable, and a floating link fails at dt x4.
   SPH_SOLVER_DESIGN.md section 10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and
   V4 fail in every configuration, so there is no accuracy-qualified speed to report.
