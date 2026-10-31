@@ -913,6 +913,22 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms 0.0083 m/s and largest speed 0.055 m/s; the
     unit tests as in finding 57.
 
+68. Speed on cc03c40b and four changes measured and not adopted (FluidBench `sphgoal-lad-*`, `sphgoal-lst-n1`,
+    `sphgoal-gmt-n1`, `sphgoal-p0t-n1`, thick-wall S1 f2 at dt x8; profiles `lad_*`, `ls_*`, `gm_*`, `p0_*`, `hm3_*`;
+    receipts `*__ls_*`, `*__gm_*`, `*__p0_*`). One environment at dt x8: RTF 0.408 / 0.282 / 0.126 at R1 / R2 / R3
+    (walls 2.49, 2.47, 2.41 s at R1). A substep takes about the same time at R1 (7157 particles, 7.8 ms) as at R2 (19172
+    particles, 8.1 ms): the GPU runs some 560-610 tasks per substep, most of them at a floor of 6-8 us, and the kernel
+    profiler sums to the wall time (7.83 ms at R1), so the solver is bound by the number and the latency of its GPU
+    tasks rather than by their arithmetic. Not adopted: (a) hashing only the boundary particles within reach of the
+    domain on top of finding 67 (density kernel 0.54 ms either way, R1 RTF 0.42-0.43 against 0.41-0.43); (b) holding the
+    boundary slots in registers through the two boundary passes of the density kernel (RTF 0.279, density kernel 0.62
+    ms); (c) sharing the neighbors and ghost points of the viscosity moments among 4 threads (RTF 0.277, viscosity
+    geometry 1.29 ms against 1.10 ms at R2); (d) the first coupling pass of a viscous fluid working to the tolerance
+    instead of a tenth of it, since the next pass continues from its pressure: 62 instead of 92 density iterations per
+    substep, RTF 0.298 at R2 and 0.45 at R1, but the thick-wall cup at rest at R1 reaches an rms speed of 0.044 m/s
+    (0.008 m/s before) and a largest speed of 0.22 m/s, the particle-scale noise of finding 15. All four kept the other
+    checks (momentum, decay, Couette, stirring balance -0.75 to -1.07 %, held joints, unit tests).
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -1129,6 +1145,6 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
   at nu 1e-6); S2 is usable at R2 with `v6w`; S3 misses the mixing index.
 - Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at dt x8
   for the default configuration (section "Performance (M5)"), against the 0.5 target. The Stage A velocity baseline on
-  thick walls runs at 0.254 at dt x8 (findings 55, 57-64); dt x12 is unstable, and a floating link fails at dt x4.
-  SPH_SOLVER_DESIGN.md section 10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and
-  V4 fail in every configuration, so there is no accuracy-qualified speed to report.
+  thick walls runs at 0.282 at dt x8 (0.408 at R1; findings 55, 57-68); dt x12 is unstable, and a floating link fails at
+  dt x4. SPH_SOLVER_DESIGN.md section 10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or
+  V5) and V4 fail in every configuration, so there is no accuracy-qualified speed to report.
