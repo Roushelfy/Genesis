@@ -47,7 +47,11 @@ def capture_source(source, output, stem):
         paths.extend(
             (
                 "examples/rigid/franka_egg_stress.py",
+                "examples/rigid/franka_egg_automatic_stress.py",
                 "examples/rigid/egg_stress_controller.py",
+                "examples/rigid/stress_mesh_asset.py",
+                "examples/rigid/stress_shell_asset.py",
+                "examples/rigid/stress_field_view.py",
                 "examples/speed_benchmark",
                 "examples/rigid/assets/hollow_egg",
             )
