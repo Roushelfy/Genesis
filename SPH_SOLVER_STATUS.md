@@ -717,6 +717,24 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     per substep (8.0 ms in their iterations, mostly those of the density solves of the two coupling passes that almost
     every substep takes), density and factor 1.6 ms, the viscosity geometry 1.5 ms.
 
+58. Warm start of the viscosity-pressure coupling, measured and not adopted (development snapshots on 18bf3cc0, diffs
+    `worktrees/dev-cw/v1.diff`, `dev-cw/v2.diff`, `dev-cw3/final.diff` in the Genesis data directory; FluidBench
+    `sphgoal-cw*t-n1` and receipts `*__cw_*`, `*__cw2_*`, `*__cw3_*`, `*__cw0_*`, `*__cw20_*`). At dt x8 almost every
+    substep takes two coupling passes (1926 of 1974 in `sphgoal-ect-n1`), since the first viscosity solve sees no
+    pressure. Three variants started the first pass from the pressure of the previous substep: (v1) the viscosity solve
+    and the density solve both start from it; (v2) the same, with the viscous impulse of v* alone scaling the tolerances
+    of the first pass; (v3) the viscosity solve reads it and the density solve keeps its usual start (half the last
+    pressure). v1 and v2 run at RTF 0.206 and 0.202 against 0.174 (41 density iterations per substep against 92), but
+    still take two passes in 1648 substeps: the gain is the full warm start of the density solve, which the Performance
+    section already rejected at 0.75 and 1.0 of the last pressure for the noise it leaves. Here the stirring balance
+    goes from -1.0 % to -7.7 and -8.6 % (bar 5 %), the mean rms speed of thick-wall water at rest at R1 from 0.008-0.009
+    to 0.029 and 0.022 m/s, and the coupling of 5 and 8 of the 3000 substeps of the held plate stops unconverged. v3
+    keeps every check (stirring balance -1.5 %, rest rms 0.0083 m/s, no unconverged solve, momentum, decay at nu 1e-3
+    and 1e-2, Couette and held joints unchanged; unit tests as in finding 57) and lets 438 substeps finish after one
+    pass, but runs at RTF 0.167: the second pass costs 14-16 density iterations against 41-44 for the first (worst
+    substeps of `sphgoal-sbt-n1`), which the prediction kernel and the longer first viscosity solve offset. Not adopted.
+    H100 duplicates of these runs (`cwh*`) were discarded: the worktree was edited while they compiled.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -879,6 +897,9 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | compile-time constants in the iteration kernel | implemented, measured: statements outside the loops of a kernel run as serial GPU tasks of 6-7 us; one fewer per iteration, 28.6 to 28.1 ms per substep at dt x8 | `it2_kp_dt1`, `it2_it100_coarse_dt8` |
 | Chebyshev semi-iterative density solves | implemented, validated, measured: bound 0.98 (best of 0.95 to 0.998 at every time step), on the density solves of the first two coupling passes, which work to a tenth of the tolerance (finding 15); 21.5, 56.1 and 69.3 iterations per substep at dt x1, x4, x8 against 51.1, 123.2 and 166.8, RTF 0.041, 0.099, 0.155 against 0.027, 0.048, 0.076, all solves converged; paddle at rest (nu = 1e-3) 57 s against 130 s with 6.9 coupling passes per substep and none unconverged | `ch3_dt*`, `cheb0_dt*`, `cheb*_dt*`; validation `*__ch3_*`, `logs/ch3_cn.log` |
 | warm start of the density solve at 0.75 or 1.0 of the last pressure instead of 0.5 | measured, not adopted: 45 to 41 and 35 iterations per substep at dt x1, but water at rest stays noisier (closed column kinetic energy 3.7e-4 to 2.6e-4 J over 0.9 s against 3.3e-4 to 1.3e-4 J) | `gs-dfsph__S1__f2@sphgoal-ws*`, `logs/ws1.0_cn.log` |
+| chunked reductions of the viscosity projection and the clearance guard | implemented, validated, measured: RTF 0.123 to 0.153 on thick-wall S1 R2 at dt x8 (finding 57) | `sphgoal-rct-n1`, `rc_kp_dt8`; equivalence `*__rc_*` |
+| error of the pressure solves read every fourth iteration | implemented, validated, measured: RTF 0.153 to 0.174 (finding 57) | `sphgoal-ect-n1`, `ec_kp_dt8`; equivalence `*__ec_*` |
+| warm start of the viscosity-pressure coupling | measured, not adopted: RTF 0.206 with the full warm start of the density solve, which breaks the stirring balance and the rest noise; 0.167 without it (finding 58) | `sphgoal-cw*t-n1`, `*__cw*_*` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
 ## Remaining limitations (failing acceptance criteria at 76f37038)
@@ -920,6 +941,7 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
 - V13 FluidBench: S1 is not usable in any configuration (spin-down time 54-86 % short, finding 21 and the V4 dissipation
   at nu 1e-6); S2 is usable at R2 with `v6w`; S3 misses the mixing index.
 - Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at dt x8
-  for the default configuration (section "Performance (M5)"), against the 0.5 target. SPH_SOLVER_DESIGN.md section 10
-  calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and V4 fail in every configuration,
-  so there is no accuracy-qualified speed to report.
+  for the default configuration (section "Performance (M5)"), against the 0.5 target. The Stage A velocity baseline on
+  thick walls runs at 0.174 at dt x8 on 18bf3cc0 (findings 55, 57, 58); dt x12 is unstable. SPH_SOLVER_DESIGN.md section
+  10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and V4 fail in every
+  configuration, so there is no accuracy-qualified speed to report.
