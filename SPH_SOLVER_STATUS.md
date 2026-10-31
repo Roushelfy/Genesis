@@ -898,6 +898,21 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     runs (profile 0.138), stirring balance -0.94 %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms
     0.0082 m/s and largest speed 0.053 m/s; the unit tests as in finding 57.
 
+67. The gap between a wall and the fluid nearest to it as an integer (FluidBench `sphgoal-gat-n1`, `sphgoal-hmt-n1`,
+    thick-wall S1 f2 R2 at dt x8; profiles `df2_kp_dt8`, `df3_kp_dt8`, `hm_kp_dt8`, `ga_kp_dt8`; receipts `*__ga_*`,
+    `*__hm_*`). Split into its loops (development snapshot `dev-df2`), the density kernel spent 1.34 ms per substep in
+    the boundary search that assigns the slots and 0.24 and 0.08 ms in the boundary and fluid density sums; without the
+    atomic minimum of the gap of the boundary particles (`boundary_particles_fluid_gap`, a profiling variant) the search
+    took 0.20 ms. A floating-point atomic minimum runs as a compare-and-swap loop on the GPU. The gap is now held in
+    2^24 units of the support radius and its minimum taken by an integer atomic: the density kernel takes 0.53 ms
+    instead of 1.55 ms, GPU time per substep 10.70 to 9.30 ms, RTF 0.248 to 0.282 (walls 3.59, 3.57, 3.58 s). Hashing
+    only the boundary particles within a support radius of the domain (the stirring rod leaves it; development snapshot
+    `dev-hm`) left the density kernel at 1.55 ms and the RTF at 0.253: the candidates of the search were not its cost;
+    not adopted. Equivalence of the integer gap against `*__ie_*`: momentum drift 4.3e-6 and 7.8e-6 per s, mode decay
+    error 0.189, Couette torques and profile within the spread of repeated runs (profile 0.140), stirring balance -0.75
+    %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms 0.0083 m/s and largest speed 0.055 m/s; the
+    unit tests as in finding 57.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -1069,6 +1084,8 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | 8 instead of 4 threads per particle in the pressure iterations | measured, not adopted: RTF 0.227 (finding 63) | `sphgoal-g8t-n1`, `*__g8_*` |
 | link response folded into the share loop; wall tensors over shared boundary neighbors | implemented, validated, measured: RTF 0.246 to 0.254 (finding 64) | `sphgoal-rft-n1`, `sphgoal-vgt-n1`, `sphgoal-cbt-n1`; equivalence `*__rf_*`, `*__vg_*`, `*__cb_*` |
 | 9 independent stop of environments | implemented, validated, measured: batches of 16 at 0.35-0.49 environment-seconds per second against 0.16-0.42, one environment 2 % slower (finding 66) | `sphgoal-iet-*`; equivalence `*__ie_*` |
+| integer atomic minimum of the wall gap | implemented, validated, measured: RTF 0.248 to 0.282 (finding 67) | `sphgoal-gat-n1`, `ga_kp_dt8`; equivalence `*__ga_*` |
+| boundary particles hashed only within reach of the domain | measured, not adopted: RTF 0.253 (finding 67) | `sphgoal-hmt-n1`, `*__hm_*` |
 | warm start of the viscosity-pressure coupling | measured, not adopted: RTF 0.206 with the full warm start of the density solve, which breaks the stirring balance and the rest noise; 0.167 without it (finding 58) | `sphgoal-cw*t-n1`, `*__cw*_*` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 

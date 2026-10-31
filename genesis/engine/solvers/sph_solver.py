@@ -31,6 +31,9 @@ N_BOUNDARY_SLOTS = 3
 # at rest density has about 33 to 42 neighbors, depending on the volume factor; one with more searches the hash grid.
 N_LISTED_NEIGHBORS = 64
 N_LISTED_BOUNDARY_NEIGHBORS = 48
+# resolution of the gap between a wall and the fluid nearest to it, in units per support radius (see
+# boundary_particles_fluid_gap)
+FLUID_GAP_UNITS = 1 << 24
 # threads that share the fluid neighbors of a particle in the iterations of the pressure solves
 N_NEIGHBOR_SHARES = 4
 # particles summed serially by one thread before its atomic add to a per-environment accumulator: the atomic adds of
@@ -651,7 +654,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             )
             # Distance from the surface of the nearest fluid particle in front of each boundary particle, in hashed
             # (reordered) boundary order, over the substep (see _task_find_boundary_faces and _func_wall_ghost).
-            self.boundary_particles_fluid_gap = qd.field(gs.qd_float, shape=(self._n_boundary_particles, self._B))
+            # The gap in units of FLUID_GAP_UNITS per support radius, an integer so that the fluid particles take its
+            # minimum by an integer atomic: a floating-point atomic minimum runs as a compare-and-swap loop on the GPU,
+            # which took 1.1 ms per substep in the density kernel of FluidBench S1 R2 (SPH_SOLVER_STATUS.md finding 67).
+            self.boundary_particles_fluid_gap = qd.field(gs.qd_int, shape=(self._n_boundary_particles, self._B))
 
     def init_ckpt(self):
         self._ckpt = dict()
@@ -1314,7 +1320,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             # the fluid nearest to the surface patch of the boundary particle, within half a particle spacing of its
             # normal (see _func_wall_ghost)
             if dist_normal > self._boundary_offset and dist_lateral2 < (0.5 * self._particle_size) ** 2:
-                qd.atomic_min(self.boundary_particles_fluid_gap[j, i_b], dist_normal - self._boundary_offset)
+                gap_units = (dist_normal - self._boundary_offset) * (FLUID_GAP_UNITS / self._support_radius)
+                qd.atomic_min(
+                    self.boundary_particles_fluid_gap[j, i_b], qd.cast(qd.min(gap_units, FLUID_GAP_UNITS), gs.qd_int)
+                )
             if dist_lateral2 < (0.75 * self._boundary_spacing) ** 2 and qd.abs(dist_normal) < qd.abs(
                 self.particles_boundary_slots[i, i_b, i_s].clearance + self._boundary_offset
             ):
@@ -1521,7 +1530,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             for i_b in range(self._B):
                 self.envs_boundary_slot_overflows[i_b] = 0
             for i_j, i_b in qd.ndrange(self._n_boundary_particles, self._B):
-                self.boundary_particles_fluid_gap[i_j, i_b] = self._support_radius
+                self.boundary_particles_fluid_gap[i_j, i_b] = FLUID_GAP_UNITS
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             if self.particles_reordered[i_p, i_b].active:
@@ -2278,7 +2287,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # volume map) starts the column below the surface, else the column and the fluid particles both stand for the
         # fluid near the surface and the wall transmits too much (1.34 of mu gamma with the first layer at a quarter
         # spacing, 0.93 with the column starting at the edge, offline lattice computation).
-        gap = self.boundary_particles_fluid_gap[j, i_b]
+        gap = self.boundary_particles_fluid_gap[j, i_b] * (self._support_radius / FLUID_GAP_UNITS)
         band = gs.qd_float(0.0)
         if gap < self._support_radius:
             band = gap - 0.5 * self._particle_size
