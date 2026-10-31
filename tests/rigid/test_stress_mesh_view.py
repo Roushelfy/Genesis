@@ -150,13 +150,14 @@ def test_automatic_shell_preserves_gaps_and_rejects_crossing_ribbons(tmp_path):
     trimesh.util.concatenate((plate, other)).export(source, digits=17)
     with pytest.raises(ValueError, match="disconnected"):
         prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
-    scene = trimesh.Scene()
-    scene.add_geometry(plate, geom_name="sheet", node_name="first")
-    transform = np.eye(4)
-    transform[2, 3] = 1e-10
-    scene.graph.update(frame_to="second", geometry="sheet", matrix=transform)
-    source = tmp_path / "transformed-sheets.glb"
-    scene.export(source)
+    exported = trimesh.exchange.gltf.export_gltf(trimesh.Scene(plate))
+    for name, content in exported.items():
+        (tmp_path / name).write_bytes(content)
+    source = tmp_path / "model.gltf"
+    document = json.loads(source.read_bytes())
+    document["scenes"][document.get("scene", 0)]["nodes"].append(len(document["nodes"]))
+    document["nodes"].append({"mesh": 0, "translation": [0, 0, 1e-10]})
+    source.write_text(json.dumps(document))
     with pytest.raises(ValueError, match="disconnected"):
         prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
     path = np.array([[-0.02, -0.02], [0.02, 0.02], [-0.02, 0.02], [0.02, -0.02]])
