@@ -6,6 +6,7 @@ import numpy as np
 import trimesh
 
 from examples.rigid.stress_mesh_asset import volume_boundary
+from examples.rigid.stress_shell_asset import shell_boundary
 
 
 class StressFieldSurface:
@@ -22,37 +23,14 @@ class StressFieldSurface:
             vertices = asset["vertices"]
             if backend == "volume":
                 triangles, self.owners, self.corners = volume_boundary(asset["tetrahedra"], vertices)
+                self.material_mesh = trimesh.Trimesh(vertices=vertices, faces=triangles, process=False)
             else:
                 quads = asset["quads"]
-                if "directors" in asset:
-                    directors = asset["directors"]
-                else:
-                    points = vertices[quads]
-                    normal = np.cross(points[:, 2] - points[:, 0], points[:, 3] - points[:, 1])
-                    directors = np.zeros_like(vertices)
-                    np.add.at(directors, quads.reshape(-1), np.repeat(normal, 4, axis=0))
-                lengths = np.linalg.norm(directors, axis=1)
-                if (lengths == 0).any() or not np.isfinite(lengths).all():
-                    raise ValueError("Shell visualization needs finite nonzero directors.")
-                offset = 0.5 * thickness * directors / lengths[:, None]
-                vertices = np.concatenate((vertices + offset, vertices - offset))
-                outer = quads[:, [[0, 1, 2], [0, 2, 3]]].reshape((-1, 3))
-                inner = outer[:, ::-1] + len(directors)
-                triangles = np.concatenate((outer, inner))
+                self.material_mesh, _directors = shell_boundary(vertices, quads, asset.get("directors"), thickness)
+                vertices = self.material_mesh.vertices
+                triangles = self.material_mesh.faces[: 4 * len(quads)]
                 self.owners = np.tile(np.repeat(np.arange(len(quads)), 2), 2)
-                self.sides = np.repeat(np.arange(2), len(outer))
-                edges = quads[:, [[0, 1], [1, 2], [2, 3], [3, 0]]].reshape((-1, 2))
-                _, first, counts = np.unique(np.sort(edges, axis=1), axis=0, return_index=True, return_counts=True)
-                rim = edges[first[counts == 1]]
-                a, b = rim[:, 0], rim[:, 1]
-                caps = np.concatenate(
-                    (
-                        np.column_stack((a + len(directors), b + len(directors), b)),
-                        np.column_stack((a + len(directors), b, a)),
-                    )
-                )
-        material_faces = triangles if backend == "volume" else np.concatenate((triangles, caps))
-        self.material_mesh = trimesh.Trimesh(vertices=vertices, faces=material_faces, process=True)
+                self.sides = np.repeat(np.arange(2), 2 * len(quads))
         if not self.material_mesh.is_volume:
             raise ValueError("The elastic boundary must enclose a consistently oriented material volume.")
         self.vertices = vertices[triangles].reshape((-1, 3))

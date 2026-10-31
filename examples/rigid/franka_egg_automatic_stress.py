@@ -15,8 +15,10 @@ from genesis.utils.misc import get_cache_dir, tensor_to_array
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--backend", choices=("volume", "shell"), default="volume")
-    parser.add_argument("--thickness", type=float, default=0.0005, help="Shell thickness in metres.")
-    parser.add_argument("--mesh", type=Path, help="Rigid surface file or volume NPZ; defaults to the hollow egg.")
+    parser.add_argument(
+        "--thickness", type=float, default=0.0005, help="Shell thickness in metres, independent of --scale."
+    )
+    parser.add_argument("--mesh", type=Path, help="Surface file or elastic NPZ; shell surfaces are midsurfaces.")
     parser.add_argument("--stress-mesh", type=Path, help="Matching volume or Q4 shell NPZ in the same authored frame.")
     parser.add_argument(
         "--scale", type=float, default=1.0, help="Convert custom surface and elastic coordinates to metres."
@@ -57,6 +59,7 @@ def main() -> None:
             scale=args.scale,
             max_volume=args.max_volume,
             cache=args.cache_dir or Path(get_cache_dir()) / "rigid_stress_meshes",
+            thickness=args.thickness,
         )
         mesh = prepared.elastic
     if args.backend == "shell":
@@ -90,8 +93,10 @@ def main() -> None:
             visualization=not args.viewer,
             file=rigid_file,
             align=False,
-            convexify=True,
+            convexify=args.backend != "shell",
             decimate=False,
+            watertighten=None if args.backend == "shell" else 5,
+            preserve_mesh_precision=args.backend == "shell",
         )
     viewer_options = None
     if args.viewer:

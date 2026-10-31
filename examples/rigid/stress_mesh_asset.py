@@ -1,7 +1,8 @@
-"""Prepare and cache an elastic volume asset from a closed rigid surface mesh."""
+"""Prepare and cache volume or finite-thickness shell assets from rigid surface meshes."""
 
 import errno
 import hashlib
+import importlib.metadata
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
@@ -10,6 +11,8 @@ from tempfile import TemporaryDirectory
 import numpy as np
 import tetgen
 import trimesh
+
+from examples.rigid.stress_shell_asset import shell_boundary, surface_to_quads
 
 
 @dataclass(frozen=True)
@@ -83,12 +86,14 @@ def prepare_stress_mesh(
     scale: float,
     max_volume: float | None,
     cache: Path,
+    thickness: float = 0.0005,
 ) -> PreparedStressMesh:
     """Scale a surface and matching elastic mesh together, or tetrahedralize a closed single solid.
 
     Input coordinates share one authored frame. Scale converts them to metres; both meshes are centered together.
     A supplied elastic asset preserves cavities and its topology. Automatic meshing fills a closed single solid; it does
-    not infer wall thickness from an outer surface. Cached paths include content, scale, meshing settings and versions.
+    not infer wall thickness from an outer surface. Shell input is a midsurface; its two physical sides and open-edge caps
+    form the collision mesh. Thickness is in metres, independent of scale. Cache keys include geometry and dependencies.
     """
     if not np.isfinite(scale) or scale <= 0:
         raise ValueError("Mesh scale must be finite and positive.")
@@ -98,23 +103,27 @@ def prepare_stress_mesh(
         if elastic is not None:
             raise ValueError("Use either --mesh asset.npz or --stress-mesh, not both.")
         elastic = source
-    if backend == "shell" and elastic is None:
-        raise ValueError("A custom shell needs --stress-mesh with an authored Q4 midsurface NPZ.")
+    if backend not in ("volume", "shell"):
+        raise ValueError("Stress backend must be volume or shell.")
+    if backend == "shell" and (not np.isfinite(thickness) or thickness <= 0):
+        raise ValueError("Shell thickness must be finite and positive, in metres.")
+    if backend == "shell" and max_volume is not None:
+        raise ValueError("--max-volume only applies to the volume backend.")
     if max_volume is not None and elastic is not None:
         raise ValueError("--max-volume only applies when tetrahedralizing a new surface, not a prepared elastic asset.")
 
     if source.suffix.lower() == ".npz":
         surface = None
     else:
-        surface = trimesh.load_scene(source).to_mesh()
+        surface = trimesh.load_scene(source, process=False).to_mesh()
         surface.remove_unreferenced_vertices()
-        if elastic is None:
+        if elastic is None and backend == "volume":
             surface.merge_vertices()
         surface.vertices *= scale
         if not len(surface.faces) or not np.isfinite(surface.vertices).all():
             raise ValueError("The surface mesh must contain finite vertices and triangles.")
 
-    digest = hashlib.sha256(b"rigid-stress-mesh-v1")
+    digest = hashlib.sha256(b"rigid-stress-mesh-v2-triangle-three-quads")
     digest.update(source.read_bytes())
     if surface is not None:
         # Scene formats can refer to geometry buffers outside the source file
@@ -123,13 +132,19 @@ def prepare_stress_mesh(
     if elastic is not None:
         digest.update(elastic.read_bytes())
     digest.update(f"{backend}:{scale.hex()}:{max_volume}:{tetgen.__version__}:{trimesh.__version__}".encode())
+    if backend == "shell":
+        digest.update(f"{thickness.hex()}:{importlib.metadata.version('pymeshlab')}".encode())
     directory = cache / digest.hexdigest()
     collision_path, elastic_path = directory / "collision.obj", directory / "elastic.npz"
     if collision_path.is_file() and elastic_path.is_file():
         surface = trimesh.load_scene(collision_path).to_mesh()
         return PreparedStressMesh(collision_path, elastic_path, surface.bounds[0, 2])
 
-    if elastic is None:
+    if elastic is None and backend == "shell":
+        vertices, quads = surface_to_quads(surface)
+        directors = None
+        extra_arrays = ()
+    elif elastic is None:
         assert surface is not None
         if not surface.is_volume or len(surface.split(only_watertight=False)) != 1:
             raise ValueError(
@@ -147,6 +162,8 @@ def prepare_stress_mesh(
             vertices = asset["vertices"] * scale
             tetrahedra = asset["tetrahedra"] if backend == "volume" else None
             extra_arrays = tuple((name, asset[name]) for name in asset.files if name != "vertices")
+            if backend == "shell":
+                quads, directors = asset["quads"], asset.get("directors")
 
     if vertices.ndim != 2 or vertices.shape[1] != 3 or not len(vertices) or not np.isfinite(vertices).all():
         raise ValueError("Elastic vertices must be a finite nonempty (n, 3) array.")
@@ -171,19 +188,7 @@ def prepare_stress_mesh(
         if surface is None:
             surface = trimesh.Trimesh(vertices=vertices, faces=triangles, process=False)
     else:
-        with np.load(elastic, allow_pickle=False) as asset:
-            quads = asset["quads"]
-        if (
-            quads.ndim != 2
-            or quads.shape[1] != 4
-            or not len(quads)
-            or not np.issubdtype(quads.dtype, np.integer)
-            or quads.min() < 0
-            or quads.max() >= len(vertices)
-        ):
-            raise ValueError("A shell asset needs nonempty in-range integer quads.")
-        if surface is None:
-            raise ValueError("A custom shell needs a collision surface file as --mesh, plus --stress-mesh.")
+        surface, directors = shell_boundary(vertices, quads, directors, thickness)
     assert surface is not None
     center = surface.bounds.mean(axis=0)
     surface.vertices = surface.vertices - center
@@ -199,6 +204,7 @@ def prepare_stress_mesh(
             )
         else:
             arrays = dict(extra_arrays)
+            arrays.update(quads=quads, directors=directors)
             np.savez_compressed(output / "elastic.npz", vertices=vertices, **arrays)
         try:
             output.rename(directory)

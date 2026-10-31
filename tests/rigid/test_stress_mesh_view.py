@@ -48,8 +48,95 @@ def test_stress_surface_mesh_preparation(tmp_path):
     opened.export(tmp_path / "open.obj")
     with pytest.raises(ValueError, match="closed"):
         prepare_stress_mesh(tmp_path / "open.obj", None, "volume", 1.0, None, tmp_path / "cache")
-    with pytest.raises(ValueError, match="midsurface"):
-        prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+
+
+def test_automatic_shell_units_mass_cache_and_reload(tmp_path):
+    surface = trimesh.Trimesh(
+        vertices=[[120.0, -60.0, 30.0], [160.0, -60.0, 30.0], [160.0, -10.0, 30.0], [120.0, -10.0, 30.0]],
+        faces=[[0, 1, 2], [0, 2, 3]],
+        process=False,
+    )
+    source = tmp_path / "plate.stl"
+    surface.export(source)
+    prepared = prepare_stress_mesh(source, None, "shell", 0.001, None, tmp_path / "cache", thickness=0.002)
+    with np.load(prepared.elastic) as asset:
+        assert_equal(asset["quads"].shape, (6, 4))
+        assert_equal(asset["vertices"].shape, (11, 3))
+        assert_allclose(np.ptp(asset["vertices"], axis=0), [0.04, 0.05, 0], atol=1e-12)
+        assert_allclose(asset["directors"], [0, 0, 1], atol=1e-12)
+    field = StressFieldSurface(prepared.elastic, "shell", thickness=0.002)
+    material = field.material_mesh
+    assert material.is_volume
+    assert_allclose(material.volume, 0.04 * 0.05 * 0.002, atol=1e-14)
+    assert_allclose(material.center_mass, [0, 0, 0], atol=1e-12)
+    assert_allclose(
+        np.diag(material.moment_inertia),
+        material.volume / 12 * np.array([0.05**2 + 0.002**2, 0.04**2 + 0.002**2, 0.04**2 + 0.05**2]),
+        atol=1e-15,
+    )
+    collision = trimesh.load_scene(prepared.collision, process=False).to_mesh()
+    assert_allclose(collision.vertices, material.vertices, atol=1e-10)
+    assert_allclose(prepared.minimum_z, -0.001, atol=1e-12)
+    repeated = prepare_stress_mesh(source, None, "shell", 0.001, None, tmp_path / "cache", thickness=0.002)
+    assert repeated == prepared
+    thicker = prepare_stress_mesh(source, None, "shell", 0.001, None, tmp_path / "cache", thickness=0.004)
+    assert thicker.elastic != prepared.elastic
+    assert_allclose(thicker.minimum_z, -0.002, atol=1e-12)
+    reloaded = prepare_stress_mesh(prepared.elastic, None, "shell", 1.0, None, tmp_path / "cache", thickness=0.002)
+    with np.load(prepared.elastic) as automatic, np.load(reloaded.elastic) as explicit:
+        for name in ("vertices", "quads", "directors"):
+            assert_allclose(automatic[name], explicit[name], atol=1e-12)
+
+
+@pytest.mark.parametrize("kind", ["closed", "reversed", "open"])
+def test_automatic_shell_orientable_surface(tmp_path, kind):
+    surface = trimesh.creation.icosphere(subdivisions=0, radius=0.03)
+    if kind == "reversed":
+        surface.invert()
+    elif kind == "open":
+        surface.update_faces(surface.triangles_center[:, 2] < 0.01)
+        surface.remove_unreferenced_vertices()
+    source = tmp_path / "surface.obj"
+    surface.export(source)
+    prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+    field = StressFieldSurface(prepared.elastic, "shell")
+    assert field.material_mesh.is_volume
+    assert field.material_mesh.volume < surface.convex_hull.volume / 4
+
+
+@pytest.mark.parametrize(
+    "kind,diagnostic",
+    [
+        ("disconnected", "disconnected"),
+        ("duplicate", "duplicate"),
+        ("degenerate", "degenerate"),
+        ("nonmanifold", "nonmanifold"),
+        ("thickness", "offset|intersect"),
+    ],
+)
+def test_automatic_shell_rejects_invalid_geometry(tmp_path, kind, diagnostic):
+    surface = trimesh.creation.icosphere(subdivisions=0, radius=0.03)
+    thickness = 0.0005
+    if kind == "disconnected":
+        second = surface.copy()
+        second.apply_translation([0, 0, 0.060000001])
+        surface = trimesh.util.concatenate((surface, second))
+    elif kind == "duplicate":
+        surface.faces = np.concatenate((surface.faces, surface.faces[:1]))
+    elif kind == "degenerate":
+        surface.vertices[surface.faces[0, 1]] = surface.vertices[surface.faces[0, 0]]
+    elif kind == "nonmanifold":
+        surface = trimesh.Trimesh(
+            vertices=[[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1]],
+            faces=[[0, 1, 2], [1, 0, 3], [0, 1, 4]],
+            process=False,
+        )
+    else:
+        thickness = 0.2
+    source = tmp_path / "invalid.obj"
+    surface.export(source)
+    with pytest.raises(ValueError, match=diagnostic):
+        prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache", thickness=thickness)
 
 
 def test_stress_boundary_colors_and_material_sides(tmp_path):
