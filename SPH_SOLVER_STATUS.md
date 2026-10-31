@@ -23,6 +23,28 @@ shear consistency and `density_correction="velocity"` with the dissipative clear
 density drift solve is disabled in this baseline and evaluated separately in a matched on/off comparison. Conservation,
 energy balance, solver convergence and the complete two-way/implicit-viscosity feature set remain required.
 
+## Next-stage owner goals (2026-10-31)
+
+The owner requests the next stage defined in [SPH_SOLVER_GOAL.md](SPH_SOLVER_GOAL.md), section "Next stage:
+qualification, coupling robustness and measured acceleration". The historical Stage A delivery below remains a
+baseline with limitations. This documentation update does not fix a solver or establish new validation results.
+
+| Goal | Initial state | Required next evidence |
+| --- | --- | --- |
+| N1 clean baseline qualification | pending | unified clean-commit regression and timing campaign; replace dirty-snapshot qualification claims |
+| N2 dynamic-link robustness | pending | failure-stage trace, converged dt sweep, loads/trajectories and supported operating range |
+| N3 state and selected reset | pending | state audit, repeated restart/reset controls, original V12 and any prospectively defined statistical verdict |
+| N4 pressure shear and viscosity accuracy | pending | pressure/viscous stress separation, derived correction, engineering-viscosity accuracy and conservation/energy regressions |
+| N5 measured acceleration | pending for this stage; earlier optimizations retained | matched-feature timings after corrections, task/iteration profile, single and independent batched throughput |
+
+Latest committed timing baseline (cc03c40b; finding 68): S1 dt x8 RTF 0.408/0.282/0.126 at R1/R2/R3. This is a
+performance diagnostic; S1 water accuracy and RTF 0.5 at R2 remain open. Full implicit viscosity and two-way coupling
+remain required. Position-level drift stays disabled; thin-wall repair and accurate water dynamics remain deferred.
+
+Synchronization checked before this goal update: `Roushelfy/Genesis:fluidbench/sph-solver` and
+`entropylost/genesis-world:main` both point to c00833b277361c63d78453485868effd238eeca1. This goal/status milestone
+must be synchronized as well, preserving all solver code and historical receipts.
+
 ## Stage A delivery (2026-10-31)
 
 Revision `138b2c5f` (code) with this document, and the independent stop of environments on the commit after it

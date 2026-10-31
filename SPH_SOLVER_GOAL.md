@@ -63,7 +63,7 @@ Retain the original research goals for accurate water spin-down and mixing, tigh
 thin-wall handling and broader viscosity/resolution coverage. Stage B failures are documented limitations of Stage A,
 rather than reasons to spend the current optimization budget on thin-wall repair.
 
-### Immediate work queue
+### Initial Stage A work queue (historical; next queue below)
 
 1. Freeze the thick-wall candidate with position-level drift correction disabled and its public example/configuration.
 2. Replay the coupled momentum, energy, load, state and viscosity cases on it. Include a free dynamic link and joint/contact
@@ -73,6 +73,96 @@ rather than reasons to spend the current optimization budget on thin-wall repair
 4. Profile that same configuration and pursue the remaining measured acceleration opportunities. Rank them by end-to-end
    benefit. Benchmark single environments and independent batches at matched feature sets.
 5. Record Stage A delivery and its limitations before returning to the stricter Stage B research cases.
+
+## Next stage: qualification, coupling robustness and measured acceleration (owner update, 2026-10-31)
+
+This update defines the next work queue. Stage A is a delivered engineering baseline with known failures, not full
+acceptance of the original objective. Keep thick walls, implicit interior and wall viscosity, strong two-way rigid
+coupling and `density_correction="velocity"` as the baseline. Thin-wall repair and accurate water dynamics remain
+deferred; pressure friction in the engineering viscosity range, dynamic-link robustness and state correctness are
+active work in this stage. The staged accuracy bands of 2026-10-30 remain in force.
+
+### N1: qualify a clean, committed baseline
+
+- Freeze the current solver code (cc03c40b, recorded by c00833b2), the FluidBench revision, public configuration,
+  commands, references and hardware. Use immutable worktrees throughout compilation and execution. Record exact SHAs,
+  both repositories' dirty flags, initialization, geometry, time step and every solver tolerance.
+- Re-run the representative viscosity, momentum, hydrostatics, floating, held-joint/contact, stirring-energy,
+  thick-wall rest and state cases together on that revision. Include full-horizon pouring and free dynamic-link
+  scenes. Preserve every existing failure and capped solve in the new report.
+- Reproduce the latest speed ladder on clean code at R1/R2/R3 and batches of 1/4/16 where feasible. The current S1
+  dt x8 planning baseline is RTF 0.408/0.282/0.126, not a water-accuracy pass. Keep older snapshots for comparison.
+- A development snapshot (`genesis_dirty=true` or modified benchmark code) can motivate a change but cannot establish
+  final qualification. Re-run adopted changes on their clean committed revision. Mark each case as pass, fail, invalid
+  or not run; convergence is required for both accuracy and accepted timing samples.
+
+### N2: make dynamic-link operating limits reliable
+
+- Trace the first unconverged stage and first non-finite state in the thick-wall free-link failures (T07a at dt x4,
+  T08a and T08c controls). Separate geometry/advection limits, pressure-viscosity coupling, rigid mobility and
+  joint/contact feedback; record normalized residual histories and impulse accounting.
+- Test light links, large fluid-to-link inertia ratios, a constrained link and contact feedback. Sweep dt x1/x2/x4/x8
+  with fixed physical parameters, and compare loads and trajectories against a refined, converged time-step reference.
+- Correct the responsible equations, stage order or solver convergence before raising a supported time step. An
+  explicit smaller-step operating range is acceptable; dt x8 from prescribed stirring is not a general rigid-coupling
+  guarantee. Raising an iteration cap is a measured cost/robustness tradeoff, not a correction of a wrong settling rate.
+- Reject non-finite or unconverged results through the existing error path. Preserve action/reaction, the 1e-4 per
+  second closed-system momentum bar and the 5% energy/readout bars.
+
+### N3: establish state and selected-reset correctness
+
+- Audit all persistent warm starts, active/convergence flags, coupling guesses, impulses and cache invalidation.
+  Exercise snapshot/restart, repeated reset and selected-environment reset in independent batches, including the
+  first replayed step and optional micropolar state where enabled.
+- Compare repeated ordinary restarts with full and selected resets using particle RMS, quantiles and maxima, plus
+  density, energy, loads and trajectories over the declared horizon. Use deterministic reductions as a diagnostic
+  where practical to separate missing state from amplification of floating-point round-off.
+- Keep the original V12 envelope verdict. A replacement statistical criterion requires a written numerical rationale
+  and thresholds frozen before new validation runs, with both verdicts reported. Increasing a bound after observing a
+  failed run does not close the issue.
+
+### N4: reduce pressure-induced shear and qualify physical viscosity
+
+- Isolate the pressure contribution to shear stress and drag in V1 Stokes flow, V2 Couette and V9 settling, including
+  its dependence on hydrostatic pressure, particle disorder, resolution and viscosity. Include T08c as an application
+  check: a converged but nearly stationary settling sphere is not an accuracy pass.
+- Write the density constraint, force operator, rigid response and discrete work balance for each proposed correction.
+  Measure interior and wall contributions separately. A pressure-model reformulation is allowed when justified by
+  these measurements; no single reformulation or removal of the error is presumed in advance.
+- Start at nu = 1e-4 to 1e-2 m^2/s. Target the existing 20% profile/decay and 30% transient-load bands, including the
+  currently failing nu = 1e-4 decay case. Retain each analytic case's declared rate/reference criterion; do not reclassify
+  a settling-rate failure as a passing transient-load measurement.
+- Reject a correction that introduces growing rest energy, breaks the 5% driven balance, loses momentum balance,
+  hides errors in the pressure readout or weakens the coupled residual checks. Re-run V3/V5/V6/V7/V8/V10 and pouring
+  after adopting a model change. Keep accurate water and thin walls reported as deferred research.
+- If the current formulation cannot meet a target, publish the measured limitation and the next justified experiment.
+  Do not declare a fundamental DFSPH error floor or silently loosen the owner targets.
+
+### N5: accelerate the qualified feature set
+
+- Profile after the correctness changes. Rank candidates by end-to-end benefit; the current profile points to roughly
+  560-610 GPU tasks per substep and their 6-8 us latency floor at R1/R2. Prioritize reducing tasks or justified
+  iterations while retaining the global dependencies and converged coupled solution.
+- Preserve the useful chunked reductions, shared neighbor loops, independent environment stops and integer wall-gap
+  minimum unless new measurements justify a replacement. Revisit CUDA graphs, coupling warm starts or relaxed first
+  solves only with new evidence: prior graph trials gave no material gain and fewer first-pass iterations raised rest
+  noise or broke the energy balance.
+- Measure static/prescribed scenes separately from free or constrained links. Report warmed solver-only and output
+  timing, build/compile time, peak memory, residuals, rest noise and three or more timing repeats. For batches report
+  total environment throughput, per-environment RTF, spread and heterogeneous trajectories.
+- Keep RTF >= 0.5 at R2 as the target and >= 1 as the stretch target. The S1 water timing remains a performance
+  diagnostic until its accuracy qualifies. Add an explicitly identified viscous stirring case with a converged
+  reference; changing the water viscosity creates a separate case and cannot turn the original S1 verdict into a pass.
+- Compare candidates at matched physics, geometry, resolution, time steps and tolerances. A benefit measured only at
+  a time step that fails dynamic-link validation cannot establish dynamic-coupling acceleration.
+
+### Completion and delivery
+
+Track N1-N5 separately as pending, implemented, validated or measured, with exact commits, commands and receipts.
+Publish the accepted operating range, original and staged verdicts, remaining failures and reproducible public examples.
+Retain historical negative results. Sync every coherent milestone, including goals/status, code, tests and examples,
+to `entropylost/genesis-world:main` under the existing owner requirement; verify both heads or the integrated diff.
+Do not label all goals complete while correctness failures or the performance target remain open.
 
 ## Required behavior
 
@@ -244,8 +334,9 @@ Use a collaborator-designated DFSPH branch instead when that destination is expl
 - Before synchronization, fetch the current destination and preserve changes made in either repository. Resolve shared
   solver changes by merging or porting the relevant commits. Preserve unrelated collaborator work.
 - Deliver through a pull request from `Roushelfy:fluidbench/sph-solver` to the recorded destination branch, or update the
-  existing synchronization pull request. A collaborator-managed working branch is also acceptable when explicitly
-  designated. Record the source head, destination branch/head, included commits, validation and pull request URL.
+  existing synchronization pull request. The owner-authorized fast-forward workflow already recorded in the status is
+  also acceptable when the destination is an ancestor of the source. Never force-push over collaborator changes.
+  Record the source head, destination branch/head, included commits, validation and pull request URL when applicable.
 - Track submitted and integrated states separately. A local push alone establishes development progress. Submitted
   means the destination pull request contains the intended changes. Integrated means those changes are present in the
   destination branch, including equivalent commits when squashed or cherry-picked.
@@ -253,8 +344,8 @@ Use a collaborator-designated DFSPH branch instead when that destination is expl
   Keep implementation and validation moving while repository permissions or destination integration remain pending.
 - Re-run the affected checks after conflict resolution and verify the published destination or pull request diff.
   Synchronization preserves the same physical model, defaults and numerical acceptance as the validated source.
-- Current action records this workflow requirement. Opening a synchronization pull request and integrating the existing
-  solver changes remain pending until performed and verified.
+- Verified before the 2026-10-31 goal update: source and destination both hold c00833b277361c63d78453485868effd238eeca1.
+  The existing solver work is integrated; synchronize subsequent milestones and verify their destination separately.
 
 ## Evidence locations
 
