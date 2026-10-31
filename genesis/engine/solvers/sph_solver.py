@@ -30,6 +30,9 @@ N_BOUNDARY_SLOTS = 3
 # Number of fluid neighbors a particle lists for the solves of a substep (see _func_for_all_fluid_neighbors). A particle
 # at rest density has about 33 to 42 neighbors, depending on the volume factor; one with more searches the hash grid.
 N_LISTED_NEIGHBORS = 64
+# particles summed serially by one thread before its atomic add to a per-environment accumulator: the atomic adds of
+# every particle to the same few addresses serialize on the GPU (a 6x6 system per particle took 1.6 ms for 19k particles)
+REDUCTION_CHUNK = 64
 
 # Number of even spherical harmonics up to degree 4 (1 + 5 + 9), the directional basis of the correction of the viscosity
 # operator (see _kernel_compute_viscosity_geometry).
@@ -629,6 +632,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
         # particles and entities
         self._n_particles = self.n_particles
+        self._n_reduction_chunks = max((self._n_particles + REDUCTION_CHUNK - 1) // REDUCTION_CHUNK, 1)
 
         self._coupler = self.sim._coupler
 
@@ -2493,39 +2497,53 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.envs_viscosity_rigid_system[i_b] = qd.Matrix.zero(gs.qd_float, 6, 6)
             self.envs_viscosity_rigid_rhs[i_b] = qd.Vector.zero(gs.qd_float, 6)
 
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                self.envs_viscosity_mass[i_b] += mass
-                self.envs_viscosity_center[i_b] += mass * self.particles_reordered[i_p, i_b].pos
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            mass_sum = gs.qd_float(0.0)
+            moment = qd.Vector.zero(gs.qd_float, 3)
+            for i_k in range(REDUCTION_CHUNK):
+                i_p = i_c * REDUCTION_CHUNK + i_k
+                if i_p < self._n_particles:
+                    if self.particles_reordered[i_p, i_b].active:
+                        mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                        mass_sum += mass
+                        moment += mass * self.particles_reordered[i_p, i_b].pos
+            self.envs_viscosity_mass[i_b] += mass_sum
+            self.envs_viscosity_center[i_b] += moment
 
         for i_b in range(self._B):
             if self.envs_viscosity_mass[i_b] > 0.0:
                 self.envs_viscosity_center[i_b] /= self.envs_viscosity_mass[i_b]
 
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
-                    self.particles_viscosity[i_p, i_b].wall_tensor
-                )
-                arm = self._func_cross_matrix(self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b])
-                residual = self.particles_viscosity[i_p, i_b].residual
-                # J^T (M + h W) J and J^T r for the rigid velocity J (a, w) = a + w x y = a - Y w
-                coupling = -block @ arm
-                angular = arm @ coupling
-                system = qd.Matrix.zero(gs.qd_float, 6, 6)
-                for r in qd.static(range(3)):
-                    for c in qd.static(range(3)):
-                        system[r, c] = block[r, c]
-                        system[r, 3 + c] = coupling[r, c]
-                        system[3 + c, r] = coupling[r, c]
-                        system[3 + r, 3 + c] = angular[r, c]
-                torque = arm @ residual
-                self.envs_viscosity_rigid_system[i_b] += system
-                self.envs_viscosity_rigid_rhs[i_b] += qd.Vector(
-                    [residual[0], residual[1], residual[2], torque[0], torque[1], torque[2]], dt=gs.qd_float
-                )
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            system = qd.Matrix.zero(gs.qd_float, 6, 6)
+            rhs = qd.Vector.zero(gs.qd_float, 6)
+            for i_k in range(REDUCTION_CHUNK):
+                i_p = i_c * REDUCTION_CHUNK + i_k
+                if i_p < self._n_particles:
+                    if self.particles_reordered[i_p, i_b].active:
+                        mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                        block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
+                            self.particles_viscosity[i_p, i_b].wall_tensor
+                        )
+                        arm = self._func_cross_matrix(
+                            self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b]
+                        )
+                        residual = self.particles_viscosity[i_p, i_b].residual
+                        # J^T (M + h W) J and J^T r for the rigid velocity J (a, w) = a + w x y = a - Y w
+                        coupling = -block @ arm
+                        angular = arm @ coupling
+                        for r in qd.static(range(3)):
+                            for c in qd.static(range(3)):
+                                system[r, c] += block[r, c]
+                                system[r, 3 + c] += coupling[r, c]
+                                system[3 + c, r] += coupling[r, c]
+                                system[3 + r, 3 + c] += angular[r, c]
+                        torque = arm @ residual
+                        for r in qd.static(range(3)):
+                            rhs[r] += residual[r]
+                            rhs[3 + r] += torque[r]
+            self.envs_viscosity_rigid_system[i_b] += system
+            self.envs_viscosity_rigid_rhs[i_b] += rhs
 
         for i_b in range(self._B):
             correction = qd.Vector.zero(gs.qd_float, 6)
@@ -2845,21 +2863,31 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                             self.particles_boundary_slots[i_p, i_b, k].clearance_impulse = -mass * dvel * normal
                             self.envs_clearance_corrections[i_b] += 1
 
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                self.envs_clearance_mass[i_b] += mass
-                self.envs_clearance_center[i_b] += mass * self.particles_reordered[i_p, i_b].pos
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            mass_sum = gs.qd_float(0.0)
+            moment = qd.Vector.zero(gs.qd_float, 3)
+            for i_k in range(REDUCTION_CHUNK):
+                i_p = i_c * REDUCTION_CHUNK + i_k
+                if i_p < self._n_particles:
+                    if self.particles_reordered[i_p, i_b].active:
+                        mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                        mass_sum += mass
+                        moment += mass * self.particles_reordered[i_p, i_b].pos
+            self.envs_clearance_mass[i_b] += mass_sum
+            self.envs_clearance_center[i_b] += moment
         for i_b in range(self._B):
             if self.envs_clearance_mass[i_b] > 0.0:
                 self.envs_clearance_center[i_b] /= self.envs_clearance_mass[i_b]
-        for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                arm = self.particles_reordered[i_p, i_b].pos - self.envs_clearance_center[i_b]
-                self.envs_clearance_inertia[i_b] += mass * (
-                    arm.norm_sqr() * qd.Matrix.identity(gs.qd_float, 3) - arm.outer_product(arm)
-                )
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            inertia = qd.Matrix.zero(gs.qd_float, 3, 3)
+            for i_k in range(REDUCTION_CHUNK):
+                i_p = i_c * REDUCTION_CHUNK + i_k
+                if i_p < self._n_particles:
+                    if self.particles_reordered[i_p, i_b].active:
+                        mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                        arm = self.particles_reordered[i_p, i_b].pos - self.envs_clearance_center[i_b]
+                        inertia += mass * (arm.norm_sqr() * qd.Matrix.identity(gs.qd_float, 3) - arm.outer_product(arm))
+            self.envs_clearance_inertia[i_b] += inertia
         for i_b in range(self._B):
             omega = qd.Vector.zero(gs.qd_float, 3)
             if self.envs_clearance_mass[i_b] > 0.0:
