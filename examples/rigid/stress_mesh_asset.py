@@ -123,7 +123,7 @@ def prepare_stress_mesh(
         if not len(surface.faces) or not np.isfinite(surface.vertices).all():
             raise ValueError("The surface mesh must contain finite vertices and triangles.")
 
-    digest = hashlib.sha256(b"rigid-stress-mesh-v2-triangle-three-quads")
+    digest = hashlib.sha256(b"rigid-stress-mesh-v3-triangle-three-quads")
     digest.update(source.read_bytes())
     if surface is not None:
         # Scene formats can refer to geometry buffers outside the source file
@@ -197,7 +197,7 @@ def prepare_stress_mesh(
     cache.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=cache) as temporary:
         output = Path(temporary)
-        surface.export(output / "collision.obj")
+        surface.export(output / "collision.obj", digits=17)
         if backend == "volume":
             np.savez_compressed(
                 output / "elastic.npz", vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles

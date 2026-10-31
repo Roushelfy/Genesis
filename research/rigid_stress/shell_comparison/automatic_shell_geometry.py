@@ -106,7 +106,7 @@ def main() -> None:
     parser.add_argument("--mechanics", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    write_json(args.output / "runtime.json", runtime_identity())
+    write_json(args.output / "runtime.json", runtime_identity(require_gpu_inventory=False))
     results = []
     for name, level in (("egg", 0), ("neck", 1), ("u", 0), ("plate", 0)):
         surface = surface_recipe(name, level)
