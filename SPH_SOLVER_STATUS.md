@@ -18,10 +18,56 @@ current engineering targets and the subsequent higher-fidelity research stage.
 
 The measurements below retain their original configurations and strict verdicts. The unified thick-wall campaign on
 Genesis 745b4613 is recorded in findings 50-53 (velocity baseline adopted, drift correction measured beside it and not
-adopted). The primary baseline uses symmetric pressure, wall shear consistency and
-`density_correction="velocity"` with the dissipative clearance guard. The extra position-level density drift solve is
-disabled in this baseline and evaluated separately in a matched on/off comparison. Conservation, energy balance, solver
-convergence and the complete two-way/implicit-viscosity feature set remain required.
+adopted); the delivery of Stage A is recorded in the next section. The primary baseline uses symmetric pressure, wall
+shear consistency and `density_correction="velocity"` with the dissipative clearance guard. The extra position-level
+density drift solve is disabled in this baseline and evaluated separately in a matched on/off comparison. Conservation,
+energy balance, solver convergence and the complete two-way/implicit-viscosity feature set remain required.
+
+## Stage A delivery (2026-10-31)
+
+Revision `138b2c5f` (code) with this document; collaborator `entropylost/genesis-world:main` holds the same commits.
+Evidence: FluidBench `report/sph_goal.md` (sections "Stage A verdict by case and configuration", "Stage A: ..."), the
+receipts `results/sph_validation/*__sa0_*` (validation of the baseline on 745b4613) and the equivalence receipts of
+every later code change (findings 57-64), and the run records `results/index/gs-dfsph__*@sphgoal-{sb,tr,fin}-*`.
+
+Configuration. `SPHOptions(wall_shear_consistency=True, density_correction="velocity")` with the defaults otherwise:
+symmetric pressure pairs, implicit interior and wall viscosity, two-way pressure and viscous coupling with the rigid
+links, constraint repetitions for joint and contact feedback, the dissipative clearance guard, the fluid load,
+dissipation and pressure readouts, state save, restore and selected reset. FluidBench adapter: pressure solves capped at
+100 iterations, particle size dx, boundary offset 1.35 mm, the liquid sampled at least dx/2 from the walls with its
+bottom layer aligned and settled for 0.5 s (`sph_relax_s`). Containers and tanks thickened outward to 3 dx (1.5
+support radii; 15 / 10.5 / 7.5 / 5.25 mm at R0 / R1 / R2 / R3), the inner domain, liquid mass and prescribed motions
+unchanged; no dynamic link is thickened, so no link inertia changes. Command files:
+`/mnt/data/zhaofeng/projects/workspace/fluidbench/cmds/cmds_sphgoal_{sa,sb_fb,tr,fin}.txt` and `gen_*.py` beside them.
+
+Staged verdict of the baseline (receipts `sa0`, unchanged by findings 57-64 within the spread of repeated runs):
+
+| Case | Stage A verdict | Value |
+| --- | --- | --- |
+| V3 pipe, V5 spin-down, V6 momentum | pass | centerline 1.0-1.6 %; spin-down rms 3.2 %; drift 4.3e-6 and 7.1e-6 per s |
+| V7 hydrostatics | pass | load 2.8e-5, bulk pressure 3.6 % (the layer on the floor 24 % high, original bar failed) |
+| V8 plank and light box | pass at the finest dx | draft 4.8 % and 8.9 % at dx 1.75 mm (14-30 % at 3.5 mm) |
+| V10 held plate and stirring | pass | joints within 3 % of the readout; stirring balance -0.5 % |
+| V4 mode decay | fail at nu 1e-4 | 14.5 / 18.9 / 26.6 % at nu 1e-2 / 1e-3 / 1e-4; water (nu 1e-6) +294 %, reported |
+| V1 Stokes first problem, V2 Couette | fail | floor torque up to 1.9 times the reference; Couette torque up to 37 % (pressure friction, finding 11) |
+| V9 settling sphere | fail | 51-66 % slow (pressure friction) |
+| Thick-wall cup at rest (V11 deferred) | pass with the documented sampling and settling | no crossing at R0-R2, rms 0.008 m/s at R1, largest speed 0.046-0.074 m/s; the lattice of the spec (control) bursts against thick walls, the unsettled gap sampling leaks at R0 |
+| V12 state | fail (envelope bar) | the first replayed step agrees to round-off; the largest single-particle departure varies tenfold between equivalent runs (finding 54) |
+
+FluidBench (finding 50, 56 and 60): S2 pouring is usable at R1 and R2 at every time step from dt x1 to x8; the floating
+box T07a, the box T07b and T08a are usable at dt x1, T07a fails at dt x4; the settling sphere T08c converges with a
+coupling cap of 60 but settles 98.6 % slow; S1 water fails the spin-down time (-65 %) and the angular momentum (0.23 at
+R2) at every time step, a Stage B item.
+
+Speed (finding 65; usability and speed reported separately, as the goal requires while the target is unmet): one
+environment of thick-wall S1 at dt x8 runs at RTF 0.389 / 0.257 / 0.120 at R1 / R2 / R3 against the target 0.5 (from
+0.123 at R2 on 745b4613, findings 55 and 57-64), S2 R2 at 0.130; dt x8 keeps the S1 and S2 verdicts of dt x1 (finding
+60). Batches of 4 environments: 0.444 environment-seconds per second.
+
+Limitations carried to Stage B: the shear stress that the symmetric pressure pairs carry in proportion to the pressure
+(V1, V2, V9, T08c); the excess damping of water (V4 at nu 1e-6, S1); V12 on its single-particle envelope; dynamic links
+above the FluidBench time step; RTF 0.5 at R2; the thin-wall cup (V11) and the position drift correction, which fails
+in box tanks and with dynamic links (findings 51-53).
 
 ## Collaborator synchronization
 
@@ -39,6 +85,9 @@ convergence and the complete two-way/implicit-viscosity feature set remain requi
 - 2026-10-30 to 2026-10-31, fast-forwards of `entropylost/genesis-world:main` to the source heads `9ce08147`,
   `1e8a0c0b`, `993fc331`, `9b621c30`, `4beb80fb` (status records), `793e9685` (chunked reductions) and `18bf3cc0`
   (error read every fourth iteration); after each push the destination head equals the source head.
+- 2026-10-31, the same way: `4637eb47`, `a7f11ce9` (status records), `3203a547` (boundary neighbor lists), `676daa52`
+  (shared neighbor loops), `48127a19` (error sums), `219e1dfb` (viscosity sums), `138b2c5f` (link response, wall tensor
+  shares) and the commit recording the Stage A delivery.
 
 ## Milestones
 
@@ -54,6 +103,7 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
 | M3 strong pressure-viscosity-rigid coupling | done: V6 within 4e-6 per s, held joints agree with the readout within 0.2 %, stirring energy balance within 2.1 %, coupling converged in every substep (findings 25-28, 34); with the wall shear consistency on ce44ba1a | 22f43b2f, a071c5e2, daa41b6e, 97aebd75 | `/mnt/data/zhaofeng/projects/workspace/fluidbench/cmds/cmds_sphgoal_v5.txt`, `cmds_sphgoal_v6w.txt` | `v5`, `v6w` | `momentum__v6w_*`, `articulation__v6w_*`, `contact__v6w_*` |
 | M4 robustness campaigns | partly: V12 passes with `v6wp` on both GPUs; V11 fails (no crossing at R1 with the drift correction, start-up speed 0.15-0.2 m/s; R0 leaks); V8 light box and V9 pass only in some configurations (section "Remaining limitations") | ce44ba1a, 76f37038 | `/mnt/data/zhaofeng/projects/workspace/fluidbench/cmds/cmds_sphgoal_v6w.txt`, `cmds_sphgoal_v6wrtx.txt`, `cmds_sphgoal_v6vw.txt` | `v6w`, `v6wp`, `v6vw`, `v6vwp` | `state__*`, `thinwall__*`, `floating__*`, `settling__*` |
 | M5 optimization ablations | done for the implemented candidates (1, 5, 8, Chebyshev, fused iteration, compile-time constants); 2, 6 measured and not changed; 3, 4, 7, 9, 10 proposed only. RTF 0.5 not reached: 0.039 / 0.084 / 0.142 at dt x1 / x4 / x8 on S1 R2 (default), every solve converged; S1 R2 is not accuracy-qualified | cbc79cd9, 51e488d4, 0ea1569d, dc03db16, cab47d96 | `/mnt/data/zhaofeng/projects/workspace/fluidbench/cmds/cmds_sphgoal_abl.txt`, `cmds_sphgoal_t4.txt`, `cmds_sphgoal_batch.txt` | S1 f2 R2, one environment, iteration cap 100 | FluidBench `results/index/gs-dfsph__S1__f2@sphgoal-abl-*`, `@sphgoal-t4-*`, `results/profiles/sphgoal/`; section "Performance (M5)" |
+| Stage A thick-wall engineering solver (owner update 2026-10-30) | delivered with limitations: velocity baseline on thick walls, staged verdicts, FluidBench runs over time steps and resolutions, optimization to RTF 0.257 at S1 R2 dt x8 (target 0.5 not reached); section "Stage A delivery" | 745b4613 (candidate), 793e9685, 18bf3cc0, 3203a547, 676daa52, 48127a19, 219e1dfb, 138b2c5f | `/mnt/data/zhaofeng/projects/workspace/fluidbench/cmds/cmds_sphgoal_{sa,sb_fb,tr,fin}.txt` | `sa0`, `sphgoal-sb`, `sphgoal-tr-*`, `sphgoal-fin-*` | FluidBench `report/sph_goal.md`, findings 50-65 |
 | M6 FluidBench re-run and documentation | done: S1-S3 at R1-R3 on cab47d96 (two configurations) and at R2 with the later configurations; S2 is usable at R2 with `v6w`; S1 fails the spin-down time in every run (-54 % to -86 %), S3 the mixing index; example `examples/coupling/sph_paddle.py`, option and readout docstrings, limitations below | cab47d96, ce44ba1a | `/mnt/data/zhaofeng/projects/workspace/fluidbench/cmds/cmds_sphgoal_final*.txt`, `cmds_sphgoal_v6w.txt`, `cmds_sphgoal_v6vw.txt` | `sphgoal-v4`, `-v4s`, `-v5p`, `-v6w`, `-v6wp`, `-v6v*` | FluidBench `report/sph_goal.md` (scene tables), `results/index/gs-dfsph__*@sphgoal-*` |
 
 ## Baseline at the starting revision (92c78327)
@@ -818,6 +868,18 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     -0.68 %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms 0.0080 m/s and largest speed 0.050 m/s,
     Couette torques as before and profile error 0.153 (0.137-0.147 in the eleven earlier runs since finding 57, 0.144
     and 0.145 for each change alone); the unit tests as in finding 57.
+
+65. Speed of the Stage A baseline on 138b2c5f (FluidBench `sphgoal-fin-*` timing runs: thick-wall S1 f2 and S2 T4, RTX
+    PRO 6000, three repeats each, every solve converged; `sphgoal-bis-*` batch repeats). One environment, RTF of S1 at
+    dt x1 / x4 / x8: R1 0.090 / 0.237 / 0.389, R2 0.060 / 0.163 / 0.257, R3 0.025 / 0.067 / 0.120; S2 at R2 0.031 at dt
+    x1 and 0.130 at dt x8. Independent batches of S1 R2 at dt x8 (`env_time_shift` 0.25 s): 4 environments 0.444
+    environment-seconds per second (RTF 0.111 each, peak GPU memory 2079 MB); 16 environments either 0.40-0.42 (about
+    2.0 coupling passes and 114-132 density iterations per substep; 138b2c5f twice, 219e1dfb twice, 48127a19, 18bf3cc0
+    0.385) or 0.16-0.18 (about 5 coupling passes and 224-233 density iterations per substep; 138b2c5f twice, 219e1dfb,
+    676daa52, 3203a547), on the same code from run to run (peak 2561 MB). The solves of a batch iterate until its worst
+    environment converges, and in four of ten runs one environment needs about five coupling passes in most substeps:
+    the round-off of the GPU reductions selects the branch. Letting environments stop independently (candidate 9) is the
+    remaining batch opportunity.
 
 ## Validation at 47499e5c (v5)
 
