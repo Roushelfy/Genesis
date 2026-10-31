@@ -411,6 +411,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # error of every particle in the last iteration of the running divergence or density solve, summed over the
         # environment only when the solve reads it (see _kernel_pressure_solve_error)
         self.particles_solver_error = qd.field(gs.qd_float, shape=(self._n_particles, self._B))
+        # terms of every particle in the sums over the environment of the viscosity solve, the coupling residual and
+        # the dissipation readout, summed in chunks (see _func_chunk_sum)
+        self.particles_reduction = qd.Vector.field(4, dtype=gs.qd_float, shape=(self._n_particles, self._B))
         if self._position_drift:
             # Drift correction of the positions (see _drift_correction): pressure multiplier, its acceleration, the
             # predicted density and the displacement of each particle; error, mass, center of mass, inertia and the
@@ -1947,6 +1950,26 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                     self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
             self.particles_solver_error[i_p, i_b] = error
 
+    @qd.func
+    def _func_chunk_sum(self, i_c, i_b):
+        """Return the sum of particles_reduction over chunk i_c of REDUCTION_CHUNK particles of env i_b, and the largest
+        value of its last component.
+
+        The loops of the viscosity solve, the coupling residual and the dissipation readout store the terms of every
+        particle (zero for an inactive one), and a loop over the chunks adds each chunk with one atomic addition per
+        environment sum: an atomic addition per particle on a single address serializes (finding 62 of
+        SPH_SOLVER_STATUS.md for the error of the pressure iterations).
+        """
+        total = qd.Vector.zero(gs.qd_float, 4)
+        largest = gs.qd_float(0.0)
+        for k in range(REDUCTION_CHUNK):
+            i_p = i_c * REDUCTION_CHUNK + k
+            if i_p < self._n_particles:
+                terms = self.particles_reduction[i_p, i_b]
+                total += terms
+                largest = qd.max(largest, terms[3])
+        return total, largest
+
     @qd.kernel
     def _kernel_pressure_solve_error(self) -> float:
         """Return the worst average error over envs of the last iteration of the divergence or density solve.
@@ -2434,6 +2457,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.envs_viscosity[i_b].viscous_stiffness_bound = 1.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            terms = qd.Vector.zero(gs.qd_float, 4)
             if self.particles_reordered[i_p, i_b].active:
                 i_m = self.particles_reordered[i_p, i_b].material
                 mass = self.materials[i_m].mass
@@ -2465,13 +2489,21 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.particles_viscosity[i_p, i_b].residual = residual
                 self.particles_viscosity[i_p, i_b].residual_precond = residual_precond
                 self.particles_viscosity[i_p, i_b].direction = residual_precond
-                self.envs_viscosity[i_b].residual_norm2 += residual.dot(residual_precond)
-                self.envs_viscosity[i_b].rhs_norm2 += ret.rhs.dot(precond_inv @ ret.rhs)
-                if is_first_pass:
-                    # The velocity change of gravity over the substep, in the norm of the mass, so that the scale does
-                    # not shrink with the viscosity.
-                    self.envs_viscosity[i_b].gravity_norm2 += mass * (self._substep_dt * self._gravity[i_b]).norm_sqr()
-                    qd.atomic_max(self.envs_viscosity[i_b].viscous_stiffness_bound, 1.0 + ret.row_norm / mass)
+                terms[0] = residual.dot(residual_precond)
+                terms[1] = ret.rhs.dot(precond_inv @ ret.rhs)
+                # The velocity change of gravity over the substep, in the norm of the mass, so that the scale does not
+                # shrink with the viscosity.
+                terms[2] = mass * (self._substep_dt * self._gravity[i_b]).norm_sqr()
+                terms[3] = 1.0 + ret.row_norm / mass
+            self.particles_reduction[i_p, i_b] = terms
+
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            total, largest = self._func_chunk_sum(i_c, i_b)
+            self.envs_viscosity[i_b].residual_norm2 += total[0]
+            self.envs_viscosity[i_b].rhs_norm2 += total[1]
+            if is_first_pass:
+                self.envs_viscosity[i_b].gravity_norm2 += total[2]
+                qd.atomic_max(self.envs_viscosity[i_b].viscous_stiffness_bound, largest)
 
         for i_b in range(self._B):
             self.envs_viscosity[i_b].residual_norm2_init = self.envs_viscosity[i_b].residual_norm2
@@ -2510,6 +2542,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
+            terms = qd.Vector.zero(gs.qd_float, 4)
             if self.particles_reordered[i_p, i_b].active and is_iterating:
                 direction = self.particles_viscosity[i_p, i_b].direction
                 i_m = self.particles_reordered[i_p, i_b].material
@@ -2518,10 +2551,16 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 if qd.static(self._has_boundary):
                     image += self._substep_dt * (self.particles_viscosity[i_p, i_b].wall_tensor @ direction)
                 self.particles_viscosity[i_p, i_b].direction_image = image
-                self.envs_viscosity[i_b].direction_norm2 += direction.dot(image)
+                terms[0] = direction.dot(image)
+            self.particles_reduction[i_p, i_b] = terms
+
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            total, _ = self._func_chunk_sum(i_c, i_b)
+            self.envs_viscosity[i_b].direction_norm2 += total[0]
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
+            terms = qd.Vector.zero(gs.qd_float, 4)
             if self.particles_reordered[i_p, i_b].active and is_iterating:
                 step = gs.qd_float(0.0)
                 if self.envs_viscosity[i_b].direction_norm2 > 0.0:
@@ -2534,7 +2573,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 residual_precond = self.particles_viscosity[i_p, i_b].precond_inv @ residual
                 self.particles_viscosity[i_p, i_b].residual = residual
                 self.particles_viscosity[i_p, i_b].residual_precond = residual_precond
-                self.envs_viscosity[i_b].residual_norm2_next += residual.dot(residual_precond)
+                terms[0] = residual.dot(residual_precond)
+            self.particles_reduction[i_p, i_b] = terms
+
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            total, _ = self._func_chunk_sum(i_c, i_b)
+            self.envs_viscosity[i_b].residual_norm2_next += total[0]
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
             is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
@@ -2733,6 +2777,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             self.envs_viscosity[i_b].mass = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            terms = qd.Vector.zero(gs.qd_float, 4)
             if self.particles_reordered[i_p, i_b].active:
                 residual = qd.Vector.zero(gs.qd_float, 3)
                 self._func_for_all_fluid_neighbors(
@@ -2743,14 +2788,17 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         self.particles_viscosity[i_p, i_b].wall_tensor
                         @ self.particles_viscosity[i_p, i_b].pressure_vel_delta
                     )
-                self.envs_viscosity[i_b].coupling_norm2 += residual.dot(
-                    self.particles_viscosity[i_p, i_b].precond_inv @ residual
-                )
+                terms[0] = residual.dot(self.particles_viscosity[i_p, i_b].precond_inv @ residual)
                 mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                self.envs_viscosity[i_b].delta_norm2 += (
-                    mass * self.particles_viscosity[i_p, i_b].pressure_vel_delta.norm_sqr()
-                )
-                self.envs_viscosity[i_b].mass += mass
+                terms[1] = mass * self.particles_viscosity[i_p, i_b].pressure_vel_delta.norm_sqr()
+                terms[2] = mass
+            self.particles_reduction[i_p, i_b] = terms
+
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            total, _ = self._func_chunk_sum(i_c, i_b)
+            self.envs_viscosity[i_b].coupling_norm2 += total[0]
+            self.envs_viscosity[i_b].delta_norm2 += total[1]
+            self.envs_viscosity[i_b].mass += total[2]
 
         max_rel_residual = gs.qd_float(0.0)
         for i_b in range(self._B):
@@ -2898,6 +2946,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.envs_viscous_dissipation[i_b] = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            terms = qd.Vector.zero(gs.qd_float, 4)
             if self.particles_reordered[i_p, i_b].active:
                 power = gs.qd_float(0.0)
                 self._func_for_all_fluid_neighbors(i_p, power, self._task_compute_viscous_dissipation, i_b)
@@ -2906,7 +2955,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
                             vel_rel = self.particles_reordered[i_p, i_b].vel - self._func_slot_wall_vel(i_p, i_b, k)
                             power += vel_rel.dot(self.particles_boundary_slots[i_p, i_b, k].wall_tensor @ vel_rel)
-                self.envs_viscous_dissipation[i_b] += self._substep_dt * power
+                terms[0] = self._substep_dt * power
+            self.particles_reduction[i_p, i_b] = terms
+
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            total, _ = self._func_chunk_sum(i_c, i_b)
+            self.envs_viscous_dissipation[i_b] += total[0]
 
     @qd.kernel
     def _kernel_enforce_wall_clearance(self):
