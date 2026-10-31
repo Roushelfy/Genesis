@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import trimesh
 
+from examples.rigid import stress_mesh_asset
 from examples.rigid.stress_mesh_asset import prepare_stress_mesh
 from examples.rigid.stress_shell_asset import surface_to_quads
 from research.rigid_stress.qipc_comparison.artifacts import file_id, runtime_identity, write_json
@@ -16,6 +17,11 @@ from research.rigid_stress.shell_cpu import core
 
 def surface_recipe(name: str, level: int = 0) -> trimesh.Trimesh:
     """Return a closed egg, a closed narrow neck, an open U, or a triangulated flat strip in metres."""
+    if name == "grasp":
+        # The established grasp fits this exterior. Here it is explicitly reinterpreted as a midsurface.
+        return stress_mesh_asset.load_surface(
+            Path(stress_mesh_asset.__file__).parent / "assets/hollow_egg/level1/egg_outer.obj"
+        )
     if name in ("egg", "neck"):
         surface = trimesh.creation.icosphere(subdivisions=level, radius=1.0)
         if name == "neck":

@@ -24,15 +24,7 @@ class PreparedStressMesh:
 
 def load_surface(source: Path) -> trimesh.Trimesh:
     """Load a surface without tolerance welding, and apply every scene transform to its coordinates."""
-    if source.suffix.lower() == ".obj":
-        # Scene loaders do not propagate constructor options to OBJ's individual geometries.
-        with source.open("rb") as stream:
-            parsed = trimesh.exchange.obj.load_obj(stream, skip_materials=True, maintain_order=True)
-        scene = trimesh.Scene(
-            {name: trimesh.Trimesh(**geometry, process=False) for name, geometry in parsed["geometry"].items()}
-        )
-    else:
-        scene = trimesh.load_scene(source, process=False)
+    scene = trimesh.load_scene(source, process=False)
     meshes = []
     for node in scene.graph.nodes_geometry:
         transform, name = scene.graph[node]

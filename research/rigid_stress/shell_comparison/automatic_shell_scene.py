@@ -7,6 +7,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
+import pyglet
 import quadrants as qd
 import torch
 
@@ -16,6 +17,7 @@ from examples.rigid.stress_field_view import StressFieldSurface
 from examples.rigid.stress_mesh_asset import prepare_stress_mesh, write_rigid_asset
 from examples.speed_benchmark.rigid_stress import GeometryFrame, prepare_recovery_snapshot
 from genesis.utils.array_class import DataKind
+from genesis.utils.geom import trans_quat_to_T
 from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
 from research.rigid_stress.qipc_comparison.artifacts import file_id, runtime_identity, write_json
 from research.rigid_stress.qipc_comparison.profile_planar_loading import _api, _checks
@@ -25,7 +27,7 @@ from research.rigid_stress.shell_comparison.automatic_shell_geometry import surf
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--shape", choices=("egg", "neck", "u", "plate"), default="egg")
+    parser.add_argument("--shape", choices=("egg", "grasp", "neck", "u", "plate"), default="grasp")
     parser.add_argument("--mesh-mode", choices=("automatic", "explicit", "authored"), default="automatic")
     parser.add_argument("--envs", type=int, default=4)
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
@@ -33,6 +35,8 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=30)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--profile", action="store_true")
+    parser.add_argument("--loading-subdivisions", type=int, choices=(8, 16, 32), default=32)
+    parser.add_argument("--viewer", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     results = {
@@ -45,7 +49,7 @@ def main() -> None:
         mesh=Path(gs.__file__).resolve().parents[1] / "examples/rigid/assets/hollow_egg/level1/shell.npz",
         backend="shell",
         shell_loading="planar",
-        loading_subdivisions=32,
+        loading_subdivisions=args.loading_subdivisions,
         quadrature=10,
         scatter_tasks_per_env=128,
         box_edge_policy="planar",
@@ -84,8 +88,30 @@ def main() -> None:
         )
     results["elastic"] = file_id(options.mesh)
     write_json(args.output / "progress.json", results)
+    viewer_options = None
+    if args.viewer:
+        if args.envs != 1 or args.output_mode != "full":
+            raise ValueError("Viewer capture needs --envs 1 --output-mode full.")
+        field = StressFieldSurface(options.mesh, "shell", options.shell_thickness)
+        if rigid_mesh is not None:
+            rigid_mesh.visualization = False
+        viewer_options = gs.options.ViewerOptions(
+            res=(800, 600),
+            run_in_thread=False,
+            realtime_factor=None,
+            camera_pos=(0.80, -0.23, 0.07),
+            camera_lookat=(0.65, 0, 0.04),
+        )
     started = time.perf_counter()
-    workload = FrankaEgg(n_envs=args.envs, stress_options=options, rigid_mesh=rigid_mesh, seed=510000)
+    workload = FrankaEgg(
+        n_envs=args.envs,
+        stress_options=options,
+        rigid_mesh=rigid_mesh,
+        seed=510000,
+        viewer=args.viewer,
+        stress_visualization=args.viewer,
+        viewer_options=viewer_options,
+    )
     qd.sync()
     results["scene_build_seconds_including_JIT"] = time.perf_counter() - started
     solver = workload.scene.rigid_solver
@@ -106,6 +132,31 @@ def main() -> None:
     results["acceptance_before"] = _checks(_api(), workload)
     assert results["acceptance_before"]["passed"] and results["acceptance_before"]["loaded_contacts"] > 0
     results["snapshot"] = prepare_recovery_snapshot(workload, geometry)
+    np.savez_compressed(
+        args.output / "contacts.npz",
+        valid=qd_to_numpy(entry.contacts.valid, transpose=True),
+        position=qd_to_numpy(entry.contacts.position, transpose=True),
+        force=qd_to_numpy(entry.contacts.force, transpose=True),
+        radius=qd_to_numpy(entry.contacts.radius, transpose=True),
+        task_count=qd_to_numpy(entry.planar.state.task_count, transpose=True),
+        sample_count=qd_to_numpy(entry.planar.state.sample_count, transpose=True),
+        affine=qd_to_numpy(entry.planar.state.affine, transpose=True),
+        fit_evaluations=qd_to_numpy(entry.planar.state.fit_evaluations, transpose=True),
+    )
+    if args.output_mode == "full":
+        tensor, vm = map(tensor_to_array, workload.link.get_stress_field())
+        np.savez_compressed(args.output / "warmup-fields.npz", tensor=tensor, von_mises=vm)
+    if args.viewer:
+        started = time.perf_counter()
+        colored = field.colored_mesh(vm[0], vm.max())
+        transform = trans_quat_to_T(workload.link.get_pos(envs_idx=[0])[0], workload.link.get_quat(envs_idx=[0])[0])
+        with workload.scene.visualizer.viewer_lock:
+            overlay = workload.scene.draw_debug_mesh(colored, T=transform)
+            overlay.is_marker = False
+        workload.scene.visualizer.update(force=True)
+        pyglet.image.get_buffer_manager().get_color_buffer().save(str(args.output / "viewer.png"))
+        results["viewer_readback_seconds"] = time.perf_counter() - started
+        results["viewer_surface"] = file_id(args.output / "viewer.png")
     module_times = []
     for _ in range(args.repeats):
         qd.sync()
