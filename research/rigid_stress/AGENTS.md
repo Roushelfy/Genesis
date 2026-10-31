@@ -1,5 +1,14 @@
 # Working on native rigid stress recovery
 
+**Active user goal, 2026-10-31:** implement [automatic surface-to-shell
+preparation](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md), also linked from [GOAL.md](GOAL.md).
+Custom surface + shell backend + thickness must prepare a cached Q4 asset automatically and run existing
+automatic-radius DPR, headless max and viewer full modes. Preserve current Q4 elasticity, native Quadrants
+numerics, volume default, arbitrary changing asymmetric/nonconvex contacts and friction, acceptance and
+lifecycle. One-time CPU geometry conversion is allowed; a separate CPU production elastic solver is not.
+Use low-model mechanical/numerical checks and profile/measure conversion, memory and complete-path throughput.
+This is the active next goal, not delivered behavior; previous completed campaigns below retain their scope.
+
 **Completed user goal, 2026-10-28:** [automatic DPR fast
 path/defaults](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md). Read [GOAL.md](GOAL.md), the
 [results](docs/AUTOMATIC_DPR_FAST_PATH_RESULTS_20261028.md) and [22-clause

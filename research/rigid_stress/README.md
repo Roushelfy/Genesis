@@ -9,6 +9,16 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
+## Active: automatic surface-to-shell preparation (2026-10-31)
+
+The next goal is to accept a surface mesh directly in the shell example without requiring an authored Q4
+NPZ. Implement cached conversion, explicit midsurface/thickness semantics, closed/open and nonconvex input
+handling, current native automatic-radius DPR, headless max and viewer field output. Keep Q4 elasticity and
+volume defaults. Validate mechanical quality separately from same-model numerical consistency and measure
+preparation, memory and complete-scene throughput. See [the goal](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md).
+
+This is pending implementation. The current custom-shell command still requires a matching Q4 NPZ.
+
 ## Delivered: automatic DPR fast path, defaults and examples (2026-10-28)
 
 Public Options and `.dpr()` now use pressure/patch/Hertz/Hertz. Ordinary volume loading selects adaptive

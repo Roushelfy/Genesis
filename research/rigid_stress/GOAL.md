@@ -1,4 +1,16 @@
-# Native rigid stress recovery: automatic DPR fast path and defaults
+# Native rigid stress recovery: automatic surface-to-shell preparation
+
+**Active user goal, 2026-10-31:** implement [automatic surface-to-shell preparation](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md).
+A valid surface plus explicit shell backend/thickness should run without an authored Q4 NPZ, retaining
+automatic radius + DPR, headless max and viewer full output. Reuse existing Q4 elasticity and native
+Quadrants numerics; mesh conversion is cached build work. Validate closed/open and nonconvex shell inputs,
+mechanical quality, numerical consistency and complete-path cost on low models before broad refinements.
+
+This is an implementation goal, not a claim that automatic 2D conversion already works. The current
+custom-shell example still needs a supplied Q4 NPZ until this goal is delivered. Keep the volume default,
+explicit authored assets, original acceptance/lifecycle and all scoped prior evidence.
+
+## Previous delivery: automatic DPR fast path and defaults
 
 **Completed user goal, 2026-10-28:** the [automatic DPR
 goal](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md) has implemented public defaults, native

@@ -1,5 +1,13 @@
 # 自动半径＋DPR 使用范例
 
+## 下一阶段：表面自动转换为薄壳（待实现，2026-10-31）
+
+[新目标](AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md)要求支持直接指定
+`--backend shell --mesh model.obj --thickness 0.0005`，自动生成并缓存兼容的 Q4 壳资产，
+再运行现有自动半径＋DPR。输入表面作为中面，厚度由用户提供；覆盖闭合、开口及非凸薄壳，
+检查转换质量、数值一致性和吞吐。**该命令尚未实现**，当前自定义 shell 仍需下文的
+`--stress-mesh`。以下说明记录当前已交付用法。
+
 ## 默认 egg、自定义 mesh 与应力着色
 
 `franka_egg_automatic_stress.py` 复用现有 Franka 抓取场景。现在省略 `--viewer` 时默认选择
