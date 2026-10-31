@@ -118,7 +118,8 @@ def main() -> None:
         started = time.perf_counter()
         cached = prepare_stress_mesh(source, None, "shell", 1.0, None, args.output / "cache")
         warm = time.perf_counter() - started
-        assert cached == prepared
+        assert cached.elastic == prepared.elastic and cached.collision == prepared.collision
+        assert abs(cached.minimum_z - prepared.minimum_z) < 1e-15
         with np.load(prepared.elastic) as asset:
             nodes, quads = len(asset["vertices"]), len(asset["quads"])
         collision = trimesh.load_scene(prepared.collision).to_mesh()

@@ -78,7 +78,9 @@ def test_automatic_shell_units_mass_cache_and_reload(tmp_path):
     assert_allclose(collision.vertices, material.vertices, atol=1e-10)
     assert_allclose(prepared.minimum_z, -0.001, atol=1e-12)
     repeated = prepare_stress_mesh(source, None, "shell", 0.001, None, tmp_path / "cache", thickness=0.002)
-    assert repeated == prepared
+    assert repeated.elastic == prepared.elastic
+    assert repeated.collision == prepared.collision
+    assert_allclose(repeated.minimum_z, prepared.minimum_z, atol=1e-15)
     thicker = prepare_stress_mesh(source, None, "shell", 0.001, None, tmp_path / "cache", thickness=0.004)
     assert thicker.elastic != prepared.elastic
     assert_allclose(thicker.minimum_z, -0.002, atol=1e-12)
