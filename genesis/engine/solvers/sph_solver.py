@@ -408,6 +408,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # Per-environment reductions of the DFSPH solver iterations.
         self.envs_n_active = qd.field(gs.qd_int, shape=(self._B,))
         self.envs_solver_error = qd.field(gs.qd_float, shape=(self._B,))
+        # error of every particle in the last iteration of the running divergence or density solve, summed over the
+        # environment only when the solve reads it (see _kernel_pressure_solve_error)
+        self.particles_solver_error = qd.field(gs.qd_float, shape=(self._n_particles, self._B))
         if self._position_drift:
             # Drift correction of the positions (see _drift_correction): pressure multiplier, its acceleration, the
             # predicted density and the displacement of each particle; error, mass, center of mass, inertia and the
@@ -1852,13 +1855,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # long as the slowest thread walks its neighbors. The two neighbor loops of the iteration therefore split the
         # neighbors of each particle among N_NEIGHBOR_SHARES threads, whose partial sums a loop over the particles adds
         # in a fixed order, so that the result does not depend on the order of the threads. The error of the
-        # environment is reset by the first thread of the first loop, which does not read it, instead of in a loop of
-        # its own, which would run as a task of its own (about 7 us per iteration). The wrenches of the coupled links
-        # are reset at the start of the solve (see _kernel_init_pressure_solve) and at the end of every iteration,
-        # after the response of the links has read them.
+        # environment is summed from the errors of the particles only when the solve reads it (see
+        # _kernel_pressure_solve_error). The wrenches of the coupled links are reset at the start of the solve (see
+        # _kernel_init_pressure_solve) and at the end of every iteration, after the response of the links has read them.
         for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
-            if i_s == 0 and i_p == 0:
-                self.envs_solver_error[i_b] = 0.0
             if self.particles_reordered[i_p, i_b].active:
                 ret = qd.Struct(
                     acc=qd.Vector.zero(gs.qd_float, 3),
@@ -1919,6 +1919,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 self.particles_source_shares[i_s, i_p, i_b] = predicted_source
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
+            error = gs.qd_float(0.0)
             if self.particles_reordered[i_p, i_b].active:
                 predicted_source = gs.qd_float(0.0)
                 for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
@@ -1944,15 +1945,27 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         error = 0.0
                 else:
                     self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
-
-                # Most particles of a converging solve have no error, and skipping their atomic additions to the error
-                # of the environment relieves the contention on it.
-                if error > 0.0:
-                    self.envs_solver_error[i_b] += error
+            self.particles_solver_error[i_p, i_b] = error
 
     @qd.kernel
     def _kernel_pressure_solve_error(self) -> float:
-        """Return the worst average error over envs of the last iteration of the divergence or density solve."""
+        """Return the worst average error over envs of the last iteration of the divergence or density solve.
+
+        The errors of the particles are summed in chunks of REDUCTION_CHUNK particles, one atomic addition per chunk
+        to the error of the environment: an atomic addition per particle, in every iteration, contended on that single
+        address for 39 us per iteration of 19172 particles (SPH_SOLVER_STATUS.md finding 62).
+        """
+        for i_b in range(self._B):
+            self.envs_solver_error[i_b] = 0.0
+        for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
+            chunk_error = gs.qd_float(0.0)
+            for k in range(REDUCTION_CHUNK):
+                i_p = i_c * REDUCTION_CHUNK + k
+                if i_p < self._n_particles:
+                    chunk_error += self.particles_solver_error[i_p, i_b]
+            if chunk_error > 0.0:
+                self.envs_solver_error[i_b] += chunk_error
+
         max_avg_error = gs.qd_float(0.0)
         for i_b in range(self._B):
             n_active = qd.max(self.envs_n_active[i_b], 1)
