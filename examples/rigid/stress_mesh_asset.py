@@ -22,6 +22,30 @@ class PreparedStressMesh:
     minimum_z: float
 
 
+def load_surface(source: Path) -> trimesh.Trimesh:
+    """Load a surface without tolerance welding, and apply every scene transform to its coordinates."""
+    if source.suffix.lower() == ".obj":
+        # Scene loaders do not propagate constructor options to OBJ's individual geometries.
+        with source.open("rb") as stream:
+            parsed = trimesh.exchange.obj.load_obj(stream, skip_materials=True, maintain_order=True)
+        scene = trimesh.Scene(
+            {name: trimesh.Trimesh(**geometry, process=False) for name, geometry in parsed["geometry"].items()}
+        )
+    else:
+        scene = trimesh.load_scene(source, process=False)
+    meshes = []
+    for node in scene.graph.nodes_geometry:
+        transform, name = scene.graph[node]
+        mesh = scene.geometry[name]
+        if not isinstance(mesh, trimesh.Trimesh):
+            raise TypeError("The stress surface must contain triangles, not points or curves.")
+        # Do not treat a small scene translation as an identity transform: it can define a real material gap.
+        vertices = mesh.vertices @ transform[:3, :3].T + transform[:3, 3]
+        faces = mesh.faces if np.linalg.det(transform[:3, :3]) >= 0 else mesh.faces[:, ::-1]
+        meshes.append(trimesh.Trimesh(vertices=vertices, faces=faces, process=False))
+    return trimesh.util.concatenate(meshes)
+
+
 def write_rigid_asset(collision: Path, material_mesh: trimesh.Trimesh, density: float) -> Path:
     """Write a Unified Robot Description Format (URDF) asset with inertia from the actual material volume."""
     properties = material_mesh.mass_properties
@@ -115,7 +139,7 @@ def prepare_stress_mesh(
     if source.suffix.lower() == ".npz":
         surface = None
     else:
-        surface = trimesh.load_scene(source, process=False).to_mesh()
+        surface = load_surface(source)
         surface.remove_unreferenced_vertices()
         if elastic is None and backend == "volume":
             surface.merge_vertices()
@@ -123,7 +147,7 @@ def prepare_stress_mesh(
         if not len(surface.faces) or not np.isfinite(surface.vertices).all():
             raise ValueError("The surface mesh must contain finite vertices and triangles.")
 
-    digest = hashlib.sha256(b"rigid-stress-mesh-v3-triangle-three-quads")
+    digest = hashlib.sha256(b"rigid-stress-mesh-v4-triangle-three-quads")
     digest.update(source.read_bytes())
     if surface is not None:
         # Scene formats can refer to geometry buffers outside the source file
@@ -137,7 +161,7 @@ def prepare_stress_mesh(
     directory = cache / digest.hexdigest()
     collision_path, elastic_path = directory / "collision.obj", directory / "elastic.npz"
     if collision_path.is_file() and elastic_path.is_file():
-        surface = trimesh.load_scene(collision_path).to_mesh()
+        surface = load_surface(collision_path)
         return PreparedStressMesh(collision_path, elastic_path, surface.bounds[0, 2])
 
     if elastic is None and backend == "shell":

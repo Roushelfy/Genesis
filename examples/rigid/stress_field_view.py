@@ -12,7 +12,7 @@ from examples.rigid.stress_shell_asset import shell_boundary
 class StressFieldSurface:
     """Color volume boundary corners or shell-side element maxima without smoothing between material elements.
 
-    Colors span zero to a fixed limit in Pa, with gray for invalid samples. Volume faces retain their unique owning
+    Colors span zero to a fixed limit in Pa, with gray for invalid samples and unsampled shell edge caps. Volume faces retain their unique owning
     tetrahedron's three corner values. Each shell side uses its largest sampled Gauss-point value on both displayed
     triangles. The full-domain maximum is read independently from the native solver and can lie inside the volume.
     """
@@ -24,11 +24,13 @@ class StressFieldSurface:
             if backend == "volume":
                 triangles, self.owners, self.corners = volume_boundary(asset["tetrahedra"], vertices)
                 self.material_mesh = trimesh.Trimesh(vertices=vertices, faces=triangles, process=False)
+                self.n_cap_vertices = 0
             else:
                 quads = asset["quads"]
                 self.material_mesh, _directors = shell_boundary(vertices, quads, asset.get("directors"), thickness)
                 vertices = self.material_mesh.vertices
-                triangles = self.material_mesh.faces[: 4 * len(quads)]
+                triangles = self.material_mesh.faces
+                self.n_cap_vertices = 3 * (len(triangles) - 4 * len(quads))
                 self.owners = np.tile(np.repeat(np.arange(len(quads)), 2), 2)
                 self.sides = np.repeat(np.arange(2), 2 * len(quads))
         if not self.material_mesh.is_volume:
@@ -44,6 +46,7 @@ class StressFieldSurface:
             values = von_mises[self.owners[:, None], self.corners].reshape(-1)
         else:
             values = np.repeat(von_mises[self.owners, self.sides].max(axis=-1), 3)
+            values = np.concatenate((values, np.full(self.n_cap_vertices, np.nan)))
         palette = (
             np.array(
                 [[20, 10, 70, 255], [45, 80, 170, 255], [25, 180, 160, 255], [250, 210, 40, 255], [240, 40, 20, 255]]

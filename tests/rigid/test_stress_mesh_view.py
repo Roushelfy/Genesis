@@ -145,9 +145,18 @@ def test_automatic_shell_rejects_invalid_geometry(tmp_path, kind, diagnostic):
 def test_automatic_shell_preserves_gaps_and_rejects_crossing_ribbons(tmp_path):
     plate = trimesh.Trimesh(vertices=[[0, 0, 0], [0.04, 0, 0], [0, 0.03, 0]], faces=[[0, 1, 2]], process=False)
     other = plate.copy()
-    other.apply_translation([0, 0, 1e-10])
+    other.vertices[:, 2] = 1e-10
     source = tmp_path / "close-sheets.obj"
     trimesh.util.concatenate((plate, other)).export(source, digits=17)
+    with pytest.raises(ValueError, match="disconnected"):
+        prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
+    scene = trimesh.Scene()
+    scene.add_geometry(plate, geom_name="sheet", node_name="first")
+    transform = np.eye(4)
+    transform[2, 3] = 1e-10
+    scene.graph.update(frame_to="second", geometry="sheet", matrix=transform)
+    source = tmp_path / "transformed-sheets.glb"
+    scene.export(source)
     with pytest.raises(ValueError, match="disconnected"):
         prepare_stress_mesh(source, None, "shell", 1.0, None, tmp_path / "cache")
     path = np.array([[-0.02, -0.02], [0.02, 0.02], [-0.02, 0.02], [0.02, -0.02]])
@@ -219,6 +228,7 @@ def test_stress_boundary_colors_and_material_sides(tmp_path):
     assert_allclose(np.diag(properties.inertia), 0.2 / 12 * np.array([1.04, 1.04, 2.0]), atol=1e-12)
     colored = sides.colored_mesh(np.array([[[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 10.0, 0.0]]]), 10.0)
     assert_allclose(colored.vertices[:6, 2], 0.1, atol=1e-12)
-    assert_allclose(colored.vertices[6:, 2], -0.1, atol=1e-12)
+    assert_allclose(colored.vertices[6:12, 2], -0.1, atol=1e-12)
     assert_equal(colored.visual.vertex_colors[:6, :3], [20, 10, 70])
-    assert_equal(colored.visual.vertex_colors[6:, :3], [240, 40, 20])
+    assert_equal(colored.visual.vertex_colors[6:12, :3], [240, 40, 20])
+    assert_equal(colored.visual.vertex_colors[12:, :3], [140, 140, 140])
