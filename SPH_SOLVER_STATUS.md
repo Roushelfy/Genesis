@@ -36,6 +36,9 @@ convergence and the complete two-way/implicit-viscosity feature set remain requi
   and the design, goal and status documents. The destination holds exactly the source commits, so the validation
   recorded here applies to it unchanged (FluidBench evidence at `c5da1747`). Later milestones are synchronized the same
   way, each recorded here with its source and destination heads.
+- 2026-10-30 to 2026-10-31, fast-forwards of `entropylost/genesis-world:main` to the source heads `9ce08147`,
+  `1e8a0c0b`, `993fc331`, `9b621c30`, `4beb80fb` (status records), `793e9685` (chunked reductions) and `18bf3cc0`
+  (error read every fourth iteration); after each push the destination head equals the source head.
 
 ## Milestones
 
@@ -694,6 +697,25 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     cap of 60 or 100 every coupling converges (8.5 and 11.3 passes per substep, RTF 0.0006 and 0.0004), and the run is
     usable by the FluidBench bar, but the sphere travels 1.6 mm in 3 s: its speed is 98.6 % below the measured terminal
     velocity, the static pressure friction of finding 17 (V9 settles 51-66 % slow, finding 50).
+
+57. Two changes of the reductions speed the velocity baseline up to RTF 0.174 at dt x8 (FluidBench timing runs
+    `sphgoal-sbt-n1`, `sphgoal-rct-n1`, `sphgoal-ect-n1`: thick-wall S1 f2 R2, one environment, three repeats, every
+    solve converged; profiles `sb_*_dt8`, `rc_*_dt8`, `ec_*_dt8` in the FluidBench data directory
+    `profiles/`). Each thread of the momentum projection of the viscosity solve and of the clearance guard now sums 64
+    particles before one atomic addition per environment (793e9685), instead of one atomic addition per particle on the
+    same few environment sums: the projection went from 3.64 to 0.31 ms of GPU time per substep and the guard from 0.61
+    to 0.11 ms, RTF 0.123 to 0.153 (walls 8.27, 8.19, 8.17 s to 6.66, 6.61, 6.58 s). The pressure solves then read their
+    error after the first iteration and every fourth one instead of after every iteration (18bf3cc0), which saves a
+    reduction over environments and a host synchronization per iteration at the cost of up to three extra iterations:
+    RTF 0.174 (walls 5.84, 5.80, 5.80 s), GPU time per substep 19.31, 15.98 and 14.41 ms for the three revisions
+    (`--kernel-profiler`). Equivalence (receipts `*__rc_*`, `*__ec_*` against `*__sa0_*`): momentum drift 4.0-4.5e-6
+    and 7.0-7.4e-6 per s against 4.3e-6 and 7.1e-6, mode decay error 0.189 in all three, Couette torques and profile
+    within the spread of repeated runs (profile 0.137-0.147), the stirring balance -0.68 and -0.97 % against -0.49 %,
+    held joints within 0.4 % of the readout; `tests/coupling/test_sph_rigid.py` and `tests/particles/test_sph.py` pass
+    except `test_pressure_carries_column_weight` (WCSPH and DFSPH of the legacy solver), which fails identically on the
+    starting revision 92c78327 (`logs/base_pytest2.log`). The remaining GPU time at dt x8: the pressure solves 8.5 ms
+    per substep (8.0 ms in their iterations, mostly those of the density solves of the two coupling passes that almost
+    every substep takes), density and factor 1.6 ms, the viscosity geometry 1.5 ms.
 
 ## Validation at 47499e5c (v5)
 
