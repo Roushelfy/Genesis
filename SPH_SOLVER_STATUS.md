@@ -735,6 +735,40 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     substeps of `sphgoal-sbt-n1`), which the prediction kernel and the longer first viscosity solve offset. Not adopted.
     H100 duplicates of these runs (`cwh*`) were discarded: the worktree was edited while they compiled.
 
+59. Kernel tasks and boundary neighbor lists (FluidBench timing runs `sphgoal-ect-n1`, `sphgoal-mot-n1`,
+    `sphgoal-blt-n1`, thick-wall S1 f2 R2 at dt x8, three repeats each; profiles `ec_*_dt8`, `df_kp_dt8`, `mo_*_dt8`,
+    `bl_*_dt8`; `adapters/genesis/sph_validation/dev/hash_probe.py`). Every pressure iteration ran a task of its own to
+    reset the error of the environments and the wrenches of the coupled links (7.6 us, 0.57 ms per substep at dt x8);
+    the first thread of the pressure acceleration loop now resets the error and the wrenches are reset at the start of
+    the solve and after the links have read them. The Gram matrix of the directional viscosity correction accumulates
+    its upper triangle only. RTF 0.174 to 0.177 (walls 5.75, 5.70, 5.71 s). The density kernel spends 1.55 ms of GPU
+    time per substep in its boundary loop against 0.08 ms in the fluid search that builds the neighbor list (development
+    split, `df_kp_dt8`); a boundary search scans 78 candidates per fluid particle for 8.1 neighbors (fluid search: 180
+    for 30), at most 449, since 403 boundary particles of the stirring rod lie outside the hash grid of the domain and
+    share its slots. The boundary neighbors are now listed by the first boundary search of the density kernel (up to 48,
+    a particle with more searches the grid), and the second pass of the density kernel, both passes of the viscosity
+    geometry, the isotropic pressure correction and the pressure readout read the list: RTF 0.180 (walls 5.64, 5.60,
+    5.61 s), GPU time per substep 14.41, 14.14 and 14.04 ms. The lists barely change the time of those kernels (density
+    and factor 1.53 ms, viscosity geometry 0.59 and 0.85 ms): the search is not their cost. With 19172 particles a
+    kernel runs as a single wave of threads and lasts as long as its slowest thread, and a particle in a corner of the
+    cup runs its many boundary neighbors, each with 8 ghost points of the wall column, in sequence. Spreading the
+    boundary pairs over threads is the remaining opportunity in these kernels. Equivalence (`*__mo_*`, `*__bl_*` against
+    `*__ec_*`): momentum drift 4.0-4.6e-6 and 7.9-8.0e-6 per s, mode decay error 0.189, Couette torques and profile
+    within the spread of repeated runs (profile 0.143), stirring balance -0.76 and -0.91 %, held joints within 0.8 % of
+    the readout, thick-wall rest at R1 rms 0.0083 m/s and largest speed 0.071 m/s without crossing; the unit tests as in
+    finding 57.
+
+60. Accuracy over time steps and resolutions on Genesis a7f11ce9 (FluidBench `sphgoal-tr-dt{1,2,4,8}` full-horizon runs
+    and `sphgoal-trt-dt{1,4,8}` timing runs, thick walls, velocity baseline, every solve converged except T07a at dt x4;
+    FluidBench `report/sph_goal.md`). S1 water (Stage B) keeps its errors from dt x1 to x8: at R2 the angular momentum
+    error 0.23 to 0.25 (bar 0.20), the spin-down time -65.4 to -67.4 % (bar 30 %), the volume drift 1.3 to 0.81 %; at R1
+    0.36 to 0.42, -65.5 to -68.1 %, 0.88 to 0.31 %. The water dynamics, not the time step, set the S1 verdict. S2
+    pouring is usable at every time step at R1 and R2 with the same onset and transfer as at dt x1 (output RTF 0.043 to
+    0.193 at R1, 0.026 to 0.091 at R2). The floating box T07a is usable at dt x1 and ends in NaN at dt x4 (45
+    unconverged solves; the run at dt x8 had not ended when this was recorded): dynamic links need the FluidBench time
+    step. Timing runs (one environment, RTF): R1 0.077 / 0.191 / 0.302, R2 0.049 / 0.117 / 0.172, R3 0.017 / 0.039 /
+    0.072 at dt x1 / x4 / x8, against the 0.5 target.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -899,6 +933,8 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | warm start of the density solve at 0.75 or 1.0 of the last pressure instead of 0.5 | measured, not adopted: 45 to 41 and 35 iterations per substep at dt x1, but water at rest stays noisier (closed column kinetic energy 3.7e-4 to 2.6e-4 J over 0.9 s against 3.3e-4 to 1.3e-4 J) | `gs-dfsph__S1__f2@sphgoal-ws*`, `logs/ws1.0_cn.log` |
 | chunked reductions of the viscosity projection and the clearance guard | implemented, validated, measured: RTF 0.123 to 0.153 on thick-wall S1 R2 at dt x8 (finding 57) | `sphgoal-rct-n1`, `rc_kp_dt8`; equivalence `*__rc_*` |
 | error of the pressure solves read every fourth iteration | implemented, validated, measured: RTF 0.153 to 0.174 (finding 57) | `sphgoal-ect-n1`, `ec_kp_dt8`; equivalence `*__ec_*` |
+| kernel task of the iteration resets folded into its loops, upper triangle of the viscosity Gram matrix | implemented, validated, measured: RTF 0.174 to 0.177 (finding 59) | `sphgoal-mot-n1`, `mo_kp_dt8`; equivalence `*__mo_*` |
+| boundary neighbor lists | implemented, validated, measured: RTF 0.177 to 0.180; the boundary kernels are bound by their slowest thread, not the search (finding 59) | `sphgoal-blt-n1`, `bl_kp_dt8`, `df_kp_dt8`; equivalence `*__bl_*` |
 | warm start of the viscosity-pressure coupling | measured, not adopted: RTF 0.206 with the full warm start of the density solve, which breaks the stirring balance and the rest noise; 0.167 without it (finding 58) | `sphgoal-cw*t-n1`, `*__cw*_*` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 
@@ -942,6 +978,6 @@ No variant tried against the friction keeps the energy (findings 31, 33, 40, 41,
   at nu 1e-6); S2 is usable at R2 with `v6w`; S3 misses the mixing index.
 - Speed: on S1 R2 (RTX PRO 6000, all solves converged) the RTF is 0.039 at the FluidBench time step and 0.142 at dt x8
   for the default configuration (section "Performance (M5)"), against the 0.5 target. The Stage A velocity baseline on
-  thick walls runs at 0.174 at dt x8 on 18bf3cc0 (findings 55, 57, 58); dt x12 is unstable. SPH_SOLVER_DESIGN.md section
-  10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and V4 fail in every
-  configuration, so there is no accuracy-qualified speed to report.
+  thick walls runs at 0.180 at dt x8 (findings 55, 57-60); dt x12 is unstable, and a floating link fails at dt x4.
+  SPH_SOLVER_DESIGN.md section 10 calls S1 R2 accuracy-qualified when V1-V8 pass at that resolution; V1, V2 (or V5) and
+  V4 fail in every configuration, so there is no accuracy-qualified speed to report.
