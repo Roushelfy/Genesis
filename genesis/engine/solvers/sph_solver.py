@@ -1788,9 +1788,10 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         ret += weight * self.materials[i_m].rest_volume * a_ij.dot(self.cubic_kernel_derivative(x_ij))
 
     @qd.kernel
-    def _kernel_pressure_solve_iteration(self, is_divergence: qd.template(), omega: float) -> float:
+    def _kernel_pressure_solve_iteration(self, is_divergence: qd.template(), omega: float):
         """
-        Run one Jacobi iteration of the divergence or density solve and return the worst average error over envs.
+        Run one Jacobi iteration of the divergence or density solve; _kernel_pressure_solve_error then returns the
+        worst average error of that iteration over envs.
 
         omega is the weight of the Chebyshev semi-iterative acceleration of the iteration (see _pressure_solve), 1 for a
         plain Jacobi iteration.
@@ -1868,6 +1869,9 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 if error > 0.0:
                     self.envs_solver_error[i_b] += error
 
+    @qd.kernel
+    def _kernel_pressure_solve_error(self) -> float:
+        """Return the worst average error over envs of the last iteration of the divergence or density solve."""
         max_avg_error = gs.qd_float(0.0)
         for i_b in range(self._B):
             n_active = qd.max(self.envs_n_active[i_b], 1)
@@ -1953,11 +1957,15 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         while (not is_converged or n_iters < n_iters_min) and n_iters < n_iters_max:
             if rho2 > 0.0 and n_iters > 0:
                 omega = 2.0 / (2.0 - rho2) if n_iters == 1 else 4.0 / (4.0 - rho2 * omega)
-            avg_error = self._kernel_pressure_solve_iteration(is_divergence, omega)
-            if keep_pressure and n_iters == 0:
-                target_error = max(min(max_error, 0.1 * avg_error), 1e-3 * max_error)
-            is_converged = avg_error <= target_error
+            self._kernel_pressure_solve_iteration(is_divergence, omega)
             n_iters += 1
+            # The error of an iteration costs a reduction over envs and a host synchronization, about a quarter of an
+            # iteration of 19k particles: it is read after the first iteration and then every fourth.
+            if n_iters == 1 or n_iters % 4 == 0 or n_iters >= n_iters_max:
+                avg_error = self._kernel_pressure_solve_error()
+                if keep_pressure and n_iters == 1:
+                    target_error = max(min(max_error, 0.1 * avg_error), 1e-3 * max_error)
+                is_converged = avg_error <= target_error
 
         gs.logger.debug(
             f"DFSPH {'divergence' if is_divergence else 'density'} solve: {n_iters} iterations, avg error {avg_error:.4g}"
