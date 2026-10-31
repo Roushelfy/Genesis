@@ -25,7 +25,9 @@ energy balance, solver convergence and the complete two-way/implicit-viscosity f
 
 ## Stage A delivery (2026-10-31)
 
-Revision `138b2c5f` (code) with this document; collaborator `entropylost/genesis-world:main` holds the same commits.
+Revision `138b2c5f` (code) with this document, and the independent stop of environments on the commit after it
+(finding 66; one environment 2 % slower than the speeds quoted below, batches faster); collaborator
+`entropylost/genesis-world:main` holds the same commits.
 Evidence: FluidBench `report/sph_goal.md` (sections "Stage A verdict by case and configuration", "Stage A: ..."), the
 receipts `results/sph_validation/*__sa0_*` (validation of the baseline on 745b4613) and the equivalence receipts of
 every later code change (findings 57-64), and the run records `results/index/gs-dfsph__*@sphgoal-{sb,tr,fin}-*`.
@@ -62,7 +64,8 @@ R2) at every time step, a Stage B item.
 Speed (finding 65; usability and speed reported separately, as the goal requires while the target is unmet): one
 environment of thick-wall S1 at dt x8 runs at RTF 0.389 / 0.257 / 0.120 at R1 / R2 / R3 against the target 0.5 (from
 0.123 at R2 on 745b4613, findings 55 and 57-64), S2 R2 at 0.130; dt x8 keeps the S1 and S2 verdicts of dt x1 (finding
-60). Batches of 4 environments: 0.444 environment-seconds per second.
+60). Batches of 4 and 16 environments: 0.44 and 0.35-0.49 environment-seconds per second with the independent stop of
+environments (finding 66).
 
 Limitations carried to Stage B: the shear stress that the symmetric pressure pairs carry in proportion to the pressure
 (V1, V2, V9, T08c); the excess damping of water (V4 at nu 1e-6, S1); V12 on its single-particle envelope; dynamic links
@@ -881,6 +884,20 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     the round-off of the GPU reductions selects the branch. Letting environments stop independently (candidate 9) is the
     remaining batch opportunity.
 
+66. Environments stop their solves independently (candidate 9; FluidBench `sphgoal-iet-*` timing runs on the development
+    snapshot of 3123360d with the change, receipts `*__ie_*`). An environment takes part in the coupling passes of a
+    substep until its own fluid and rigid coupling residual is at most 1, and in the iterations of a pressure solve
+    until its own average error meets its own target (the tolerance, or for a later coupling pass a tenth of its own
+    first error); the kernels of the passes and iterations skip the other environments, which keep the state of their
+    last pass or iteration. Before, every environment iterated until the worst one converged. Batches of S1 R2 at dt x8:
+    16 environments 0.461, 0.491 and 0.350 environment-seconds per second (2.9, 2.4 and 5.5 coupling passes per substep
+    in the worst environment) against 0.40-0.42 and 0.16-0.18 (finding 65); 4 environments 0.442 against 0.444; one
+    environment RTF 0.248 against 0.254 (walls 4.04, 4.10, 4.06 s against 3.98, 3.95, 3.97 s: the activation, the error
+    of the solve that ended and the coupling flags are kernels of their own). Equivalence against `*__cb_*`: momentum
+    drift 4.4e-6 and 7.4e-6 per s, mode decay error 0.189, Couette torques and profile within the spread of repeated
+    runs (profile 0.138), stirring balance -0.94 %, held joints within 0.1 % of the readout, thick-wall rest at R1 rms
+    0.0082 m/s and largest speed 0.053 m/s; the unit tests as in finding 57.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
@@ -1037,7 +1054,6 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | 6 reorder and copy traffic | measured, not changed: under 2 % | `fe_fine` |
 | 7 preconditioner reuse | proposed | |
 | 8 block reductions | implemented, measured: the link wrench accumulates in the pressure acceleration pass, and only particles with an error add it to their environment; the predicted-source task of an iteration went from 67 to 50 us, a substep at dt x8 from 31.1 to 28.6 ms (iteration cap 100) | `nl3_kp_dt1`, `it1_kp_dt1`, `nl3_it100_coarse_dt8`, `it1_it100_coarse_dt8` |
-| 9 independent stop of environments | proposed | |
 | 10 prescribed-boundary path | proposed | |
 | packed moment matrix of the viscosity correction | measured, not adopted: 1.99 to 1.93 ms | `nl2_fine_dt1` |
 | compile-time constants in the iteration kernel | implemented, measured: statements outside the loops of a kernel run as serial GPU tasks of 6-7 us; one fewer per iteration, 28.6 to 28.1 ms per substep at dt x8 | `it2_kp_dt1`, `it2_it100_coarse_dt8` |
@@ -1052,6 +1068,7 @@ dt x8, against 69.9 at dc03db16e on the adapter lattice. S1 is not accuracy-qual
 | sums of the viscosity solve, coupling residual and dissipation readout in chunks | implemented, validated, measured: RTF 0.232 to 0.246 (finding 63) | `sphgoal-vrt-n1`; equivalence `*__vr_*` |
 | 8 instead of 4 threads per particle in the pressure iterations | measured, not adopted: RTF 0.227 (finding 63) | `sphgoal-g8t-n1`, `*__g8_*` |
 | link response folded into the share loop; wall tensors over shared boundary neighbors | implemented, validated, measured: RTF 0.246 to 0.254 (finding 64) | `sphgoal-rft-n1`, `sphgoal-vgt-n1`, `sphgoal-cbt-n1`; equivalence `*__rf_*`, `*__vg_*`, `*__cb_*` |
+| 9 independent stop of environments | implemented, validated, measured: batches of 16 at 0.35-0.49 environment-seconds per second against 0.16-0.42, one environment 2 % slower (finding 66) | `sphgoal-iet-*`; equivalence `*__ie_*` |
 | warm start of the viscosity-pressure coupling | measured, not adopted: RTF 0.206 with the full warm start of the density solve, which breaks the stirring balance and the rest noise; 0.167 without it (finding 58) | `sphgoal-cw*t-n1`, `*__cw*_*` |
 | 4 instead of 8 ghost points per wall column | measured, not adopted: 6.65 to 6.08 ms per substep at dt x1, mode decay rate -24.0 % against -22.9 % | `g4_coarse_dt1`, `decay__g4_decay_nu1e-3_dx0.0025` |
 

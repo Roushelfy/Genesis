@@ -408,6 +408,14 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # Per-environment reductions of the DFSPH solver iterations.
         self.envs_n_active = qd.field(gs.qd_int, shape=(self._B,))
         self.envs_solver_error = qd.field(gs.qd_float, shape=(self._B,))
+        # Environments stop their solves independently (candidate 9 of SPH_SOLVER_GOAL.md): an environment takes part in
+        # the coupling passes of a substep until its own coupling has converged, and in the iterations of a pressure
+        # solve until its own error meets its own target (see _run_fluid_stage and _kernel_pressure_solve_error). The
+        # kernels of the passes skip the other environments, which keep the state of their last pass or iteration.
+        self.envs_coupling_active = qd.field(gs.qd_int, shape=(self._B,))
+        self.envs_solve_active = qd.field(gs.qd_int, shape=(self._B,))
+        self.envs_solve_target = qd.field(gs.qd_float, shape=(self._B,))
+        self.envs_coupling_rel = qd.field(gs.qd_float, shape=(self._B,))
         # error of every particle in the last iteration of the running divergence or density solve, summed over the
         # environment only when the solve reads it (see _kernel_pressure_solve_error)
         self.particles_solver_error = qd.field(gs.qd_float, shape=(self._n_particles, self._B))
@@ -1553,9 +1561,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                         i_b,
                     )
                     self.particles_n_boundary_neighbors[i_p, i_b] = ret.n_boundary
-                    self._func_for_all_boundary_neighbors(
-                        i_p, ret, self._task_compute_boundary_density_and_factor, i_b
-                    )
+                    self._func_for_all_boundary_neighbors(i_p, ret, self._task_compute_boundary_density_and_factor, i_b)
                     if ret.n_overflows > 0:
                         self.envs_boundary_slot_overflows[i_b] += 1
                     if qd.static(self._has_volume_maps):
@@ -1800,60 +1806,66 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         (SPH_SOLVER_DESIGN.md section 5.2).
         """
         inv_dt = 1.0 / self._substep_dt
+        for i_b in range(self._B):
+            self.envs_solve_active[i_b] = self.envs_coupling_active[i_b]
         if qd.static(self._has_rigid_coupling):
             for i_r, i_b in qd.ndrange(qd.static(self._n_wrench_rows), self._B):
-                self.coupled_wrench[i_r, i_b] = 0.0
+                if self.envs_coupling_active[i_b]:
+                    self.coupled_wrench[i_r, i_b] = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                density_change = gs.qd_float(0.0)
-                self._func_for_all_fluid_neighbors(i_p, density_change, self._task_compute_density_change, i_b)
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    density_change = gs.qd_float(0.0)
+                    self._func_for_all_fluid_neighbors(i_p, density_change, self._task_compute_density_change, i_b)
 
-                if qd.static(self._has_boundary):
-                    for k in range(N_BOUNDARY_SLOTS):
-                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                            vel_rel = self.particles_reordered[i_p, i_b].vel - self._func_slot_wall_vel(i_p, i_b, k)
-                            density_change += vel_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
+                    if qd.static(self._has_boundary):
+                        for k in range(N_BOUNDARY_SLOTS):
+                            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                                vel_rel = self.particles_reordered[i_p, i_b].vel - self._func_slot_wall_vel(i_p, i_b, k)
+                                density_change += vel_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
 
-                factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
-                if qd.static(is_divergence):
-                    self.particles_reordered[i_p, i_b].density_adv_norm = density_change
+                    factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
+                    if qd.static(is_divergence):
+                        self.particles_reordered[i_p, i_b].density_adv_norm = density_change
 
-                    # Only compression is corrected, and never at the free surface. This clamped source only
-                    # seeds the solve: the iterations use the raw density change rate.
-                    source = qd.max(density_change, 0.0)
-                    if self.particles_reordered[i_p, i_b].n_neighbors < self._df_min_div_neighbors:
-                        source = 0.0
+                        # Only compression is corrected, and never at the free surface. This clamped source only
+                        # seeds the solve: the iterations use the raw density change rate.
+                        source = qd.max(density_change, 0.0)
+                        if self.particles_reordered[i_p, i_b].n_neighbors < self._df_min_div_neighbors:
+                            source = 0.0
 
-                    p_rho2 = source * factor * inv_dt
-                    if qd.static(self._df_warm_start):
-                        p_rho2 = 0.0
-                        if source > 0.0:
-                            p_rho2 = 0.5 * qd.min(
-                                self.particles_reordered[i_p, i_b].pressure_density2_norm_d, 0.5 * inv_dt
-                            )
-                    self.particles_reordered[i_p, i_b].pressure_density2_norm_d = p_rho2
-                else:
-                    density_now = self.particles_reordered[i_p, i_b].density_norm
-                    if qd.static(self._position_drift):
-                        # The positions take the correction of the compression error (see _drift_correction), so the
-                        # density solve of the coupled passes constrains the velocity alone: the predicted compression
-                        # from the rest density, or from the density of a particle below it (free surface).
-                        density_now = qd.min(density_now, 1.0)
-                    density_adv = density_now + self._substep_dt * density_change
-                    self.particles_reordered[i_p, i_b].density_adv_norm = density_adv
+                        p_rho2 = source * factor * inv_dt
+                        if qd.static(self._df_warm_start):
+                            p_rho2 = 0.0
+                            if source > 0.0:
+                                p_rho2 = 0.5 * qd.min(
+                                    self.particles_reordered[i_p, i_b].pressure_density2_norm_d, 0.5 * inv_dt
+                                )
+                        self.particles_reordered[i_p, i_b].pressure_density2_norm_d = p_rho2
+                    else:
+                        density_now = self.particles_reordered[i_p, i_b].density_norm
+                        if qd.static(self._position_drift):
+                            # The positions take the correction of the compression error (see _drift_correction), so the
+                            # density solve of the coupled passes constrains the velocity alone: the predicted
+                            # compression from the rest density, or from the density of a particle below it (free
+                            # surface).
+                            density_now = qd.min(density_now, 1.0)
+                        density_adv = density_now + self._substep_dt * density_change
+                        self.particles_reordered[i_p, i_b].density_adv_norm = density_adv
 
-                    p_rho2 = -qd.min(1.0 - density_adv, 0.0) * factor * inv_dt * inv_dt
-                    if qd.static(self._df_warm_start):
-                        p_rho2 = 0.0
-                        if density_adv > 1.0:
-                            # The clamp bounds p * dt^2, which is what limits the warm-started velocity change.
-                            p_rho2 = 0.5 * qd.min(
-                                self.particles_reordered[i_p, i_b].pressure_density2_norm_p, 0.00025 * inv_dt * inv_dt
-                            )
-                    if keep_pressure:
-                        p_rho2 = self.particles_reordered[i_p, i_b].pressure_density2_norm_p
-                    self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
+                        p_rho2 = -qd.min(1.0 - density_adv, 0.0) * factor * inv_dt * inv_dt
+                        if qd.static(self._df_warm_start):
+                            p_rho2 = 0.0
+                            if density_adv > 1.0:
+                                # The clamp bounds p * dt^2, which is what limits the warm-started velocity change.
+                                p_rho2 = 0.5 * qd.min(
+                                    self.particles_reordered[i_p, i_b].pressure_density2_norm_p,
+                                    0.00025 * inv_dt * inv_dt,
+                                )
+                        if keep_pressure:
+                            p_rho2 = self.particles_reordered[i_p, i_b].pressure_density2_norm_p
+                        self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
 
     @qd.func
     def _task_compute_predicted_source(self, i, j, ret: qd.template(), i_b):
@@ -1887,95 +1899,99 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         # _kernel_pressure_solve_error). The wrenches of the coupled links are reset at the start of the solve (see
         # _kernel_init_pressure_solve) and at the end of every iteration, after the response of the links has read them.
         for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                ret = qd.Struct(
-                    acc=qd.Vector.zero(gs.qd_float, 3),
-                    p_rho2_i=self._func_pressure_density2_norm(i_p, i_b, is_divergence),
-                    is_divergence=is_divergence,
-                )
-                self._func_for_fluid_neighbor_share(i_p, i_s, ret, self._task_compute_pressure_acc, i_b)
-                if i_s == 0:
-                    if qd.static(self._has_boundary):
-                        # BWJ23 eq. (33): a single term of the fluid particle pressure, with no pressure value at the
-                        # boundary.
-                        for k in range(N_BOUNDARY_SLOTS):
-                            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                                ret.acc -= ret.p_rho2_i * self.particles_boundary_slots[i_p, i_b, k].grad
-                    if qd.static(self._has_rigid_coupling):
-                        # Reaction of the boundary pressure of the iteration on the coupled links (SPH_SOLVER_DESIGN.md
-                        # section 5.1)
-                        i_m = self.particles_reordered[i_p, i_b].material
-                        mass_kappa = self.materials[i_m].mass * ret.p_rho2_i
-                        self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
-                self.particles_acc_shares[i_s, i_p, i_b] = ret.acc
+            if self.envs_solve_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    ret = qd.Struct(
+                        acc=qd.Vector.zero(gs.qd_float, 3),
+                        p_rho2_i=self._func_pressure_density2_norm(i_p, i_b, is_divergence),
+                        is_divergence=is_divergence,
+                    )
+                    self._func_for_fluid_neighbor_share(i_p, i_s, ret, self._task_compute_pressure_acc, i_b)
+                    if i_s == 0:
+                        if qd.static(self._has_boundary):
+                            # BWJ23 eq. (33): a single term of the fluid particle pressure, with no pressure value at
+                            # the boundary.
+                            for k in range(N_BOUNDARY_SLOTS):
+                                if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                                    ret.acc -= ret.p_rho2_i * self.particles_boundary_slots[i_p, i_b, k].grad
+                        if qd.static(self._has_rigid_coupling):
+                            # Reaction of the boundary pressure of the iteration on the coupled links
+                            # (SPH_SOLVER_DESIGN.md section 5.1)
+                            i_m = self.particles_reordered[i_p, i_b].material
+                            mass_kappa = self.materials[i_m].mass * ret.p_rho2_i
+                            self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
+                    self.particles_acc_shares[i_s, i_p, i_b] = ret.acc
 
         # The response of the coupled links to that reaction runs in the first threads of the loop that adds the
         # shares, which also follows the loop of the reaction, instead of in a loop of its own (about 7 us per
         # iteration).
         for i_p, i_b in qd.ndrange(qd.static(max(self._n_particles, self._n_wrench_rows)), self._B):
-            if qd.static(self._has_rigid_coupling):
-                if i_p < qd.static(self._n_wrench_rows):
-                    acc_row = gs.qd_float(0.0)
-                    for i_col in range(qd.static(self._n_wrench_rows)):
-                        acc_row += self.coupled_mobility[i_p, i_col, i_b] * self.coupled_wrench[i_col, i_b]
-                    self.coupled_acc[i_p, i_b] = acc_row
-            if i_p < self._n_particles:
-                if self.particles_reordered[i_p, i_b].active:
-                    acc = qd.Vector.zero(gs.qd_float, 3)
-                    for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
-                        acc += self.particles_acc_shares[i_s, i_p, i_b]
-                    self.particles_reordered[i_p, i_b].pressure_acc = acc
+            if self.envs_solve_active[i_b]:
+                if qd.static(self._has_rigid_coupling):
+                    if i_p < qd.static(self._n_wrench_rows):
+                        acc_row = gs.qd_float(0.0)
+                        for i_col in range(qd.static(self._n_wrench_rows)):
+                            acc_row += self.coupled_mobility[i_p, i_col, i_b] * self.coupled_wrench[i_col, i_b]
+                        self.coupled_acc[i_p, i_b] = acc_row
+                if i_p < self._n_particles:
+                    if self.particles_reordered[i_p, i_b].active:
+                        acc = qd.Vector.zero(gs.qd_float, 3)
+                        for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
+                            acc += self.particles_acc_shares[i_s, i_p, i_b]
+                        self.particles_reordered[i_p, i_b].pressure_acc = acc
 
         for i_s, i_p, i_b in qd.ndrange(N_NEIGHBOR_SHARES, self._n_particles, self._B):
-            if qd.static(self._has_rigid_coupling):
-                if i_s == 0 and i_p == 0:
-                    for i_r in range(qd.static(self._n_wrench_rows)):
-                        self.coupled_wrench[i_r, i_b] = 0.0
-            if self.particles_reordered[i_p, i_b].active:
-                predicted_source = gs.qd_float(0.0)
-                self._func_for_fluid_neighbor_share(
-                    i_p, i_s, predicted_source, self._task_compute_predicted_source, i_b
-                )
-                if i_s == 0:
-                    if qd.static(self._has_boundary):
-                        # BWJ23 eq. (34): the pressure acceleration of a boundary particle is the one of its link, zero
-                        # for a link that is not coupled.
-                        for k in range(N_BOUNDARY_SLOTS):
-                            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                                acc_rel = self.particles_reordered[i_p, i_b].pressure_acc
-                                if qd.static(self._has_rigid_coupling):
-                                    acc_rel -= self._func_coupled_point_acc(i_p, i_b, k)
-                                predicted_source += acc_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
-                self.particles_source_shares[i_s, i_p, i_b] = predicted_source
+            if self.envs_solve_active[i_b]:
+                if qd.static(self._has_rigid_coupling):
+                    if i_s == 0 and i_p == 0:
+                        for i_r in range(qd.static(self._n_wrench_rows)):
+                            self.coupled_wrench[i_r, i_b] = 0.0
+                if self.particles_reordered[i_p, i_b].active:
+                    predicted_source = gs.qd_float(0.0)
+                    self._func_for_fluid_neighbor_share(
+                        i_p, i_s, predicted_source, self._task_compute_predicted_source, i_b
+                    )
+                    if i_s == 0:
+                        if qd.static(self._has_boundary):
+                            # BWJ23 eq. (34): the pressure acceleration of a boundary particle is the one of its link,
+                            # zero for a link that is not coupled.
+                            for k in range(N_BOUNDARY_SLOTS):
+                                if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                                    acc_rel = self.particles_reordered[i_p, i_b].pressure_acc
+                                    if qd.static(self._has_rigid_coupling):
+                                        acc_rel -= self._func_coupled_point_acc(i_p, i_b, k)
+                                    predicted_source += acc_rel.dot(self.particles_boundary_slots[i_p, i_b, k].grad)
+                    self.particles_source_shares[i_s, i_p, i_b] = predicted_source
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            error = gs.qd_float(0.0)
-            if self.particles_reordered[i_p, i_b].active:
-                predicted_source = gs.qd_float(0.0)
-                for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
-                    predicted_source += self.particles_source_shares[i_s, i_p, i_b]
-                self.particles_reordered[i_p, i_b].predicted_source = predicted_source
+            if self.envs_solve_active[i_b]:
+                error = gs.qd_float(0.0)
+                if self.particles_reordered[i_p, i_b].active:
+                    predicted_source = gs.qd_float(0.0)
+                    for i_s in qd.static(range(N_NEIGHBOR_SHARES)):
+                        predicted_source += self.particles_source_shares[i_s, i_p, i_b]
+                    self.particles_reordered[i_p, i_b].predicted_source = predicted_source
 
-                source = -self.particles_reordered[i_p, i_b].density_adv_norm
-                if qd.static(not is_divergence):
-                    source = 1.0 + source
-                residual = source - dt_pow * predicted_source
-                error = -qd.min(residual, 0.0)
+                    source = -self.particles_reordered[i_p, i_b].density_adv_norm
+                    if qd.static(not is_divergence):
+                        source = 1.0 + source
+                    residual = source - dt_pow * predicted_source
+                    error = -qd.min(residual, 0.0)
 
-                p_rho2_cur = self._func_pressure_density2_norm(i_p, i_b, is_divergence)
-                factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
-                p_rho2 = qd.max(p_rho2_cur - 0.5 * residual * factor / dt_pow, 0.0)
-                if omega != 1.0:
-                    p_rho2_prev = self.particles_pressure_prev[i_p, i_b]
-                    p_rho2 = qd.max(omega * (p_rho2 - p_rho2_prev) + p_rho2_prev, 0.0)
-                self.particles_pressure_prev[i_p, i_b] = p_rho2_cur
-                if qd.static(is_divergence):
-                    self.particles_reordered[i_p, i_b].pressure_density2_norm_d = p_rho2
-                    if self.particles_reordered[i_p, i_b].n_neighbors < self._df_min_div_neighbors:
-                        error = 0.0
-                else:
-                    self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
-            self.particles_solver_error[i_p, i_b] = error
+                    p_rho2_cur = self._func_pressure_density2_norm(i_p, i_b, is_divergence)
+                    factor = self.particles_reordered[i_p, i_b].alpha_factor_adj
+                    p_rho2 = qd.max(p_rho2_cur - 0.5 * residual * factor / dt_pow, 0.0)
+                    if omega != 1.0:
+                        p_rho2_prev = self.particles_pressure_prev[i_p, i_b]
+                        p_rho2 = qd.max(omega * (p_rho2 - p_rho2_prev) + p_rho2_prev, 0.0)
+                    self.particles_pressure_prev[i_p, i_b] = p_rho2_cur
+                    if qd.static(is_divergence):
+                        self.particles_reordered[i_p, i_b].pressure_density2_norm_d = p_rho2
+                        if self.particles_reordered[i_p, i_b].n_neighbors < self._df_min_div_neighbors:
+                            error = 0.0
+                    else:
+                        self.particles_reordered[i_p, i_b].pressure_density2_norm_p = p_rho2
+                self.particles_solver_error[i_p, i_b] = error
 
     @qd.func
     def _func_chunk_sum(self, i_c, i_b):
@@ -1998,66 +2014,121 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         return total, largest
 
     @qd.kernel
-    def _kernel_pressure_solve_error(self) -> float:
-        """Return the worst average error over envs of the last iteration of the divergence or density solve.
+    def _kernel_pressure_solve_error(
+        self, max_error: float, is_first: bool, reduce_error: bool, may_stop: bool
+    ) -> float:
+        """Stop the environments whose error meets their target, and return the worst error over the environments that
+        were still iterating relative to their target, the solve having converged once it is at most 1.
 
-        The errors of the particles are summed in chunks of REDUCTION_CHUNK particles, one atomic addition per chunk
-        to the error of the environment: an atomic addition per particle, in every iteration, contended on that single
-        address for 39 us per iteration of 19172 particles (SPH_SOLVER_STATUS.md finding 62).
+        The target of an environment is max_error, or with reduce_error a tenth of the error of its first iteration
+        within [max_error / 1000, max_error] (see _pressure_solve); is_first marks the first iteration, and may_stop
+        whether the minimum number of iterations is reached. The errors of the particles are summed in chunks of
+        REDUCTION_CHUNK particles, one atomic addition per chunk to the error of the environment: an atomic addition per
+        particle, in every iteration, contended on that single address for 39 us per iteration of 19172 particles
+        (SPH_SOLVER_STATUS.md finding 62). A stopped environment keeps the error of its last iteration.
         """
         for i_b in range(self._B):
-            self.envs_solver_error[i_b] = 0.0
+            if self.envs_solve_active[i_b]:
+                self.envs_solver_error[i_b] = 0.0
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            chunk_error = gs.qd_float(0.0)
-            for k in range(REDUCTION_CHUNK):
-                i_p = i_c * REDUCTION_CHUNK + k
-                if i_p < self._n_particles:
-                    chunk_error += self.particles_solver_error[i_p, i_b]
-            if chunk_error > 0.0:
-                self.envs_solver_error[i_b] += chunk_error
+            if self.envs_solve_active[i_b]:
+                chunk_error = gs.qd_float(0.0)
+                for k in range(REDUCTION_CHUNK):
+                    i_p = i_c * REDUCTION_CHUNK + k
+                    if i_p < self._n_particles:
+                        chunk_error += self.particles_solver_error[i_p, i_b]
+                if chunk_error > 0.0:
+                    self.envs_solver_error[i_b] += chunk_error
 
+        max_rel_error = gs.qd_float(0.0)
+        for i_b in range(self._B):
+            if self.envs_solve_active[i_b]:
+                avg_error = self.envs_solver_error[i_b] / qd.max(self.envs_n_active[i_b], 1)
+                if is_first:
+                    target = max_error
+                    if reduce_error:
+                        target = qd.max(qd.min(max_error, 0.1 * avg_error), 1e-3 * max_error)
+                    self.envs_solve_target[i_b] = target
+                rel_error = avg_error / self.envs_solve_target[i_b]
+                if may_stop and rel_error <= 1.0:
+                    self.envs_solve_active[i_b] = 0
+                qd.atomic_max(max_rel_error, rel_error)
+        return max_rel_error
+
+    @qd.kernel
+    def _kernel_pressure_solve_max_error(self) -> float:
+        """Return the worst average error over the environments of the solve that just ended."""
         max_avg_error = gs.qd_float(0.0)
         for i_b in range(self._B):
-            n_active = qd.max(self.envs_n_active[i_b], 1)
-            qd.atomic_max(max_avg_error, self.envs_solver_error[i_b] / n_active)
+            if self.envs_coupling_active[i_b]:
+                qd.atomic_max(max_avg_error, self.envs_solver_error[i_b] / qd.max(self.envs_n_active[i_b], 1))
         return max_avg_error
+
+    @qd.kernel
+    def _kernel_activate_envs(self):
+        """Let every environment take part in the solves of the fluid stage that starts."""
+        for i_b in range(self._B):
+            self.envs_coupling_active[i_b] = 1
+            self.envs_solve_active[i_b] = 1
+
+    @qd.kernel
+    def _kernel_update_coupling_active(self):
+        """Stop the coupling passes of the environments whose own coupling residual, of the fluid and of the coupled
+        links (see _kernel_coupling_residual and _kernel_solve_coupled_viscosity), is at most 1."""
+        for i_b in range(self._B):
+            if self.envs_coupling_active[i_b]:
+                rel_residual = self.envs_coupling_rel[i_b]
+                if qd.static(self._has_rigid_coupling):
+                    rel_residual = qd.max(rel_residual, self.envs_coupled_vel_change[i_b] / self._visc_max_error)
+                if rel_residual <= 1.0:
+                    self.envs_coupling_active[i_b] = 0
 
     @qd.kernel
     def _kernel_apply_pressure_acc(self, is_divergence: qd.template()):
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                self._func_compute_pressure_acc(i_p, i_b, is_divergence)
-                pressure_vel = self._substep_dt * self.particles_reordered[i_p, i_b].pressure_acc
-                self.particles_reordered[i_p, i_b].vel += pressure_vel
-                if qd.static(self._has_viscosity and not is_divergence):
-                    self.particles_viscosity[i_p, i_b].pressure_vel_delta = (
-                        pressure_vel - self.particles_viscosity[i_p, i_b].pressure_vel
-                    )
-                    self.particles_viscosity[i_p, i_b].pressure_vel = pressure_vel
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    self._func_compute_pressure_acc(i_p, i_b, is_divergence)
+                    pressure_vel = self._substep_dt * self.particles_reordered[i_p, i_b].pressure_acc
+                    self.particles_reordered[i_p, i_b].vel += pressure_vel
+                    if qd.static(self._has_viscosity and not is_divergence):
+                        self.particles_viscosity[i_p, i_b].pressure_vel_delta = (
+                            pressure_vel - self.particles_viscosity[i_p, i_b].pressure_vel
+                        )
+                        self.particles_viscosity[i_p, i_b].pressure_vel = pressure_vel
 
         if qd.static(self._has_rigid_coupling):
             # The impulse of the converged pressure on the coupled links, applied once to their velocities.
             n_coupled_6 = 6 * self.coupled_links_idx.shape[0]
             for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
-                self.coupled_wrench[i_r, i_b] = 0.0
+                if self.envs_coupling_active[i_b]:
+                    self.coupled_wrench[i_r, i_b] = 0.0
             for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-                if self.particles_reordered[i_p, i_b].active:
-                    i_m = self.particles_reordered[i_p, i_b].material
-                    mass_kappa = self.materials[i_m].mass * self._func_pressure_density2_norm(i_p, i_b, is_divergence)
-                    self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
+                if self.envs_coupling_active[i_b]:
+                    if self.particles_reordered[i_p, i_b].active:
+                        i_m = self.particles_reordered[i_p, i_b].material
+                        mass_kappa = self.materials[i_m].mass * self._func_pressure_density2_norm(
+                            i_p, i_b, is_divergence
+                        )
+                        self._func_add_coupled_wrench(i_p, i_b, mass_kappa)
             for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
-                impulse = self._substep_dt * self.coupled_wrench[i_r, i_b]
-                if qd.static(is_divergence):
-                    self.coupled_impulse_div[i_r, i_b] = impulse
-                else:
-                    self.coupled_impulse_den[i_r, i_b] = impulse
+                if self.envs_coupling_active[i_b]:
+                    impulse = self._substep_dt * self.coupled_wrench[i_r, i_b]
+                    if qd.static(is_divergence):
+                        self.coupled_impulse_div[i_r, i_b] = impulse
+                    else:
+                        self.coupled_impulse_den[i_r, i_b] = impulse
             for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
-                vel = self.coupled_vel_base[i_r, i_b]
-                for i_col in range(n_coupled_6):
-                    vel += self._substep_dt * self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
-                self.coupled_vel[i_r, i_b] = vel
+                if self.envs_coupling_active[i_b]:
+                    vel = self.coupled_vel_base[i_r, i_b]
+                    for i_col in range(n_coupled_6):
+                        vel += (
+                            self._substep_dt * self.coupled_mobility[i_r, i_col, i_b] * self.coupled_wrench[i_col, i_b]
+                        )
+                    self.coupled_vel[i_r, i_b] = vel
             for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
-                self._func_set_coupled_links_vel(i_c, i_b)
+                if self.envs_coupling_active[i_b]:
+                    self._func_set_coupled_links_vel(i_c, i_b)
 
     def _pressure_solve(self, is_divergence, keep_pressure=False, accelerate=False):
         """
@@ -2096,8 +2167,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         if is_accelerated:
             max_error *= 0.1
         omega = 1.0
-        n_iters, avg_error, is_converged = 0, 0.0, False
-        target_error = max_error
+        n_iters, is_converged = 0, False
         while (not is_converged or n_iters < n_iters_min) and n_iters < n_iters_max:
             if rho2 > 0.0 and n_iters > 0:
                 omega = 2.0 / (2.0 - rho2) if n_iters == 1 else 4.0 / (4.0 - rho2 * omega)
@@ -2106,10 +2176,11 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
             # The error of an iteration costs a reduction over envs and a host synchronization, about a quarter of an
             # iteration of 19k particles: it is read after the first iteration and then every fourth.
             if n_iters == 1 or n_iters % 4 == 0 or n_iters >= n_iters_max:
-                avg_error = self._kernel_pressure_solve_error()
-                if keep_pressure and n_iters == 1:
-                    target_error = max(min(max_error, 0.1 * avg_error), 1e-3 * max_error)
-                is_converged = avg_error <= target_error
+                rel_error = self._kernel_pressure_solve_error(
+                    max_error, n_iters == 1, keep_pressure, n_iters >= n_iters_min
+                )
+                is_converged = rel_error <= 1.0
+        avg_error = self._kernel_pressure_solve_max_error()
 
         gs.logger.debug(
             f"DFSPH {'divergence' if is_divergence else 'density'} solve: {n_iters} iterations, avg error {avg_error:.4g}"
@@ -2493,66 +2564,73 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         impulse of the substep) scales the tolerance of the agreement between viscosity and pressure.
         """
         for i_b in range(self._B):
-            self.envs_viscosity[i_b].residual_norm2 = 0.0
-            self.envs_viscosity[i_b].residual_norm2_init = 0.0
-            self.envs_viscosity[i_b].rhs_norm2 = 0.0
-            if is_first_pass:
-                self.envs_viscosity[i_b].gravity_norm2 = 0.0
-                self.envs_viscosity[i_b].viscous_stiffness_bound = 1.0
+            if self.envs_coupling_active[i_b]:
+                self.envs_viscosity[i_b].residual_norm2 = 0.0
+                self.envs_viscosity[i_b].residual_norm2_init = 0.0
+                self.envs_viscosity[i_b].rhs_norm2 = 0.0
+                if is_first_pass:
+                    self.envs_viscosity[i_b].gravity_norm2 = 0.0
+                    self.envs_viscosity[i_b].viscous_stiffness_bound = 1.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            terms = qd.Vector.zero(gs.qd_float, 4)
-            if self.particles_reordered[i_p, i_b].active:
-                i_m = self.particles_reordered[i_p, i_b].material
-                mass = self.materials[i_m].mass
-                vel_rhs = self.particles_viscosity[i_p, i_b].vel_star + self.particles_viscosity[i_p, i_b].pressure_vel
-                ret = qd.Struct(
-                    image=mass * self.particles_reordered[i_p, i_b].vel,
-                    block=mass * qd.Matrix.identity(gs.qd_float, 3),
-                    rhs=mass * vel_rhs,
-                    row_norm=gs.qd_float(0.0),
-                )
-                self._func_for_all_fluid_neighbors(i_p, ret, self._task_init_viscosity_solve, i_b)
-                # The wall acts on the particle alone (see _kernel_compute_viscosity_geometry), so it only adds to the
-                # diagonal block, and the wall velocity is known in the solve, so its part goes to the right-hand side.
-                wall_block = self._substep_dt * self.particles_viscosity[i_p, i_b].wall_tensor
-                ret.block += wall_block
-                ret.image += wall_block @ self.particles_reordered[i_p, i_b].vel
-                ret.row_norm += wall_block.trace()
-                if qd.static(self._has_boundary):
-                    for k in range(N_BOUNDARY_SLOTS):
-                        if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
-                            ret.rhs += self._substep_dt * (
-                                self.particles_boundary_slots[i_p, i_b, k].wall_tensor
-                                @ self._func_slot_wall_vel(i_p, i_b, k)
-                            )
-                precond_inv = ret.block.inverse()
-                residual = ret.rhs - ret.image
-                residual_precond = precond_inv @ residual
-                self.particles_viscosity[i_p, i_b].precond_inv = precond_inv
-                self.particles_viscosity[i_p, i_b].residual = residual
-                self.particles_viscosity[i_p, i_b].residual_precond = residual_precond
-                self.particles_viscosity[i_p, i_b].direction = residual_precond
-                terms[0] = residual.dot(residual_precond)
-                terms[1] = ret.rhs.dot(precond_inv @ ret.rhs)
-                # The velocity change of gravity over the substep, in the norm of the mass, so that the scale does not
-                # shrink with the viscosity.
-                terms[2] = mass * (self._substep_dt * self._gravity[i_b]).norm_sqr()
-                terms[3] = 1.0 + ret.row_norm / mass
-            self.particles_reduction[i_p, i_b] = terms
+            if self.envs_coupling_active[i_b]:
+                terms = qd.Vector.zero(gs.qd_float, 4)
+                if self.particles_reordered[i_p, i_b].active:
+                    i_m = self.particles_reordered[i_p, i_b].material
+                    mass = self.materials[i_m].mass
+                    vel_rhs = (
+                        self.particles_viscosity[i_p, i_b].vel_star + self.particles_viscosity[i_p, i_b].pressure_vel
+                    )
+                    ret = qd.Struct(
+                        image=mass * self.particles_reordered[i_p, i_b].vel,
+                        block=mass * qd.Matrix.identity(gs.qd_float, 3),
+                        rhs=mass * vel_rhs,
+                        row_norm=gs.qd_float(0.0),
+                    )
+                    self._func_for_all_fluid_neighbors(i_p, ret, self._task_init_viscosity_solve, i_b)
+                    # The wall acts on the particle alone (see _kernel_compute_viscosity_geometry), so it only adds to
+                    # the diagonal block, and the wall velocity is known in the solve, so its part goes to the
+                    # right-hand side.
+                    wall_block = self._substep_dt * self.particles_viscosity[i_p, i_b].wall_tensor
+                    ret.block += wall_block
+                    ret.image += wall_block @ self.particles_reordered[i_p, i_b].vel
+                    ret.row_norm += wall_block.trace()
+                    if qd.static(self._has_boundary):
+                        for k in range(N_BOUNDARY_SLOTS):
+                            if self.particles_boundary_slots[i_p, i_b, k].link_idx != -1:
+                                ret.rhs += self._substep_dt * (
+                                    self.particles_boundary_slots[i_p, i_b, k].wall_tensor
+                                    @ self._func_slot_wall_vel(i_p, i_b, k)
+                                )
+                    precond_inv = ret.block.inverse()
+                    residual = ret.rhs - ret.image
+                    residual_precond = precond_inv @ residual
+                    self.particles_viscosity[i_p, i_b].precond_inv = precond_inv
+                    self.particles_viscosity[i_p, i_b].residual = residual
+                    self.particles_viscosity[i_p, i_b].residual_precond = residual_precond
+                    self.particles_viscosity[i_p, i_b].direction = residual_precond
+                    terms[0] = residual.dot(residual_precond)
+                    terms[1] = ret.rhs.dot(precond_inv @ ret.rhs)
+                    # The velocity change of gravity over the substep, in the norm of the mass, so that the scale does
+                    # not shrink with the viscosity.
+                    terms[2] = mass * (self._substep_dt * self._gravity[i_b]).norm_sqr()
+                    terms[3] = 1.0 + ret.row_norm / mass
+                self.particles_reduction[i_p, i_b] = terms
 
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            total, largest = self._func_chunk_sum(i_c, i_b)
-            self.envs_viscosity[i_b].residual_norm2 += total[0]
-            self.envs_viscosity[i_b].rhs_norm2 += total[1]
-            if is_first_pass:
-                self.envs_viscosity[i_b].gravity_norm2 += total[2]
-                qd.atomic_max(self.envs_viscosity[i_b].viscous_stiffness_bound, largest)
+            if self.envs_coupling_active[i_b]:
+                total, largest = self._func_chunk_sum(i_c, i_b)
+                self.envs_viscosity[i_b].residual_norm2 += total[0]
+                self.envs_viscosity[i_b].rhs_norm2 += total[1]
+                if is_first_pass:
+                    self.envs_viscosity[i_b].gravity_norm2 += total[2]
+                    qd.atomic_max(self.envs_viscosity[i_b].viscous_stiffness_bound, largest)
 
         for i_b in range(self._B):
-            self.envs_viscosity[i_b].residual_norm2_init = self.envs_viscosity[i_b].residual_norm2
-            if is_first_pass:
-                self.envs_viscosity[i_b].viscous_norm2 = self.envs_viscosity[i_b].residual_norm2
+            if self.envs_coupling_active[i_b]:
+                self.envs_viscosity[i_b].residual_norm2_init = self.envs_viscosity[i_b].residual_norm2
+                if is_first_pass:
+                    self.envs_viscosity[i_b].viscous_norm2 = self.envs_viscosity[i_b].residual_norm2
 
     @qd.func
     def _task_apply_viscosity_operator(self, i, j, ret: qd.template(), i_b):
@@ -2581,66 +2659,75 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         An env that has converged keeps its velocity.
         """
         for i_b in range(self._B):
-            self.envs_viscosity[i_b].direction_norm2 = 0.0
-            self.envs_viscosity[i_b].residual_norm2_next = 0.0
+            if self.envs_coupling_active[i_b]:
+                self.envs_viscosity[i_b].direction_norm2 = 0.0
+                self.envs_viscosity[i_b].residual_norm2_next = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
-            terms = qd.Vector.zero(gs.qd_float, 4)
-            if self.particles_reordered[i_p, i_b].active and is_iterating:
-                direction = self.particles_viscosity[i_p, i_b].direction
-                i_m = self.particles_reordered[i_p, i_b].material
-                image = self.materials[i_m].mass * direction
-                self._func_for_all_fluid_neighbors(i_p, image, self._task_apply_viscosity_operator, i_b)
-                if qd.static(self._has_boundary):
-                    image += self._substep_dt * (self.particles_viscosity[i_p, i_b].wall_tensor @ direction)
-                self.particles_viscosity[i_p, i_b].direction_image = image
-                terms[0] = direction.dot(image)
-            self.particles_reduction[i_p, i_b] = terms
+            if self.envs_coupling_active[i_b]:
+                is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
+                terms = qd.Vector.zero(gs.qd_float, 4)
+                if self.particles_reordered[i_p, i_b].active and is_iterating:
+                    direction = self.particles_viscosity[i_p, i_b].direction
+                    i_m = self.particles_reordered[i_p, i_b].material
+                    image = self.materials[i_m].mass * direction
+                    self._func_for_all_fluid_neighbors(i_p, image, self._task_apply_viscosity_operator, i_b)
+                    if qd.static(self._has_boundary):
+                        image += self._substep_dt * (self.particles_viscosity[i_p, i_b].wall_tensor @ direction)
+                    self.particles_viscosity[i_p, i_b].direction_image = image
+                    terms[0] = direction.dot(image)
+                self.particles_reduction[i_p, i_b] = terms
 
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            total, _ = self._func_chunk_sum(i_c, i_b)
-            self.envs_viscosity[i_b].direction_norm2 += total[0]
+            if self.envs_coupling_active[i_b]:
+                total, _ = self._func_chunk_sum(i_c, i_b)
+                self.envs_viscosity[i_b].direction_norm2 += total[0]
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
-            terms = qd.Vector.zero(gs.qd_float, 4)
-            if self.particles_reordered[i_p, i_b].active and is_iterating:
-                step = gs.qd_float(0.0)
-                if self.envs_viscosity[i_b].direction_norm2 > 0.0:
-                    step = self.envs_viscosity[i_b].residual_norm2 / self.envs_viscosity[i_b].direction_norm2
-                self.particles_reordered[i_p, i_b].vel += step * self.particles_viscosity[i_p, i_b].direction
-                residual = (
-                    self.particles_viscosity[i_p, i_b].residual
-                    - step * self.particles_viscosity[i_p, i_b].direction_image
-                )
-                residual_precond = self.particles_viscosity[i_p, i_b].precond_inv @ residual
-                self.particles_viscosity[i_p, i_b].residual = residual
-                self.particles_viscosity[i_p, i_b].residual_precond = residual_precond
-                terms[0] = residual.dot(residual_precond)
-            self.particles_reduction[i_p, i_b] = terms
+            if self.envs_coupling_active[i_b]:
+                is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
+                terms = qd.Vector.zero(gs.qd_float, 4)
+                if self.particles_reordered[i_p, i_b].active and is_iterating:
+                    step = gs.qd_float(0.0)
+                    if self.envs_viscosity[i_b].direction_norm2 > 0.0:
+                        step = self.envs_viscosity[i_b].residual_norm2 / self.envs_viscosity[i_b].direction_norm2
+                    self.particles_reordered[i_p, i_b].vel += step * self.particles_viscosity[i_p, i_b].direction
+                    residual = (
+                        self.particles_viscosity[i_p, i_b].residual
+                        - step * self.particles_viscosity[i_p, i_b].direction_image
+                    )
+                    residual_precond = self.particles_viscosity[i_p, i_b].precond_inv @ residual
+                    self.particles_viscosity[i_p, i_b].residual = residual
+                    self.particles_viscosity[i_p, i_b].residual_precond = residual_precond
+                    terms[0] = residual.dot(residual_precond)
+                self.particles_reduction[i_p, i_b] = terms
 
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            total, _ = self._func_chunk_sum(i_c, i_b)
-            self.envs_viscosity[i_b].residual_norm2_next += total[0]
+            if self.envs_coupling_active[i_b]:
+                total, _ = self._func_chunk_sum(i_c, i_b)
+                self.envs_viscosity[i_b].residual_norm2_next += total[0]
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
-            if self.particles_reordered[i_p, i_b].active and is_iterating:
-                beta = self.envs_viscosity[i_b].residual_norm2_next / self.envs_viscosity[i_b].residual_norm2
-                self.particles_viscosity[i_p, i_b].direction = (
-                    self.particles_viscosity[i_p, i_b].residual_precond
-                    + beta * self.particles_viscosity[i_p, i_b].direction
-                )
+            if self.envs_coupling_active[i_b]:
+                is_iterating = self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b)
+                if self.particles_reordered[i_p, i_b].active and is_iterating:
+                    beta = self.envs_viscosity[i_b].residual_norm2_next / self.envs_viscosity[i_b].residual_norm2
+                    self.particles_viscosity[i_p, i_b].direction = (
+                        self.particles_viscosity[i_p, i_b].residual_precond
+                        + beta * self.particles_viscosity[i_p, i_b].direction
+                    )
 
         max_rel_residual = gs.qd_float(0.0)
         for i_b in range(self._B):
-            if self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b):
-                self.envs_viscosity[i_b].residual_norm2 = self.envs_viscosity[i_b].residual_norm2_next
-            qd.atomic_max(
-                max_rel_residual,
-                qd.sqrt(self.envs_viscosity[i_b].residual_norm2 / qd.max(self._func_viscosity_tolerance2(i_b), 1e-30)),
-            )
+            if self.envs_coupling_active[i_b]:
+                if self.envs_viscosity[i_b].residual_norm2 > self._func_viscosity_tolerance2(i_b):
+                    self.envs_viscosity[i_b].residual_norm2 = self.envs_viscosity[i_b].residual_norm2_next
+                qd.atomic_max(
+                    max_rel_residual,
+                    qd.sqrt(
+                        self.envs_viscosity[i_b].residual_norm2 / qd.max(self._func_viscosity_tolerance2(i_b), 1e-30)
+                    ),
+                )
         return max_rel_residual
 
     @qd.kernel
@@ -2648,10 +2735,13 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         """Return the worst relative residual over envs of the viscosity solve as it stands, without iterating."""
         max_rel_residual = gs.qd_float(0.0)
         for i_b in range(self._B):
-            qd.atomic_max(
-                max_rel_residual,
-                qd.sqrt(self.envs_viscosity[i_b].residual_norm2 / qd.max(self._func_viscosity_tolerance2(i_b), 1e-30)),
-            )
+            if self.envs_coupling_active[i_b]:
+                qd.atomic_max(
+                    max_rel_residual,
+                    qd.sqrt(
+                        self.envs_viscosity[i_b].residual_norm2 / qd.max(self._func_viscosity_tolerance2(i_b), 1e-30)
+                    ),
+                )
         return max_rel_residual
 
     @qd.func
@@ -2673,80 +2763,86 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         of the tolerance.
         """
         for i_b in range(self._B):
-            self.envs_viscosity_mass[i_b] = 0.0
-            self.envs_viscosity_center[i_b] = qd.Vector.zero(gs.qd_float, 3)
-            self.envs_viscosity_rigid_system[i_b] = qd.Matrix.zero(gs.qd_float, 6, 6)
-            self.envs_viscosity_rigid_rhs[i_b] = qd.Vector.zero(gs.qd_float, 6)
+            if self.envs_coupling_active[i_b]:
+                self.envs_viscosity_mass[i_b] = 0.0
+                self.envs_viscosity_center[i_b] = qd.Vector.zero(gs.qd_float, 3)
+                self.envs_viscosity_rigid_system[i_b] = qd.Matrix.zero(gs.qd_float, 6, 6)
+                self.envs_viscosity_rigid_rhs[i_b] = qd.Vector.zero(gs.qd_float, 6)
 
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            mass_sum = gs.qd_float(0.0)
-            moment = qd.Vector.zero(gs.qd_float, 3)
-            for i_k in range(REDUCTION_CHUNK):
-                i_p = i_c * REDUCTION_CHUNK + i_k
-                if i_p < self._n_particles:
-                    if self.particles_reordered[i_p, i_b].active:
-                        mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                        mass_sum += mass
-                        moment += mass * self.particles_reordered[i_p, i_b].pos
-            self.envs_viscosity_mass[i_b] += mass_sum
-            self.envs_viscosity_center[i_b] += moment
+            if self.envs_coupling_active[i_b]:
+                mass_sum = gs.qd_float(0.0)
+                moment = qd.Vector.zero(gs.qd_float, 3)
+                for i_k in range(REDUCTION_CHUNK):
+                    i_p = i_c * REDUCTION_CHUNK + i_k
+                    if i_p < self._n_particles:
+                        if self.particles_reordered[i_p, i_b].active:
+                            mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                            mass_sum += mass
+                            moment += mass * self.particles_reordered[i_p, i_b].pos
+                self.envs_viscosity_mass[i_b] += mass_sum
+                self.envs_viscosity_center[i_b] += moment
 
         for i_b in range(self._B):
-            if self.envs_viscosity_mass[i_b] > 0.0:
-                self.envs_viscosity_center[i_b] /= self.envs_viscosity_mass[i_b]
+            if self.envs_coupling_active[i_b]:
+                if self.envs_viscosity_mass[i_b] > 0.0:
+                    self.envs_viscosity_center[i_b] /= self.envs_viscosity_mass[i_b]
 
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            system = qd.Matrix.zero(gs.qd_float, 6, 6)
-            rhs = qd.Vector.zero(gs.qd_float, 6)
-            for i_k in range(REDUCTION_CHUNK):
-                i_p = i_c * REDUCTION_CHUNK + i_k
-                if i_p < self._n_particles:
-                    if self.particles_reordered[i_p, i_b].active:
-                        mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                        block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
-                            self.particles_viscosity[i_p, i_b].wall_tensor
-                        )
-                        arm = self._func_cross_matrix(
-                            self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b]
-                        )
-                        residual = self.particles_viscosity[i_p, i_b].residual
-                        # J^T (M + h W) J and J^T r for the rigid velocity J (a, w) = a + w x y = a - Y w
-                        coupling = -block @ arm
-                        angular = arm @ coupling
-                        for r in qd.static(range(3)):
-                            for c in qd.static(range(3)):
-                                system[r, c] += block[r, c]
-                                system[r, 3 + c] += coupling[r, c]
-                                system[3 + c, r] += coupling[r, c]
-                                system[3 + r, 3 + c] += angular[r, c]
-                        torque = arm @ residual
-                        for r in qd.static(range(3)):
-                            rhs[r] += residual[r]
-                            rhs[3 + r] += torque[r]
-            self.envs_viscosity_rigid_system[i_b] += system
-            self.envs_viscosity_rigid_rhs[i_b] += rhs
+            if self.envs_coupling_active[i_b]:
+                system = qd.Matrix.zero(gs.qd_float, 6, 6)
+                rhs = qd.Vector.zero(gs.qd_float, 6)
+                for i_k in range(REDUCTION_CHUNK):
+                    i_p = i_c * REDUCTION_CHUNK + i_k
+                    if i_p < self._n_particles:
+                        if self.particles_reordered[i_p, i_b].active:
+                            mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                            block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
+                                self.particles_viscosity[i_p, i_b].wall_tensor
+                            )
+                            arm = self._func_cross_matrix(
+                                self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b]
+                            )
+                            residual = self.particles_viscosity[i_p, i_b].residual
+                            # J^T (M + h W) J and J^T r for the rigid velocity J (a, w) = a + w x y = a - Y w
+                            coupling = -block @ arm
+                            angular = arm @ coupling
+                            for r in qd.static(range(3)):
+                                for c in qd.static(range(3)):
+                                    system[r, c] += block[r, c]
+                                    system[r, 3 + c] += coupling[r, c]
+                                    system[3 + c, r] += coupling[r, c]
+                                    system[3 + r, 3 + c] += angular[r, c]
+                            torque = arm @ residual
+                            for r in qd.static(range(3)):
+                                rhs[r] += residual[r]
+                                rhs[3 + r] += torque[r]
+                self.envs_viscosity_rigid_system[i_b] += system
+                self.envs_viscosity_rigid_rhs[i_b] += rhs
 
         for i_b in range(self._B):
-            correction = qd.Vector.zero(gs.qd_float, 6)
-            if self.envs_viscosity_mass[i_b] > 0.0:
-                system = self.envs_viscosity_rigid_system[i_b]
-                system += 1e-6 * system.trace() / 6.0 * qd.Matrix.identity(gs.qd_float, 6)
-                correction = self._func_solve_spd6(system, self.envs_viscosity_rigid_rhs[i_b])
-            self.envs_viscosity_rigid_correction[i_b] = correction
+            if self.envs_coupling_active[i_b]:
+                correction = qd.Vector.zero(gs.qd_float, 6)
+                if self.envs_viscosity_mass[i_b] > 0.0:
+                    system = self.envs_viscosity_rigid_system[i_b]
+                    system += 1e-6 * system.trace() / 6.0 * qd.Matrix.identity(gs.qd_float, 6)
+                    correction = self._func_solve_spd6(system, self.envs_viscosity_rigid_rhs[i_b])
+                self.envs_viscosity_rigid_correction[i_b] = correction
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                correction = self.envs_viscosity_rigid_correction[i_b]
-                arm = self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b]
-                linear = qd.Vector([correction[0], correction[1], correction[2]], dt=gs.qd_float)
-                angular = qd.Vector([correction[3], correction[4], correction[5]], dt=gs.qd_float)
-                dvel = linear + angular.cross(arm)
-                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
-                    self.particles_viscosity[i_p, i_b].wall_tensor
-                )
-                self.particles_reordered[i_p, i_b].vel += dvel
-                self.particles_viscosity[i_p, i_b].residual -= block @ dvel
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    correction = self.envs_viscosity_rigid_correction[i_b]
+                    arm = self.particles_reordered[i_p, i_b].pos - self.envs_viscosity_center[i_b]
+                    linear = qd.Vector([correction[0], correction[1], correction[2]], dt=gs.qd_float)
+                    angular = qd.Vector([correction[3], correction[4], correction[5]], dt=gs.qd_float)
+                    dvel = linear + angular.cross(arm)
+                    mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                    block = mass * qd.Matrix.identity(gs.qd_float, 3) + self._substep_dt * (
+                        self.particles_viscosity[i_p, i_b].wall_tensor
+                    )
+                    self.particles_reordered[i_p, i_b].vel += dvel
+                    self.particles_viscosity[i_p, i_b].residual -= block @ dvel
 
     @qd.func
     def _func_solve_spd6(self, mat, rhs):
@@ -2816,44 +2912,50 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         dissipation by 12 %.
         """
         for i_b in range(self._B):
-            self.envs_viscosity[i_b].coupling_norm2 = 0.0
-            self.envs_viscosity[i_b].delta_norm2 = 0.0
-            self.envs_viscosity[i_b].mass = 0.0
+            if self.envs_coupling_active[i_b]:
+                self.envs_viscosity[i_b].coupling_norm2 = 0.0
+                self.envs_viscosity[i_b].delta_norm2 = 0.0
+                self.envs_viscosity[i_b].mass = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            terms = qd.Vector.zero(gs.qd_float, 4)
-            if self.particles_reordered[i_p, i_b].active:
-                residual = qd.Vector.zero(gs.qd_float, 3)
-                self._func_for_all_fluid_neighbors(
-                    i_p, residual, self._task_apply_viscosity_operator_to_pressure_delta, i_b
-                )
-                if qd.static(self._has_boundary):
-                    residual += self._substep_dt * (
-                        self.particles_viscosity[i_p, i_b].wall_tensor
-                        @ self.particles_viscosity[i_p, i_b].pressure_vel_delta
+            if self.envs_coupling_active[i_b]:
+                terms = qd.Vector.zero(gs.qd_float, 4)
+                if self.particles_reordered[i_p, i_b].active:
+                    residual = qd.Vector.zero(gs.qd_float, 3)
+                    self._func_for_all_fluid_neighbors(
+                        i_p, residual, self._task_apply_viscosity_operator_to_pressure_delta, i_b
                     )
-                terms[0] = residual.dot(self.particles_viscosity[i_p, i_b].precond_inv @ residual)
-                mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
-                terms[1] = mass * self.particles_viscosity[i_p, i_b].pressure_vel_delta.norm_sqr()
-                terms[2] = mass
-            self.particles_reduction[i_p, i_b] = terms
+                    if qd.static(self._has_boundary):
+                        residual += self._substep_dt * (
+                            self.particles_viscosity[i_p, i_b].wall_tensor
+                            @ self.particles_viscosity[i_p, i_b].pressure_vel_delta
+                        )
+                    terms[0] = residual.dot(self.particles_viscosity[i_p, i_b].precond_inv @ residual)
+                    mass = self.materials[self.particles_reordered[i_p, i_b].material].mass
+                    terms[1] = mass * self.particles_viscosity[i_p, i_b].pressure_vel_delta.norm_sqr()
+                    terms[2] = mass
+                self.particles_reduction[i_p, i_b] = terms
 
         for i_c, i_b in qd.ndrange(self._n_reduction_chunks, self._B):
-            total, _ = self._func_chunk_sum(i_c, i_b)
-            self.envs_viscosity[i_b].coupling_norm2 += total[0]
-            self.envs_viscosity[i_b].delta_norm2 += total[1]
-            self.envs_viscosity[i_b].mass += total[2]
+            if self.envs_coupling_active[i_b]:
+                total, _ = self._func_chunk_sum(i_c, i_b)
+                self.envs_viscosity[i_b].coupling_norm2 += total[0]
+                self.envs_viscosity[i_b].delta_norm2 += total[1]
+                self.envs_viscosity[i_b].mass += total[2]
 
         max_rel_residual = gs.qd_float(0.0)
         for i_b in range(self._B):
-            impulse_norm2 = qd.max(self.envs_viscosity[i_b].viscous_norm2, self.envs_viscosity[i_b].gravity_norm2)
-            tolerance2 = qd.max(self._visc_max_error**2 * impulse_norm2, 1e-12 * self.envs_viscosity[i_b].rhs_norm2)
-            rel_residual = qd.sqrt(self.envs_viscosity[i_b].coupling_norm2 / qd.max(tolerance2, 1e-30))
-            vel_resolution = 0.1 * self._df_max_error_den * self._particle_size / self._substep_dt
-            rel_delta = qd.sqrt(
-                self.envs_viscosity[i_b].delta_norm2 / qd.max(self.envs_viscosity[i_b].mass * vel_resolution**2, 1e-30)
-            )
-            qd.atomic_max(max_rel_residual, qd.min(rel_residual, rel_delta))
+            if self.envs_coupling_active[i_b]:
+                impulse_norm2 = qd.max(self.envs_viscosity[i_b].viscous_norm2, self.envs_viscosity[i_b].gravity_norm2)
+                tolerance2 = qd.max(self._visc_max_error**2 * impulse_norm2, 1e-12 * self.envs_viscosity[i_b].rhs_norm2)
+                rel_residual = qd.sqrt(self.envs_viscosity[i_b].coupling_norm2 / qd.max(tolerance2, 1e-30))
+                vel_resolution = 0.1 * self._df_max_error_den * self._particle_size / self._substep_dt
+                rel_delta = qd.sqrt(
+                    self.envs_viscosity[i_b].delta_norm2
+                    / qd.max(self.envs_viscosity[i_b].mass * vel_resolution**2, 1e-30)
+                )
+                self.envs_coupling_rel[i_b] = qd.min(rel_residual, rel_delta)
+                qd.atomic_max(max_rel_residual, self.envs_coupling_rel[i_b])
         return max_rel_residual
 
     @qd.kernel
@@ -2863,11 +2965,12 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         The first pass starts from zero pressure, since its viscosity solve sees no pressure velocity.
         """
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                pressure_in = self.particles_reordered[i_p, i_b].pressure_density2_norm_p
-                if is_first_pass:
-                    pressure_in = 0.0
-                self.particles_viscosity[i_p, i_b].pressure_in = pressure_in
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    pressure_in = self.particles_reordered[i_p, i_b].pressure_density2_norm_p
+                    if is_first_pass:
+                        pressure_in = 0.0
+                    self.particles_viscosity[i_p, i_b].pressure_in = pressure_in
 
     @qd.kernel
     def _kernel_accelerate_coupling(self, i_pass: int):
@@ -2883,52 +2986,58 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         clamped to stay nonnegative.
         """
         for i_b in range(self._B):
-            if i_pass == 0:
-                bound = self.envs_viscosity[i_b].viscous_stiffness_bound
-                self.envs_viscosity[i_b].chebyshev_step = 2.0 / (1.0 + 1.0 / bound)
-                self.envs_viscosity[i_b].chebyshev_ratio2 = ((1.0 - 1.0 / bound) / (1.0 + 1.0 / bound)) ** 2
-                self.envs_viscosity[i_b].chebyshev_weight = 1.0
-            elif i_pass == 1:
-                self.envs_viscosity[i_b].chebyshev_weight = 1.0 / (
-                    1.0 - 0.5 * self.envs_viscosity[i_b].chebyshev_ratio2
-                )
-            else:
-                self.envs_viscosity[i_b].chebyshev_weight = 1.0 / (
-                    1.0 - 0.25 * self.envs_viscosity[i_b].chebyshev_ratio2 * self.envs_viscosity[i_b].chebyshev_weight
-                )
+            if self.envs_coupling_active[i_b]:
+                if i_pass == 0:
+                    bound = self.envs_viscosity[i_b].viscous_stiffness_bound
+                    self.envs_viscosity[i_b].chebyshev_step = 2.0 / (1.0 + 1.0 / bound)
+                    self.envs_viscosity[i_b].chebyshev_ratio2 = ((1.0 - 1.0 / bound) / (1.0 + 1.0 / bound)) ** 2
+                    self.envs_viscosity[i_b].chebyshev_weight = 1.0
+                elif i_pass == 1:
+                    self.envs_viscosity[i_b].chebyshev_weight = 1.0 / (
+                        1.0 - 0.5 * self.envs_viscosity[i_b].chebyshev_ratio2
+                    )
+                else:
+                    self.envs_viscosity[i_b].chebyshev_weight = 1.0 / (
+                        1.0
+                        - 0.25 * self.envs_viscosity[i_b].chebyshev_ratio2 * self.envs_viscosity[i_b].chebyshev_weight
+                    )
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                pressure_in = self.particles_viscosity[i_p, i_b].pressure_in
-                pressure_in_prev = self.particles_viscosity[i_p, i_b].pressure_in_prev
-                if i_pass == 0:
-                    pressure_in_prev = pressure_in
-                correction = self.envs_viscosity[i_b].chebyshev_step * (
-                    self.particles_reordered[i_p, i_b].pressure_density2_norm_p - pressure_in
-                )
-                pressure = (
-                    self.envs_viscosity[i_b].chebyshev_weight * (pressure_in - pressure_in_prev + correction)
-                    + pressure_in_prev
-                )
-                self.particles_viscosity[i_p, i_b].pressure_in_prev = pressure_in
-                self.particles_reordered[i_p, i_b].pressure_density2_norm_p = qd.max(pressure, 0.0)
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    pressure_in = self.particles_viscosity[i_p, i_b].pressure_in
+                    pressure_in_prev = self.particles_viscosity[i_p, i_b].pressure_in_prev
+                    if i_pass == 0:
+                        pressure_in_prev = pressure_in
+                    correction = self.envs_viscosity[i_b].chebyshev_step * (
+                        self.particles_reordered[i_p, i_b].pressure_density2_norm_p - pressure_in
+                    )
+                    pressure = (
+                        self.envs_viscosity[i_b].chebyshev_weight * (pressure_in - pressure_in_prev + correction)
+                        + pressure_in_prev
+                    )
+                    self.particles_viscosity[i_p, i_b].pressure_in_prev = pressure_in
+                    self.particles_reordered[i_p, i_b].pressure_density2_norm_p = qd.max(pressure, 0.0)
 
         # The pressure velocity of the extrapolated pressure, which the viscosity solve of the next pass reads
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                self._func_compute_pressure_acc(i_p, i_b, False)
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    self._func_compute_pressure_acc(i_p, i_b, False)
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                self.particles_viscosity[i_p, i_b].pressure_vel = (
-                    self._substep_dt * self.particles_reordered[i_p, i_b].pressure_acc
-                )
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    self.particles_viscosity[i_p, i_b].pressure_vel = (
+                        self._substep_dt * self.particles_reordered[i_p, i_b].pressure_acc
+                    )
 
     @qd.kernel
     def _kernel_remove_pressure_vel(self):
         """Remove the velocity change of the last density solve, so that the next one starts from the viscous velocity."""
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                self.particles_reordered[i_p, i_b].vel -= self.particles_viscosity[i_p, i_b].pressure_vel
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    self.particles_reordered[i_p, i_b].vel -= self.particles_viscosity[i_p, i_b].pressure_vel
 
     # ------------------------------------------------------------------------------------
     # ------------------------------------ fluid load ------------------------------------
@@ -3264,14 +3373,16 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         """Set the coupled velocities to the base of the density solve: v* plus the response to the viscous impulse."""
         n_coupled_6 = 6 * self.coupled_links_idx.shape[0]
         for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
-            vel = self.coupled_vel_star[i_r, i_b]
-            if with_viscosity:
-                for i_col in range(n_coupled_6):
-                    vel += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_impulse_visc[i_col, i_b]
-            self.coupled_vel_base[i_r, i_b] = vel
-            self.coupled_vel[i_r, i_b] = vel
+            if self.envs_coupling_active[i_b]:
+                vel = self.coupled_vel_star[i_r, i_b]
+                if with_viscosity:
+                    for i_col in range(n_coupled_6):
+                        vel += self.coupled_mobility[i_r, i_col, i_b] * self.coupled_impulse_visc[i_col, i_b]
+                self.coupled_vel_base[i_r, i_b] = vel
+                self.coupled_vel[i_r, i_b] = vel
         for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
-            self._func_set_coupled_links_vel(i_c, i_b)
+            if self.envs_coupling_active[i_b]:
+                self._func_set_coupled_links_vel(i_c, i_b)
 
     @qd.func
     def _func_add_coupled_wrench(self, i_p, i_b, mass_kappa):
@@ -3331,108 +3442,113 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
         n_coupled = self.coupled_links_idx.shape[0]
         n_coupled_6 = 6 * n_coupled
         for i_r, i_b in qd.ndrange(n_coupled_6, self._B):
-            self.coupled_visc_force[i_r, i_b] = 0.0
-            for j in range(6):
-                self.coupled_visc_stiffness[i_r, j, i_b] = 0.0
+            if self.envs_coupling_active[i_b]:
+                self.coupled_visc_force[i_r, i_b] = 0.0
+                for j in range(6):
+                    self.coupled_visc_stiffness[i_r, j, i_b] = 0.0
 
         for i_p, i_b in qd.ndrange(self._n_particles, self._B):
-            if self.particles_reordered[i_p, i_b].active:
-                pos_i = self.particles_reordered[i_p, i_b].pos
-                vel_i = self.particles_reordered[i_p, i_b].vel
-                for k in range(N_BOUNDARY_SLOTS):
-                    i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
-                    if i_l != -1:
-                        i_c = self.links_coupled_idx[i_l]
-                        if i_c != -1:
-                            tensor = self.particles_boundary_slots[i_p, i_b, k].wall_tensor
-                            r = pos_i - self.links_root_com[i_l, i_b]
-                            # G = [-[r]x, I] maps (angular, linear) to the point velocity, G^T y = (r x y, y)
-                            cross_r = qd.Matrix([[0.0, -r[2], r[1]], [r[2], 0.0, -r[0]], [-r[1], r[0], 0.0]])
-                            force = tensor @ vel_i
-                            torque = r.cross(force)
-                            block_aa = -(cross_r @ tensor @ cross_r)
-                            block_al = cross_r @ tensor
-                            for a in qd.static(range(3)):
-                                self.coupled_visc_force[6 * i_c + a, i_b] += torque[a]
-                                self.coupled_visc_force[6 * i_c + 3 + a, i_b] += force[a]
-                                for b in qd.static(range(3)):
-                                    self.coupled_visc_stiffness[6 * i_c + a, b, i_b] += block_aa[a, b]
-                                    self.coupled_visc_stiffness[6 * i_c + a, 3 + b, i_b] += block_al[a, b]
-                                    self.coupled_visc_stiffness[6 * i_c + 3 + a, b, i_b] += block_al[b, a]
-                                    self.coupled_visc_stiffness[6 * i_c + 3 + a, 3 + b, i_b] += tensor[a, b]
+            if self.envs_coupling_active[i_b]:
+                if self.particles_reordered[i_p, i_b].active:
+                    pos_i = self.particles_reordered[i_p, i_b].pos
+                    vel_i = self.particles_reordered[i_p, i_b].vel
+                    for k in range(N_BOUNDARY_SLOTS):
+                        i_l = self.particles_boundary_slots[i_p, i_b, k].link_idx
+                        if i_l != -1:
+                            i_c = self.links_coupled_idx[i_l]
+                            if i_c != -1:
+                                tensor = self.particles_boundary_slots[i_p, i_b, k].wall_tensor
+                                r = pos_i - self.links_root_com[i_l, i_b]
+                                # G = [-[r]x, I] maps (angular, linear) to the point velocity, G^T y = (r x y, y)
+                                cross_r = qd.Matrix([[0.0, -r[2], r[1]], [r[2], 0.0, -r[0]], [-r[1], r[0], 0.0]])
+                                force = tensor @ vel_i
+                                torque = r.cross(force)
+                                block_aa = -(cross_r @ tensor @ cross_r)
+                                block_al = cross_r @ tensor
+                                for a in qd.static(range(3)):
+                                    self.coupled_visc_force[6 * i_c + a, i_b] += torque[a]
+                                    self.coupled_visc_force[6 * i_c + 3 + a, i_b] += force[a]
+                                    for b in qd.static(range(3)):
+                                        self.coupled_visc_stiffness[6 * i_c + a, b, i_b] += block_aa[a, b]
+                                        self.coupled_visc_stiffness[6 * i_c + a, 3 + b, i_b] += block_al[a, b]
+                                        self.coupled_visc_stiffness[6 * i_c + 3 + a, b, i_b] += block_al[b, a]
+                                        self.coupled_visc_stiffness[6 * i_c + 3 + a, 3 + b, i_b] += tensor[a, b]
 
         max_change = gs.qd_float(0.0)
         for i_b in range(self._B):
-            h = self._substep_dt
-            # system matrix and right-hand side, Lambda K being block-structured by the column link
-            for i_r in range(n_coupled_6):
-                rhs = self.coupled_vel_star[i_r, i_b]
-                for i_col in range(n_coupled_6):
-                    rhs += self.coupled_mobility[i_r, i_col, i_b] * (
-                        self.coupled_impulse_den[i_col, i_b] + h * self.coupled_visc_force[i_col, i_b]
-                    )
-                self.coupled_system[i_r, n_coupled_6, i_b] = rhs
-                for i_col in range(n_coupled_6):
-                    i_c_col = i_col // 6
-                    value = gs.qd_float(0.0)
-                    for j in range(6):
-                        value += (
-                            self.coupled_mobility[i_r, 6 * i_c_col + j, i_b]
-                            * self.coupled_visc_stiffness[6 * i_c_col + j, i_col % 6, i_b]
+            if self.envs_coupling_active[i_b]:
+                h = self._substep_dt
+                # system matrix and right-hand side, Lambda K being block-structured by the column link
+                for i_r in range(n_coupled_6):
+                    rhs = self.coupled_vel_star[i_r, i_b]
+                    for i_col in range(n_coupled_6):
+                        rhs += self.coupled_mobility[i_r, i_col, i_b] * (
+                            self.coupled_impulse_den[i_col, i_b] + h * self.coupled_visc_force[i_col, i_b]
                         )
-                    self.coupled_system[i_r, i_col, i_b] = h * value + qd.cast(i_r == i_col, gs.qd_float)
-            for i_k in range(n_coupled_6):
-                pivot = self.coupled_system[i_k, i_k, i_b]
-                for i_r in range(i_k + 1, n_coupled_6):
-                    ratio = self.coupled_system[i_r, i_k, i_b] / pivot
-                    for i_col in range(i_k, n_coupled_6 + 1):
-                        self.coupled_system[i_r, i_col, i_b] -= ratio * self.coupled_system[i_k, i_col, i_b]
-            for i_k_ in range(n_coupled_6):
-                i_k = n_coupled_6 - 1 - i_k_
-                value = self.coupled_system[i_k, n_coupled_6, i_b]
-                for i_col in range(i_k + 1, n_coupled_6):
-                    value -= self.coupled_system[i_k, i_col, i_b] * self.coupled_system[i_col, n_coupled_6, i_b]
-                value = value / self.coupled_system[i_k, i_k, i_b]
-                self.coupled_system[i_k, n_coupled_6, i_b] = value
-            # viscous impulse h (f - K xi_f) on each link, with its own block of K, at the velocities the fluid saw
-            for i_r in range(n_coupled_6):
-                i_c = i_r // 6
-                value = self.coupled_visc_force[i_r, i_b]
-                for j in range(6):
-                    value -= self.coupled_visc_stiffness[i_r, j, i_b] * self.coupled_vel[6 * i_c + j, i_b]
-                self.coupled_impulse_visc[i_r, i_b] = h * value
-            # implicit correction: the implicit solution minus the velocities the impulses give
-            for i_r in range(n_coupled_6):
-                vel = self.coupled_vel_star[i_r, i_b]
-                for i_col in range(n_coupled_6):
-                    vel += self.coupled_mobility[i_r, i_col, i_b] * (
-                        self.coupled_impulse_den[i_col, i_b] + self.coupled_impulse_visc[i_col, i_b]
-                    )
-                self.coupled_vel_delta[i_r, i_b] = self.coupled_system[i_r, n_coupled_6, i_b] - vel
-            change = gs.qd_float(0.0)
-            vel_scale = self._substep_dt * self._gravity[i_b].norm()
-            for i_c in range(n_coupled):
-                extent = self.coupled_links_extent[i_c]
-                ang_change, lin_change = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
-                ang, lin = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
-                for k in qd.static(range(3)):
-                    ang[k] = self.coupled_system[6 * i_c + k, n_coupled_6, i_b]
-                    lin[k] = self.coupled_system[6 * i_c + 3 + k, n_coupled_6, i_b]
-                    ang_change[k] = ang[k] - self.coupled_vel[6 * i_c + k, i_b]
-                    lin_change[k] = lin[k] - self.coupled_vel[6 * i_c + 3 + k, i_b]
-                change = qd.max(change, lin_change.norm() + extent * ang_change.norm())
-                vel_scale = qd.max(vel_scale, lin.norm() + extent * ang.norm())
-            self.envs_coupled_vel_change[i_b] = change / qd.max(vel_scale, gs.EPS)
-            qd.atomic_max(max_change, self.envs_coupled_vel_change[i_b])
+                    self.coupled_system[i_r, n_coupled_6, i_b] = rhs
+                    for i_col in range(n_coupled_6):
+                        i_c_col = i_col // 6
+                        value = gs.qd_float(0.0)
+                        for j in range(6):
+                            value += (
+                                self.coupled_mobility[i_r, 6 * i_c_col + j, i_b]
+                                * self.coupled_visc_stiffness[6 * i_c_col + j, i_col % 6, i_b]
+                            )
+                        self.coupled_system[i_r, i_col, i_b] = h * value + qd.cast(i_r == i_col, gs.qd_float)
+                for i_k in range(n_coupled_6):
+                    pivot = self.coupled_system[i_k, i_k, i_b]
+                    for i_r in range(i_k + 1, n_coupled_6):
+                        ratio = self.coupled_system[i_r, i_k, i_b] / pivot
+                        for i_col in range(i_k, n_coupled_6 + 1):
+                            self.coupled_system[i_r, i_col, i_b] -= ratio * self.coupled_system[i_k, i_col, i_b]
+                for i_k_ in range(n_coupled_6):
+                    i_k = n_coupled_6 - 1 - i_k_
+                    value = self.coupled_system[i_k, n_coupled_6, i_b]
+                    for i_col in range(i_k + 1, n_coupled_6):
+                        value -= self.coupled_system[i_k, i_col, i_b] * self.coupled_system[i_col, n_coupled_6, i_b]
+                    value = value / self.coupled_system[i_k, i_k, i_b]
+                    self.coupled_system[i_k, n_coupled_6, i_b] = value
+                # viscous impulse h (f - K xi_f) on each link, with its own block of K, at the velocities the fluid saw
+                for i_r in range(n_coupled_6):
+                    i_c = i_r // 6
+                    value = self.coupled_visc_force[i_r, i_b]
+                    for j in range(6):
+                        value -= self.coupled_visc_stiffness[i_r, j, i_b] * self.coupled_vel[6 * i_c + j, i_b]
+                    self.coupled_impulse_visc[i_r, i_b] = h * value
+                # implicit correction: the implicit solution minus the velocities the impulses give
+                for i_r in range(n_coupled_6):
+                    vel = self.coupled_vel_star[i_r, i_b]
+                    for i_col in range(n_coupled_6):
+                        vel += self.coupled_mobility[i_r, i_col, i_b] * (
+                            self.coupled_impulse_den[i_col, i_b] + self.coupled_impulse_visc[i_col, i_b]
+                        )
+                    self.coupled_vel_delta[i_r, i_b] = self.coupled_system[i_r, n_coupled_6, i_b] - vel
+                change = gs.qd_float(0.0)
+                vel_scale = self._substep_dt * self._gravity[i_b].norm()
+                for i_c in range(n_coupled):
+                    extent = self.coupled_links_extent[i_c]
+                    ang_change, lin_change = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                    ang, lin = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                    for k in qd.static(range(3)):
+                        ang[k] = self.coupled_system[6 * i_c + k, n_coupled_6, i_b]
+                        lin[k] = self.coupled_system[6 * i_c + 3 + k, n_coupled_6, i_b]
+                        ang_change[k] = ang[k] - self.coupled_vel[6 * i_c + k, i_b]
+                        lin_change[k] = lin[k] - self.coupled_vel[6 * i_c + 3 + k, i_b]
+                    change = qd.max(change, lin_change.norm() + extent * ang_change.norm())
+                    vel_scale = qd.max(vel_scale, lin.norm() + extent * ang.norm())
+                self.envs_coupled_vel_change[i_b] = change / qd.max(vel_scale, gs.EPS)
+                qd.atomic_max(max_change, self.envs_coupled_vel_change[i_b])
         return max_change
 
     @qd.kernel
     def _kernel_apply_coupled_vel_delta(self):
         """Add the implicit correction of the last pass to the coupled velocities that the next viscosity solve sees."""
         for i_r, i_b in qd.ndrange(6 * self.coupled_links_idx.shape[0], self._B):
-            self.coupled_vel[i_r, i_b] += self.coupled_vel_delta[i_r, i_b]
+            if self.envs_coupling_active[i_b]:
+                self.coupled_vel[i_r, i_b] += self.coupled_vel_delta[i_r, i_b]
         for i_c, i_b in qd.ndrange(self.coupled_links_idx.shape[0], self._B):
-            self._func_set_coupled_links_vel(i_c, i_b)
+            if self.envs_coupling_active[i_b]:
+                self._func_set_coupled_links_vel(i_c, i_b)
 
     @qd.kernel
     def _kernel_apply_coupled_impulse(
@@ -3689,6 +3805,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 rigid_solver.dyn_state, rigid_solver.dyn_info, rigid_solver.rigid_info, rigid_solver.rigid_config
             )
         self._kernel_reorder_particles(f)
+        self._kernel_activate_envs()
         self._kernel_compute_density_and_factor(f)
         if self._isotropic_pressure:
             self._kernel_compute_pressure_correction()
@@ -3749,6 +3866,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 # magnitude, has the tolerance of the viscosity solve.
                 fluid_residual = self._kernel_coupling_residual()
                 coupling_residual = max(fluid_residual, rigid_change / self._visc_max_error)
+                self._kernel_update_coupling_active()
                 stats.coupling_history[-1].append(
                     (fluid_residual, rigid_change / self._visc_max_error, n_iters, n_visc_iters)
                 )
@@ -3768,6 +3886,7 @@ class SPHSolver(GravityMixin, TimeBasedMixin, Solver):
                 i_chebyshev += 1
                 previous_coupling_residual = coupling_residual
 
+        self._kernel_activate_envs()
         if self._energy_audit:
             energy, energy_prev = self._kernel_kinetic_energy(), energy
             stats.ke_change_coupled += energy - energy_prev
