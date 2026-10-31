@@ -17,11 +17,15 @@ from research.rigid_stress.shell_cpu import core
 
 def surface_recipe(name: str, level: int = 0) -> trimesh.Trimesh:
     """Return a closed egg, a closed narrow neck, an open U, or a triangulated flat strip in metres."""
-    if name == "grasp":
+    if name in ("grasp", "notch"):
         # The established grasp fits this exterior. Here it is explicitly reinterpreted as a midsurface.
-        return stress_mesh_asset.load_surface(
+        surface = stress_mesh_asset.load_surface(
             Path(stress_mesh_asset.__file__).parent / "assets/hollow_egg/level1/egg_outer.obj"
         )
+        if name == "notch":
+            surface.vertices[np.argmax(surface.vertices[:, 2]), 2] -= 0.01
+            assert not surface.is_convex
+        return surface
     if name in ("egg", "neck", "round", "dome", "dimple"):
         surface = trimesh.creation.icosphere(subdivisions=level, radius=1.0)
         if name == "dimple":
@@ -116,7 +120,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--mechanics", action="store_true")
-    parser.add_argument("--shape", choices=("egg", "grasp", "round", "neck", "u", "plate", "dome", "dimple"))
+    parser.add_argument("--shape", choices=("egg", "grasp", "round", "neck", "u", "plate", "dome", "dimple", "notch"))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     write_json(args.output / "runtime.json", runtime_identity(require_gpu_inventory=False))
@@ -129,7 +133,7 @@ def main() -> None:
     for name, level in cases:
         surface = surface_recipe(name, level)
         source = args.output / f"{name}.obj"
-        surface.export(source)
+        surface.export(source, digits=17)
         started = time.perf_counter()
         prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, args.output / "cache")
         cold = time.perf_counter() - started

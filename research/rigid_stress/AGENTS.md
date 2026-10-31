@@ -1,13 +1,18 @@
 # Working on native rigid stress recovery
 
-**Active user goal, 2026-10-31:** implement [automatic surface-to-shell
-preparation](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md), also linked from [GOAL.md](GOAL.md).
-Custom surface + shell backend + thickness must prepare a cached Q4 asset automatically and run existing
-automatic-radius DPR, headless max and viewer full modes. Preserve current Q4 elasticity, native Quadrants
-numerics, volume default, arbitrary changing asymmetric/nonconvex contacts and friction, acceptance and
-lifecycle. One-time CPU geometry conversion is allowed; a separate CPU production elastic solver is not.
-Use low-model mechanical/numerical checks and profile/measure conversion, memory and complete-path throughput.
-This is the active next goal, not delivered behavior; previous completed campaigns below retain their scope.
+**Completed user goal, 2026-10-31:** [automatic surface-to-shell
+preparation](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md). Read [GOAL.md](GOAL.md), the
+[measured report](docs/AUTOMATIC_SURFACE_TO_SHELL_RESULTS_20261031.md) and
+[compact manifest](docs/AUTOMATIC_SURFACE_TO_SHELL_MEASUREMENTS_20261031.json).
+Keep cached exact triangle-to-Q4 conversion, midsurface/metre-thickness semantics, finite-thickness material
+collision/inertia, both-side display and gray unsampled caps. Production numerical work stays native Quadrants.
+Custom shell material collision defaults to four physical substeps; authored egg/volume remain at one.
+Fourteen tests, independent CPU/GPU full fields, bounded mechanical refinement, actual egg/neck/dome entrypoints,
+viewer output, 730-step grasp and matched small/large-batch performance/memory checks are complete.
+Preserve k32, all original acceptance/lifecycle gates, retained contact negatives and sharp-edge spatial limits.
+Eight unrelated QIPC files and prior campaigns remain unchanged; all nine campaign frozen worktrees are removed.
+Outputs/logs/evidence remain on data; Git contains only code, documentation and compact summaries.
+Do not reopen unchanged prior campaigns without new user scope or a concrete changed-workload reason.
 
 **Completed user goal, 2026-10-28:** [automatic DPR fast
 path/defaults](docs/AUTOMATIC_DPR_FAST_PATH_DEFAULTS_GOAL_20261028.md). Read [GOAL.md](GOAL.md), the

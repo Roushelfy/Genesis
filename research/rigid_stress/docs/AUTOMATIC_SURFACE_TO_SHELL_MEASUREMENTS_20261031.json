@@ -1,0 +1,1230 @@
+{
+  "status": "complete_with_recorded_geometry_contact_and_spatial_limits",
+  "runtime_root": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261031-automatic-surface-shell",
+  "source_pins": {
+    "goal_start": "7c7cdf6cd",
+    "production_preparation": "6bbd768f5",
+    "one_substep_controls": "512c1c8ec",
+    "geometry_tests": "28a253b6d",
+    "public_default_and_grasp_measurements": "01d12d006"
+  },
+  "measurement_scope": "Actual RTX PRO 6000 Blackwell, image 1_26, FP64, GraphOff, k32/q10/cap128. Three 30-step moving windows after 130-step warmup. All raw artifacts remain under runtime_root; only these path/hash/key-number summaries are tracked.",
+  "four_substep_grasp": [
+    {
+      "mesh_mode": "authored",
+      "batch": 4,
+      "output": "max",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.8189716308067243,
+      "scene_ms_median": 14.895338766897718,
+      "scene_ms_range": [
+        14.0342231024988,
+        15.103670333822569
+      ],
+      "scene_environment_steps_per_second": 268.54038451876636,
+      "native_tensor_bytes": 80949453,
+      "scene_build_seconds": 49.42067040898837,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group0/authored-max-4/results.json",
+        "sha256": "c4ced8daacbc8a0f3b26ef2739810210c07b20a350c80c353c0371bed52412f9"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 4,
+      "output": "max",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.6283420341399808,
+      "scene_ms_median": 23.341940265769757,
+      "scene_ms_range": [
+        19.7478436670887,
+        23.61054519812266
+      ],
+      "scene_environment_steps_per_second": 171.3653601395715,
+      "native_tensor_bytes": 82418189,
+      "scene_build_seconds": 181.00496259203646,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group0/automatic-max-4/results.json",
+        "sha256": "64cde2e8f7aad980533af946a8313615804470c3786226665d1de6fa7bc77869"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 4,
+      "output": "max",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.6298253981706996,
+      "scene_ms_median": 23.456717934459448,
+      "scene_ms_range": [
+        19.7517480662403,
+        23.652838197691988
+      ],
+      "scene_environment_steps_per_second": 170.52684059110157,
+      "native_tensor_bytes": 82418189,
+      "scene_build_seconds": 23.785369230085053,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group0/explicit-max-4/results.json",
+        "sha256": "02c3013f64aa3d0327575aacbac8a7f52a36c1d3824f8f828e5ac49699e3fef2"
+      }
+    },
+    {
+      "mesh_mode": "authored",
+      "batch": 4,
+      "output": "full",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.8193984326596062,
+      "scene_ms_median": 14.784198766574264,
+      "scene_ms_range": [
+        13.984382967464626,
+        15.019768197089434
+      ],
+      "scene_environment_steps_per_second": 270.55913297402617,
+      "native_tensor_bytes": 81840333,
+      "scene_build_seconds": 50.58701233402826,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group1/authored-full-4/results.json",
+        "sha256": "5e897b2590dcb85a16cc59142b375d507301b52078e550285d9fe1a01bdb5c8d"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 4,
+      "output": "full",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.6346313020524879,
+      "scene_ms_median": 23.18464080259825,
+      "scene_ms_range": [
+        19.56421376671642,
+        23.290206433739513
+      ],
+      "scene_environment_steps_per_second": 172.5280125776945,
+      "native_tensor_bytes": 83309069,
+      "scene_build_seconds": 179.23478386201896,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group1/automatic-full-4/results.json",
+        "sha256": "192f6782d0054343a6e0259d1aab674cf80184cceea939d0a2ad98aa116be39a"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 4,
+      "output": "full",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.6314773354679346,
+      "scene_ms_median": 23.018332303036004,
+      "scene_ms_range": [
+        19.434148899745196,
+        23.26296129807209
+      ],
+      "scene_environment_steps_per_second": 173.7745353286267,
+      "native_tensor_bytes": 83309069,
+      "scene_build_seconds": 23.646078233025037,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group1/explicit-full-4/results.json",
+        "sha256": "8d43a79ff794cdfe55e81e373b36d70e139d5b8fcda2e23cd242569f77f2bef3"
+      }
+    },
+    {
+      "mesh_mode": "authored",
+      "batch": 256,
+      "output": "max",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.479521833204975,
+      "scene_ms_median": 17.928422502397247,
+      "scene_ms_range": [
+        16.538293135818094,
+        18.258882333369304
+      ],
+      "scene_environment_steps_per_second": 14279.003072678017,
+      "native_tensor_bytes": 182510493,
+      "scene_build_seconds": 49.430530873010866,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group2/authored-max-256/results.json",
+        "sha256": "2b0a77d03b9db0447e8270fa60133cbf1020ddc83a3668a221d965aae19b519c"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 256,
+      "output": "max",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.3644723657829063,
+      "scene_ms_median": 26.909509033430368,
+      "scene_ms_range": [
+        22.44046823276828,
+        27.26693549969544
+      ],
+      "scene_environment_steps_per_second": 9513.365690989185,
+      "native_tensor_bytes": 249600029,
+      "scene_build_seconds": 177.00121576490346,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group2/automatic-max-256/results.json",
+        "sha256": "2398c008a4b2ec39947e7784fae99d47f1f1df7df1878ce949890bfbc9870b2d"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 256,
+      "output": "max",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.3626792981910207,
+      "scene_ms_median": 26.648932800162584,
+      "scene_ms_range": [
+        22.29076389921829,
+        26.988639465222754
+      ],
+      "scene_environment_steps_per_second": 9606.388440382054,
+      "native_tensor_bytes": 249600029,
+      "scene_build_seconds": 23.886838479083963,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group2/explicit-max-256/results.json",
+        "sha256": "2fa619bd37cf82c4bc33155505797b2e079c67c94fc9f08944fa0b8b02b306e0"
+      }
+    },
+    {
+      "mesh_mode": "authored",
+      "batch": 256,
+      "output": "full",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.61585313322333,
+      "scene_ms_median": 18.95641260004292,
+      "scene_ms_range": [
+        17.437799133282773,
+        19.19442470049641
+      ],
+      "scene_environment_steps_per_second": 13504.664906872747,
+      "native_tensor_bytes": 239526813,
+      "scene_build_seconds": 49.606401524011744,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group3/authored-full-256/results.json",
+        "sha256": "2214197eb463c760e8f295d5bc0737fed1aee9cf6d462dcd1e755231d7426046"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 256,
+      "output": "full",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.5318821669012928,
+      "scene_ms_median": 28.451217333592165,
+      "scene_ms_range": [
+        23.789732933316067,
+        29.02923439978622
+      ],
+      "scene_environment_steps_per_second": 8997.857525686344,
+      "native_tensor_bytes": 306616349,
+      "scene_build_seconds": 206.98031744200853,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group3/automatic-full-256/results.json",
+        "sha256": "9e31a97b24d951233b91d53d6c32a6b8a8dce6dfcfce3df54ea699ae761560eb"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 256,
+      "output": "full",
+      "physical_substeps": 4,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.515559167174312,
+      "scene_ms_median": 28.189515266179416,
+      "scene_ms_range": [
+        23.54287693257599,
+        28.532462066505104
+      ],
+      "scene_environment_steps_per_second": 9081.39063700531,
+      "native_tensor_bytes": 306616349,
+      "scene_build_seconds": 24.39960066898493,
+      "accepted": true,
+      "receipt": {
+        "path": "grasp-throughput-v1/group3/explicit-full-256/results.json",
+        "sha256": "c0c61d3e2592e228c98dcf6c2515138d63df02b0baac876713ee2c5814d88d8c"
+      }
+    }
+  ],
+  "one_substep_small_egg_control": [
+    {
+      "mesh_mode": "authored",
+      "batch": 4,
+      "output": "max",
+      "physical_substeps": 1,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.719350969263663,
+      "scene_ms_median": 3.7162824999541044,
+      "scene_ms_range": [
+        3.521491400897503,
+        3.716798033565283
+      ],
+      "scene_environment_steps_per_second": 1076.3444383061296,
+      "native_tensor_bytes": 80949453,
+      "scene_build_seconds": 50.056967000011355,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group0/authored-max-4/results.json",
+        "sha256": "ec8a1aff003098264155f33557000ac5a60c98b7046762bf95b1f9391805c150"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 4,
+      "output": "max",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 99.92808313497031,
+      "scene_ms_median": 101.73783853339651,
+      "scene_ms_range": [
+        101.6836062966225,
+        101.79520783325037
+      ],
+      "scene_environment_steps_per_second": 39.31673856710606,
+      "native_tensor_bytes": 16759797,
+      "scene_build_seconds": 169.81878130801488,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group0/automatic-max-4/results.json",
+        "sha256": "7254c67de8edc9a78417730d260fdbefa073ed73a7beadd3ac2e1e2986002b33"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 4,
+      "output": "max",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 99.8874700977467,
+      "scene_ms_median": 101.68696406763047,
+      "scene_ms_range": [
+        101.68622497003525,
+        101.72288566827774
+      ],
+      "scene_environment_steps_per_second": 39.33640891608938,
+      "native_tensor_bytes": 16759797,
+      "scene_build_seconds": 22.364650199888274,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group0/explicit-max-4/results.json",
+        "sha256": "39cd8d34ba2a6d851e543d72633ae20002f4afd6bca3c1c550e69099d1609ed7"
+      }
+    },
+    {
+      "mesh_mode": "authored",
+      "batch": 4,
+      "output": "full",
+      "physical_substeps": 1,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 1.758033266135802,
+      "scene_ms_median": 3.7745718650209406,
+      "scene_ms_range": [
+        3.591636933075885,
+        3.7916868653458855
+      ],
+      "scene_environment_steps_per_second": 1059.7228356063658,
+      "native_tensor_bytes": 81840333,
+      "scene_build_seconds": 49.43432774604298,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group1/authored-full-4/results.json",
+        "sha256": "0bb47ec1e8d2c023d2c1eaebea9b16f69a8b859b916636d88ed7ffbc3cc13ce2"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 4,
+      "output": "full",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 100.96540410304442,
+      "scene_ms_median": 102.77383499778807,
+      "scene_ms_range": [
+        102.75799906812608,
+        102.79454200062901
+      ],
+      "scene_environment_steps_per_second": 38.92041199091276,
+      "native_tensor_bytes": 16982517,
+      "scene_build_seconds": 167.4994724879507,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group1/automatic-full-4/results.json",
+        "sha256": "80fea9bef8591b8f6ef7fee5ff5f6ce426ec70dd59d60f2927424e8ecdee0378"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 4,
+      "output": "full",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 100.95810403581709,
+      "scene_ms_median": 101.86297363446404,
+      "scene_ms_range": [
+        101.76748636489114,
+        102.75675777035455
+      ],
+      "scene_environment_steps_per_second": 39.26843932864189,
+      "native_tensor_bytes": 16982517,
+      "scene_build_seconds": 22.78662744606845,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group1/explicit-full-4/results.json",
+        "sha256": "2575d26bd4963ad4ed0e0ebf075bd0c94e8d02ea509d060ee2878f4d477a1be7"
+      }
+    },
+    {
+      "mesh_mode": "authored",
+      "batch": 256,
+      "output": "max",
+      "physical_substeps": 1,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.278327903089424,
+      "scene_ms_median": 4.515899469455084,
+      "scene_ms_range": [
+        4.217034166989227,
+        4.5623526675626636
+      ],
+      "scene_environment_steps_per_second": 56688.59586701352,
+      "native_tensor_bytes": 182510493,
+      "scene_build_seconds": 50.72698115510866,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group2/authored-max-256/results.json",
+        "sha256": "eb7922677247273ff2a2e7600b2e48a7f1795a0fb94164b34143fa7ae4e2e4b0"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 256,
+      "output": "max",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 82.84044303776075,
+      "scene_ms_median": 84.64862346493949,
+      "scene_ms_range": [
+        84.6451384636263,
+        84.80388280004263
+      ],
+      "scene_environment_steps_per_second": 3024.266544700899,
+      "native_tensor_bytes": 155636997,
+      "scene_build_seconds": 183.11480910889804,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group2/automatic-max-256/results.json",
+        "sha256": "209be9ec6ffe3dc5b4769a0c34a8ba9915e8663f49941899f3b967cca96bd3b5"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 256,
+      "output": "max",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 82.7560539667805,
+      "scene_ms_median": 84.61548329796642,
+      "scene_ms_range": [
+        84.59027496476969,
+        84.69346396935482
+      ],
+      "scene_environment_steps_per_second": 3025.451017026248,
+      "native_tensor_bytes": 155636997,
+      "scene_build_seconds": 23.130213886033744,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group2/explicit-max-256/results.json",
+        "sha256": "354a1af58af1fadb7f07588cbf7dfb0894b9a61721b8a3d766d25c8da4eacdfc"
+      }
+    },
+    {
+      "mesh_mode": "authored",
+      "batch": 256,
+      "output": "full",
+      "physical_substeps": 1,
+      "quads": 240,
+      "elastic_dofs": 1452,
+      "module_ms_median": 2.4371422982464233,
+      "scene_ms_median": 4.801686930780609,
+      "scene_ms_range": [
+        4.510901200895508,
+        4.882153503907223
+      ],
+      "scene_environment_steps_per_second": 53314.59624302956,
+      "native_tensor_bytes": 239526813,
+      "scene_build_seconds": 54.79731428087689,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group3/authored-full-256/results.json",
+        "sha256": "b1ef3c9276de478041ea6f73e8c2f84f7979ae5b154c9378f8ad95f7dc7b5aa4"
+      }
+    },
+    {
+      "mesh_mode": "automatic",
+      "batch": 256,
+      "output": "full",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 85.70906876896818,
+      "scene_ms_median": 87.74226836394519,
+      "scene_ms_range": [
+        87.69736619821438,
+        87.77757390247038
+      ],
+      "scene_environment_steps_per_second": 2917.6359897391803,
+      "native_tensor_bytes": 169891077,
+      "scene_build_seconds": 191.03023280389607,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group3/automatic-full-256/results.json",
+        "sha256": "92181842aa1fb4dbe2ee31c9a3ce4934447e22f6b9bb8ce4c613b44f9dd9feb1"
+      }
+    },
+    {
+      "mesh_mode": "explicit",
+      "batch": 256,
+      "output": "full",
+      "physical_substeps": 1,
+      "quads": 60,
+      "elastic_dofs": 372,
+      "module_ms_median": 85.65915940174213,
+      "scene_ms_median": 87.6176064601168,
+      "scene_ms_range": [
+        87.54786346107721,
+        87.64542763431866
+      ],
+      "scene_environment_steps_per_second": 2921.7871880183147,
+      "native_tensor_bytes": 169891077,
+      "scene_build_seconds": 23.1456262730062,
+      "accepted": true,
+      "receipt": {
+        "path": "throughput-v1/group3/explicit-full-256/results.json",
+        "sha256": "e209046981750adecb519f4986924b69cd9d1c5e547edc70b80f4cb32c000f11"
+      }
+    }
+  ],
+  "comparisons": {
+    "compare-v1": [
+      {
+        "maxima_relative": 3.452235306246053e-13,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "warmup-fields.npz": {
+          "tensor": 1.2252737301184375e-12,
+          "von_mises": 8.154607327124047e-13
+        },
+        "fields.npz": {
+          "tensor": 1.2253832380887717e-12,
+          "von_mises": 8.153858144114574e-13
+        },
+        "case": "same-full4",
+        "candidate": "throughput-v1/group1/explicit-full-4/results.json",
+        "receipt": {
+          "path": "compare-v1/group0/same-full4/comparison.json",
+          "sha256": "c8abe09cd15995b49b78239c02186d6a3748987f7352bf8f5807971b550a7ab1"
+        }
+      },
+      {
+        "maxima_relative": 1.3318809051875205e-16,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-full4",
+        "candidate": "throughput-v1/group0/automatic-max-4/results.json",
+        "receipt": {
+          "path": "compare-v1/group0/same-full4/comparison.json",
+          "sha256": "c8abe09cd15995b49b78239c02186d6a3748987f7352bf8f5807971b550a7ab1"
+        }
+      },
+      {
+        "maxima_relative": 3.45356718715124e-13,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "warmup-fields.npz": {
+          "tensor": 1.225273730118438e-12,
+          "von_mises": 8.154773812237196e-13
+        },
+        "fields.npz": {
+          "tensor": 1.2255036968562224e-12,
+          "von_mises": 8.153441931331702e-13
+        },
+        "case": "same-full256",
+        "candidate": "throughput-v1/group3/explicit-full-256/results.json",
+        "receipt": {
+          "path": "compare-v1/group1/same-full256/comparison.json",
+          "sha256": "b2e5b38dabd3ecb9c36b07158468a697bde5f9cdb5cfc4247d35f6fc0b1182f8"
+        }
+      },
+      {
+        "maxima_relative": 1.3318809051875202e-16,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-full256",
+        "candidate": "throughput-v1/group2/automatic-max-256/results.json",
+        "receipt": {
+          "path": "compare-v1/group1/same-full256/comparison.json",
+          "sha256": "b2e5b38dabd3ecb9c36b07158468a697bde5f9cdb5cfc4247d35f6fc0b1182f8"
+        }
+      },
+      {
+        "maxima_relative": 3.45356718715124e-13,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-max4",
+        "candidate": "throughput-v1/group0/explicit-max-4/results.json",
+        "receipt": {
+          "path": "compare-v1/group2/same-max4/comparison.json",
+          "sha256": "24241c32e20c45291573aa2e89f1e41f5cb6965dd560962fb8803af57f98463f"
+        }
+      },
+      {
+        "maxima_relative": 3.452235306246052e-13,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-max256",
+        "candidate": "throughput-v1/group2/explicit-max-256/results.json",
+        "receipt": {
+          "path": "compare-v1/group3/same-max256/comparison.json",
+          "sha256": "12810b1c982fb43997ce06c7cfacb9e8ed8657a883a686665b6600cacbf5bfbe"
+        }
+      },
+      {
+        "maxima_relative": 1.3318809051875202e-16,
+        "native_memory": {
+          "shared_bytes": 14555397.0,
+          "per_environment_bytes": 551100.0,
+          "scope": "Pointer-deduplicated native tensor payloads fitted to the two measured batches; excludes allocator overhead, rigid solver storage and process runtime."
+        },
+        "case": "memory-max",
+        "candidate": "throughput-v1/group2/automatic-max-256/results.json",
+        "receipt": {
+          "path": "compare-v1/group4/memory-max/comparison.json",
+          "sha256": "bd53f17a4ee7aa5b1ac43bc01527041f50b0418bf8a6966f4b93c6302187b624"
+        }
+      },
+      {
+        "maxima_relative": 1.3318809051875205e-16,
+        "native_memory": {
+          "shared_bytes": 14555397.0,
+          "per_environment_bytes": 606780.0,
+          "scope": "Pointer-deduplicated native tensor payloads fitted to the two measured batches; excludes allocator overhead, rigid solver storage and process runtime."
+        },
+        "case": "memory-full",
+        "candidate": "throughput-v1/group3/automatic-full-256/results.json",
+        "receipt": {
+          "path": "compare-v1/group5/memory-full/comparison.json",
+          "sha256": "96ebc433b356014d4c2899858fe3677cce10e411d8300b4c62007a16308e818b"
+        }
+      },
+      {
+        "maxima_relative": 2.7767877950521532e-06,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "warmup-fields.npz": {
+          "tensor": 2.3886073738088943e-05,
+          "von_mises": 1.2538206510857367e-05
+        },
+        "fields.npz": {
+          "tensor": 2.3886073737649438e-05,
+          "von_mises": 1.2538206510923494e-05
+        },
+        "case": "tuning",
+        "candidate": "throughput-v1/group4/egg-k8-full4/results.json",
+        "receipt": {
+          "path": "compare-v1/group6/tuning/comparison.json",
+          "sha256": "53db812f01d50fe6d9621087d1799d4f455487a8dd36861c53451c9babf0587d"
+        }
+      },
+      {
+        "maxima_relative": 9.059110787271672e-07,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "warmup-fields.npz": {
+          "tensor": 7.792585528677028e-06,
+          "von_mises": 4.090489791270768e-06
+        },
+        "fields.npz": {
+          "tensor": 7.79258552858894e-06,
+          "von_mises": 4.090489791303912e-06
+        },
+        "case": "tuning",
+        "candidate": "throughput-v1/group4/egg-k16-full4/results.json",
+        "receipt": {
+          "path": "compare-v1/group6/tuning/comparison.json",
+          "sha256": "53db812f01d50fe6d9621087d1799d4f455487a8dd36861c53451c9babf0587d"
+        }
+      }
+    ],
+    "grasp-compare-v1": [
+      {
+        "maxima_relative": 8.988499177149113e-14,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "warmup-fields.npz": {
+          "tensor": 2.718630566874586e-13,
+          "von_mises": 2.886482136759209e-13
+        },
+        "fields.npz": {
+          "tensor": 3.168682889446378e-13,
+          "von_mises": 3.068050223168034e-13
+        },
+        "case": "same-full4",
+        "candidate": "grasp-throughput-v1/group1/explicit-full-4/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group0/same-full4/comparison.json",
+          "sha256": "0fc72e49dc7032cf5286cffe472725f247d08b8c6308f44af8040a7ffbe579cc"
+        }
+      },
+      {
+        "maxima_relative": 0.0,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-full4",
+        "candidate": "grasp-throughput-v1/group0/automatic-max-4/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group0/same-full4/comparison.json",
+          "sha256": "0fc72e49dc7032cf5286cffe472725f247d08b8c6308f44af8040a7ffbe579cc"
+        }
+      },
+      {
+        "maxima_relative": 8.988499177149112e-14,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "warmup-fields.npz": {
+          "tensor": 2.7201954564905767e-13,
+          "von_mises": 2.8883985236694887e-13
+        },
+        "fields.npz": {
+          "tensor": 3.171285795262516e-13,
+          "von_mises": 3.070466486387697e-13
+        },
+        "case": "same-full256",
+        "candidate": "grasp-throughput-v1/group3/explicit-full-256/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group1/same-full256/comparison.json",
+          "sha256": "8c9ef528ed505d44162f7c8c41bdd0c241f60376512493622b24ba44d452e1f5"
+        }
+      },
+      {
+        "maxima_relative": 0.0,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-full256",
+        "candidate": "grasp-throughput-v1/group2/automatic-max-256/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group1/same-full256/comparison.json",
+          "sha256": "8c9ef528ed505d44162f7c8c41bdd0c241f60376512493622b24ba44d452e1f5"
+        }
+      },
+      {
+        "maxima_relative": 8.988499177149113e-14,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-max4",
+        "candidate": "grasp-throughput-v1/group0/explicit-max-4/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group2/same-max4/comparison.json",
+          "sha256": "fe8a96bd18f428ac71108a858f348a792884d525212423548701e61acbb200f4"
+        }
+      },
+      {
+        "maxima_relative": 9.004607598613536e-14,
+        "contact_inputs_relative": {
+          "position": 0.0,
+          "force": 0.0,
+          "radius": 0.0
+        },
+        "contact_valid_identical": true,
+        "case": "same-max256",
+        "candidate": "grasp-throughput-v1/group2/explicit-max-256/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group3/same-max256/comparison.json",
+          "sha256": "96b6a93ea545637a935bbd208834b1084e7f1e176adcc1a009c7b0bf8db61a71"
+        }
+      },
+      {
+        "maxima_relative": 1.6108421464424935e-16,
+        "native_memory": {
+          "shared_bytes": 79764509.0,
+          "per_environment_bytes": 663420.0,
+          "scope": "Pointer-deduplicated native tensor payloads fitted to the two measured batches; excludes allocator overhead, rigid solver storage and process runtime."
+        },
+        "case": "memory-max",
+        "candidate": "grasp-throughput-v1/group2/automatic-max-256/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group4/memory-max/comparison.json",
+          "sha256": "a08b283b25693a1928a611916cc77f68a1c7d224adcae20258679658819e6bb9"
+        }
+      },
+      {
+        "maxima_relative": 1.6108421464424935e-16,
+        "native_memory": {
+          "shared_bytes": 79764509.0,
+          "per_environment_bytes": 886140.0,
+          "scope": "Pointer-deduplicated native tensor payloads fitted to the two measured batches; excludes allocator overhead, rigid solver storage and process runtime."
+        },
+        "case": "memory-full",
+        "candidate": "grasp-throughput-v1/group3/automatic-full-256/results.json",
+        "receipt": {
+          "path": "grasp-compare-v1/group5/memory-full/comparison.json",
+          "sha256": "4ecd320061e18ee182dc9220eb7f1c333e1a200e0df6be44a82476874c3f840b"
+        }
+      }
+    ]
+  },
+  "geometry_tests": {
+    "passed": 14,
+    "receipt": {
+      "path": "geometry-tests-v8.xml",
+      "sha256": "9ecb405c802906493eb550efbc07eb2bde27defe9b5bee8f2524b92a912bd0d3"
+    }
+  },
+  "mechanics": {
+    "receipt": {
+      "path": "controls-cpu-v1/group0/geometry/mechanics.json",
+      "sha256": "20a94ccc70f6a286d40c6171f0ade1dd34e402fc0fede653498f62a951499767"
+    }
+  },
+  "native_reloads": [
+    {
+      "case": "reload-cpu-v2/group0/grasp/reload.json",
+      "reload_full_tensor": 1.1455313132110005e-12,
+      "reload_peak": 1.9956170425311616e-13,
+      "independent_cpu_full_tensor": 6.090290356475416e-11,
+      "receipt": {
+        "path": "reload-cpu-v2/group0/grasp/reload.json",
+        "sha256": "213220a1a77625910f66e2d24ccc38832d4ccc1e129972855a510db445acc1bf"
+      }
+    },
+    {
+      "case": "reload-cpu-v2/group1/plate/reload.json",
+      "reload_full_tensor": 0.0,
+      "reload_peak": 0.0,
+      "independent_cpu_full_tensor": 3.1901313046541016e-11,
+      "receipt": {
+        "path": "reload-cpu-v2/group1/plate/reload.json",
+        "sha256": "e5b7e6eaf0af0809d6f181be188576e1290ff416916011b4715c29844831d327"
+      }
+    },
+    {
+      "case": "reload-gpu-v2/group0/grasp/reload.json",
+      "reload_full_tensor": 1.0265271334477456e-12,
+      "reload_peak": 1.5154237955270226e-13,
+      "independent_cpu_full_tensor": 6.091277022834459e-11,
+      "receipt": {
+        "path": "reload-gpu-v2/group0/grasp/reload.json",
+        "sha256": "12e81094a1224cdf93b39ded0ad5ee4bdd7765ab9451233757b6d478df65e017"
+      }
+    },
+    {
+      "case": "reload-gpu-v2/group1/plate/reload.json",
+      "reload_full_tensor": 8.062723197521966e-17,
+      "reload_peak": 0.0,
+      "independent_cpu_full_tensor": 3.075323661828106e-11,
+      "receipt": {
+        "path": "reload-gpu-v2/group1/plate/reload.json",
+        "sha256": "9e08b90404720e441a566b07527369eb2b2b87e770cb2207730f262c90f3a082"
+      }
+    },
+    {
+      "case": "notch-native-v1/group0/notch-cpu/reload.json",
+      "reload_full_tensor": 1.5925579493885908e-12,
+      "reload_peak": 4.1417565699726713e-13,
+      "independent_cpu_full_tensor": 5.489399671392353e-11,
+      "receipt": {
+        "path": "notch-native-v1/group0/notch-cpu/reload.json",
+        "sha256": "83220514b93bdf597c3ae9f68c53247204bebe27fbcb3cc3f873a5c50c643615"
+      }
+    },
+    {
+      "case": "notch-native-v1/group0/notch-gpu/reload.json",
+      "reload_full_tensor": 1.5313644733473628e-12,
+      "reload_peak": 3.7307989557105645e-13,
+      "independent_cpu_full_tensor": 5.495356345741046e-11,
+      "receipt": {
+        "path": "notch-native-v1/group0/notch-gpu/reload.json",
+        "sha256": "0b76a9a5fbb8c50a9891b0fbc73ce8be6265334ddfde835021d58520e74aa091"
+      }
+    }
+  ],
+  "memory_process_peaks": [
+    {
+      "case": "memory-view-v1/group1/memory-max-256/memory.json",
+      "peak_mib": 4750,
+      "sample_count": 1734,
+      "receipt": {
+        "path": "memory-view-v1/group1/memory-max-256/memory.json",
+        "sha256": "470d9f78cf591c0fd653404bcb8fde7e0e507257bb667028fa32ca897716bfb8"
+      }
+    },
+    {
+      "case": "memory-view-v1/group2/memory-full-256/memory.json",
+      "peak_mib": 4752,
+      "sample_count": 1724,
+      "receipt": {
+        "path": "memory-view-v1/group2/memory-full-256/memory.json",
+        "sha256": "96288be29923bcfe62be46b0df677bf1860d69e47023db94d9f5f70db8018fad"
+      }
+    },
+    {
+      "case": "grasp-view-memory-v1/group0/grasp-memory-full256/memory.json",
+      "peak_mib": 4934,
+      "sample_count": 1098,
+      "receipt": {
+        "path": "grasp-view-memory-v1/group0/grasp-memory-full256/memory.json",
+        "sha256": "11f8741ce03521fdb876968b4178ef3e3fa620e2f9c3f6a012a3767f00de751b"
+      }
+    }
+  ],
+  "public_entrypoints": [
+    {
+      "case": "entrypoints-v3/group0/egg/result.json",
+      "passed": true,
+      "seconds": 186.4337849728763,
+      "receipt": {
+        "path": "entrypoints-v3/group0/egg/result.json",
+        "sha256": "f8a2d2b56ec7ebdec8d55f2e6f2e888f174b072715ac553ceedee2326b648fa8"
+      },
+      "failure_kind": null
+    },
+    {
+      "case": "entrypoints-v3/group1/neck/result.json",
+      "passed": false,
+      "seconds": 192.88807570375502,
+      "receipt": {
+        "path": "entrypoints-v3/group1/neck/result.json",
+        "sha256": "42d567c02cd893d83f080f99147cc9295d00d622ee1ed638343acecd07d0b645"
+      },
+      "failure_kind": "stress_load_rejection"
+    },
+    {
+      "case": "entrypoints-v3/group2/dome/result.json",
+      "passed": true,
+      "seconds": 212.28052822174504,
+      "receipt": {
+        "path": "entrypoints-v3/group2/dome/result.json",
+        "sha256": "63b522fc0e2dbb3cbe689f42a7a9a1fc7224421709f1a2844096f5f39f492e48"
+      },
+      "failure_kind": null
+    },
+    {
+      "case": "entrypoints-v3/group3/authored/result.json",
+      "passed": false,
+      "seconds": 156.62412994995248,
+      "receipt": {
+        "path": "entrypoints-v3/group3/authored/result.json",
+        "sha256": "4ca162ce142d855dd25fac4a3f4c3a321e6980bbbf728ec153f1d613ba364995"
+      },
+      "failure_kind": "screenshot_capture"
+    },
+    {
+      "case": "entrypoints-v4/group0/authored/result.json",
+      "passed": true,
+      "seconds": 92.00571976799984,
+      "receipt": {
+        "path": "entrypoints-v4/group0/authored/result.json",
+        "sha256": "7de827b5b99f21e027195cabce59db10429f37ba5607d83ab3be92b24ca14ab0"
+      },
+      "failure_kind": null
+    },
+    {
+      "case": "entrypoints-v4/group0/dimple/result.json",
+      "passed": false,
+      "seconds": 175.1675088640768,
+      "receipt": {
+        "path": "entrypoints-v4/group0/dimple/result.json",
+        "sha256": "b21285348029caaeda2b7c15354d38edd54c31d317d3ca2a5e51e4e164897e53"
+      },
+      "failure_kind": "stress_load_rejection"
+    },
+    {
+      "case": "entrypoints-final-v1/group0/dimple/result.json",
+      "passed": false,
+      "seconds": 29.510055218997877,
+      "receipt": {
+        "path": "entrypoints-final-v1/group0/dimple/result.json",
+        "sha256": "c641045becee2a00ccea38c4dd415a18af60019af8f81ca11effe0168a54e95c"
+      },
+      "failure_kind": "stress_load_rejection"
+    },
+    {
+      "case": "entrypoints-final-v1/group0/dome/result.json",
+      "passed": true,
+      "seconds": 93.94438963299035,
+      "receipt": {
+        "path": "entrypoints-final-v1/group0/dome/result.json",
+        "sha256": "14b13a436d7013d7fab6e7d8dd0360f4d85ee36c4e340a86a5e9cb6d219c9b63"
+      },
+      "failure_kind": null
+    },
+    {
+      "case": "entrypoints-final-v1/group0/grasp/result.json",
+      "passed": true,
+      "seconds": 200.58130217998405,
+      "receipt": {
+        "path": "entrypoints-final-v1/group0/grasp/result.json",
+        "sha256": "ba1a961722fb9437c6306d0a5714f54a5963c15556e5653d09d0566b6bcdeaca"
+      },
+      "failure_kind": null
+    },
+    {
+      "case": "nonconvex-final-v1/group0/neck/result.json",
+      "passed": true,
+      "seconds": 182.35890699189622,
+      "physical_substeps": 4,
+      "steps": 140,
+      "failure_kind": null,
+      "receipt": {
+        "path": "nonconvex-final-v1/group0/neck/result.json",
+        "sha256": "0308a20a7ed36a64e0cae4da8e29e82a55fce2a611075324b02f36474635abe0"
+      }
+    },
+    {
+      "case": "nonconvex-final-v1/group0/notch/result.json",
+      "passed": false,
+      "seconds": 41.45187242596876,
+      "physical_substeps": 4,
+      "steps": 140,
+      "failure_kind": "unsupported_automatic_Hertz_curvature",
+      "receipt": {
+        "path": "nonconvex-final-v1/group0/notch/result.json",
+        "sha256": "e3870a3f1efad93aa9a3e1d41483b0cb3fb357259e7ba2b57efbfac94c13b037"
+      }
+    }
+  ],
+  "quad_quality": {
+    "receipt": {
+      "path": "quality-v1/group0/quality/quality.json",
+      "sha256": "dedf0c6bf34ebb5ef0a7484315da77ee3933a5a720ea50b0c58c088c71c9b09b"
+    },
+    "cases": [
+      {
+        "asset": {
+          "path": "controls-cpu-v1/group0/geometry/cache/bc6c9261df92662c683b1090df3bc7b3f482490a35c6d59f65e89581524d0330/elastic.npz",
+          "bytes": 1771,
+          "sha256": "954074023542e82a2f3cf45195e001126df832229e4983c196b9805c912b2d8c"
+        },
+        "nodes": 62,
+        "quads": 60,
+        "minimum_corner_angle_degrees": 43.98916133779484,
+        "maximum_corner_angle_degrees": 144.32630562214345,
+        "minimum_corner_sine": 0.5831683063066121,
+        "maximum_element_edge_ratio": 3.10776723798174,
+        "shape": "egg"
+      },
+      {
+        "asset": {
+          "path": "controls-cpu-v1/group0/geometry/cache/b2d2df28b493c94a9bceec63513b8dfede7f0695a2e8789e68702ec792eeb9c9/elastic.npz",
+          "bytes": 5098,
+          "sha256": "e30f47496debd34150a84099e77c7efec0fd31e46f50082314bfc172794419ca"
+        },
+        "nodes": 242,
+        "quads": 240,
+        "minimum_corner_angle_degrees": 14.84861829832807,
+        "maximum_corner_angle_degrees": 166.40536512944482,
+        "minimum_corner_sine": 0.23505109844695135,
+        "maximum_element_edge_ratio": 8.389592849639461,
+        "shape": "neck"
+      },
+      {
+        "asset": {
+          "path": "controls-cpu-v1/group0/geometry/cache/35045e12d9162662595f1e1ef00db4b9d39fca13632b36e8609cb90dfb734912/elastic.npz",
+          "bytes": 1240,
+          "sha256": "e04c0dc1e1a8261e37b921e56b5309342b4fd2c1b00240df28d36650448e1164"
+        },
+        "nodes": 35,
+        "quads": 24,
+        "minimum_corner_angle_degrees": 36.69922520048987,
+        "maximum_corner_angle_degrees": 144.2938323858788,
+        "minimum_corner_sine": 0.5836286248471356,
+        "maximum_element_edge_ratio": 3.000000000000001,
+        "shape": "u"
+      },
+      {
+        "asset": {
+          "path": "controls-cpu-v1/group0/geometry/cache/efcb246cb9fa46424059d7551f76dbd1541ba5861d798038aa70dd4a17754cff/elastic.npz",
+          "bytes": 784,
+          "sha256": "47c48d702691cfafb513c05125c6280e4121d932ccca625bdc73df4b2ae9cd87"
+        },
+        "nodes": 19,
+        "quads": 12,
+        "minimum_corner_angle_degrees": 26.56505117707798,
+        "maximum_corner_angle_degrees": 149.0362434679265,
+        "minimum_corner_sine": 0.4472135954999578,
+        "maximum_element_edge_ratio": 3.000000000000002,
+        "shape": "plate"
+      },
+      {
+        "asset": {
+          "path": "reload-gpu-v2/group0/grasp/cache/4d5ddf9b39dac7ee851fc3ebd1bb52d62f40a08a8d68f690c3bed0ae8ada54e2/elastic.npz",
+          "bytes": 6340,
+          "sha256": "1a170cd6e70ae3f6c1ed188afc4fa41efe2eca95a6cb36139e141a7970053efe"
+        },
+        "nodes": 242,
+        "quads": 240,
+        "minimum_corner_angle_degrees": 42.07838530474125,
+        "maximum_corner_angle_degrees": 141.7909495437298,
+        "minimum_corner_sine": 0.6185325218016837,
+        "maximum_element_edge_ratio": 2.885222567672844,
+        "shape": "grasp"
+      },
+      {
+        "asset": {
+          "path": "notch-native-v1/group0/notch-gpu/cache/29fe599630ff3c9522ddcca93afc894e484b8a34b29cdf04c5dd52c054c90f5a/elastic.npz",
+          "bytes": 6582,
+          "sha256": "e815b2d95b4e5b513151468fb8ca52272f8f77512777d397ceec723a08138f90"
+        },
+        "nodes": 242,
+        "quads": 240,
+        "minimum_corner_angle_degrees": 42.07838530474125,
+        "maximum_corner_angle_degrees": 141.7909495437298,
+        "minimum_corner_sine": 0.6185325218016838,
+        "maximum_element_edge_ratio": 2.8852225676728436,
+        "shape": "notch"
+      }
+    ],
+    "scope": "Measured corner angles/edge ratios supplement sampled Jacobians and bounded mechanical refinement; no automatic smoothing or quality improvement."
+  },
+  "viewer": {
+    "passed": true,
+    "refresh_and_readback_seconds": 1.9013098510040436,
+    "scope": "Single first-use 800x600 color refresh/readback/PNG export, separate from primary throughput; not a steady frame rate.",
+    "receipt": {
+      "path": "grasp-view-memory-v1/group0/grasp-viewer/results.json",
+      "sha256": "6c83e9b98eb3d6933b058a4e583ba276191a83b16a540e956f7b646f69b93325"
+    },
+    "image": {
+      "path": "grasp-view-memory-v1/group0/grasp-viewer/viewer.png",
+      "sha256": "f39baa307a79b7df85740e26530a259a7b3c09c325bfb4113b2a2fc7994c6de0"
+    }
+  },
+  "closure": {
+    "preservation": {
+      "path": "meta/preservation-check-final.json",
+      "sha256": "605f55c14339d9003c32665a3e619ed90cfa2868725f0032ee10d524561c34cd"
+    },
+    "worktree_cleanup": [
+      {
+        "path": "meta/worktree-cleanup-check-v1.json",
+        "sha256": "afb32d9837056b98683bd86ff320dd550832cfc39e2ce076cc222083174beb7b"
+      },
+      {
+        "path": "meta/worktree-cleanup-final-v1.json",
+        "sha256": "32e2d802ac08c5fedd6924ac5cf75d94e53afab1aa0764825d214c8926ae3b75"
+      },
+      {
+        "path": "meta/worktree-cleanup-final-v2.json",
+        "sha256": "d120c7c29ec41be8342b83f33be0b0557b83bb33dd1f99f144a5d8fd10d50185"
+      },
+      {
+        "path": "meta/worktree-cleanup-final-v3.json",
+        "sha256": "2638ebe218629ccf8e9b27f9bc47459f47f15c0b94658d0c14652504e567f4f9"
+      },
+      {
+        "path": "meta/worktree-cleanup-final-v4.json",
+        "sha256": "3d3d4e745453663d82499305ad9ec5801bd7edf50757b6247610a2893e75a134"
+      },
+      {
+        "path": "meta/worktree-cleanup-final-v5.json",
+        "sha256": "704e402e72c11f49b810c9c409a6d0e4e05a76e02f28cf619953125e6b90fee4"
+      }
+    ],
+    "created_frozen_worktrees_removed": 9,
+    "retained_campaign_frozen_worktrees": [],
+    "all_campaign_jobs_terminal": true,
+    "last_jobs": {
+      "768337_0": "FAILED: neck public entrypoint passed; notch contact rejected; both retained",
+      "768338_0": "COMPLETED: notch CPU/GPU operator/contact/reload controls",
+      "768340_0": "COMPLETED: Q4 quality audit"
+    }
+  }
+}

@@ -1,13 +1,14 @@
 # Automatic surface-to-shell preparation for DPR
 
-**Active user goal, 2026-10-31.** Extend the existing mesh example so a user can supply a valid surface mesh
-and select the thin-shell backend without preparing a Q4 NPZ manually. Deliver working code, focused
-validation, measured costs and updated examples. This is the next implementation goal; the conversion is
-not implemented by this document. Earlier throughput campaigns remain completed within their recorded scope.
+**Completed user goal, 2026-10-31.** The existing mesh example accepts a surface midsurface and the shell
+backend without a manually prepared Q4 NPZ. Implementation, focused validation, measured costs and usage
+are recorded in the [results](AUTOMATIC_SURFACE_TO_SHELL_RESULTS_20261031.md) and
+[manifest](AUTOMATIC_SURFACE_TO_SHELL_MEASUREMENTS_20261031.json). The specification below retains the original
+requirements. Earlier throughput campaigns remain completed within their recorded scope.
 
 ## User-facing result
 
-The intended commands, after implementation, are:
+The implemented commands are:
 
 ```bash
 # Default hollow egg remains immediately usable with its existing assets.

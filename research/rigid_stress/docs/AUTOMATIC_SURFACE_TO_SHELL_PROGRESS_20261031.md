@@ -1,56 +1,55 @@
 # Automatic surface-to-shell progress
 
-The [October 31 goal](AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md) is active and incomplete. The starting remote
-revision is `7c7cdf6cd`; prototype geometry integration is `694be1506`. Original unrelated QIPC changes are preserved
-in place; their starting hashes are recorded in the data-side `meta/start-state.json`.
+The [October 31 goal](AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md) is complete within its recorded geometry,
+contact and spatial scope. Read the [measured report](AUTOMATIC_SURFACE_TO_SHELL_RESULTS_20261031.md),
+[compact path/hash/key-number manifest](AUTOMATIC_SURFACE_TO_SHELL_MEASUREMENTS_20261031.json) and
+[running guide](RUNNING_AUTOMATIC_DPR.md).
 
-The implementation splits each triangle into three conforming Q4s without moving the midsurface. It joins only exactly
-coincident coordinates, checks material connectivity/manifoldness/intersections, normalizes directors consistently
-with the native solver, constructs both thickness sides and open-edge caps, and rejects collapsed/inverted offsets.
-Thickness participates in the cache key. Custom shell collision uses the material boundary without convexification
-or watertight wrapping. Complete qualification remains in progress.
+Source progression: remote start `7c7cdf6cd`, geometry prototype `694be1506`, finalized import/material display
+`6bbd768f5`, initial one-substep measurements `512c1c8ec`, fourteen geometry tests `28a253b6d`, and the measured
+custom-shell four-substep public default `01d12d006`. Per-run source/helper hashes remain on data; final research
+helpers retain exact 17-digit fixture export, the nonconvex notch negative, memory substep selection and quality audit.
 
-At `ac30844ea`, eleven focused geometry/cache/units/material/color checks pass. The first run caught OBJ coordinate
-rounding (3.33e-9 m); export now retains 17 decimal places. All thirteen controls pass at `512c1c8ec`, including source-buffer, 1e-10 m close-gap, transformed-scene and
-crossing-ribbon checks. A further annulus/hole control is pending. Open-edge caps are displayed in gray because the shell field
-does not provide a cap-normal three-dimensional contact stress.
+The implementation prepares three conforming quads per triangle, applies scene transforms without small-gap
+welding, validates finite-thickness offsets/material topology, derives material inertia, preserves nonconvex
+collision, caches source/dependency/thickness identity, and displays both stress sides with gray unsampled caps.
+Existing authored egg and volume defaults remain. Custom shell material collision defaults to four physical
+substeps, with an explicit override. The 0.01 s outer step and all original stress acceptance gates remain.
 
-Four generated families passed independent CPU and RTX PRO 6000 Blackwell native operator, complete tensor/resultant,
-peak and contact controls: 20-triangle egg (60 quads / 372 DOF), 80-triangle narrow neck (240 / 1452), open U (24 / 210)
-and plate (12 / 114). Both-side normal/friction/eccentric contacts, slot permutation, release/recontact, unloaded
-environment isolation, original force/moment/residual gates and spinning rigid-mode relief were checked. GPU
-same-load full-tensor relative errors range from 9.2e-12 to 5.1e-10. These are discrete-model checks, not continuum accuracy.
+Completed checks include fourteen geometry/cache/unit/material/hole/color tests; independent CPU/GPU full fields,
+both-side normal/friction/eccentric loads and lifecycle controls for egg, narrow neck, U and plate; generated asset
+reload comparisons; membrane/bending patches, six null modes and 12/48/192-quad cantilever refinement. Exact
+17-digit grasp/plate controls give <=1.2e-12 auto/reload and <=6.1e-11 independent-CPU tensor error. The additional
+notch prescribed-load control passes with <=1.6e-12 / <=5.5e-11 respectively. The independent Q4 quality audit
+quantifies corner angles and edge ratios; conversion preserves poor input triangle quality rather than repairing it.
 
-Independent flat controls have six rigid null modes, membrane energy errors below 3.2e-15 and bending energy errors
-below 8.6e-11. At 12/48/192 quads, unit-load cantilever compliance errors against the stated nu=0 beam/shear reference
-are 0.8307% / 0.1978% / 0.04786%. This bounded test does not certify curved-shell or sharp-edge continuum peaks.
+The real public egg, nonconvex neck and open dome complete 140 GPU steps. The authored shell viewer and the new
+public converted grasp each complete 730 steps. A separate converted-grasp full-field run checks every physical
+substep through 730 steps and passes original gates plus reset. Actual 800×600 viewer captures of automatic,
+authored and converted grasp assets were inspected. The early wrong-thread screenshot failure remains recorded.
 
-The public entrypoint completed 140 GPU steps on the small automatic egg (3,414 Pa terminal peak). That shape is too
-narrow for the established finger closure, so this is a ground-support control, not a successful grasp. A dedicated
-`grasp` recipe uses the established exterior as an explicitly declared midsurface. Its finite-thickness collision
-boundary triggers unsupported Hertz curvature during the actual trajectory; k8/k16/k32 and viewer attempts all stop
-at the original gate. These are retained negatives, not timing results. Contact diagnosis and an additional coarse
-ellipsoid control are in progress.
-The ground-support B4 max profile passes original acceptance and partial reset. Preparation took 46 ms cold / 4.7 ms
-warm; the 173 s cold scene build includes JIT. Module/scene costs are about 99.85 / 101.82 ms per step, with 16,759,797
-native buffer bytes. Pressure fit and validation dominate its GPU trace (about 89% and 9%). This is preliminary profiling,
-not a throughput recommendation. Bounded k8/k16/k32 and matching automatic/explicit/authored comparisons are next.
+Two matched twelve-cell timing sets cover automatic/reloaded/authored assets, B4/B256 and max/full: a retained
+one-substep ground-support control and the final four-substep grasp. All 24 pass original acceptance and partial
+reset. Final grasp B256 complete-scene rates are 9,513 / 8,998 environment-steps/s; auto/reload mechanical inputs
+match exactly and full tensors agree within 3.2e-13. A separate B256 full-mode process samples 4,934 MiB peak GPU
+memory. Native shared/per-environment payload, viewer/readback cost and source/model differences are reported.
 
-Data receipts: `controls-cpu-v1`, `controls-gpu-v2`, `geometry-tests-v3.xml`, `entrypoint-v2`, `scene-profile-v1`
-under the runtime root below. A wrapper diagnosis found that non-array sbatch calls can create a nested default-partition
-job; affected smoke attempts are retained, and subsequent launches use arrays, including one-task arrays, in `rtx-mid`.
+The initial profile precedes bounded k8/k16 tuning. Only about 2% speed benefit accompanies complete-tensor changes
+of 2.39e-5 / 7.79e-6, so k32 remains recommended. Identical-source/cache small-egg full builds measure 166.64 s cold /
+22.41 s warm. No universal throughput maximum, general mesh-quality guarantee or sharp-edge peak convergence is claimed.
 
-Explicit generated-asset reloads pass on both CPU and GPU for the 240-quad grasp midsurface and 12-quad plate.
-Relative complete-tensor differences are <=1.4e-12; independent CPU full-tensor errors are <=1.5e-10.
-
-Pending work: final geometry regressions; actual grasp and
-viewer color demonstration; final cold/warm build profiles; small/large GPU module and complete-scene max/full timings,
-memory and comparisons with explicit generated and authored egg assets; measured tuning; final usage/limits/report.
+Retained contact negatives include one-substep neck curvature at step 3, broad ellipsoid pressure fit at step 109,
+plate pressure fit at step 3, U/dimple rejection, and one-substep converted-grasp inner-wall rejection at step 121.
+Four substeps admit the neck and full grasp but still reject the notch's automatic curvature. Prescribed-load
+numerical agreement does not override contact admission. A failed pressure fit is not proof of physical infeasibility.
 
 Runtime root: `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261031-automatic-surface-shell/`.
-No experiment outputs are committed. All frozen worktrees use `/mnt/data/zhaofeng/projects/workspace/Genesis/worktrees/`.
-Completed `automatic-shell-geometry-v1` and `v2` were removed; Git left filesystem residues, subsequently hash-verified
-and removed, with receipts in `meta/worktree-cleanup-*-v1.json`. Session October 31 retained only
-`automatic-shell-validation-v1` (`512c1c8ec`) after completed geometry-v3, scene-v1, import-v1 and scene-v2 were removed.
-Cleanup receipt: `meta/worktree-cleanup-final-v2.json`. The remaining source is used by active diagnostic/public-entrypoint
-jobs. Planned removal: once jobs and audits finish, by November 1.
+All artifacts, failures and logs remain there. Eight unrelated QIPC files match `meta/start-state.json`, verified
+in `meta/preservation-check-final.json`. Git receives only code, documentation and the compact manifest.
+
+All campaign jobs are terminal. Nine frozen worktrees were created under
+`/mnt/data/zhaofeng/projects/workspace/Genesis/worktrees/`: geometry-v1/v2/v3, scene-v1/v2, import-v1,
+validation-v1/v2 and public-v1 (each prefixed `automatic-shell-`). All were removed after their jobs finished,
+with clean-source/local-process checks and `git worktree prune`; see `meta/worktree-cleanup-*.json` through
+`worktree-cleanup-final-v5.json`. No campaign frozen worktree remains. Source commits remain in task branch history.
+Prior campaigns, their worktrees and unrelated running jobs were preserved; no Atlas/continuum campaign was reopened.

@@ -14,7 +14,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
-        "--shape", choices=("authored", "egg", "grasp", "round", "neck", "u", "plate", "dome", "dimple"), required=True
+        "--shape",
+        choices=("authored", "egg", "grasp", "round", "neck", "u", "plate", "dome", "dimple", "notch"),
+        required=True,
     )
     parser.add_argument("--envs", type=int, default=1)
     parser.add_argument("--steps", type=int, default=140)

@@ -24,14 +24,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--backend", choices=("cpu", "gpu"), default="cpu")
-    parser.add_argument("--shape", choices=("egg", "grasp", "neck", "u", "plate"), required=True)
+    parser.add_argument("--shape", choices=("egg", "grasp", "neck", "u", "plate", "notch"), required=True)
     parser.add_argument("--operators-only", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     write_json(args.output / "runtime.json", runtime_identity(require_gpu_inventory=args.backend == "gpu"))
     surface = surface_recipe(args.shape, 1 if args.shape == "neck" else 0)
     source = args.output / "midsurface.obj"
-    surface.export(source)
+    surface.export(source, digits=17)
     prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, args.output / "cache")
     with np.load(prepared.elastic) as asset:
         vertices, quads = asset["vertices"], asset["quads"]

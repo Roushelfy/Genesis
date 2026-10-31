@@ -1,9 +1,10 @@
 # Rigid-stress data and artifact locations
 
-The active 2026-10-31 automatic surface-to-shell work uses
+The completed 2026-10-31 automatic surface-to-shell work uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261031-automatic-surface-shell/`.
 Generated meshes, fields, profiles, tests, stdout/stderr and source receipts stay there. New frozen experimental
 worktrees use `/mnt/data/zhaofeng/projects/workspace/Genesis/worktrees/` and are removed when their jobs finish.
+All nine campaign frozen worktrees have been removed; cleanup/preservation receipts are under the run's `meta/`.
 The existing `.worktrees/rigid-stress-recovery` is the active development branch. At campaign start, the inventory
 contained 234 worktrees; no missing or metadata-idle-over-seven-days candidate was established, so none was removed.
 Reuse the existing data-side physical environment and Slurm `rtx-mid` / image `1_26`, with private node-local caches.

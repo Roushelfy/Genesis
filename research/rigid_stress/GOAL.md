@@ -1,14 +1,16 @@
 # Native rigid stress recovery: automatic surface-to-shell preparation
 
-**Active user goal, 2026-10-31:** implement [automatic surface-to-shell preparation](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md).
-A valid surface plus explicit shell backend/thickness should run without an authored Q4 NPZ, retaining
-automatic radius + DPR, headless max and viewer full output. Reuse existing Q4 elasticity and native
-Quadrants numerics; mesh conversion is cached build work. Validate closed/open and nonconvex shell inputs,
-mechanical quality, numerical consistency and complete-path cost on low models before broad refinements.
+**Completed user goal, 2026-10-31:** [automatic surface-to-shell preparation](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md).
+Surface + shell backend + thickness now prepares a cached compatible Q4 asset. Closed/open/nonconvex conversion,
+material collision/inertia and both-side display are integrated with existing native Quadrants recovery.
+Fourteen focused tests, CPU/GPU complete fields, bounded mechanical refinement, public egg/neck/dome entrypoints,
+actual viewer output and a 730-step converted grasp pass. Read the [measured report](docs/AUTOMATIC_SURFACE_TO_SHELL_RESULTS_20261031.md),
+[compact manifest](docs/AUTOMATIC_SURFACE_TO_SHELL_MEASUREMENTS_20261031.json) and [usage](docs/RUNNING_AUTOMATIC_DPR.md).
 
-This is an implementation goal, not a claim that automatic 2D conversion already works. The current
-custom-shell example still needs a supplied Q4 NPZ until this goal is delivered. Keep the volume default,
-explicit authored assets, original acceptance/lifecycle and all scoped prior evidence.
+Custom shells default to four physical substeps; authored egg and volume retain one. Keep k32, original
+radius/load/residual/lifecycle gates and all retained contact negatives. Conversion does not guarantee every
+Hertz contact or qualify three-dimensional sharp-edge peaks. Source/model differences, measured costs and
+spatial limits remain explicit. No unchanged prior Atlas or continuum campaign is reopened.
 
 ## Previous delivery: automatic DPR fast path and defaults
 

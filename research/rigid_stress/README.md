@@ -9,15 +9,18 @@ intrinsic/body_source_prior. Manual sampling uses `update_mode="manual"` and
 See the [API](docs/NATIVE_API.md), [usage](docs/RUNNING.md) and
 [source-prior model](docs/BODY_SOURCE_PRIOR_MODEL.md).
 
-## Active: automatic surface-to-shell preparation (2026-10-31)
+## Delivered: automatic surface-to-shell preparation (2026-10-31)
 
-The next goal is to accept a surface mesh directly in the shell example without requiring an authored Q4
-NPZ. Implement cached conversion, explicit midsurface/thickness semantics, closed/open and nonconvex input
-handling, current native automatic-radius DPR, headless max and viewer field output. Keep Q4 elasticity and
-volume defaults. Validate mechanical quality separately from same-model numerical consistency and measure
-preparation, memory and complete-scene throughput. See [the goal](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md).
+`--backend shell --mesh model.obj --thickness 0.0005` now prepares and caches a Q4 shell directly from a
+connected midsurface. Closed/open and nonconvex conversion preserves holes and uses actual finite-thickness
+material collision/inertia. Existing authored egg and volume defaults remain. Custom shells default to four
+physical substeps, with `--substeps N` available explicitly.
 
-This is pending implementation. The current custom-shell command still requires a matching Q4 NPZ.
+Fourteen focused tests, independent CPU/GPU full fields, bounded mechanical refinement, real egg/nonconvex/open
+entrypoints, actual viewer coloring and a 730-step converted grasp pass. B256 grasp complete-scene max/full rates
+are 9,513 / 8,998 environment-steps/s on the measured RTX PRO 6000; arbitrary Hertz contact admission and continuum
+sharp-edge peaks remain outside this qualification. Read the [results](docs/AUTOMATIC_SURFACE_TO_SHELL_RESULTS_20261031.md),
+[usage](docs/RUNNING_AUTOMATIC_DPR.md) and [specification](docs/AUTOMATIC_SURFACE_TO_SHELL_GOAL_20261031.md).
 
 ## Delivered: automatic DPR fast path, defaults and examples (2026-10-28)
 

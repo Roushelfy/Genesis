@@ -5,7 +5,7 @@
 选择 `--backend shell --mesh model.obj --thickness 0.0005` 可自动生成并缓存 Q4 壳资产，
 再调用原生自动半径＋DPR。输入表面明确作为**中面**；`--scale` 把输入坐标转换为米，
 `--thickness` 始终是米，不再乘以 `--scale`。把实体的外表面指定为中面，会改成薄壳物理模型，
-不会推断实体的内部空腔或真实中面。当前验证进展见[记录](AUTOMATIC_SURFACE_TO_SHELL_PROGRESS_20261031.md)。
+不会推断实体的内部空腔或真实中面。验证结果、性能与限制见[报告](AUTOMATIC_SURFACE_TO_SHELL_RESULTS_20261031.md)。
 
 ```bash
 # 具有实际厚度的闭合或开口中面；有可用显示环境时着色。
@@ -31,6 +31,11 @@ STL 重复顶点只在坐标完全相等时合并。F 个三角形生成 3F 个 
 `--cache-dir` 可显式指定项目数据目录；缓存只用于一次构造，不在每个环境或时间步重复转换。
 在本集群运行前应把 `GS_CACHE_FILE_PATH`、`--cache-dir` 和日志路径设在项目 data 目录或私有节点临时目录，
 参见 [DATA_LOCATION.md](../../../DATA_LOCATION.md)。
+
+自定义 shell 的材料碰撞面默认使用 4 个物理子步；原有 authored egg 和 volume 保持 1 个。
+可用 `--substeps N` 显式指定正整数。四子步设置已通过转换后 egg 的 730 步夹持、非凸窄颈与开口 dome 的 140 步检查，减少粗时间步穿过
+薄壁而产生内侧接触的情况；它不是任意厚度／运动速度的稳定性保证。总步长仍为 0.01 s。多子步时，
+最大值覆盖该步所有子步，完整场是最后子步的场，两者的最大值不必相同。
 
 转换成功并不保证每种接触都能使用 Hertz 半径。现有曲率、压力拟合、力／力矩和弹性残差检查仍生效；
 平面与平面的零相对曲率、凹面或未被支持的边缘接触可能被拒绝。也不自动生成适合任意形状的抓取轨迹。
@@ -64,7 +69,8 @@ QD_GRAPH=0 python -m examples.rigid.franka_egg_automatic_stress \
 实心区域，不会从外表面猜测壁厚或内部空腔。默认 egg 始终复用原空壳资产，不会重新填成实心。
 `--mesh volume.npz` 可直接从体积资产提取碰撞边界。自定义 shell 可自动转换，也可用
 `--backend shell --mesh midsurface.npz` 直接重载 Q4 资产，或通过 `--stress-mesh midsurface.npz` 显式指定匹配资产。
-中面 NPZ 必须含 Q4 connectivity，可用 `--thickness` 指定米制壁厚。表面与弹性 NPZ 必须属于同一 authored frame；预处理对二者一起缩放并移到共同包围盒
+中面 NPZ 必须含 Q4 connectivity，可用 `--thickness` 指定米制壁厚。自定义 shell 的碰撞面始终从
+选定 Q4 中面重建；显式提供 NPZ 时，以该资产的几何为准。表面与弹性 NPZ 必须属于同一 authored frame；预处理对二者一起缩放并移到共同包围盒
 中心，保留彼此的几何配准。模型朝向不变。自定义刚体的质量、质心和惯性从弹性材料边界导出并写入
 缓存 URDF；薄壳包含内外侧和开口边缘的壁厚封边，不会按外包络的实心体积估计惯性。默认 egg 仍
 使用其原始 URDF 惯性。`--cache-dir` 可指定缓存位置；否则遵循 Genesis 的

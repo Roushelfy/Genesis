@@ -17,6 +17,7 @@ def main():
     parser.add_argument("--envs", type=int, required=True)
     parser.add_argument("--output-mode", choices=("max", "full"), required=True)
     parser.add_argument("--shape", default="egg")
+    parser.add_argument("--substeps", type=int, default=1)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     sampler = ProcessMemory(True)
@@ -34,6 +35,8 @@ def main():
             args.output_mode,
             "--shape",
             args.shape,
+            "--substeps",
+            str(args.substeps),
             "--steps",
             "5",
             "--repeats",
