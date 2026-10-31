@@ -686,6 +686,15 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     (16 us) and the serial tasks of the statements outside the parallel loops of each kernel (about 6 us each, a third
     of a Jacobi iteration, finding in section "Performance (M5)"). Not adopted.
 
+56. Volume of S1 and the settling sphere T08c on the velocity baseline (FluidBench `sphgoal-sb-tol0.02`,
+    `sphgoal-sbt-tol0.02`, `sphgoal-sb-c60`, `sphgoal-sb-c100`). The volume of thick-wall S1 R2 drifts 1.27 % over the
+    run (bar 1 %) and 1.18 % with the density tolerance at 0.02 % instead of 0.05 % (RTF at dt x8 0.115 against 0.123):
+    the solve tolerance does not set it; the drift correction gives 0.61 % (finding 52). In T08c (ten Cate et al. E1, a
+    sphere settling in oil, R3) the viscosity-pressure coupling stopped at its cap of 30 passes in 339 substeps; with a
+    cap of 60 or 100 every coupling converges (8.5 and 11.3 passes per substep, RTF 0.0006 and 0.0004), and the run is
+    usable by the FluidBench bar, but the sphere travels 1.6 mm in 3 s: its speed is 98.6 % below the measured terminal
+    velocity, the static pressure friction of finding 17 (V9 settles 51-66 % slow, finding 50).
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
