@@ -23,6 +23,15 @@ def main():
     reference = json.loads((args.baseline / "results.json").read_text())
     rows = []
     for path in args.candidate:
+        if not (path / "results.json").is_file():
+            rows.append(
+                {
+                    "candidate": str(path),
+                    "completed": False,
+                    "reason": "No accepted scene result; inspect preserved workload log.",
+                }
+            )
+            continue
         candidate = json.loads((path / "results.json").read_text())
         row = {
             "baseline": file_id(args.baseline / "results.json"),

@@ -14,11 +14,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
-        "--shape", choices=("authored", "egg", "grasp", "round", "neck", "u", "plate", "dome"), required=True
+        "--shape", choices=("authored", "egg", "grasp", "round", "neck", "u", "plate", "dome", "dimple"), required=True
     )
     parser.add_argument("--envs", type=int, default=1)
     parser.add_argument("--steps", type=int, default=140)
     parser.add_argument("--viewer", action="store_true")
+    parser.add_argument("--substeps", type=int)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     argv = [
@@ -41,6 +42,8 @@ def main():
         argv.extend(("--mesh", str(source)))
     if args.viewer:
         argv.append("--viewer")
+    if args.substeps is not None:
+        argv.extend(("--substeps", str(args.substeps)))
     identity = runtime_identity()
     write_json(args.output / "start.json", {"argv": argv, "identity": identity})
     previous = sys.argv
@@ -48,10 +51,6 @@ def main():
     try:
         sys.argv = argv
         example()
-        if args.viewer:
-            import pyglet
-
-            pyglet.image.get_buffer_manager().get_color_buffer().save(str(args.output / "viewer.png"))
     except Exception as error:
         write_json(
             args.output / "result.json",

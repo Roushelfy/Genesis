@@ -7,9 +7,9 @@ from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
-import pyglet
 import quadrants as qd
 import torch
+from PIL import Image
 
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
@@ -33,9 +33,11 @@ def main() -> None:
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--warmup", type=int, default=130)
     parser.add_argument("--substeps", type=int, default=1)
+    parser.add_argument("--audit-substeps", action="store_true")
     parser.add_argument("--steps", type=int, default=30)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--profile", action="store_true")
+    parser.add_argument("--asset-cache", type=Path)
     parser.add_argument("--loading-subdivisions", type=int, choices=(8, 16, 32), default=32)
     parser.add_argument("--viewer", action="store_true")
     args = parser.parse_args()
@@ -61,15 +63,18 @@ def main() -> None:
         surface = surface_recipe(args.shape, 1 if args.shape == "neck" else 0)
         source = args.output / "midsurface.obj"
         surface.export(source, digits=17)
+        asset_cache = args.asset_cache or args.output / "cache"
+        existing_assets = set(asset_cache.glob("*/elastic.npz"))
         started = time.perf_counter()
-        prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, args.output / "cache")
+        prepared = prepare_stress_mesh(source, None, "shell", 1.0, None, asset_cache)
         results["conversion_cold_seconds"] = time.perf_counter() - started
+        results["preparation_first_cache_hit"] = prepared.elastic in existing_assets
         started = time.perf_counter()
-        prepare_stress_mesh(source, None, "shell", 1.0, None, args.output / "cache")
+        prepare_stress_mesh(source, None, "shell", 1.0, None, asset_cache)
         results["conversion_warm_seconds"] = time.perf_counter() - started
         if args.mesh_mode == "explicit":
             started = time.perf_counter()
-            prepared = prepare_stress_mesh(prepared.elastic, None, "shell", 1.0, None, args.output / "cache")
+            prepared = prepare_stress_mesh(prepared.elastic, None, "shell", 1.0, None, asset_cache)
             results["explicit_preparation_seconds"] = time.perf_counter() - started
         options.mesh = prepared.elastic
         started = time.perf_counter()
@@ -122,13 +127,23 @@ def main() -> None:
     results["quads"] = entry.model.shell.quads.shape[0]
     results["dofs"] = 3 * entry.model.info.vertices.shape[0]
     write_json(args.output / "progress.json", results)
-    for tick in range(args.warmup):
-        if tick == args.warmup - 1:
+    if args.audit_substeps:
+        workload.scene.register_post_substep_callback(lambda index: solver.check_errno())
+
+    geometry = None
+
+    def capture_geometry(index):
+        nonlocal geometry
+        if index == args.substeps - 1:
             solver.update_forward_pos()
             geometry = GeometryFrame(
                 np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.pos, transpose=True)),
                 np.ascontiguousarray(qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True)),
             )
+
+    for tick in range(args.warmup):
+        if tick == args.warmup - 1:
+            workload.scene.register_pre_substep_callback(capture_geometry)
         try:
             workload.step()
         except gs.GenesisException as error:
@@ -150,6 +165,7 @@ def main() -> None:
             arrays["geom_quaternion"] = qd_to_numpy(solver.dyn_state.geoms.quat, transpose=True)
             np.savez_compressed(args.output / "failure-state.npz", **arrays)
             raise
+    workload.scene._pre_substep_callbacks.remove(capture_geometry)
     qd.sync()
     results["acceptance_before"] = _checks(_api(), workload)
     assert results["acceptance_before"]["passed"] and results["acceptance_before"]["loaded_contacts"] > 0
@@ -177,7 +193,10 @@ def main() -> None:
             overlay = workload.scene.draw_debug_mesh(colored, T=transform)
             overlay.is_marker = False
         workload.scene.visualizer.update(force=True)
-        pyglet.image.get_buffer_manager().get_color_buffer().save(str(args.output / "viewer.png"))
+        viewer = workload.scene.visualizer.viewer._pyrender_viewer
+        viewer.switch_to()
+        pixels = viewer._renderer.jit.read_color_buf(*viewer.get_size(), rgba=False)
+        Image.fromarray(pixels).save(args.output / "viewer.png")
         results["viewer_readback_seconds"] = time.perf_counter() - started
         results["viewer_surface"] = file_id(args.output / "viewer.png")
     module_times = []
@@ -214,10 +233,15 @@ def main() -> None:
     results["scene_seconds_per_step"] = scene_times
     results["scene_acceptance_after"] = _checks(_api(), workload)
     results["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
+    results["last_substep_peak_Pa"] = qd_to_numpy(entry.state.peak).tolist()
     if args.output_mode == "full":
         tensor, vm = map(tensor_to_array, workload.link.get_stress_field())
         np.savez_compressed(args.output / "fields.npz", tensor=tensor, von_mises=vm)
-        np.testing.assert_allclose(vm.reshape((args.envs, -1)).max(axis=1), results["maximum_stress_Pa"], rtol=1e-12)
+        latest_peak = vm.reshape((args.envs, -1)).max(axis=1)
+        np.testing.assert_allclose(latest_peak, results["last_substep_peak_Pa"], rtol=1e-12)
+        assert (np.array(results["maximum_stress_Pa"]) >= latest_peak * (1 - 1e-12)).all()
+        if args.substeps == 1:
+            np.testing.assert_allclose(latest_peak, results["maximum_stress_Pa"], rtol=1e-12)
     allocations = {}
     buffers = []
     for item in solver.stress_recovery.data:

@@ -28,6 +28,11 @@ def main() -> None:
     parser.add_argument("--output-mode", choices=("max", "full"), help="Defaults to full with a viewer, max otherwise.")
     parser.add_argument("--envs", type=int, default=1)
     parser.add_argument("--steps", type=int, default=730)
+    parser.add_argument(
+        "--substeps",
+        type=int,
+        help="Physical substeps: defaults to 4 for custom shell material collision, 1 otherwise.",
+    )
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--color-max", type=float, help="Fixed color maximum in Pa; omitted uses a running peak scale.")
     parser.add_argument("--device", choices=("gpu", "cpu"), default="gpu")
@@ -35,6 +40,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.envs < 1 or args.steps < 1 or args.log_every < 1:
         parser.error("Use positive environment, step and logging counts.")
+    if args.substeps is not None and args.substeps < 1:
+        parser.error("--substeps must be positive.")
     if args.viewer and args.envs != 1:
         parser.error("The stress viewer shows one environment; omit --viewer for batched maximum-only runs.")
     if args.viewer and args.output_mode == "max":
@@ -104,8 +111,11 @@ def main() -> None:
             camera_pos=(0.80, -0.23, 0.07),
             camera_lookat=(0.65, 0, 0.04),
         )
+    # A material shell has an inner boundary that a coarser rigid contact step can cross.
+    substeps = args.substeps or (4 if prepared is not None and args.backend == "shell" else 1)
     grasp = FrankaEgg(
         n_envs=args.envs,
+        substeps=substeps,
         viewer=args.viewer,
         stress_options=options,
         rigid_mesh=rigid_mesh,
@@ -115,7 +125,7 @@ def main() -> None:
     print(
         f"Stress configuration: {options.backend}, {options.radius_model} radius, "
         f"{options.pressure_profile} pressure, {options.pressure_quadrature}/q{options.quadrature}, "
-        f"{options.output_mode} output."
+        f"{options.output_mode} output, {substeps} physical substeps."
     )
     field = surface if args.viewer else None
     overlay = None

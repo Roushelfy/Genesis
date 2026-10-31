@@ -22,8 +22,11 @@ def surface_recipe(name: str, level: int = 0) -> trimesh.Trimesh:
         return stress_mesh_asset.load_surface(
             Path(stress_mesh_asset.__file__).parent / "assets/hollow_egg/level1/egg_outer.obj"
         )
-    if name in ("egg", "neck", "round", "dome"):
+    if name in ("egg", "neck", "round", "dome", "dimple"):
         surface = trimesh.creation.icosphere(subdivisions=level, radius=1.0)
+        if name == "dimple":
+            surface.vertices[np.argmax(surface.vertices[:, 2]), 2] = 0.1
+            assert not surface.is_convex
         if name == "neck":
             surface.vertices[:, :2] *= (0.35 + 0.65 * surface.vertices[:, 2] ** 2)[:, None]
         if name == "dome":
@@ -113,11 +116,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--mechanics", action="store_true")
+    parser.add_argument("--shape", choices=("egg", "grasp", "round", "neck", "u", "plate", "dome", "dimple"))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     write_json(args.output / "runtime.json", runtime_identity(require_gpu_inventory=False))
     results = []
-    for name, level in (("egg", 0), ("neck", 1), ("u", 0), ("plate", 0)):
+    cases = (
+        ((args.shape, 1 if args.shape == "neck" else 0),)
+        if args.shape
+        else (("egg", 0), ("neck", 1), ("u", 0), ("plate", 0))
+    )
+    for name, level in cases:
         surface = surface_recipe(name, level)
         source = args.output / f"{name}.obj"
         surface.export(source)
