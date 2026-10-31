@@ -941,6 +941,15 @@ through `scripts/campaign_env.sh <revision>` of the data directory against a fro
     shorten. RTF 0.5 at R2 therefore needs fewer GPU tasks per substep or fewer iterations, and the one measured way to
     fewer iterations raises the rest noise (finding 68).
 
+70. The first coupling pass to the tolerance with two plain Jacobi iterations at the end of every accelerated density
+    solve, measured and not adopted (development snapshot `dev-sm` on b1fd757c, diff `worktrees/dev-sm/final.diff`;
+    FluidBench `sphgoal-smt-n1`, receipts `*__sm_*`). Plain Jacobi damps the particle-scale error first, so the
+    smoothing was to remove the noise of change (d) of finding 68 at its lower iteration count: 70 density iterations
+    per substep, RTF 0.289 at R2 and 0.424-0.437 at R1, but the thick-wall cup at rest at R1 keeps an rms speed of 0.051
+    m/s (largest 0.21 m/s) against 0.008 m/s, and `test_fluid_load_readout_is_link_impulse` failed in the run of the
+    unit tests. The noise of a first pass stopped at the tolerance is not removed by two plain iterations at the end of
+    the solves.
+
 ## Validation at 47499e5c (v5)
 
 Receipts tagged `v5*` (FluidBench `report/sph_goal.md`, acceptance matrix): `v5` default, `v5i` isotropic pressure
